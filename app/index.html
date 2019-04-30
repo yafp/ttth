@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ttth</title>
+
+    <!-- Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="css/ttth/ttth.css" rel="stylesheet">
+
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <!--
+    <link rel="stylesheet" href="js/bootstrap/4.3.1/css/bootstrap.min.css" />
+-->
+
+
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- jquery -->
+    <!-- 3.3.1 -->
+    <script src="js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <script src="js/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <!-- fontawesome -->
+    <!-- 5.8.1 -->
+    <script src="js/fontawesome-free-web/5.8.1/js/all.min.js"></script>
+
+    <script src="js/ttth/ttth.js"></script>
+</head>
+
+<body>
+    <div id="main-container">
+
+        <!-- nav -->
+        <div id="navi">
+            <ul class="menuSettings">
+                <li>
+                    <a onClick="loadSettings();"><i class="fas fa-sliders-h"></i> Settings</a>
+                </li>
+            </ul>
+            <ul>
+                <li id="menuwhatsapp">
+                    <a onClick="loadService('whatsapp');"><i class="fab fa-whatsapp-square"></i> WhatsApp</a>
+                </li>
+                <li id="menucalendar">
+                    <a onClick="loadService('googlecal');"><i class="fas fa-calendar-alt"></i> Google Calendar</a>
+                </li>
+                <li id="menunotes">
+                    <a onClick="loadService('googlenotes');"><i class="far fa-edit"></i> Google Keep</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /nav -->
+
+        <!-- content -->
+        <div id="content"></div>
+        <!-- /content -->
+
+    </div>
+    <!-- /main-container -->
+
+</body>
+
+<script>
+// A $( document ).ready() block.
+$( document ).ready(function() {
+    console.log( "ready!" );
+
+    checkDisplaySize();
+
+    // init menu and configured services
+    initMenu();
+
+    // load default view
+    //
+    //loadSettings();
+    loadDefaultView();
+
+
+    //var appVersion = require('electron').remote.app.getVersion();
+    //var appName = require('electron').remote.app.getName();
+    //
+    //console.log(settingsPath);
+
+});
+</script>

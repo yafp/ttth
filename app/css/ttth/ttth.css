@@ -1,0 +1,104 @@
+html,body {
+    height:100%;
+    background-color: white;
+    margin: 0px;
+}
+
+#main-container {
+    height: 100%;
+    background-color: limegreen;
+}
+
+
+
+/* ########################################################################## */
+/* MENU / NAVIGATION */
+/* ########################################################################## */
+#navi{
+    height: 50px;
+    background-color: #333
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li {
+    float: left;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+
+/* Change the link color to #111 (black) on hover */
+li a:hover {
+    background-color: #111;
+    /* border-top: 1px solid limegreen; */
+    color: limegreen;
+}
+
+.menuSettings{
+    float: right;
+}
+
+
+
+/* ########################################################################## */
+/* UNSORTED */
+/* ########################################################################## */
+#content {
+    height: calc(100% - 50px);
+    /* background-color: red; */
+}
+
+.inner{
+    /*padding: 10px;*/
+
+    height: 100%;
+    /* height: calc(100% - 20px); */
+
+    /* background-color: blue; */
+}
+
+
+
+/* ########################################################################## */
+/* SETTINGS */
+/* ########################################################################## */
+#contentSettings {
+    padding: 10px;
+    background-color: white;
+
+}
+
+.bgimg {
+    background-image: url('../../img/icon/icon.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+
+/* ########################################################################## */
+/* SERVICES */
+/* ########################################################################## */
+#contentWhatsApp {
+
+}
+
+#contentGoogleCalendar {
+
+}
+
+#contentGoogleNotes {
+
+}
