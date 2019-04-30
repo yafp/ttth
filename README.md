@@ -1,4 +1,5 @@
 ![GitHub](https://img.shields.io/github/license/yafp/ttth.svg)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
 
 # ttth
 ## about
@@ -10,28 +11,26 @@
 ## changelog
 Please see the [changlog](CHANGELOG.md) for more details.
 
-
-
 ## install
 ### linux
 
 #### .deb
 * Download the latest .deb
-* execute: ```sudo dpkg -i /path/to/local/logre-file.deb```
+* execute: ```sudo dpkg -i /path/to/local/ttth-file.deb```
 
 #### AppImage
 * Copy the AppImage to the desired location
-* Make it executable: ```chmod +x /path/to/local/logre-file.AppImage```
+* Make it executable: ```chmod +x /path/to/local/ttth-file.AppImage```
 * Execute it
 
 #### Snap
-* execute: ```sudo snap install /path/to/local/logre-file.snap```
+* execute: ```sudo snap install /path/to/local/ttth-file.snap```
 
 
 ## howto
 #### getting started as developer
-* Clone the repository: ```git clone https://github.com/yafp/logre```
-* Go into the repository: ```cd logre```
+* Clone the repository: ```git clone https://github.com/yafp/ttth```
+* Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
 * Run logre: ```npm start```
 
