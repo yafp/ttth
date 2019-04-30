@@ -1,12 +1,65 @@
 function updateDefaultView()
 {
-    var newDefaultView = $( "#selectDefaultView" ).val();
-    console.log("updateDefaultView ::: NEw default view on start is set to: " + newDefaultView);
+    console.log("updateDefaultView ::: Start");
 
-    $("#selectDefaultView").val(newDefaultView);
+    // get currently selected value from select
+    var newDefaultView = $( "#selectDefaultView" ).val();
+    console.log("updateDefaultView ::: New default view on start is set to: " + newDefaultView);
+
+    //$("#selectDefaultView").val(newDefaultView);
 
     // Store default view in local storage
     writeLocalStorage("defaultView", newDefaultView);
+
+    console.log("updateDefaultView ::: End");
+}
+
+
+
+
+function validateConfiguredDefaultView()
+{
+  // read from local storage
+  var curDefaultView = readLocalStorage("defaultView");
+
+  if(curDefaultView === null) // no default view configured
+  {
+      console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
+
+  }
+  else
+  {
+    console.log("validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
+
+    // check if the configured service is enabled or not
+    console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
+
+      var exists = false;
+
+      $('#selectDefaultView option').each(function(){
+        //console.warn(this.value);
+      if (this.value === curDefaultView)
+      {
+        exists = true;
+        return false;
+      }
+      else {
+        console.error("moep..................");
+      }
+      });
+
+      if(exists)
+      {
+        console.log("validateConfiguredDefaultView ::: Configured default view is valid");
+        $("#selectDefaultView").val(curDefaultView);
+      }
+      else
+      {
+          console.log("validateConfiguredDefaultView ::: Fallback to default. Loading setting-view");
+      }
+
+  }
+
 }
 
 
@@ -18,36 +71,17 @@ function loadDefaultView()
     // read from local storage
     var curDefaultView = readLocalStorage("defaultView");
 
-    console.warn("__" + curDefaultView);
-
     if(curDefaultView === null) // no default view configured
     {
-        console.log("loadDefaultView ::: No default configured - Loading settings-view");
-        loadSettings();
-
+        console.log("loadDefaultView ::: No default configured");
     }
     else
     {
-        // check if the configured service is enabled or not - if not: load settings
-        //
-        var exists = false;
-        for(var i = 0, opts = document.getElementById('selectDefaultView').options; i < opts.length; ++i)
-        if( opts[i].value === 'bar' )
-        {
-            exists = true;
-            break;
-        }
+        console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
 
-        if(exists)
-        {
-            console.log("loadDefaultView ::: Loading the configured service");
-            loadService(curDefaultView);
-        }
-        else
-        {
-            console.log("loadDefaultView ::: Fallback to default. Loading setting-view");
-            loadSettings();
-        }
+        loadService(curDefaultView);
+
+
     }
 
     console.log("loadDefaultView ::: End");
@@ -102,10 +136,10 @@ function test()
 */
 function loadSettings()
 {
-    console.log("loadPage ::: Start");
+    console.log("loadSettings ::: Start");
     $("#content").load("settings.html");
 
-    console.log("loadPage ::: End");
+    console.log("loadSettings ::: End");
 }
 
 
@@ -117,11 +151,12 @@ function loadSettings()
 */
 function loadService(pageName)
 {
-    console.log("loadPage ::: Start");
-    console.log("loadPage ::: Loading: " + pageName);
-    $("#content").load("services/" + pageName + ".html");
+    console.log("loadService ::: Start");
+    console.log("loadService ::: Loading: " + pageName.toLowerCase());
 
-    console.log("loadPage ::: End");
+    $("#content").load("services/" + pageName.toLowerCase() + ".html");
+
+    console.log("loadService ::: End");
 }
 
 /**
@@ -139,8 +174,12 @@ function toggleCheckbox(objectName)
     if($('#'+objectName).prop('checked'))
     {
         console.log("toggleCheckbox ::: Activating " + objectName);
+
+        // write to local storage
         writeLocalStorage(objectName, "true");
-        $("#menu"+objectName).show();
+
+        // show service in menu
+        $("#menu_"+objectName.toLowerCase()).show();
 
         // add option to DefaultView select
         $("#selectDefaultView").append(new Option(objectName, objectName));
@@ -148,10 +187,24 @@ function toggleCheckbox(objectName)
     else
     {
         console.log("toggleCheckbox ::: Deactivating " + objectName);
-        writeLocalStorage(objectName, "false");
-        $("#menu"+objectName).hide();
 
-        $("#selectDefaultView option[value='objectName']").remove();
+        // write to local storage
+        writeLocalStorage(objectName, "false");
+
+        // hide service from menu
+        $("#menu_"+objectName.toLowerCase()).hide();
+
+        // remove option from DefaultView selectc
+        //$("#selectDefaultView option[value='objectName']").remove();
+        $('#selectDefaultView option').each(function()
+        {
+          //console.warn(this.value);
+          if (this.value === objectName)
+          {
+            console.log("toggleCheckbox ::: Deleting item from select")
+            this.remove();
+          }
+        });
     }
 
     console.log("toggleCheckbox ::: End");
@@ -190,6 +243,61 @@ function writeLocalStorage(key, value)
 }
 
 
+
+function initSettingsPage()
+{
+  console.log("initSettingsPage ::: Start");
+
+  console.log("initSettingsPage ::: Show enabled services in settings interface");
+
+    // checkboxes:
+    //
+    // WhatsApp
+    var whatsapp = readLocalStorage("WhatsApp");
+    if(whatsapp === "true")
+    {
+        // check the checkbox
+        $('#WhatsApp').prop('checked', true);
+
+        // add to defaultView select item
+        $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
+    }
+
+    // Google Calendar
+    //
+    var calendar = readLocalStorage("GoogleCalendar");
+    if(calendar === "true")
+    {
+        // check the checkbox
+        $('#GoogleCalendar').prop('checked', true);
+
+        // add to defaultView select item
+        $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
+    }
+
+    // Google Keep
+    //
+    var notes = readLocalStorage("GoogleKeep");
+    if(notes === "true")
+    {
+      // check the checkbox
+        $('#GoogleKeep').prop('checked', true);
+
+        // add to defaultView select item
+        $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
+    }
+
+    validateConfiguredDefaultView();
+
+
+    console.log("initSettingsPage ::: End");
+}
+
+
+
+
+
+
 /**
 * @name initMenu
 * @summary Init the menu on app launch
@@ -201,54 +309,60 @@ function initMenu()
 
     // WhatsApp
     //
-    var whatsapp = readLocalStorage("whatsapp");
+    var whatsapp = readLocalStorage("WhatsApp");
     if(whatsapp === "true")
     {
         console.log("initMenu ::: Activating WhatsApp");
-        $("#menuwhatsapp").show();
-        $('#whatsapp').prop('checked', true);
-        $("#selectDefaultView").append(new Option("WhatsApp", "whatsapp"));
+
+        // show service in menu
+        $("#menu_whatsapp").show();
+
+        // check the checkbox
+        //$('#WhatsApp').prop('checked', true);
+
+        // Add service to startup service select
+        $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
     }
     else
     {
         console.log("initMenu ::: Deactivating WhatsApp");
-        $("#menuwhatsapp").hide();
-        $('#whatsapp').prop('checked', false);
+
+        // hide service from menu
+        $("#menu_whatsapp").hide();
+
+        // uncheck checkbox
+        //$('#whatsapp').prop('checked', false);
     }
 
 
-    // calendar
+    // Google Calendar
     //
-    var calendar = readLocalStorage("calendar");
+    var calendar = readLocalStorage("GoogleCalendar");
     if(calendar === "true")
     {
-        console.log("initMenu ::: Activating Calendar");
-        $("#menucalendar").show();
-        $('#calendar').prop('checked', true);
-        $("#selectDefaultView").append(new Option("Google Calendar", "calendar"));
+        console.log("initMenu ::: Activating GoogleCalendar");
+        $("#menu_googlecalendar").show();
+        $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
     }
     else
     {
-        console.log("initMenu ::: Deactivating Calendar");
-        $("#menucalendar").hide();
-        $('#calendar').prop('checked', false);
+        console.log("initMenu ::: Deactivating GoogleCalendar");
+        $("#menu_googlecalendar").hide();
     }
 
-    // notes
+    // Google Keep
     //
-    var notes = readLocalStorage("notes");
+    var notes = readLocalStorage("GoogleKeep");
     if(notes === "true")
     {
-        console.log("initMenu ::: Activating Notes");
-        $("#menunotes").show();
-        $('#notes').prop('checked', true);
-        $("#selectDefaultView").append(new Option("Google Keep", "notes"));
+        console.log("initMenu ::: Activating GoogleKeep");
+        $("#menu_googlekeep").show();
+        $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
     }
     else
     {
-        console.log("initMenu ::: Deactivating Notes");
-        $("#menunotes").hide();
-        $('#notes').prop('checked', false);
+        console.log("initMenu ::: Deactivating GoogleKeep");
+        $("#menu_googlekeep").hide();
     }
 
     console.log("initMenu ::: End");

@@ -13,7 +13,7 @@
     <!-- 4.3.1 -->
     <!--
     <link rel="stylesheet" href="js/bootstrap/4.3.1/css/bootstrap.min.css" />
--->
+    -->
 
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
@@ -44,14 +44,14 @@
                 </li>
             </ul>
             <ul>
-                <li id="menuwhatsapp">
+                <li id="menu_whatsapp">
                     <a onClick="loadService('whatsapp');"><i class="fab fa-whatsapp-square"></i> WhatsApp</a>
                 </li>
-                <li id="menucalendar">
-                    <a onClick="loadService('googlecal');"><i class="fas fa-calendar-alt"></i> Google Calendar</a>
+                <li id="menu_googlecalendar">
+                    <a onClick="loadService('googlecalendar');"><i class="fas fa-calendar-alt"></i> Google Calendar</a>
                 </li>
-                <li id="menunotes">
-                    <a onClick="loadService('googlenotes');"><i class="far fa-edit"></i> Google Keep</a>
+                <li id="menu_googlekeep">
+                    <a onClick="loadService('googlekeep');"><i class="far fa-edit"></i> Google Keep</a>
                 </li>
             </ul>
         </div>
@@ -67,25 +67,20 @@
 </body>
 
 <script>
-// A $( document ).ready() block.
+
 $( document ).ready(function() {
     console.log( "ready!" );
 
     checkDisplaySize();
 
-    // init menu and configured services
+    // init menu
     initMenu();
 
-    // load default view
-    //
-    //loadSettings();
+    // load settings page
+    loadSettings();
+
+
     loadDefaultView();
-
-
-    //var appVersion = require('electron').remote.app.getVersion();
-    //var appName = require('electron').remote.app.getName();
-    //
-    //console.log(settingsPath);
 
 });
 </script>

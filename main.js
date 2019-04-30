@@ -104,11 +104,13 @@ app.on('ready', () => {
         click: function () {
             //openURL("https://github.com/yafp");
            console.log("Clicked on GitHub");
-        }
+        },
+        enabled: false
     },
     {
         label: 'foo',
-        checked: true
+        checked: true,
+        enabled: false
     },
     {
         label: 'About',

@@ -2,16 +2,16 @@
     <h3>Services</h3>
     <hr>
     <p>You can enable or disable available services here.</p>
-    <input type="checkbox" id="whatsapp" name="whatsapp" value="whatsapp" onClick="toggleCheckbox('whatsapp');"> WhatsApp<br>
-    <input type="checkbox" id="calendar" name="googleCalendar" value="gcal" onClick="toggleCheckbox('calendar');"> Google Calendar<br>
-    <input type="checkbox" id="notes" name="googleCalendar" value="gkeep" onClick="toggleCheckbox('notes');"> Google Keep<br>
+    <input type="checkbox" id="WhatsApp" name="WhatsApp" onClick="toggleCheckbox('WhatsApp');"> WhatsApp<br>
+    <input type="checkbox" id="GoogleCalendar" name="GoogleCalendar" onClick="toggleCheckbox('GoogleCalendar');"> Google Calendar<br>
+    <input type="checkbox" id="GoogleKeep" name="GoogleKeep" onClick="toggleCheckbox('GoogleKeep');"> Google Keep<br>
 
 
-    <h3>Startup (not yet working)</h3>
+    <h3>Default View</h3>
     <hr>
     <p>Please define the startup view here. ttth shows the setting view by default.</p>
-    <select id="selectDefaultView">
-        <option value="" disabled selected>Please choose</option>
+    <select id="selectDefaultView" name="selectDefaultView">
+        <option value="dummy" disabled selected>Please choose</option>
     </select>
     <button type="button" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
 </div>
@@ -24,7 +24,7 @@
 $( document ).ready(function()
 {
     console.log( "settings - ready!" );
-    initMenu();
+    initSettingsPage();
 
 });
 </script>
