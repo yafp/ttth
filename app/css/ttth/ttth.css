@@ -1,14 +1,28 @@
+/* ########################################################################## */
+/* COLOR VARIABLES */
+/* ########################################################################## */
+:root {
+    --color-main: #DFDCD9;
+    --color-menuBackground: #333;
+    --color-menuBackgroundHover: #111;
+    --color-menuForeground: white;
+    --color-bodyBackground: white;
+}
+
+
+/* ########################################################################## */
+/* HTML/BODY/CONTAINER */
+/* ########################################################################## */
 html,body {
     height:100%;
-    background-color: white;
+    background-color: var(--color-bodyBackground);
     margin: 0px;
 }
 
 #main-container {
     height: 100%;
-    background-color: limegreen;
+    background-color: var(--color-main);
 }
-
 
 
 /* ########################################################################## */
@@ -16,7 +30,7 @@ html,body {
 /* ########################################################################## */
 #navi{
     height: 50px;
-    background-color: #333
+    background-color:  var(--color-menuBackground);
 }
 
 ul {
@@ -24,7 +38,7 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    background-color: #333;
+    background-color: var(--color-menuBackground);
 }
 
 li {
@@ -33,7 +47,7 @@ li {
 
 li a {
     display: block;
-    color: white;
+    color: var(--color-menuForeground) !important;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -42,9 +56,8 @@ li a {
 
 /* Change the link color to #111 (black) on hover */
 li a:hover {
-    background-color: #111;
-    /* border-top: 1px solid limegreen; */
-    color: limegreen;
+    background-color: var(--color-menuBackgroundHover);
+    color: var(--color-main) !important;
 }
 
 .menuSettings{
@@ -58,16 +71,10 @@ li a:hover {
 /* ########################################################################## */
 #content {
     height: calc(100% - 50px);
-    /* background-color: red; */
 }
 
 .inner{
-    /*padding: 10px;*/
-
     height: 100%;
-    /* height: calc(100% - 20px); */
-
-    /* background-color: blue; */
 }
 
 
@@ -77,8 +84,7 @@ li a:hover {
 /* ########################################################################## */
 #contentSettings {
     padding: 10px;
-    background-color: white;
-
+    height: calc(100% - 20px);
 }
 
 .bgimg {

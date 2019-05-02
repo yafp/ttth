@@ -25,7 +25,6 @@ function validateConfiguredDefaultView()
   if(curDefaultView === null) // no default view configured
   {
       console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
-
   }
   else
   {
@@ -36,30 +35,28 @@ function validateConfiguredDefaultView()
 
       var exists = false;
 
-      $('#selectDefaultView option').each(function(){
+      // Check if Dropdown contains the defined default view as enabled service
+      $("#selectDefaultView option").each(function(){
         //console.warn(this.value);
       if (this.value === curDefaultView)
       {
         exists = true;
         return false;
       }
-      else {
-        console.error("moep..................");
-      }
       });
 
       if(exists)
       {
         console.log("validateConfiguredDefaultView ::: Configured default view is valid");
+
+        // Update select
         $("#selectDefaultView").val(curDefaultView);
       }
       else
       {
           console.log("validateConfiguredDefaultView ::: Fallback to default. Loading setting-view");
       }
-
   }
-
 }
 
 
@@ -78,14 +75,10 @@ function loadDefaultView()
     else
     {
         console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
-
         loadService(curDefaultView);
-
-
     }
 
     console.log("loadDefaultView ::: End");
-
 }
 
 
@@ -107,28 +100,6 @@ function openURL(url)
 }
 
 
-
-function test()
-{
-    console.warn("TEST TEST TEST");
-
-    const {remote} = require("electron"); //Imports the remote module to use session inside webview
-    const { session } = require('electron');
-    var ses = remote.session.defaultSession; //Gets the default session
-    //ses.clearCache();
-    ses.flushStorageData();
-    ses.clearStorageData({ //Clears the specified storages in the session
-        storages: ['appcache', 'serviceworkers', 'cachestorage', 'websql', 'indexdb'],
-    });
-
-    window.navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (let registration of registrations) {
-            registration.unregister(); //Unregisters all the service workers
-        }
-    });
-}
-
-
 /**
 * @name loadSettings
 * @summary Opens the settings page
@@ -137,6 +108,7 @@ function test()
 function loadSettings()
 {
     console.log("loadSettings ::: Start");
+
     $("#content").load("settings.html");
 
     console.log("loadSettings ::: End");
@@ -171,7 +143,7 @@ function toggleCheckbox(objectName)
 
     console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
-    if($('#'+objectName).prop('checked'))
+    if($("#"+objectName).prop("checked"))
     {
         console.log("toggleCheckbox ::: Activating " + objectName);
 
@@ -196,12 +168,12 @@ function toggleCheckbox(objectName)
 
         // remove option from DefaultView selectc
         //$("#selectDefaultView option[value='objectName']").remove();
-        $('#selectDefaultView option').each(function()
+        $("#selectDefaultView option").each(function()
         {
           //console.warn(this.value);
           if (this.value === objectName)
           {
-            console.log("toggleCheckbox ::: Deleting item from select")
+            console.log("toggleCheckbox ::: Deleting item from select");
             this.remove();
           }
         });
@@ -209,7 +181,6 @@ function toggleCheckbox(objectName)
 
     console.log("toggleCheckbox ::: End");
 }
-
 
 
 /**
@@ -248,7 +219,14 @@ function initSettingsPage()
 {
   console.log("initSettingsPage ::: Start");
 
+  console.log("initSettingsPage ::: Show appname and version");
+  var appVersion = require("electron").remote.app.getVersion();
+  var appName = require("electron").remote.app.getName();
+  document.getElementById("settingsAppName").innerHTML = appName;
+  document.getElementById("settingsAppVersion").innerHTML = appVersion;
+
   console.log("initSettingsPage ::: Show enabled services in settings interface");
+
 
     // checkboxes:
     //
@@ -257,7 +235,7 @@ function initSettingsPage()
     if(whatsapp === "true")
     {
         // check the checkbox
-        $('#WhatsApp').prop('checked', true);
+        $("#WhatsApp").prop("checked", true);
 
         // add to defaultView select item
         $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
@@ -269,7 +247,7 @@ function initSettingsPage()
     if(calendar === "true")
     {
         // check the checkbox
-        $('#GoogleCalendar').prop('checked', true);
+        $("#GoogleCalendar").prop("checked", true);
 
         // add to defaultView select item
         $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
@@ -281,20 +259,18 @@ function initSettingsPage()
     if(notes === "true")
     {
       // check the checkbox
-        $('#GoogleKeep').prop('checked', true);
+        $("#GoogleKeep").prop("checked", true);
 
         // add to defaultView select item
         $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
     }
 
-    validateConfiguredDefaultView();
 
+    // now validate the optional configured default view
+    validateConfiguredDefaultView();
 
     console.log("initSettingsPage ::: End");
 }
-
-
-
 
 
 
@@ -317,9 +293,6 @@ function initMenu()
         // show service in menu
         $("#menu_whatsapp").show();
 
-        // check the checkbox
-        //$('#WhatsApp').prop('checked', true);
-
         // Add service to startup service select
         $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
     }
@@ -329,9 +302,6 @@ function initMenu()
 
         // hide service from menu
         $("#menu_whatsapp").hide();
-
-        // uncheck checkbox
-        //$('#whatsapp').prop('checked', false);
     }
 
 
