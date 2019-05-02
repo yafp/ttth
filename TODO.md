@@ -1,17 +1,24 @@
 # ttth
 ## todos
 
-* hide google calender menu on init
+* Google Calendar
+  * hide google calender menu on init
     https://webapps.stackexchange.com/questions/119028/is-there-a-way-to-hide-the-google-calendar-sidebar-navigation-pane
 
 * notifications
   * https://electronjs.org/docs/tutorial/notifications
 
-* fix whatsapp
-  * https://github.com/meetfranz/franz/issues/1185
-  * https://github.com/meetfranz/recipe-whatsapp/blob/a20779e35d7dfb0fa6567888c0c190f68c998ffa/webview.js#L7-L18
+* Whatsapp
+  * unread items counter
 
-* tray Icon
+* Tray Icon
   * https://electronjs.org/docs/api/tray
 
-* Configure default view via settings page
+ * Settings
+  * Start on user-login
+  * start minimized
+  * hide menubar?
+  * support for languages
+
+ * Splashscreen
+   * https://discuss.atom.io/t/help-creating-a-splash-screen-on-electron/19089/8
