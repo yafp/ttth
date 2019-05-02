@@ -3,7 +3,12 @@
 
 # ttth
 ## about
+ttth aka talk-to-the hand is an electron based application which can access certain web-services.
 
+## services
+* WhatsApp Web
+* Google Calendar
+* Google Keep
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png)
