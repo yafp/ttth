@@ -1,30 +1,121 @@
-<div id="contentSettings" class="inner bgimg">
+<!-- bootstrap -->
+<!-- 4.3.1 -->
+<link rel="stylesheet" href="js/bootstrap/4.3.1/css/bootstrap.min.css" />
+
+<!-- bootstrap -->
+<!-- 4.3.1 -->
+<script src="js/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<div id="contentSettings" class="inner">
+
+    <!-- About -->
+    <h3>About</h3>
+    <div>
+        Name: <abbr title="Talk to the Hand"><span id="settingsAppName" class="badge badge-secondary"></span></abbr>
+    </div>
+    <div>
+        Version: <span id="settingsAppVersion" class="badge badge-secondary"></span>
+    </div>
+    <br>
+    <div>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/releases')">Changelog</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')">Readme</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')">Changelog</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth')">Github</a>
+        <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/issues')">Issues</a>
+    </div>
+    <hr>
+    <!-- /About -->
+
+
+    <!-- Services -->
     <h3>Services</h3>
+    <p>You can <span class="badge badge-secondary">enable</span> or <span class="badge badge-secondary">disable</span> available services here.</p>
+    <!-- list services -->
+    <ul class="list-group">
+        <li class="list-group-item"><input type="checkbox" id="WhatsApp" name="WhatsApp" onClick="toggleCheckbox('WhatsApp');"> <i class="fab fa-whatsapp"></i> WhatsApp</li>
+        <li class="list-group-item"><input type="checkbox" id="GoogleCalendar" name="GoogleCalendar" onClick="toggleCheckbox('GoogleCalendar');"> <i class="fas fa-calendar-alt"></i> Google Calendar</li>
+        <li class="list-group-item"><input type="checkbox" id="GoogleKeep" name="GoogleKeep" onClick="toggleCheckbox('GoogleKeep');"> <i class="far fa-edit"></i> Google Keep</li>
+    </ul>
     <hr>
-    <p>You can enable or disable available services here.</p>
-    <input type="checkbox" id="WhatsApp" name="WhatsApp" onClick="toggleCheckbox('WhatsApp');"> WhatsApp<br>
-    <input type="checkbox" id="GoogleCalendar" name="GoogleCalendar" onClick="toggleCheckbox('GoogleCalendar');"> Google Calendar<br>
-    <input type="checkbox" id="GoogleKeep" name="GoogleKeep" onClick="toggleCheckbox('GoogleKeep');"> Google Keep<br>
+    <!-- /Services -->
 
 
-    <h3>Default View</h3>
-    <hr>
-    <p>Please define the startup view here. ttth shows the setting view by default.</p>
+
+    <!-- fsgsf-->
+    <h3>Startup options</h3>
+    <!-- Default view -->
+    <!--
+    <p>Default service to display when application starts.</p>
     <select id="selectDefaultView" name="selectDefaultView">
         <option value="dummy" disabled selected>Please choose</option>
     </select>
-    <button type="button" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
+    <button type="button" class="btn btn-secondary btn-sm" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
+-->
+    <!-- /default view -->
+
+
+    <!-- -->
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
+            </div>
+        </div>
+
+        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Default service to display when application starts" disabled>
+
+
+
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <select id="selectDefaultView" name="selectDefaultView">
+                    <option value="dummy" disabled selected>Please choose</option>
+                </select>
+            </div>
+        </div>
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <button type="button" class="btn btn-secondary btn-sm" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
+            </div>
+        </div>
+    </div>
+    <!-- / -->
+
+
+
+    <!-- start on login -->
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <input type="checkbox" aria-label="Checkbox for following text input" disabled>
+            </div>
+        </div>
+        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login (not yet implemented)" disabled>
+    </div>
+    <!-- /start on login -->
+
+    <!-- start minimized -->
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <div class="input-group-text">
+                <input type="checkbox" aria-label="Checkbox for following text input" disabled>
+            </div>
+        </div>
+        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized (not yet implemented)" disabled>
+    </div>
+    <!-- /start minimized -->
+
+
 </div>
 
 
-
-<!-- https://stackoverflow.com/questions/30465034/where-to-store-user-settings-in-electron-atom-shell-application -->
 <script>
-// A $( document ).ready() block.
 $( document ).ready(function()
 {
-    console.log( "settings - ready!" );
+    console.log( "settings ::: ready!" );
     initSettingsPage();
+
 
 });
 </script>
