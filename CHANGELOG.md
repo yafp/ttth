@@ -9,8 +9,12 @@
   * jQuery: 3.3.1
   * BootStrap: 4.3.1
   * FontAwesome: 5.8.1
-* Services: WhatsApp, Google Calendar, Google Keep (Notes)
-* Tray icon
+* Services:
+  * WhatsApp
+  * Google Calendar
+  * Google Keep (Notes)
+* Basic tray icon
+* Forcing single instance
 
 
 
