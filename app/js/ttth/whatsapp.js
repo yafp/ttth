@@ -1,0 +1,90 @@
+function register()
+{
+    const {remote} = require("electron"); //Imports the remote module to use session inside webview
+    const { session } = require('electron');
+    var ses = remote.session.defaultSession; //Gets the default session
+    //ses.clearCache();
+    ses.flushStorageData();
+    ses.clearStorageData({ //Clears the specified storages in the session
+        storages: ['appcache', 'serviceworkers', 'cachestorage', 'websql', 'indexdb'],
+    });
+
+    window.navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+            registration.unregister(); //Unregisters all the service workers
+        }
+    });
+
+
+
+    // via: https://github.com/meetfranz/franz/issues/1185
+
+    /*
+    const {remote} = electron; //Imports the remote module to use session inside webview
+    var ses = remote.session.defaultSession; //Gets the default session
+
+
+    ses.flushStorageData(); //Writes any unwritten DOMStorage data to disk
+    ses.clearStorageData({ //Clears the specified storages in the session
+        storages: ['appcache', 'serviceworkers', 'cachestorage', 'websql', 'indexdb'],
+    });
+
+
+    window.navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) {
+            registration.unregister(); //Unregisters all the service workers
+        }
+    });
+    const titleEl = document.querySelector('.window-title');
+    if (titleEl && titleEl.innerHTML.includes('Google Chrome 36+')) {
+        window.location.reload(); //Reloads the page if the page shows the error
+    }
+    */
+
+    //alert("post init.js");
+
+}
+
+
+
+// via: https://github.com/ramboxapp/community-edition/issues/1446
+function checkUnread()
+{
+    console.log("checkUnread ::: Start");
+
+	const elements = document.querySelectorAll('.CxUIE, .unread');
+    console.log(elements);
+	let count = 0;
+
+    console.log("checkUnread ::: Progress 1");
+
+	for (let i = 0; i < elements.length; i++)
+    {
+        console.log("checkUnread ::: Progress 2");
+		if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0)
+        {
+            console.log("checkUnread ::: Progress 3");
+			count += 1;
+            console.log("checkUnread ::: Found unread message");
+		}
+        console.log("checkUnread ::: Progress 4");
+	}
+
+	//updateBadge(count)
+
+    console.log("checkUnread ::: End");
+}
+
+
+// via: https://github.com/ramboxapp/community-edition/issues/1446
+function updateBadge(count)
+{
+	if (count && count >= 1)
+    {
+		rambox.setUnreadCount(count);
+	}
+    else
+    {
+		rambox.clearUnreadCount();
+	}
+}

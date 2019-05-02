@@ -1,15 +1,33 @@
-<!-- works -->
-<link rel="preload" href="init.js" as="script">
+<!-- Service specific CSS -->
+
+<!-- Service specific Javascript -->
+<script src="js/ttth/whatsapp.js"></script>
+
 
 
 <div id="contentWhatsApp" class="inner">
 
   <webview
       class="inner"
-      preload="init.js"
       userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
       src="https://web.whatsapp.com/"
       >
   </webview>
 
 </div>
+
+
+<script>
+$( document ).ready(function() {
+    console.log( "whatsapp ::: ready!" );
+
+    // Fix for Chrome 36+ error message
+    register();
+
+    // try to check for unread messages
+    checkUnread();
+    // again after 30 seconds
+    setTimeout(function() { checkUnread(); }, 30000);
+    
+});
+</script>
