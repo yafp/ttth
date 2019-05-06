@@ -6,6 +6,11 @@
     * hide google calender menu on init https://webapps.stackexchange.com/questions/119028/is-there-a-way-to-hide-the-google-calendar-sidebar-navigation-pane
   * Whatsapp
     * unread items counter
+  * Google Mail
+  * slack?
+  * Threema
+  * discord
+  * github
 
 * Notifications
   * https://electronjs.org/docs/tutorial/notifications
