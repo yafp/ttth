@@ -1,11 +1,12 @@
 ---
 exclude_paths:
-  - '.github/**'
-  - '.github/**/*'
   - 'app/js/bootstrap/**/*'
   - 'app/js/fontawesome-free-web/**/*'
   - 'app/js/select2/**/*'
   - 'app/js/jquery/**/*'
+  - 'docs/jsdocs/**/*'
+  - '.github/**'
+  - '.github/**/*'
   - 'README.md'
   - 'CHANGELOG.md'
   - 'TODO.md'
