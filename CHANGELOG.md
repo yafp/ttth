@@ -9,12 +9,20 @@
   * jQuery: 3.3.1
   * BootStrap: 4.3.1
   * FontAwesome: 5.8.1
+  * SemVer: 2.0.0
+  * Select2: 4.0.7-rc.0
 * Services:
-  * WhatsApp
   * Google Calendar
-  * Google Keep (Notes)
+  * Google Contacts
+  * Google Keep
+  * WhatsApp Web
+  * Telegram
 * Basic tray icon
-* Forcing single instance
+* Check for new releases
+* Forcing single app instance
+* Basic jsdoc documentation
+* Settings
+  * Define default view on start
 
 
 

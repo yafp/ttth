@@ -1,20 +1,143 @@
 {
-  "name": "ttth",
-  "version": "1.0.0",
-  "description": "A minimal web application application",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "repository": "https://github.com/electron/electron-quick-start",
-  "keywords": [
-    "Electron",
-    "messenger",
-    "whatsapp"
-  ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
-  "devDependencies": {
-    "electron": "^4.1.4"
-  }
+    "name": "ttth",
+    "productName": "talk to the hand",
+    "version": "1.0.0",
+    "description": "Open Source application that combines common web applications into one",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "start-debug": "electron . --enable-logging",
+        "pack-win": "npm run pack-win32 && npm run pack-win64",
+        "pack-win32": "electron-packager . --out=dist --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --app-version=0.2.0 --build-version=32-bit --version-string.CompanyName=\"yafp\" --version-string.ProductName=\"ttth\"  --overwrite",
+        "pack-win64": "electron-packager . --out=dist --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --app-version=0.2.0 --build-version=64-bit --version-string.CompanyName=\"yafp\" --version-string.ProductName=\"ttth\" --overwrite",
+        "build-win": "build --win --ia32 --x64",
+        "build-win32": "build --win --ia32",
+        "build-win64": "build --win --x64",
+        "pack-linux": "npm run pack-linux32 && npm run pack-linux64",
+        "pack-linux32": "build --platform=linux --arch=ia32",
+        "pack-linux64": "build --platform=linux --arch=x64",
+        "build-linux": "build --linux",
+        "build-linux32": "build --linux --ia32",
+        "build-linux64": "build --linux --x64"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yafp/ttth"
+    },
+    "bugs": {
+        "url": "https://github.com/yafp/ttth/issues"
+    },
+    "homepage": "https://github.com/yafp/ttth",
+    "keywords": [
+        "Electron",
+        "messenger",
+        "whatsapp",
+        "google calendar",
+        "google contacts",
+        "google keep"
+    ],
+    "author": "yafp <fidel@yafp.de>",
+    "license": "GPL-3.0",
+    "build": {
+        "productName": "ttth",
+        "appId": "ttth",
+        "mac": {
+            "category": "public.app-category.productivity",
+            "artifactName": "ttth-${version}-mac.${ext}",
+            "target": [
+                "default"
+            ]
+        },
+        "dmg": {
+            "title": "Rambox",
+            "iconSize": 128,
+            "contents": [
+                {
+                    "x": 355,
+                    "y": 125,
+                    "type": "link",
+                    "path": "/Applications"
+                },
+                {
+                    "x": 155,
+                    "y": 125,
+                    "type": "file"
+                }
+            ]
+        },
+        "win": {
+            "icon": "assets/icons/win/icon.ico",
+            "publisherName": "yafp",
+            "artifactName": "ttth-${version}-win-${arch}.${ext}",
+            "target": [
+                "zip",
+                "portable"
+            ]
+        },
+        "linux": {
+            "executableName": "ttth",
+            "artifactName": "ttth-${version}-linux-${arch}.${ext}",
+            "description": "A simple web services application",
+            "category": "Network",
+            "desktop": {
+                "Terminal": "false",
+                "Type": "Application",
+                "Categories": "GTK;GNOME;Network;Email;Chat;InstantMessaging;"
+            },
+            "target": [
+                {
+                    "target": "AppImage",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                },
+                {
+                    "target": "deb",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                },
+                {
+                    "target": "snap",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
+                    "target": "zip",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                },
+                {
+                    "target": "tar.gz",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                }
+            ]
+        },
+        "directories": {
+            "buildResources": "assets/",
+            "output": "dist/"
+        },
+        "publish": [
+            {
+                "provider": "github",
+                "owner": "yafp",
+                "repo": "ttth",
+                "vPrefixedTagName": false
+            }
+        ]
+    },
+    "devDependencies": {
+        "electron": "^4.1.4",
+        "electron-builder": "^20.39.0",
+        "electron-packager": "^13.1.1"
+    },
+    "dependencies": {}
 }

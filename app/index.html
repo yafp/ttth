@@ -7,74 +7,378 @@
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- CSS -->
     <link href="css/ttth/ttth.css" rel="stylesheet">
 
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <link rel="stylesheet" href="js/bootstrap/4.3.1/css/bootstrap.min.css" />
 
+    <!-- select2 -->
+    <!-- 4.0.7-rc.0 -->
+    <link rel="stylesheet" href="js/select2/4.0.7-rc.0/dist/css/select2.min.css" />
 
-
-
+    <!-- JAVASCRIPT -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
     <!-- jquery -->
     <!-- 3.3.1 -->
     <script src="js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
 
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <script src="js/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    <!-- semver -->
+    <!-- 2.0.0 -->
+    <script src="js/semver/2.0.0/semver.min.js"></script>
 
     <!-- fontawesome -->
     <!-- 5.8.1 -->
     <script src="js/fontawesome-free-web/5.8.1/js/all.min.js"></script>
 
+    <!-- select2 -->
+    <!-- 4.0.7-rc.0 -->
+    <script src="js/select2/4.0.7-rc.0/dist/js/select2.min.js"></script>
+
+    <!-- ttth -->
     <script src="js/ttth/ttth.js"></script>
+    <script src="js/ttth/whatsapp.js"></script>
+
 </head>
 
 <body>
-    <div id="main-container" class="bgimg">
+    <!-- container -->
+    <div class="container-fluid h-100 d-flex flex-column">
 
         <!-- nav -->
-        <div id="navi">
-            <ul class="menuSettings">
-                <li>
-                    <a onClick="loadSettings();"><i class="fas fa-sliders-h"></i> Settings</a>
-                </li>
-            </ul>
-            <ul>
-                <li id="menu_whatsapp">
-                    <a onClick="loadService('whatsapp');"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                </li>
-                <li id="menu_googlecalendar">
-                    <a onClick="loadService('googlecalendar');"><i class="fas fa-calendar-alt"></i> Google Calendar</a>
-                </li>
-                <li id="menu_googlekeep">
-                    <a onClick="loadService('googlekeep');"><i class="far fa-edit"></i> Google Keep</a>
-                </li>
-            </ul>
+        <!--
+        <nav class="navbar navbar-expand-sm s-navbar">
+        <a class="brand navbar-brand" href="/">Brand</a>
+        <button class="navbar-toggler s-btn-hamburger order-first s-color-icons" aria-expanded="true" aria-controls="navbar-test" aria-label="Toggle navigation" type="button" data-target="#navbar-test" data-toggle="collapse">
+        <span class="navbar-toggler-icon k-icon k-icon-md k-i-hamburger"></span>
+    </button>
+    <div class="navbar-collapse s-menu-content collapse show" id="navbar-test">
+    <ul class="navbar-nav mr-auto">
+    <li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" id="dropdown1" aria-expanded="false" aria-haspopup="true" data-toggle="dropdown">Menu Item</a>
+    <div class="dropdown-menu" aria-labelledby="dropdown1">
+    <a class="dropdown-item" href="/Device">Sub menu</a>
+</div>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="/Test">Test</a>
+</li>
+</ul>
+</div>
+</nav>
+        -->
+            <!-- nav -->
+
+
+
+
+        <!-- Tab Names -->
+        <ul class="nav nav-tabs" role="tablist" id="myTabs">
+            <!-- Services -->
+            <li class="nav-item" id="menu_googlecalendar">
+                <a class="nav-link" id="target_googlecalendar" href="#googleCalendar" role="tab" data-toggle="tab"><i class="fas fa-calendar-alt"></i> Google Calendar</a>
+            </li>
+            <li class="nav-item" id="menu_googlecontacts">
+                <a class="nav-link" id="target_googlecontacts" href="#googleContacts" role="tab" data-toggle="tab"><i class="fas fa-address-book"></i> Google Contacts</a>
+            </li>
+            <li class="nav-item" id="menu_googlekeep">
+                <a class="nav-link" id="target_googlekeep" href="#googleKeep" role="tab" data-toggle="tab"><i class="far fa-edit"></i> Google Keep</a>
+            </li>
+            <li class="nav-item" id="menu_whatsapp">
+                <a class="nav-link" id="target_whatsapp" href="#whatsApp" role="tab" data-toggle="tab"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </li>
+            <li class="nav-item " id="menu_telegram">
+                <a class="nav-link" id="target_telegram" href="#telegram" role="tab" data-toggle="tab"><i class="fab fa-telegram-plane"></i> Telegram</a>
+            </li>
+            <!-- Settings -->
+            <li class="nav-item ml-auto">
+                <a class="nav-link active" href="#settings" role="tab" data-toggle="tab"><i class="fas fa-cog"></i> Settings</a>
+            </li>
+        </ul>
+        <!-- /Tab Names -->
+
+
+
+
+<!-- Tab Content -->
+<div class="row flex-fill pink">
+
+    <!-- Tab panes -->
+    <div class="tab-content container-fluid">
+
+
+        <!-- Tab: Settings -->
+        <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="settings">
+
+            <!-- About -->
+            <h3>About</h3>
+            <div>
+                Name: <abbr title="Talk to the Hand"><span id="settingsAppName" class="badge badge-secondary"></span></abbr>
+            </div>
+            <div>
+                Version: <span id="settingsAppVersion" class="badge badge-secondary"></span>
+            </div>
+
+            <!-- update information -->
+            <div class="alert alert-success" role="alert" id="updateInformation">
+                <i class="fas fa-spinner fa-spin"></i> checking for updates ...
+            </div>
+            <!-- update information -->
+
+            <br>
+            <div>
+                <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')">Readme</a>
+                <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/releases')">Releases</a>
+                <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')">Changelog</a>
+                <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')">License</a>
+                <a href="#" class="btn btn-outline-secondary btn-sm" onclick="openURL('https://github.com/yafp/ttth')">Github</a>
+                <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/issues')">Issues</a>
+            </div>
+            <!-- /About -->
+
+
+            <!-- Services -->
+            <h3>Services</h3>
+            <p>You can <span class="badge badge-secondary">enable</span> or <span class="badge badge-secondary">disable</span> available services here.</p>
+
+            <!-- Service: Google Calendar -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="GoogleCalendar" name="GoogleCalendar" onClick="toggleCheckbox('GoogleCalendar');">
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Google Calendar" disabled>
+            </div>
+            <!-- /Service: Google Calendar -->
+
+
+            <!-- Service: Google Contacts -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="GoogleContacts" name="GoogleContacts" onClick="toggleCheckbox('GoogleContacts');">
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Google Contacts" disabled>
+            </div>
+            <!-- /Service: Google Contacts -->
+
+            <!-- Service: Google Keep -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="GoogleKeep" name="GoogleKeep" onClick="toggleCheckbox('GoogleKeep');">
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Google Keep" disabled>
+            </div>
+            <!-- /Service: Google Keep -->
+
+            <!-- Service: whatsapp -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="WhatsApp" name="WhatsApp" onClick="toggleCheckbox('WhatsApp');">
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="WhatsApp" disabled>
+            </div>
+            <!-- /Service: whatsapp -->
+
+            <!-- Service: Telegram -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" id="Telegram" name="Telegram" onClick="toggleCheckbox('Telegram');">
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Telegram" disabled>
+            </div>
+            <!-- /Service: Telegram -->
+
+            <!-- /Services -->
+
+
+
+            <!-- Startup Options-->
+            <h3>Startup options</h3>
+            <p>You can <span class="badge badge-secondary">configure</span> available startup-options here.</p>
+
+            <!--
+            <p>Default service to display when application starts.</p>
+            <select id="selectDefaultView" name="selectDefaultView">
+            <option value="dummy" disabled selected>Please choose</option>
+            </select>
+            <button type="button" class="btn btn-secondary btn-sm" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
+            -->
+
+            <!-- View on start-->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Default service to display when application starts" disabled>
+
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <select id="selectDefaultView" name="selectDefaultView">
+                            <option value="dummy" disabled selected>Please choose</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group-prepend">
+                    <button type="button" class="btn btn-secondary btn-sm" id="bt_updateDefaultView" onClick="updateDefaultView();">Update</button>
+                    <button type="button" class="btn btn-danger btn-sm" id="bt_updateDefaultView" onClick="resetDefaultView();">Reset</button>
+                </div>
+            </div>
+            <!-- /View on start -->
+
+
+            <!-- start on login -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input" disabled>
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login (not yet implemented)" disabled>
+            </div>
+            <!-- /start on login -->
+
+            <!-- start minimized -->
+            <div class="input-group input-group-sm mb-1">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <input type="checkbox" aria-label="Checkbox for following text input" disabled>
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized (not yet implemented)" disabled>
+            </div>
+            <!-- /start minimized -->
         </div>
-        <!-- /nav -->
+        <!-- /Tab: Settings -->
 
-        <!-- content -->
-        <div id="content"></div>
-        <!-- /content -->
 
+        <!-- Tab: Google Calendar -->
+        <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleCalendar">
+            <webview
+            class="inner"
+            src="https://calendar.google.com/calendar/r">
+        </webview>
     </div>
-    <!-- /main-container -->
+    <!-- Tab: Google Calendar -->
+
+
+    <!-- Tab: Google Contacts -->
+    <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleContacts">
+        <webview
+        class="inner"
+        src="https://contacts.google.com/">
+    </webview>
+</div>
+<!-- Tab: Google Contacts -->
+
+
+<!-- Tab: Google Keep -->
+<div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleKeep">
+    <webview
+    class="inner"
+    src="https://keep.google.com/">
+</webview>
+</div>
+<!-- Tab: Google Keep -->
+
+
+<!-- Tab: WhatsApp -->
+<div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
+    <script>register();</script>
+    <webview
+    class="inner"
+    userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
+    preload="register()"
+    src="https://web.whatsapp.com/">
+</webview>
+</div>
+<!-- Tab: WhatsApp-->
+
+
+<!-- Tab: Telegram -->
+<div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="telegram">
+    <webview
+    class="inner"
+    src="https://web.telegram.org/">
+</webview>
+</div>
+<!-- Tab: Telegram -->
+
+</div>
+<!-- /Tab panes -->
+
+
+
+
+
+</div>
+<!-- /Tab Content -->
+
+</div>
+<!-- container -->
 
 </body>
 
+
+
+
+
+
 <script>
 
-$( document ).ready(function() {
+$( document ).ready(function()
+{
     console.log( "ready!" );
 
+
+    $('#myTabs a').click(function (link)
+    {
+        console.log("ready ::: Activating tab: " + link.currentTarget.innerText);
+
+        console.log(link.currentTarget.innerText);
+        if(link.currentTarget.innerText === " WhatsApp")
+        {
+            register();
+        }
+
+    })
+
+    // check and adjust window size and position
     checkDisplaySize();
 
-    // init menu
+    // init menu / navigation
     initMenu();
 
-    // load settings page
-    loadSettings();
+    // check operating system
+    checkSupportedOperatingSystem();
 
+    // Whatsapp Hacks
+    register();
 
+    // init the settings tab
+    initSettingsPage();
+
+    // check for updates
+    checkForNewRelease();
+
+    // Load default view
     loadDefaultView();
 
 });

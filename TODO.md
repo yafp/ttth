@@ -1,24 +1,26 @@
 # ttth
 ## todos
 
-* Google Calendar
-  * hide google calender menu on init
-    https://webapps.stackexchange.com/questions/119028/is-there-a-way-to-hide-the-google-calendar-sidebar-navigation-pane
+* Services
+  * Google Calendar
+    * hide google calender menu on init https://webapps.stackexchange.com/questions/119028/is-there-a-way-to-hide-the-google-calendar-sidebar-navigation-pane
+  * Whatsapp
+    * unread items counter
 
-* notifications
+* Notifications
   * https://electronjs.org/docs/tutorial/notifications
 
-* Whatsapp
-  * unread items counter
-
-* Tray Icon
-  * https://electronjs.org/docs/api/tray
+* Tray Icon https://electronjs.org/docs/api/tray
 
  * Settings
-  * Start on user-login
+  * Start on user-login -> https://electronjs.org/docs/api/app#appsetloginitemsettingssettings-macos-windows
+    * Windows and Mac: https://stackoverflow.com/questions/46318177/how-to-use-auto-launch-to-start-app-on-system-startup
   * start minimized
   * hide menubar?
   * support for languages
 
  * Splashscreen
    * https://discuss.atom.io/t/help-creating-a-splash-screen-on-electron/19089/8
+
+* Localization
+  * https://www.christianengvall.se/electron-localization/

@@ -1,15 +1,15 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, Menu, Tray, ipcMain, electron} = require("electron");
+
+var path = require('path');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 
-
-
-
-// Single App Instance
+// Force single-app-instance
 //
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -20,7 +20,7 @@ if (!gotTheLock)
 }
 else
 {
-    app.on('second-instance', (event, commandLine, workingDirectory) =>
+    app.on("second-instance", (event, commandLine, workingDirectory) =>
     {
         // Someone tried to run a second instance, we should focus our first instance window.
         if (mainWindow)
@@ -35,31 +35,24 @@ else
 
 
 
-
 function createWindow () {
     // Create the browser window.
     mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
+        minWidth: 800,
+        minHeight: 600,
+        backgroundColor: '#312450',
+        icon: path.join(__dirname, 'assets/icons/png/64x64.png'),
         webPreferences: {
             nodeIntegration: true
         }
     });
 
-
-
-    // test to use console.log in main.js
-    var nodeConsole = require('console');
-    var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
-    myConsole.log('Hello World!');
-
-
-
     // show out of the box default userAgent
     //
     var defaultAgent = mainWindow.webContents.getUserAgent();
     process.stdout.write(defaultAgent+"\n");
-
 
     // change user agent of browser
     //
@@ -70,7 +63,6 @@ function createWindow () {
     //
     var userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36";
     mainWindow.webContents.setUserAgent(userAgent);
-
     // check if setting agent worked
     var newAgent = mainWindow.webContents.getUserAgent();
     process.stdout.write("New userAgent is set to: " + newAgent+"\n");
@@ -78,16 +70,34 @@ function createWindow () {
 
 
 
+
+
+    // test to use console.log in main.js
+    //
+    var nodeConsole = require("console");
+    var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
+    //myConsole.log("Hello World!");
+
+    if(app.isPackaged)
+    {
+        myConsole.log("app is packaged");
+    }
+    else {
+        myConsole.log("app is NOT packaged");
+    }
+
+
+
     // and load the index.html of the app.
     //
-    mainWindow.loadFile('app/index.html');
+    mainWindow.loadFile("app/index.html");
 
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
     // Emitted when the window is closed.
-    mainWindow.on('closed', function () {
+    mainWindow.on("closed", function () {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -96,44 +106,46 @@ function createWindow () {
 }
 
 
-
-
-
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+//
+app.on("ready", createWindow);
+
+
+
+
+
+
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on("window-all-closed", function () {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') app.quit();
+    if (process.platform !== "darwin")
+    {
+        app.quit();
+    }
 });
 
-app.on('activate', function () {
+app.on("activate", function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (mainWindow === null) createWindow();
+    if (mainWindow === null)
+    {
+        createWindow();
+    }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
-
-
-
-
 
 
 // Tray Icon
 //
-const {Menu, Tray } = require('electron');
+
 
 let tray = null;
-app.on('ready', () => {
+app.on("ready", () => {
 
-    tray = new Tray('app/img/icon/trayicon.png');
+    tray = new Tray("app/img/icon/iconTray.png");
     const contextMenu = Menu.buildFromTemplate([
         {
             // Window focus
@@ -159,23 +171,14 @@ app.on('ready', () => {
         }
     ]);
     tray.setTitle("ttth");
-    tray.setToolTip('ttth aka talk to the hand');
+    tray.setToolTip("ttth aka talk to the hand");
     tray.setContextMenu(contextMenu);
 });
 
 
 
-
-
-
-
-
-
-
-
-
-
-const {ipcMain} = require("electron");
+// Resize and reposition application window
+//
 ipcMain.on("resize-me-please", (event, arg, arg2) =>
 {
     // resize window

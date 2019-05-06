@@ -2,11 +2,16 @@
 /* COLOR VARIABLES */
 /* ########################################################################## */
 :root {
-    --color-main: #DFDCD9;
+
+    /* --color-main: #DFDCD9; */
+    /* --color-main: limegreen; */
+    --color-main: white;
+
     --color-menuBackground: #333;
     --color-menuBackgroundHover: #111;
     --color-menuForeground: white;
-    --color-bodyBackground: white;
+    --color-menuForegroundHover: limegreen;
+
 }
 
 
@@ -15,96 +20,94 @@
 /* ########################################################################## */
 html,body {
     height:100%;
-    background-color: var(--color-bodyBackground);
     margin: 0px;
+    /* background-color: pink; */
+
 }
 
-#main-container {
-    height: 100%;
+.container-fluid
+{
     background-color: var(--color-main);
+    background-color: limegreen;
+    background-color: #333;
+    padding-right: 0; /*15px in bootstrap.css*/
+    padding-left: 0;  /*idem*/
+    margin-right: auto;
+    margin-left: auto;
+
+    padding-bottom: 5px;
 }
+
+
+
 
 
 /* ########################################################################## */
 /* MENU / NAVIGATION */
 /* ########################################################################## */
-#navi{
-    height: 50px;
-    background-color:  var(--color-menuBackground);
-}
-
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+.nav{
+    padding-top: 5px;
     background-color: var(--color-menuBackground);
 }
 
-li {
-    float: left;
+
+.nav-link{
+    color: var(--color-menuForeground);
 }
 
-li a {
-    display: block;
-    color: var(--color-menuForeground) !important;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
+.nav-link:hover{
+    color: var(--color-menuForegroundHover);
 }
 
-
-/* Change the link color to #111 (black) on hover */
-li a:hover {
-    background-color: var(--color-menuBackgroundHover);
-    color: var(--color-main) !important;
+.nav-tabs {
+    margin-bottom: 0;
 }
-
-.menuSettings{
-    float: right;
-}
-
-
-
-/* ########################################################################## */
-/* UNSORTED */
-/* ########################################################################## */
-#content {
-    height: calc(100% - 50px);
-}
-
-.inner{
-    height: 100%;
-}
-
 
 
 /* ########################################################################## */
 /* SETTINGS */
 /* ########################################################################## */
-#contentSettings {
-    padding: 10px;
-    height: calc(100% - 20px);
-}
-
 .bgimg {
-    background-image: url('../../img/icon/icon.png');
+    background-image: url('../../img/icon/icon_background.png');
     background-repeat: no-repeat;
-    background-position: 50% 50%;
+    background-position: right bottom !important; /*Positioning*/
 }
+
 
 
 /* ########################################################################## */
-/* SERVICES */
+/* CONTENT */
 /* ########################################################################## */
-#contentWhatsApp {
+/*
+#content {
+    height: calc(100% - 50px);
+}
+*/
 
+.inner{
+    height: 100%;
+    /* height: calc(100% - 20px); */
+    min-height: 100%;
 }
 
-#contentGoogleCalendar {
 
+.flex-fill {
+  flex:1 1 auto;
 }
 
-#contentGoogleNotes {
 
+.resizer{
+    background-color: var(--color-main);
+    height: 100%;
+    min-height: 100%;
+    width: 100%;
+    min-width: 100%;
+}
+
+
+
+
+h3{
+    padding-top: 20px;
+    border-bottom: 1px solid var(--color-menuForegroundHover);
 }
