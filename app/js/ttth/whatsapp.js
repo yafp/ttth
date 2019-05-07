@@ -1,10 +1,10 @@
 function register()
 {
     console.log("register ::: Start");
-    console.log("register ::: Trying to fix ugly WhatsApp Web issues");
+    console.log("register ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
-    const { session } = require('electron');
+    const { session } = require("electron");
     var ses = remote.session.defaultSession; //Gets the default session
     //ses.clearCache();
     ses.flushStorageData();
@@ -31,7 +31,17 @@ function checkUnread()
 {
     console.log("checkUnread ::: Start");
 
-	const elements = document.querySelectorAll('.CxUIE, .unread');
+    // test
+    //
+    let el = document.querySelector('#whatsappWebview');
+    console.log(el)
+    let matches = el.querySelectorAll(".CxUIE, .unread");
+    console.log(matches)
+
+
+
+    // default
+	const elements = document.querySelectorAll(".CxUIE, .unread");
     console.log(elements);
 	let count = 0;
 
@@ -50,6 +60,11 @@ function checkUnread()
 	}
 
 	//updateBadge(count)
+
+
+    // run code in loop
+    //setTimeout("checkUnread()", 10000);
+
 
     console.log("checkUnread ::: End");
 }

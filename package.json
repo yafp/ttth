@@ -1,6 +1,6 @@
 {
     "name": "ttth",
-    "productName": "talk to the hand",
+    "productName": "ttth",
     "version": "1.0.0",
     "description": "Open Source application that combines common web applications into one",
     "main": "main.js",

@@ -11,7 +11,6 @@
     --color-menuBackgroundHover: #111;
     --color-menuForeground: white;
     --color-menuForegroundHover: limegreen;
-
 }
 
 
@@ -21,21 +20,24 @@
 html,body {
     height:100%;
     margin: 0px;
-    /* background-color: pink; */
+    background-color: var(--color-main);
 
+
+    padding-right: 0; /*15px in bootstrap.css*/
+    padding-left: 0;  /*idem*/
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .container-fluid
 {
     background-color: var(--color-main);
-    background-color: limegreen;
-    background-color: #333;
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
     margin-right: auto;
     margin-left: auto;
 
-    padding-bottom: 5px;
+    /* padding-bottom: 5px; */
 }
 
 
@@ -45,11 +47,19 @@ html,body {
 /* ########################################################################## */
 /* MENU / NAVIGATION */
 /* ########################################################################## */
-.nav{
-    padding-top: 5px;
+#tabBar{
     background-color: var(--color-menuBackground);
+    height: 40px;
 }
 
+.nav{
+    /* padding-top: 5px; */
+}
+
+ul{
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 .nav-link{
     color: var(--color-menuForeground);
@@ -60,7 +70,7 @@ html,body {
 }
 
 .nav-tabs {
-    margin-bottom: 0;
+    /* margin-bottom: 0; */
 }
 
 

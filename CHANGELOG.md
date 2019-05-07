@@ -3,7 +3,8 @@
 
 ### ttth 1.0.0 (2019xxyy) CUR DEV
 ####  ```Added```
-* Initial version
+* Initial version, 
+* supporting linux only so far
 * Electron: 4.1.4
 * Javascript Libraries
   * jQuery: 3.3.1
@@ -12,12 +13,15 @@
   * SemVer: 2.0.0
   * Select2: 4.0.7-rc.0
 * Services:
+  * GitHub
   * Google Calendar
   * Google Contacts
   * Google Keep
+  * Google Mail
   * WhatsApp Web
   * Telegram
 * Basic tray icon
+* Basic notifications
 * Check for new releases
 * Forcing single app instance
 * Basic jsdoc documentation

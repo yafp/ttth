@@ -1,3 +1,59 @@
+var ttthAvailableServices = new Array(
+    "GitHub",
+    "GoogleCalendar",
+    "GoogleContacts",
+    "GoogleKeep",
+    "GoogleMail",
+    "WhatsApp",
+    "Telegram",
+    "Threema"
+);
+
+
+
+function updateLogo()
+{
+    console.warn("UPDATE_LOGO");
+    $('#target_whatsapp').html("UPDATED LOGO / DESC");
+}
+
+
+
+function foo()
+{
+    console.error("fooooooooo");
+
+    process.once('document-start', () => {
+        console.log('this is the document start event');
+    })
+}
+
+
+
+/**
+* @name sendNotification
+* @summary Send a notification
+* @description Creates a desktop notification
+* @param title- Title string for the notification
+* @return message - Message string for the notification
+*/
+function sendNotification(title, message)
+{
+    let myNotification = new Notification(title, {
+        body: message,
+        icon: '../assets/icons/png/16x16.png'
+    });
+
+    /*
+    myNotification.onclick = () => {
+        console.log('Notification clicked')
+    }
+    */
+}
+
+
+
+
 /**
 * @name readLocalStorage
 * @summary Read from local storage
@@ -46,6 +102,9 @@ function resetDefaultView()
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
 
+    // send notification
+    sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
+
     console.log("resetDefaultView ::: Start");
 }
 
@@ -93,7 +152,7 @@ function switchToService(pageName)
     console.log("switchToService ::: Loading: " + pageName.toLowerCase());
 
     // activate the related tab
-    $('#target_'+pageName.toLowerCase()).trigger('click');
+    $("#target_"+pageName.toLowerCase()).trigger("click");
 
     console.log("switchToService ::: End");
 }
@@ -110,7 +169,7 @@ function checkForNewRelease()
 
     var remoteAppVersionLatest = "0.0.0";
 
-    var gitHubPath = "yafp/logre";  // user/repo
+    var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
     $.get(url).done(function (data)
@@ -120,7 +179,7 @@ function checkForNewRelease()
             return semver.compare(v2.name, v1.name);
         });
 
-        // get remote version
+        // get the current latest public release version number
         //
         // TODO / FIXME
         //var remoteAppVersionLatest = versions[0].name;
@@ -136,10 +195,13 @@ function checkForNewRelease()
             console.log("checkForNewRelease ::: Found update, notify user");
 
             // update the updater-info text
-            $('#updateInformation').html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.');
 
             // show update information
             $("#updateInformation").show();
+
+            // send notification
+            sendNotification("Update available", "Version " + remoteAppVersionLatest + " is now available.");
         }
         else
         {
@@ -147,6 +209,7 @@ function checkForNewRelease()
 
             // hide update information
             $("#updateInformation").hide();
+
         }
     });
 
@@ -169,6 +232,9 @@ function updateDefaultView()
 
     // Store new default view in local storage
     writeLocalStorage("defaultView", newDefaultView);
+
+    // send notification
+    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 
     console.log("updateDefaultView ::: End");
 }
@@ -195,34 +261,34 @@ function validateConfiguredDefaultView()
     // check if the configured service is enabled or not
     console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
 
-      var exists = false;
+    var exists = false;
 
-      // Check if Dropdown contains the defined default view as enabled service
-      $("#selectDefaultView option").each(function(){
-      if (this.value === curDefaultView)
-      {
-        exists = true;
-        return false;
-      }
-      });
+    // Check if Dropdown contains the defined default view as enabled service
+    $("#selectDefaultView option").each(function(){
+        if (this.value === curDefaultView)
+        {
+            exists = true;
+            return false;
+        }
+    });
 
-      if(exists)
-      {
+    if(exists)
+    {
         console.log("validateConfiguredDefaultView ::: Configured default view is valid");
 
         // Update select
         $("#selectDefaultView").val(curDefaultView);
-      }
-      else
-      {
-          console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+    }
+    else
+    {
+        console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
 
-          // reset the selection of the select item
-          $("#selectDefaultView").prop("selectedIndex",0);
+        // reset the selection of the select item
+        $("#selectDefaultView").prop("selectedIndex",0);
 
-          // delete the localstorage entry for defaultview
-          resetDefaultView();
-      }
+        // delete the localstorage entry for defaultview
+        resetDefaultView();
+    }
   }
 }
 
@@ -281,7 +347,7 @@ function toggleCheckbox(objectName)
 {
     console.log("toggleCheckbox ::: Start");
 
-    console.log("toggleCheckbox ::: Checkbox is: " + objectName);
+    //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
     if($("#"+objectName).prop("checked"))
     {
@@ -295,6 +361,12 @@ function toggleCheckbox(objectName)
 
         // add option to DefaultView select
         $("#selectDefaultView").append(new Option(objectName, objectName));
+
+        // update status button
+        $("#bt_" + objectName).attr('class', 'btn btn-success btn-sm');
+
+        // send notification
+        sendNotification("Service activated", "Activated the service "+objectName)
     }
     else
     {
@@ -306,17 +378,18 @@ function toggleCheckbox(objectName)
         // hide service from menu
         $("#menu_"+objectName.toLowerCase()).hide();
 
-        // remove option from DefaultView selectc
-        //$("#selectDefaultView option[value='objectName']").remove();
+        // update select
         $("#selectDefaultView option").each(function()
         {
-          //console.warn(this.value);
           if (this.value === objectName)
           {
             console.log("toggleCheckbox ::: Deleting item from select");
             this.remove();
           }
         });
+
+        // update status button
+        $("#bt_" + objectName).attr('class', 'btn btn-danger btn-sm');
     }
 
     validateConfiguredDefaultView();
@@ -332,81 +405,58 @@ function toggleCheckbox(objectName)
 */
 function initSettingsPage()
 {
-  console.log("initSettingsPage ::: Start");
+    console.log("initSettingsPage ::: Start");
 
-  console.log("initSettingsPage ::: Show appname and version");
+    console.log("initSettingsPage ::: Show appname and version");
 
-  // get appname and version
-  var appVersion = require("electron").remote.app.getVersion();
-  var appName = require("electron").remote.app.getName();
+    // get appname and version
+    var appVersion = require("electron").remote.app.getVersion();
+    var appName = require("electron").remote.app.getName();
 
-  // show appname and version
-  $( "#settingsAppName" ).html( appName );
-  $( "#settingsAppVersion" ).html( appVersion );
+    // show appname and version
+    $( "#settingsAppName" ).html( appName );
+    $( "#settingsAppVersion" ).html( appVersion );
 
-  console.log("initSettingsPage ::: Show enabled services in settings interface");
+    console.log("initSettingsPage ::: Show enabled services in settings interface");
 
-    // checkboxes:
+    // loop over array ttthAvailableServices
     //
-    //
-    // Google Calendar
-    //
-    var calendar = readLocalStorage("GoogleCalendar");
-    if(calendar === "true")
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i < arrayLength; i++)
     {
-        // check the checkbox
-        $("#GoogleCalendar").prop("checked", true);
+        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
 
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
+        // Add service to settings page
+        // formerley hardcoded in index.html
+        //
+        //$( "#settingsAvailableServices" ).append("<p>" + ttthAvailableServices[i] + "</p>");
+
+        /*
+        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text">');
+        $( "#settingsAvailableServices" ).append('<input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(' + ttthAvailableServices[i] + ');">');
+        $( "#settingsAvailableServices" ).append('</div></div>'');
+        $( "#settingsAvailableServices" ).append('<input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>');
+        $( "#settingsAvailableServices" ).append('<div class="input-group-prepend">');
+        $( "#settingsAvailableServices" ).append('<button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" disabled></button></div></div>');
+        */
+
+
+
+
+
+        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
+        if(curServiceStatus === "true")
+        {
+            // check the checkbox
+            $("#"+ttthAvailableServices[i]).prop("checked", true);
+
+            // add to defaultView select item
+            $("#selectDefaultView").append(new Option(ttthAvailableServices[i], ttthAvailableServices[i]));
+
+            // update class of status button
+            $("#bt_"+ttthAvailableServices[i]).attr('class', 'btn btn-success btn-sm');
+        }
     }
-
-    // Google Contacts
-    //
-    var contacts = readLocalStorage("GoogleContacts");
-    if(contacts === "true")
-    {
-        // check the checkbox
-        $("#GoogleContacts").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("GoogleContacts", "GoogleContacts"));
-    }
-
-    // Google Keep
-    //
-    var notes = readLocalStorage("GoogleKeep");
-    if(notes === "true")
-    {
-      // check the checkbox
-        $("#GoogleKeep").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
-    }
-
-    // WhatsApp
-    var whatsapp = readLocalStorage("WhatsApp");
-    if(whatsapp === "true")
-    {
-        // check the checkbox
-        $("#WhatsApp").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
-    }
-
-    // Telegram
-    var telegram = readLocalStorage("Telegram");
-    if(telegram === "true")
-    {
-        // check the checkbox
-        $("#Telegram").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("Telegram", "Telegram"));
-    }
-
 
     // Change defaultView select item to select2 item
     //$('#selectDefaultView').select2();
@@ -428,100 +478,33 @@ function initMenu()
 {
     console.log("initMenu ::: Start");
 
-    // WhatsApp
-    //
-    var whatsapp = readLocalStorage("WhatsApp");
-    if(whatsapp === "true")
+    // loop over array ttthAvailableServices
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i < arrayLength; i++)
     {
-        console.log("initMenu ::: Activating WhatsApp");
+        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
 
-        // show service in menu
-        $("#menu_whatsapp").show();
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating WhatsApp");
+        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
 
-        // hide service from menu
-        $("#menu_whatsapp").hide();
-    }
+        if(curServiceStatus === "true")
+        {
+            console.log("initMenu ::: Activating " + ttthAvailableServices[i] );
 
+            // show service in menu
+            $("#menu_" + ttthAvailableServices[i].toLowerCase()).show();
+        }
+        else
+        {
+            console.log("initMenu ::: Deactivating " + ttthAvailableServices[i]);
 
-    // Google Calendar
-    //
-    var calendar = readLocalStorage("GoogleCalendar");
-    if(calendar === "true")
-    {
-        console.log("initMenu ::: Activating GoogleCalendar");
-
-        // show service in menu
-        $("#menu_googlecalendar").show();
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating GoogleCalendar");
-
-        // hide service from menu
-        $("#menu_googlecalendar").hide();
-    }
-
-    // Google Contacts
-    //
-    var contacts = readLocalStorage("GoogleContacts");
-    if(contacts === "true")
-    {
-        console.log("initMenu ::: Activating GoogleContacts");
-
-        // show service in menu
-        $("#menu_googlecontacts").show();
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating GoogleContacts");
-
-        // hide service from menu
-        $("#menu_googlecontacts").hide();
-    }
-
-    // Google Keep
-    //
-    var notes = readLocalStorage("GoogleKeep");
-    if(notes === "true")
-    {
-        console.log("initMenu ::: Activating GoogleKeep");
-
-        // show service in menu
-        $("#menu_googlekeep").show();
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating GoogleKeep");
-
-        // hide service from menu
-        $("#menu_googlekeep").hide();
-    }
-
-
-    // Telegram
-    //
-    var telegram = readLocalStorage("Telegram");
-    if(telegram === "true")
-    {
-        console.log("initMenu ::: Activating Telegram");
-
-        // show service in menu
-        $("#menu_telegram").show();
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating Telegram");
-
-        // hide service from menu
-        $("#menu_telegram").hide();
+            // hide service from menu
+            $("#menu_" + ttthAvailableServices[i].toLowerCase()).hide();
+        }
     }
 
     console.log("initMenu ::: End");
 }
+
 
 
 /**
