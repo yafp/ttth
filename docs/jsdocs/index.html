@@ -45,15 +45,20 @@
     <section>
         <article><p><img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub">
 <a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a></p>
-<h1>ttth</h1><h2>about</h2><p>ttth aka talk-to-the hand is an electron based application which can access certain web-services.</p>
+<h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.</p>
 <h2>services</h2><ul>
-<li>WhatsApp Web</li>
 <li>Google Calendar</li>
+<li>Google Contacts</li>
 <li>Google Keep</li>
+<li>Google Mail</li>
+<li>Google Messages</li>
+<li>WhatsApp Web</li>
+<li>Telegram</li>
+<li>Threema</li>
 </ul>
 <h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png" alt="logo"></p>
-<h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
-<h2>install</h2><h3>linux</h3><h4>.deb</h4><ul>
+<h2>install</h2><p>Download the latest release from the <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
+<h3>linux</h3><h4>.deb</h4><ul>
 <li>Download the latest .deb</li>
 <li>execute: <code>sudo dpkg -i /path/to/local/ttth-file.deb</code></li>
 </ul>
@@ -65,32 +70,8 @@
 <h4>Snap</h4><ul>
 <li>execute: <code>sudo snap install /path/to/local/ttth-file.snap</code></li>
 </ul>
-<h2>howto</h2><h4>getting started as developer</h4><ul>
-<li>Clone the repository: <code>git clone https://github.com/yafp/ttth</code></li>
-<li>Go into the repository: <code>cd ttth</code></li>
-<li>Install dependencies: <code>npm install</code></li>
-<li>Run logre: <code>npm start</code></li>
-</ul>
-<h3>Add electron-builder to devDependencies</h3><ul>
-<li>Navigate to repository</li>
-<li>Execute: <code>npm install electron-builder --save-dev</code></li>
-</ul>
-<h3>create builds from cli</h3><ul>
-<li>Navigate to repository</li>
-<li>Execute: <code>npm run dist</code></li>
-</ul>
-<h3>jsdoc</h3><ul>
-<li>Navigate to repository</li>
-<li>Execute: <code>jsdoc --configure jsdoc.json --readme README.md</code></li>
-</ul>
-<h2>links</h2><h3>for electron beginners</h3><ul>
-<li>Example electron project: https://github.com/electron/electron-quick-start</li>
-<li>package.json validator: http://package-json-validator.com/</li>
-<li>Project boilerplate: https://github.com/szwacz/electron-boilerplate</li>
-<li>Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f</li>
-<li>Linux building configuration: https://<a href="http://www.electron.build/configuration/linux">www.electron.build/configuration/linux</a></li>
-</ul>
-<h2>faq</h2><h3>Where is the data stored?</h3><p>Please check <code>~/.config/ttth/</code></p></article>
+<h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
+<h2>faq</h2><h3>Where is the data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p></article>
     </section>
 
 
@@ -101,13 +82,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadService">loadService</a></li><li><a href="global.html#loadSettings">loadSettings</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 03 2019 09:52:19 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 09 2019 07:59:43 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

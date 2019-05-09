@@ -26,7 +26,84 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>function foo()
+{
+    process.once('document-start', () => {
+        console.log('this is the document start event');
+    });
+}
+
+
+
+
+/**
+* @name toggleSettingAutostart
+* @summary Enables or disables the autostart
+* @description Enables or disables the autostart
+*/
+function toggleSettingAutostart()
+{
+    console.log("toggleSettingAutostart ::: Start");
+
+    // auto-launch
+    //
+    // via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require('auto-launch');
+
+    // FIXME
+    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
+
+    var ttthAutoLauncher = new AutoLaunch({
+        name: 'ttth',
+        path: '/usr/bin/ttth',
+    });
+
+    if($("#checkboxSettingAutostart").prop("checked"))
+    {
+        ttthAutoLauncher.enable();
+
+        writeLocalStorage("settingAutostart", true);
+        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        sendNotification("Autostart", "Enabled autostart")
+    }
+    else
+    {
+        ttthAutoLauncher.disable();
+
+        writeLocalStorage("settingAutostart", false);
+        console.log("toggleSettingAutostart ::: Disabled Autostart");
+
+        sendNotification("Autostart", "Disabled autostart")
+    }
+
+    console.log("toggleSettingAutostart ::: End");
+}
+
+
+/**
+* @name sendNotification
+* @summary Send a notification
+* @description Creates a desktop notification
+* @param title- Title string for the notification
+* @return message - Message string for the notification
+*/
+function sendNotification(title, message)
+{
+    let myNotification = new Notification("ttth ::: " + title, {
+        body: message,
+        icon: "../assets/icons/png/64x64.png"
+    });
+
+    /*
+    myNotification.onclick = () => {
+        console.log("Notification clicked")
+    }
+    */
+}
+
+
+/**
 * @name readLocalStorage
 * @summary Read from local storage
 * @description Reads a value stored in local storage (for a given key)
@@ -36,8 +113,10 @@
 function readLocalStorage(key)
 {
     console.log("readLocalStorage ::: Start");
+
     var value = localStorage.getItem(key);
-    console.log("readLocalStorage ::: Reading key: " + key + " - found value: " + value);
+
+    console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
     return(value);
 }
 
@@ -52,25 +131,97 @@ function readLocalStorage(key)
 function writeLocalStorage(key, value)
 {
     console.log("writeLocalStorage ::: Start");
-    console.log("writeLocalStorage ::: Writing key: " + key + " - with value: " + value);
+    console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
 }
 
 
 /**
-* @name loadService
+* @name resetDefaultView
+* @summary Reset the stored default view
+* @description Deletes the localstorage key 'defaultview'
+*/
+function resetDefaultView()
+{
+    console.log("resetDefaultView ::: Start");
+
+    // delete local storage key and its related value
+    localStorage.removeItem("defaultView");
+
+    // reset the selection of the select item
+    $("#selectDefaultView").prop("selectedIndex",0);
+
+    // send notification
+    sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
+
+    console.log("resetDefaultView ::: Start");
+}
+
+
+/**
+* @name checkSupportedOperatingSystem
+* @summary Checks if the operating system is supported or not
+* @description Checks if the operating system is linux. Everything else is untested so far.
+*/
+function checkSupportedOperatingSystem()
+{
+    console.log("checkSupportedOperatingSystem ::: Start");
+
+    var userPlatform = process.platform;
+    console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
+
+    switch(userPlatform) 
+    {
+        case "linux":
+            console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
+            break;
+
+        case "windows":
+            // define error text
+            var errorText = "is currently in development, but untested.";
+
+            // set ui error message
+            $( ".errorText" ).append( "&lt;p>" + userPlatform + " " + errorText + "&lt;/p>" );
+
+            // show  error dialog
+            $("#myModal").modal("show");
+
+            console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
+
+            break;
+  
+        default:
+            // define error text
+            var errorText = "is currently not supported.";
+
+            // set ui error message
+            $( ".errorText" ).append( "&lt;p>" + userPlatform + " " + errorText + "&lt;/p>" );
+
+            // show  error dialog
+            $("#myModal").modal("show");
+
+            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
+    } 
+
+    console.log("checkSupportedOperatingSystem ::: End");
+}
+
+
+/**
+* @name switchToService
 * @summary Opens a supllied service
 * @description Loads the supplied service to the content view
 * @param pageName - Name of the service
 */
-function loadService(pageName)
+function switchToService(pageName)
 {
-    console.log("loadService ::: Start");
-    console.log("loadService ::: Loading: " + pageName.toLowerCase());
+    console.log("switchToService ::: Start");
+    console.log("switchToService ::: Loading: " + pageName.toLowerCase());
 
-    $("#content").load("services/" + pageName.toLowerCase() + ".html");
+    // activate the related tab
+    $("#target_"+pageName.toLowerCase()).trigger("click");
 
-    console.log("loadService ::: End");
+    console.log("switchToService ::: End");
 }
 
 
@@ -85,7 +236,7 @@ function checkForNewRelease()
 
     var remoteAppVersionLatest = "0.0.0";
 
-    var gitHubPath = "yafp/logre";  // user/repo
+    var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
     $.get(url).done(function (data)
@@ -95,7 +246,7 @@ function checkForNewRelease()
             return semver.compare(v2.name, v1.name);
         });
 
-        // get remote version
+        // get the current latest public release version number
         //
         // TODO / FIXME
         //var remoteAppVersionLatest = versions[0].name;
@@ -111,10 +262,13 @@ function checkForNewRelease()
             console.log("checkForNewRelease ::: Found update, notify user");
 
             // update the updater-info text
-            $('#updateInformation').html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.');
 
             // show update information
             $("#updateInformation").show();
+
+            // send notification
+            sendNotification("Update available", "Version " + remoteAppVersionLatest + " is now available.");
         }
         else
         {
@@ -122,6 +276,7 @@ function checkForNewRelease()
 
             // hide update information
             $("#updateInformation").hide();
+
         }
     });
 
@@ -142,10 +297,11 @@ function updateDefaultView()
     var newDefaultView = $( "#selectDefaultView" ).val();
     console.log("updateDefaultView ::: New default view on start is set to: " + newDefaultView);
 
-    //$("#selectDefaultView").val(newDefaultView);
-
-    // Store default view in local storage
+    // Store new default view in local storage
     writeLocalStorage("defaultView", newDefaultView);
+
+    // send notification
+    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 
     console.log("updateDefaultView ::: End");
 }
@@ -172,29 +328,34 @@ function validateConfiguredDefaultView()
     // check if the configured service is enabled or not
     console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
 
-      var exists = false;
+    var exists = false;
 
-      // Check if Dropdown contains the defined default view as enabled service
-      $("#selectDefaultView option").each(function(){
-        //console.warn(this.value);
-      if (this.value === curDefaultView)
-      {
-        exists = true;
-        return false;
-      }
-      });
+    // Check if Dropdown contains the defined default view as enabled service
+    $("#selectDefaultView option").each(function(){
+        if (this.value === curDefaultView)
+        {
+            exists = true;
+            return false;
+        }
+    });
 
-      if(exists)
-      {
+    if(exists)
+    {
         console.log("validateConfiguredDefaultView ::: Configured default view is valid");
 
         // Update select
         $("#selectDefaultView").val(curDefaultView);
-      }
-      else
-      {
-          console.log("validateConfiguredDefaultView ::: Fallback to default. Loading setting-view");
-      }
+    }
+    else
+    {
+        console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+
+        // reset the selection of the select item
+        $("#selectDefaultView").prop("selectedIndex",0);
+
+        // delete the localstorage entry for defaultview
+        resetDefaultView();
+    }
   }
 }
 
@@ -218,7 +379,7 @@ function loadDefaultView()
     else
     {
         console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
-        loadService(curDefaultView);
+        switchToService(curDefaultView);
     }
 
     console.log("loadDefaultView ::: End");
@@ -244,21 +405,6 @@ function openURL(url)
 
 
 /**
-* @name loadSettings
-* @summary Opens the settings page
-* @description Opens the settings page where app specific settings can be configured
-*/
-function loadSettings()
-{
-    console.log("loadSettings ::: Start");
-
-    $("#content").load("settings.html");
-
-    console.log("loadSettings ::: End");
-}
-
-
-/**
 * @name toggleCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
@@ -267,44 +413,71 @@ function loadSettings()
 function toggleCheckbox(objectName)
 {
     console.log("toggleCheckbox ::: Start");
+    //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
-    console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
-    if($("#"+objectName).prop("checked"))
+    // check if objectName is a valid service name 
+    // if so it should exists in the array: ttthAvailableServices
+    var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1)
+    
+    if(objectNameIsValid === true)
     {
-        console.log("toggleCheckbox ::: Activating " + objectName);
+        if($("#" + objectName).prop("checked"))
+        {
+            console.log("toggleCheckbox ::: Activating " + objectName);
 
-        // write to local storage
-        writeLocalStorage(objectName, "true");
+            // write to local storage
+            writeLocalStorage(objectName, "true");
 
-        // show service in menu
-        $("#menu_"+objectName.toLowerCase()).show();
+            // show service in menu
+            $("#menu_"+objectName.toLowerCase()).show();
 
-        // add option to DefaultView select
-        $("#selectDefaultView").append(new Option(objectName, objectName));
+            // add option to DefaultView select
+            $("#selectDefaultView").append(new Option(objectName, objectName));
+
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + objectName).attr("title", "enabled");
+
+            // send notification
+            sendNotification("Service activation", "Activated the service &lt;b>" + objectName + "&lt;/b>");
+        }
+        else
+        {
+            console.log("toggleCheckbox ::: Deactivating " + objectName);
+
+            // write to local storage
+            writeLocalStorage(objectName, "false");
+
+            // hide service from menu
+            $("#menu_"+objectName.toLowerCase()).hide();
+
+            // update select
+            $("#selectDefaultView option").each(function()
+            {
+                if (this.value === objectName)
+                {
+                    console.log("toggleCheckbox ::: Deleting item from select");
+                    this.remove();
+                }
+            });
+
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-danger btn-sm");
+            $("#bt_" + objectName).attr("title", "disabled");
+
+            // send notification
+            sendNotification("Service deactivation", "Deactivated the service &lt;b>" + objectName + "&lt;/b>");
+        }
+
+        validateConfiguredDefaultView();
+
     }
     else
     {
-        console.log("toggleCheckbox ::: Deactivating " + objectName);
-
-        // write to local storage
-        writeLocalStorage(objectName, "false");
-
-        // hide service from menu
-        $("#menu_"+objectName.toLowerCase()).hide();
-
-        // remove option from DefaultView selectc
-        //$("#selectDefaultView option[value='objectName']").remove();
-        $("#selectDefaultView option").each(function()
-        {
-          //console.warn(this.value);
-          if (this.value === objectName)
-          {
-            console.log("toggleCheckbox ::: Deleting item from select");
-            this.remove();
-          }
-        });
+        console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
     }
+    
 
     console.log("toggleCheckbox ::: End");
 }
@@ -317,61 +490,83 @@ function toggleCheckbox(objectName)
 */
 function initSettingsPage()
 {
-  console.log("initSettingsPage ::: Start");
+    console.log("initSettingsPage ::: Start");
 
-  console.log("initSettingsPage ::: Show appname and version");
+    console.log("initSettingsPage ::: Show appname and version");
 
-  // get appname and version
-  var appVersion = require("electron").remote.app.getVersion();
-  var appName = require("electron").remote.app.getName();
+    // get appname and version
+    var appVersion = require("electron").remote.app.getVersion();
+    var appName = require("electron").remote.app.getName();
 
-  // show appname and version
-  $( "#settingsAppName" ).html( appName );
-  $( "#settingsAppVersion" ).html( appVersion );
+    // show appname and version
+    $( "#settingsAppName" ).html( appName );
+    $( "#settingsAppVersion" ).html( appVersion );
 
-  console.log("initSettingsPage ::: Show enabled services in settings interface");
+    console.log("initSettingsPage ::: Show enabled services in settings interface");
 
-
-    // checkboxes:
+    // loop over array ttthAvailableServices
     //
-    // WhatsApp
-    var whatsapp = readLocalStorage("WhatsApp");
-    if(whatsapp === "true")
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i &lt; arrayLength; i++)
     {
-        // check the checkbox
-        $("#WhatsApp").prop("checked", true);
+        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
 
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
+
+
+        // Add service to settings page
+        // formerley hardcoded in index.html
+        //
+        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+
+
+        // Show activated services as enabled in settings
+        // add them to the default view select item
+        // update the related status button
+        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
+        if(curServiceStatus === "true")
+        {
+            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is activated");
+
+            // check the checkbox
+            $("#"+ttthAvailableServices[i]).prop("checked", true);
+
+            // add to defaultView select item
+            $("#selectDefaultView").append(new Option(ttthAvailableServices[i], ttthAvailableServices[i]));
+
+            // update status button
+            $("#bt_" + ttthAvailableServices[i]).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + ttthAvailableServices[i]).attr("title", "enabled");
+        }
+        else
+        {
+            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is deactivated");
+        }
     }
 
-    // Google Calendar
+    // Setting: DefaultView
     //
-    var calendar = readLocalStorage("GoogleCalendar");
-    if(calendar === "true")
-    {
-        // check the checkbox
-        $("#GoogleCalendar").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
-    }
-
-    // Google Keep
+    // Change defaultView select item to select2 item
+    //$('#selectDefaultView').select2();
     //
-    var notes = readLocalStorage("GoogleKeep");
-    if(notes === "true")
-    {
-      // check the checkbox
-        $("#GoogleKeep").prop("checked", true);
-
-        // add to defaultView select item
-        $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
-    }
-
-
     // now validate the optional configured default view
     validateConfiguredDefaultView();
+
+
+    // Setting: Autostart
+    //
+    curSettingAutostart = readLocalStorage("settingAutostart");
+    if(curSettingAutostart === "true")
+    {
+        console.log("initSettingsPage ::: Setting Autostart is configured");
+
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting Autostart is not configured");
+    }
 
     console.log("initSettingsPage ::: End");
 }
@@ -387,60 +582,33 @@ function initMenu()
 {
     console.log("initMenu ::: Start");
 
-    // WhatsApp
-    //
-    var whatsapp = readLocalStorage("WhatsApp");
-    if(whatsapp === "true")
+    // loop over array ttthAvailableServices
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i &lt; arrayLength; i++)
     {
-        console.log("initMenu ::: Activating WhatsApp");
+        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
 
-        // show service in menu
-        $("#menu_whatsapp").show();
+        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
 
-        // Add service to startup service select
-        $("#selectDefaultView").append(new Option("WhatsApp", "WhatsApp"));
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating WhatsApp");
+        if(curServiceStatus === "true")
+        {
+            console.log("initMenu ::: Activating " + ttthAvailableServices[i] );
 
-        // hide service from menu
-        $("#menu_whatsapp").hide();
-    }
+            // show service in menu
+            $("#menu_" + ttthAvailableServices[i].toLowerCase()).show();
+        }
+        else
+        {
+            console.log("initMenu ::: Deactivating " + ttthAvailableServices[i]);
 
-
-    // Google Calendar
-    //
-    var calendar = readLocalStorage("GoogleCalendar");
-    if(calendar === "true")
-    {
-        console.log("initMenu ::: Activating GoogleCalendar");
-        $("#menu_googlecalendar").show();
-        $("#selectDefaultView").append(new Option("GoogleCalendar", "GoogleCalendar"));
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating GoogleCalendar");
-        $("#menu_googlecalendar").hide();
-    }
-
-    // Google Keep
-    //
-    var notes = readLocalStorage("GoogleKeep");
-    if(notes === "true")
-    {
-        console.log("initMenu ::: Activating GoogleKeep");
-        $("#menu_googlekeep").show();
-        $("#selectDefaultView").append(new Option("GoogleKeep", "GoogleKeep"));
-    }
-    else
-    {
-        console.log("initMenu ::: Deactivating GoogleKeep");
-        $("#menu_googlekeep").hide();
+            // hide service from menu
+            $("#menu_" + ttthAvailableServices[i].toLowerCase()).hide();
+        }
     }
 
     console.log("initMenu ::: End");
 }
+
 
 
 /**
@@ -461,7 +629,6 @@ function checkDisplaySize()
     var windowWidth = monitorWidth * 0.8;
     var windowHeight = monitorHeight * 0.8;
 
-
     // resize &amp; center window
     //
     const {ipcRenderer} = require("electron");
@@ -479,13 +646,13 @@ function checkDisplaySize()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadService">loadService</a></li><li><a href="global.html#loadSettings">loadSettings</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 03 2019 09:52:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 09 2019 07:59:43 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
