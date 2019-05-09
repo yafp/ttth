@@ -49,7 +49,7 @@
             ]
         },
         "dmg": {
-            "title": "Rambox",
+            "title": "ttth",
             "iconSize": 128,
             "contents": [
                 {
@@ -139,5 +139,7 @@
         "electron-builder": "^20.39.0",
         "electron-packager": "^13.1.1"
     },
-    "dependencies": {}
+    "dependencies": {
+        "auto-launch": "^5.0.5"
+    }
 }

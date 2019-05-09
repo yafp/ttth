@@ -1,33 +1,69 @@
-var ttthAvailableServices = new Array(
-    "GitHub",
-    "GoogleCalendar",
-    "GoogleContacts",
-    "GoogleKeep",
-    "GoogleMail",
-    "WhatsApp",
-    "Telegram",
-    "Threema"
-);
-
-
-
-function updateLogo()
-{
-    console.warn("UPDATE_LOGO");
-    $('#target_whatsapp').html("UPDATED LOGO / DESC");
-}
-
-
-
 function foo()
 {
-    console.error("fooooooooo");
-
     process.once('document-start', () => {
         console.log('this is the document start event');
-    })
+    });
 }
 
+
+
+function openDevTools()
+{
+    console.log("openDevTools ::: Start");
+
+    console.log("openDevTools ::: Opening Developer Console");
+    const remote = require("electron").remote;
+    remote.getCurrentWindow().toggleDevTools();
+
+    console.log("openDevTools ::: End");
+}
+
+
+
+
+/**
+* @name toggleSettingAutostart
+* @summary Enables or disables the autostart
+* @description Enables or disables the autostart
+*/
+function toggleSettingAutostart()
+{
+    console.log("toggleSettingAutostart ::: Start");
+
+    // auto-launch
+    //
+    // via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require('auto-launch');
+
+    // FIXME
+    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
+
+    var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        path: "/usr/bin/ttth", // seems to be optional for electron apps ...how?
+    });
+
+    if($("#checkboxSettingAutostart").prop("checked"))
+    {
+        ttthAutoLauncher.enable();
+
+        writeLocalStorage("settingAutostart", true);
+        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        sendNotification("Autostart", "Enabled autostart")
+    }
+    else
+    {
+        ttthAutoLauncher.disable();
+
+        writeLocalStorage("settingAutostart", false);
+        console.log("toggleSettingAutostart ::: Disabled Autostart");
+
+        sendNotification("Autostart", "Disabled autostart")
+    }
+
+    console.log("toggleSettingAutostart ::: End");
+}
 
 
 /**
@@ -39,19 +75,17 @@ function foo()
 */
 function sendNotification(title, message)
 {
-    let myNotification = new Notification(title, {
+    let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: '../assets/icons/png/16x16.png'
+        icon: "../assets/icons/png/64x64.png"
     });
 
     /*
     myNotification.onclick = () => {
-        console.log('Notification clicked')
+        console.log("Notification clicked")
     }
     */
 }
-
-
 
 
 /**
@@ -67,7 +101,7 @@ function readLocalStorage(key)
 
     var value = localStorage.getItem(key);
 
-    console.log("readLocalStorage ::: Reading key: " + key + " - found value: " + value);
+    console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
     return(value);
 }
 
@@ -82,7 +116,7 @@ function readLocalStorage(key)
 function writeLocalStorage(key, value)
 {
     console.log("writeLocalStorage ::: Start");
-    console.log("writeLocalStorage ::: Writing key: " + key + " - with value: " + value);
+    console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
 }
 
@@ -121,19 +155,37 @@ function checkSupportedOperatingSystem()
     var userPlatform = process.platform;
     console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
-    if(userPlatform === "linux")
+    switch(userPlatform)
     {
-        console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
-    }
-    else
-    {
-        // set error message
-        $( ".errorText" ).append( "<p>" + userPlatform + " is currently not supported.</p>" );
+        case "linux":
+            console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
+            break;
 
-        // show  error dialog
-        $("#myModal").modal("show");
+        case "windows":
+            // define error text
+            var errorText = "is currently in development, but untested.";
 
-        console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is currently not supported." );
+            // set ui error message
+            $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
+
+            // show  error dialog
+            $("#myModal").modal("show");
+
+            console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
+
+            break;
+
+        default:
+            // define error text
+            var errorText = "is currently not supported.";
+
+            // set ui error message
+            $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
+
+            // show  error dialog
+            $("#myModal").modal("show");
+
+            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
     }
 
     console.log("checkSupportedOperatingSystem ::: End");
@@ -346,53 +398,82 @@ function openURL(url)
 function toggleCheckbox(objectName)
 {
     console.log("toggleCheckbox ::: Start");
-
     //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
-    if($("#"+objectName).prop("checked"))
+
+    // check if objectName is a valid service name
+    // if so it should exists in the array: ttthAvailableServices
+    var arrayPosition = ttthAvailableServices.indexOf(objectName)
+    var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1)
+
+    if(objectNameIsValid === true)
     {
-        console.log("toggleCheckbox ::: Activating " + objectName);
+        if($("#" + objectName).prop("checked"))
+        {
+            console.log("toggleCheckbox ::: Activating " + objectName);
 
-        // write to local storage
-        writeLocalStorage(objectName, "true");
+            // write to local storage
+            writeLocalStorage(objectName, "true");
 
-        // show service in menu
-        $("#menu_"+objectName.toLowerCase()).show();
+            // show service in menu
+            $("#menu_"+objectName.toLowerCase()).show();
 
-        // add option to DefaultView select
-        $("#selectDefaultView").append(new Option(objectName, objectName));
+            // add option to DefaultView select
+            $("#selectDefaultView").append(new Option(objectName, objectName));
 
-        // update status button
-        $("#bt_" + objectName).attr('class', 'btn btn-success btn-sm');
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + objectName).attr("title", "enabled");
 
-        // send notification
-        sendNotification("Service activated", "Activated the service "+objectName)
+
+
+            // update webview src
+            document.getElementById( objectName + 'Webview' ).setAttribute( 'src', ttthServicesUrls[arrayPosition]);
+            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
+
+            // send notification
+            sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
+        }
+        else
+        {
+            console.log("toggleCheckbox ::: Deactivating " + objectName);
+
+            // write to local storage
+            writeLocalStorage(objectName, "false");
+
+            // hide service from menu
+            $("#menu_"+objectName.toLowerCase()).hide();
+
+            // update select
+            $("#selectDefaultView option").each(function()
+            {
+                if (this.value === objectName)
+                {
+                    console.log("toggleCheckbox ::: Deleting item from select");
+                    this.remove();
+                }
+            });
+
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-danger btn-sm");
+            $("#bt_" + objectName).attr("title", "disabled");
+
+            // update webview src
+            document.getElementById( objectName + 'Webview' ).setAttribute( 'src', "");
+            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now empty");
+
+            // send notification
+            sendNotification("Service deactivation", "Deactivated the service <b>" + objectName + "</b>");
+        }
+
+        validateConfiguredDefaultView();
+
     }
     else
     {
-        console.log("toggleCheckbox ::: Deactivating " + objectName);
-
-        // write to local storage
-        writeLocalStorage(objectName, "false");
-
-        // hide service from menu
-        $("#menu_"+objectName.toLowerCase()).hide();
-
-        // update select
-        $("#selectDefaultView option").each(function()
-        {
-          if (this.value === objectName)
-          {
-            console.log("toggleCheckbox ::: Deleting item from select");
-            this.remove();
-          }
-        });
-
-        // update status button
-        $("#bt_" + objectName).attr('class', 'btn btn-danger btn-sm');
+        console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
     }
 
-    validateConfiguredDefaultView();
 
     console.log("toggleCheckbox ::: End");
 }
@@ -419,50 +500,79 @@ function initSettingsPage()
 
     console.log("initSettingsPage ::: Show enabled services in settings interface");
 
-    // loop over array ttthAvailableServices
+    // loop over array ttthAvailableServices which contains all service-names
     //
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
-        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
+        console.log("initSettingsPage ::: Checking status of service: " + ttthAvailableServices[i]);
+
 
         // Add service to settings page
         // formerley hardcoded in index.html
         //
-        //$( "#settingsAvailableServices" ).append("<p>" + ttthAvailableServices[i] + "</p>");
-
-        /*
-        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text">');
-        $( "#settingsAvailableServices" ).append('<input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(' + ttthAvailableServices[i] + ');">');
-        $( "#settingsAvailableServices" ).append('</div></div>'');
-        $( "#settingsAvailableServices" ).append('<input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>');
-        $( "#settingsAvailableServices" ).append('<div class="input-group-prepend">');
-        $( "#settingsAvailableServices" ).append('<button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" disabled></button></div></div>');
-        */
+        //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
+        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
 
 
-
-
-
+        // Show activated services as enabled in settings
+        // add them to the default view select item
+        // update the related status button
         var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
         if(curServiceStatus === "true")
         {
+            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is activated");
+
             // check the checkbox
             $("#"+ttthAvailableServices[i]).prop("checked", true);
 
             // add to defaultView select item
             $("#selectDefaultView").append(new Option(ttthAvailableServices[i], ttthAvailableServices[i]));
 
-            // update class of status button
-            $("#bt_"+ttthAvailableServices[i]).attr('class', 'btn btn-success btn-sm');
+            // update status button
+            $("#bt_" + ttthAvailableServices[i]).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + ttthAvailableServices[i]).attr("title", "enabled");
+
+            // set webview src
+            document.getElementById( ttthAvailableServices[i] + 'Webview' ).setAttribute( 'src', ttthServicesUrls[i]);
+
+            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now: " + ttthServicesUrls[i]);
+        }
+        else
+        {
+
+            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is deactivated");
+
+            // set webview src
+            document.getElementById( ttthAvailableServices[i] + 'Webview' ).setAttribute( 'src', "");
+
+            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now empty.");
         }
     }
 
+    // Setting: DefaultView
+    //
     // Change defaultView select item to select2 item
     //$('#selectDefaultView').select2();
-
+    //
     // now validate the optional configured default view
     validateConfiguredDefaultView();
+
+
+    // Setting: Autostart
+    //
+    curSettingAutostart = readLocalStorage("settingAutostart");
+    if(curSettingAutostart === "true")
+    {
+        console.log("initSettingsPage ::: Setting Autostart is configured");
+
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting Autostart is not configured");
+    }
 
     console.log("initSettingsPage ::: End");
 }
@@ -472,7 +582,7 @@ function initSettingsPage()
 /**
 * @name initMenu
 * @summary Init the menu / navigation on app launch
-* @description Checks which services are enabled and adds or removes them from navigation
+* @description Checks which services are enabled and shows or hides the related tabs from navigation
 */
 function initMenu()
 {

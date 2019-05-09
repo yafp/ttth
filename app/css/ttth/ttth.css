@@ -18,13 +18,15 @@
 /* HTML/BODY/CONTAINER */
 /* ########################################################################## */
 html,body {
-    height:100%;
-    margin: 0px;
+    /* height:100%; */
+    height: calc(100% - 40px);
+    
     background-color: var(--color-main);
-
 
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
+
+    margin: 0px;
     margin-left: 0;
     margin-right: 0;
 }
@@ -32,6 +34,7 @@ html,body {
 .container-fluid
 {
     background-color: var(--color-main);
+
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
     margin-right: auto;
@@ -39,7 +42,6 @@ html,body {
 
     /* padding-bottom: 5px; */
 }
-
 
 
 
@@ -60,6 +62,15 @@ ul{
     margin-left: 10px;
     margin-right: 10px;
 }
+
+
+.nav-item{
+    border: 1px solid white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-left: 5px;
+}
+
 
 .nav-link{
     color: var(--color-menuForeground);
@@ -88,15 +99,9 @@ ul{
 /* ########################################################################## */
 /* CONTENT */
 /* ########################################################################## */
-/*
-#content {
-    height: calc(100% - 50px);
-}
-*/
 
 .inner{
     height: 100%;
-    /* height: calc(100% - 20px); */
     min-height: 100%;
 }
 
@@ -110,14 +115,50 @@ ul{
     background-color: var(--color-main);
     height: 100%;
     min-height: 100%;
+    /* height: calc(100% - 10px); */
     width: 100%;
     min-width: 100%;
 }
 
 
 
-
 h3{
     padding-top: 20px;
     border-bottom: 1px solid var(--color-menuForegroundHover);
+}
+
+
+
+
+
+
+
+
+/* ########################################################################## */
+/* FADEIN THE WINDOW */
+/* ########################################################################## */
+@keyframes fadein {
+  from 
+  {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.app {
+    /* Disable text selection, or your app will feel like a web page */
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+
+    /* Cover the whole window */
+    height: 100%;
+
+    /* Make sure this matches the native window background color that you pass to
+    * electron.BrowserWindow({...}), otherwise your app startup will look janky. */
+    background: rgb(255, 255, 255);
+  
+    /* Smoother startup */
+    animation: fadein 0.5s;
 }

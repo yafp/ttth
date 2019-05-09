@@ -1,3 +1,25 @@
+document.addEventListener("DOMContentLoaded", function(event) {
+    /*
+    var script = document.createElement("script");
+    script.src = "https://code.jquery.com/jquery-3.2.1.min.js";
+    script.onload = script.onreadystatechange = function() {
+        $(function() {
+            alert("foo");
+            
+        });
+    };
+    document.body.appendChild(script);
+    */
+
+    //function checkUnread();
+
+
+    //alert("finished inject.js");
+
+});
+
+
+
 
 function checkUnread()
 {
@@ -18,12 +40,3 @@ function updateBadge(count)
         rambox.clearUnreadCount();
     }
 }setInterval(checkUnread, 1e3);(async()=>{try{const a=await window.navigator.serviceWorker.getRegistrations();for(const b of a)b.unregister()}catch(a){}})();
-
-
-
-
-
-webview whatsapp =  document.getElementById( 'WhatsappWebview')
-webview.addEventListener("dom-ready", function(e) {
-
-}
