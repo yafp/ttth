@@ -3,7 +3,6 @@ exclude_paths:
   - 'app/js/bootstrap/**/*'
   - 'app/js/fontawesome-free-web/**/*'
   - 'app/js/jquery/**/*'
-  - 'app/js/select2/**/*'
   - 'app/js/semver/**/*'
   - 'docs/jsdocs/**/*'
   - '.github/**'

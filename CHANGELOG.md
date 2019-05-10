@@ -3,7 +3,7 @@
 
 ### ttth 1.0.0 (2019xxyy) CUR DEV
 ####  ```Added```
-* Initial version, 
+* Initial version,
 * supporting linux only
 * Electron: 4.1.4
 * Javascript libraries
@@ -11,25 +11,25 @@
   * BootStrap: 4.3.1
   * FontAwesome: 5.8.1
   * SemVer: 2.0.0
-  * Select2: 4.0.7-rc.0
 * Settings
   * Enable and disable available services
   * Shows status of each service
   * Lists external links to issues, license etc
   * Gives access to developer console
-  * Startup options 
+  * Startup options
     * Define default view on start
     * Configure autostart
-
 * Services:
   * GitHub
   * Google Calendar
   * Google Contacts
   * Google Keep
   * Google Mail
-  * WhatsApp Web
-  * Telegram
+  * Google Messages
+  * Slack
+  * Telegram (minimal support for unread messages)
   * Threema
+  * WhatsApp Web (minimal support for unread messages)
 * Basic tray icon
 * Basic notifications
 * Check for new releases

@@ -1,91 +1,14 @@
-function foo()
+function openSettings()
 {
-    process.once('document-start', () => {
-        console.log('this is the document start event');
-    });
+    console.log("openSettings ::: Start");
+
+    // activate the related tab
+    $("#target_settings").trigger("click");
+
+    console.log("openSettings ::: End");
 }
 
 
-
-function openDevTools()
-{
-    console.log("openDevTools ::: Start");
-
-    console.log("openDevTools ::: Opening Developer Console");
-    const remote = require("electron").remote;
-    remote.getCurrentWindow().toggleDevTools();
-
-    console.log("openDevTools ::: End");
-}
-
-
-
-
-/**
-* @name toggleSettingAutostart
-* @summary Enables or disables the autostart
-* @description Enables or disables the autostart
-*/
-function toggleSettingAutostart()
-{
-    console.log("toggleSettingAutostart ::: Start");
-
-    // auto-launch
-    //
-    // via: https://www.npmjs.com/package/auto-launch
-    var AutoLaunch = require('auto-launch');
-
-    // FIXME
-    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
-
-    var ttthAutoLauncher = new AutoLaunch({
-        name: "ttth",
-        path: "/usr/bin/ttth", // seems to be optional for electron apps ...how?
-    });
-
-    if($("#checkboxSettingAutostart").prop("checked"))
-    {
-        ttthAutoLauncher.enable();
-
-        writeLocalStorage("settingAutostart", true);
-        console.log("toggleSettingAutostart ::: Enabled Autostart");
-
-        sendNotification("Autostart", "Enabled autostart")
-    }
-    else
-    {
-        ttthAutoLauncher.disable();
-
-        writeLocalStorage("settingAutostart", false);
-        console.log("toggleSettingAutostart ::: Disabled Autostart");
-
-        sendNotification("Autostart", "Disabled autostart")
-    }
-
-    console.log("toggleSettingAutostart ::: End");
-}
-
-
-/**
-* @name sendNotification
-* @summary Send a notification
-* @description Creates a desktop notification
-* @param title- Title string for the notification
-* @return message - Message string for the notification
-*/
-function sendNotification(title, message)
-{
-    let myNotification = new Notification("ttth ::: " + title, {
-        body: message,
-        icon: "../assets/icons/png/64x64.png"
-    });
-
-    /*
-    myNotification.onclick = () => {
-        console.log("Notification clicked")
-    }
-    */
-}
 
 
 /**
@@ -118,6 +41,90 @@ function writeLocalStorage(key, value)
     console.log("writeLocalStorage ::: Start");
     console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
+}
+
+
+/**
+* @name openDevTools
+* @summary Opens Dev Console
+* @description Opens or closes the Developer Console inside the app
+*/
+function openDevTools()
+{
+    console.log("openDevTools ::: Start");
+
+    console.log("openDevTools ::: Opening Developer Console");
+    const remote = require("electron").remote;
+    remote.getCurrentWindow().toggleDevTools();
+
+    console.log("openDevTools ::: End");
+}
+
+
+/**
+* @name sendNotification
+* @summary Send a notification
+* @description Creates a desktop notification
+* @param title- Title string for the notification
+* @return message - Message string for the notification
+*/
+function sendNotification(title, message)
+{
+    let myNotification = new Notification("ttth ::: " + title, {
+        body: message,
+        icon: "../assets/icons/png/64x64.png"
+    });
+
+    /*
+    myNotification.onclick = () => {
+        console.log("Notification clicked")
+    }
+    */
+}
+
+
+/**
+* @name toggleSettingAutostart
+* @summary Enables or disables the autostart
+* @description Enables or disables the autostart
+*/
+function toggleSettingAutostart()
+{
+    console.log("toggleSettingAutostart ::: Start");
+
+    // auto-launch
+    //
+    // via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+    // FIXME
+    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
+
+    var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        path: "/usr/bin/ttth", // seems to be optional for electron apps ...how?
+    });
+
+    if($("#checkboxSettingAutostart").prop("checked"))
+    {
+        ttthAutoLauncher.enable();
+
+        writeLocalStorage("settingAutostart", true);
+        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        sendNotification("Autostart", "Enabled autostart");
+    }
+    else
+    {
+        ttthAutoLauncher.disable();
+
+        writeLocalStorage("settingAutostart", false);
+        console.log("toggleSettingAutostart ::: Disabled Autostart");
+
+        sendNotification("Autostart", "Disabled autostart");
+    }
+
+    console.log("toggleSettingAutostart ::: End");
 }
 
 
@@ -155,6 +162,8 @@ function checkSupportedOperatingSystem()
     var userPlatform = process.platform;
     console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
+    var errorText = "";
+
     switch(userPlatform)
     {
         case "linux":
@@ -163,7 +172,7 @@ function checkSupportedOperatingSystem()
 
         case "windows":
             // define error text
-            var errorText = "is currently in development, but untested.";
+            errorText = "is currently in development, but untested.";
 
             // set ui error message
             $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
@@ -177,7 +186,7 @@ function checkSupportedOperatingSystem()
 
         default:
             // define error text
-            var errorText = "is currently not supported.";
+            errorText = "is currently not supported.";
 
             // set ui error message
             $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
@@ -403,7 +412,7 @@ function toggleCheckbox(objectName)
 
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
-    var arrayPosition = ttthAvailableServices.indexOf(objectName)
+    var arrayPosition = ttthAvailableServices.indexOf(objectName);
     var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1)
 
     if(objectNameIsValid === true)
@@ -425,11 +434,9 @@ function toggleCheckbox(objectName)
             $("#bt_" + objectName).attr("class", "btn btn-success btn-sm");
             $("#bt_" + objectName).attr("title", "enabled");
 
-
-
             // update webview src
-            document.getElementById( objectName + 'Webview' ).setAttribute( 'src', ttthServicesUrls[arrayPosition]);
-            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", ttthServicesUrls[arrayPosition]);
+            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
 
             // send notification
             sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
@@ -459,8 +466,8 @@ function toggleCheckbox(objectName)
             $("#bt_" + objectName).attr("title", "disabled");
 
             // update webview src
-            document.getElementById( objectName + 'Webview' ).setAttribute( 'src', "");
-            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now empty");
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", "");
+            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
             sendNotification("Service deactivation", "Deactivated the service <b>" + objectName + "</b>");
@@ -512,6 +519,7 @@ function initSettingsPage()
         // formerley hardcoded in index.html
         //
         //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
+        //
         $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
 
 
@@ -534,17 +542,16 @@ function initSettingsPage()
             $("#bt_" + ttthAvailableServices[i]).attr("title", "enabled");
 
             // set webview src
-            document.getElementById( ttthAvailableServices[i] + 'Webview' ).setAttribute( 'src', ttthServicesUrls[i]);
+            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", ttthServicesUrls[i]);
 
             console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now: " + ttthServicesUrls[i]);
         }
         else
         {
-
             console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is deactivated");
 
             // set webview src
-            document.getElementById( ttthAvailableServices[i] + 'Webview' ).setAttribute( 'src', "");
+            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", "");
 
             console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now empty.");
         }
@@ -576,7 +583,6 @@ function initSettingsPage()
 
     console.log("initSettingsPage ::: End");
 }
-
 
 
 /**
@@ -613,32 +619,4 @@ function initMenu()
     }
 
     console.log("initMenu ::: End");
-}
-
-
-
-/**
-* @name checkDisplaySize
-* @summary Gets the display size and adjusts the window according to it
-* @description Gets the display size and adjusts the window size to it. In addition the window gets centered (see main.js)
-*/
-function checkDisplaySize()
-{
-    console.log("checkDisplaySize ::: Start");
-
-    // get current screen size
-    var monitorWidth = screen.width;
-    var monitorHeight = screen.height;
-    console.log("checkDisplaySize ::: Detected screen size is: " + monitorWidth + "x" + monitorHeight);
-
-    // set new window size
-    var windowWidth = monitorWidth * 0.8;
-    var windowHeight = monitorHeight * 0.8;
-
-    // resize & center window
-    //
-    const {ipcRenderer} = require("electron");
-    ipcRenderer.send("resize-me-please", windowWidth, windowHeight);
-
-    console.log("checkDisplaySize ::: End");
 }

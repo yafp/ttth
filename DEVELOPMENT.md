@@ -16,25 +16,46 @@ This document contains informations for ttth developers
 * Install dependencies: ```npm install```
 * Run logre: ```npm start```
 
+### Install electron
+* Navigate to repository
+* Execute: ```npm install --save-dev electron```
+
+### Install electron packager
+* Navigate to repository
+* Execute: ```npm install electron-packager --save-dev```
+
 ### Add electron-builder to devDependencies
 * Navigate to repository
 * Execute: ```npm install electron-builder --save-dev```
+
 
 ### debug logging
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
 * Run logre: ```npm run start-debug```
 
-### create builds from cli
+
+
+### pack using electron-packager (output: dist/)
+* Navigate to repository
+#### linux
+* Execute: ```npm run package-linux-64```
+#### mac
+* Execute: ```npm run package-mac```
+#### windows
+* Execute: ```npm run package-win-32```
+* Execute: ```npm run package-win-64```
+
+
+### build (output: dist/)
 * Navigate to repository
 #### Linux
-* Execute: ```npm run pack-linux```
 * Execute: ```npm run build-linux```
 #### Windows
-* Execute: ```npm run pack-win```
 * Execute: ```npm run build-win```
-#### mac
-* missing
+
+
+
 
 ### Generate jsdoc files
 * Navigate to repository
@@ -52,3 +73,4 @@ This document contains informations for ttth developers
 * https://blog.dcpos.ch/how-to-make-your-electron-app-sexy
 * Store user data: https://medium.com/cameron-nokes/how-to-store-user-data-in-electron-3ba6bf66bc1e
 
+* Send and retrieve informations from webview: https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework

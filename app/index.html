@@ -16,20 +16,6 @@
     <link href="js/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
 
-    <!-- font awesome -->
-    <!--
-    <link href="js/fontawesome-free-web/5.8.1/css/solid.min.css" rel="stylesheet">
-    <link href="js/fontawesome-free-web/5.8.1/css/brands.min.css" rel="stylesheet">
-    -->
-
-    <!-- select2 -->
-    <!-- 4.0.7-rc.0 -->
-    <!--
-    <link rel="stylesheet" href="js/select2/4.0.7-rc.0/dist/css/select2.min.css" />
-    -->
-
-
-
     <!-- JAVASCRIPT -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
@@ -44,16 +30,6 @@
     <!-- fontawesome -->
     <!-- 5.8.1 -->
     <script type="text/javascript" src="js/fontawesome-free-web/5.8.1/js/all.min.js" async></script>
-    <!--
-    <script src="js/fontawesome-free-web/5.8.1/js/solid.min.js" async></script>
-    <script src="js/fontawesome-free-web/5.8.1/js/brands.min.js" async></script>
-    -->
-
-    <!-- select2 -->
-    <!-- 4.0.7-rc.0 -->
-    <!--
-    <script src="js/select2/4.0.7-rc.0/dist/js/select2.min.js" async></script>
-    -->
 
     <!-- semver -->
     <!-- 2.0.0 -->
@@ -63,7 +39,7 @@
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services.js" async></script>
     <!-- ttth service specific -->
-    <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
+    <script type="text/javascript" src="js/ttth/telegram.js" async></script>
     <script type="text/javascript" src="js/ttth/whatsapp.js" async></script>
 
 </head>
@@ -80,7 +56,7 @@
 
                 <!-- GitHub -->
                 <li class="nav-item" id="menu_github">
-                    <a class="nav-link" id="target_github" href="#github" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_github" href="#github" role="tab" data-toggle="tab">
                         <i class="fab fa-github"></i> GitHub
                     </a>
                 </li>
@@ -88,7 +64,7 @@
 
                 <!-- Google Calendar -->
                 <li class="nav-item" id="menu_googlecalendar">
-                    <a class="nav-link" id="target_googlecalendar" href="#googleCalendar" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_googlecalendar" href="#googleCalendar" role="tab" data-toggle="tab">
                         <i class="fab fa-google"></i> Calendar
                     </a>
                 </li>
@@ -96,7 +72,7 @@
 
                 <!-- Google Contacts -->
                 <li class="nav-item" id="menu_googlecontacts">
-                    <a class="nav-link" id="target_googlecontacts" href="#googleContacts" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_googlecontacts" href="#googleContacts" role="tab" data-toggle="tab">
                         <i class="fab fa-google"></i> Contacts
                     </a>
                 </li>
@@ -104,7 +80,7 @@
 
                 <!-- Google Keep -->
                 <li class="nav-item" id="menu_googlekeep">
-                    <a class="nav-link" id="target_googlekeep" href="#googleKeep" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_googlekeep" href="#googleKeep" role="tab" data-toggle="tab">
                         </i> <i class="fab fa-google"></i> Keep
                     </a>
                 </li>
@@ -112,7 +88,7 @@
 
                 <!-- Google Mail -->
                  <li class="nav-item" id="menu_googlemail">
-                    <a class="nav-link" id="target_googlemail" href="#googleMail" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_googlemail" href="#googleMail" role="tab" data-toggle="tab">
                         <i class="fab fa-google"></i> Mail
                     </a>
                 </li>
@@ -120,7 +96,7 @@
 
                 <!-- Google Messages -->
                  <li class="nav-item" id="menu_googlemessages">
-                    <a class="nav-link" id="target_googlemessages" href="#googleMessages" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_googlemessages" href="#googleMessages" role="tab" data-toggle="tab">
                         <i class="fab fa-google"></i> Messages
                     </a>
                 </li>
@@ -128,7 +104,7 @@
 
                 <!-- Slack -->
                 <li class="nav-item " id="menu_slack">
-                    <a class="nav-link" id="target_slack" href="#slack" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_slack" href="#slack" role="tab" data-toggle="tab">
                         <i class="fab fa-slack"></i> Slack
                     </a>
                 </li>
@@ -136,15 +112,15 @@
 
                 <!-- Telegram -->
                 <li class="nav-item " id="menu_telegram">
-                    <a class="nav-link" id="target_telegram" href="#telegram" role="tab" data-toggle="tab">
-                        <i class="fab fa-telegram-plane"></i> Telegram
+                    <a class="nav-link my-ui-text" id="target_telegram" href="#telegram" role="tab" data-toggle="tab">
+                        <i class="fab fa-telegram-plane"></i> Telegram <span id="badge_telegram" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Telegram -->
 
                 <!-- Threema -->
                 <li class="nav-item " id="menu_threema">
-                    <a class="nav-link" id="target_threema" href="#threema" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_threema" href="#threema" role="tab" data-toggle="tab">
                         <i class="fas fa-comment-dots"></i> Threema
                     </a>
                 </li>
@@ -152,7 +128,7 @@
 
                 <!-- WhatsApp-->
                 <li class="nav-item" id="menu_whatsapp">
-                    <a class="nav-link" id="target_whatsapp" href="#whatsApp" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text" id="target_whatsapp" href="#whatsApp" role="tab" data-toggle="tab">
                         <i class="fab fa-whatsapp"></i> WhatsApp <span id="badge_whatsapp" class="badge badge-success"></span>
                     </a>
                 </li>
@@ -160,7 +136,7 @@
 
                 <!-- Settings -->
                 <li class="nav-item ml-auto">
-                    <a class="nav-link active" href="#settings" role="tab" data-toggle="tab">
+                    <a class="nav-link my-ui-text active" id="target_settings" href="#settings" role="tab" data-toggle="tab">
                         <i class="fas fa-cog"></i> Settings
                     </a>
                 </li>
@@ -255,7 +231,6 @@
 
                 <!-- Tab: Google Mail -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleMail">
-                    <script>checkForUnreadGoogleMailMessages();</script>
                     <webview
                         id="GoogleMailWebview"
                         class="inner"
@@ -288,10 +263,15 @@
 
 
                 <!-- Tab: Telegram -->
+                <!--
+                <script>checkUnreadTelegramMessageCount();</script>
+                -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="telegram">
                     <webview
                         id="TelegramWebview"
+                        name="TelegramWebview"
                         class="inner"
+                        preload="./js/ttth/telegram_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -312,21 +292,13 @@
                 <!-- Tab: WhatsApp -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
 
-                    <script>register();</script>
-
-                    <!--
-                    <script>checkForUnreadWhatsAppMessages();</script>
-                    -->
-
-                    <!--
-                    <script>checkUnread();</script>
-                    -->
+                    <script>whatsappRegister();</script>
 
                     <webview
                         id="WhatsAppWebview"
                         name="WhatsAppWebview"
                         class="inner"
-                        preload="./insert.js"
+                        preload="./js/ttth/whatsapp_inject.js"
                         userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
                         src="">
                     </webview>
@@ -338,15 +310,15 @@
                 <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="settings">
 
                     <!-- About -->
-                    <h3>About</h3>
+                    <h3 class="my-ui-text">About</h3>
                     <div>
-                        Name: <abbr title="Talk to the Hand"><span id="settingsAppName" class="badge badge-secondary"></span></abbr>
+                        <span class="my-ui-text">Name: </span><abbr title="Talk to the Hand"><span id="settingsAppName" class="badge badge-secondary"></span></abbr>
                     </div>
                     <div>
-                        Version: <span id="settingsAppVersion" class="badge badge-secondary"></span>
+                        <span class="my-ui-text">Version: </span><span id="settingsAppVersion" class="badge badge-secondary"></span>
                     </div>
 
-                    <br>
+
                     <div>
                         <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md">Readme</a>
                         <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases">Releases</a>
@@ -360,13 +332,13 @@
 
 
                     <!-- Services -->
-                    <h3>Services</h3>
-                    <p>You can <span class="badge badge-secondary">enable</span> or <span class="badge badge-secondary">disable</span> available services here.</p>
+                    <h3 class="my-ui-text">Services</h3>
+                    <p class="my-ui-text">You can <span class="badge badge-secondary">enable</span> or <span class="badge badge-secondary">disable</span> available services here.</p>
 
                     <div id="settingsAvailableServices">
                         <!-- dynamic service listing via initSettingsPage() && js/ttth/services.js -->
 
-                        <!-- Service: Github -->
+                        <!-- Example Service: Github -->
                         <!--
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
@@ -388,8 +360,8 @@
 
 
                     <!-- Startup Options-->
-                    <h3>Startup options</h3>
-                    <p>You can <span class="badge badge-secondary">configure</span> available startup-options here.</p>
+                    <h3 class="my-ui-text">Startup options</h3>
+                    <p class="my-ui-text">You can <span class="badge badge-secondary">configure</span> available startup-options here.</p>
 
                     <!-- View on start-->
                     <div class="input-group input-group-sm mb-1">
@@ -481,7 +453,7 @@ $( document ).ready(function()
 {
     console.log( "ready!" );
 
-    /*
+
     $('#myTabs a').click(function (link)
     {
         console.log("ready ::: Activating tab: " + link.currentTarget.innerText);
@@ -492,10 +464,7 @@ $( document ).ready(function()
             //register();
         }
     })
-    */
 
-    // check and adjust window size and position
-    //checkDisplaySize();
 
     // init menu / navigation
     initMenu();
@@ -512,11 +481,20 @@ $( document ).ready(function()
     // Load default view
     loadDefaultView();
 
+    // Check for unread messages for certain services
+    //
+    telegramStart();
+    whatsappStart();
+
     // send notification
     sendNotification("State", "Finished initializing.");
 
 
-    whatsUp();
-
+    // FIXME
+    //
+    ipcRenderer.on("open-settings-tab",function(event,data)
+    {
+        openSettings();
+    });
 });
 </script>

@@ -1,113 +1,103 @@
-function whatsUp()
+/**
+* @name whatsappStart
+* @summary Adds several event listener to WhatsApp WebView
+* @description Adds several event listener to WhatsApp WebView
+*/
+function whatsappStart()
 {
-    console.error("whatsUp ::: Start");
-    
-    // get ref to Whatsapp webview
-    var myWebview = document.getElementById('WhatsAppWebview');
-    //console.warn(myWebview);
+    console.log("whatsappStart ::: Start");
+
+    // get webview
+    var webview = document.getElementById("WhatsAppWebview");
 
 
-    // Events:
+    // communication between main & webview:
+    // https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
+
+
+    // WebView Events: https://electronjs.org/docs/api/webview-tag#dom-events
     //
-    // see: https://electronjs.org/docs/api/webview-tag
-
-
-    
-
-
-    // Search 
     //
-    myWebview.addEventListener('found-in-page', (e) => {
-        myWebview.stopFindInPage('keepSelection')
-        console.warn("EventListener: found-in-page");
 
+
+    // run it periodically
+    //
+    //  5.000 =  5 sec
+    // 15.000 = 15 sec
+    //
+    var intervalID = setInterval(function()
+    {
+        webview.send("request");
+    }, 15000);
+
+
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        console.log("whatsappStart ::: did-start-loading.");
     });
 
 
-
-    // did-start-loading
-    // 
-    myWebview.addEventListener("did-start-loading", function (e) 
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
     {
-        console.warn("EventListener: did-start-loading");
-        //myWebview.openDevTools();
+        console.log("whatsappStart ::: DOM-Ready");
     });
 
 
-    // did-stop-loading
+    // WebView Event: did-frame-finish-load
     //
-    myWebview.addEventListener("did-stop-loading", function (e) 
+    webview.addEventListener("did-frame-finish-load", function()
     {
-        console.warn("EventListener: did-stop-loading");
-        myWebview.openDevTools();
-        checkUnread();
+        console.log("whatsappStart ::: did-frame-finish-load.");
     });
 
 
-    // dom-ready
+    // WebView Event: did-stop-loading
     //
-    myWebview.addEventListener("dom-ready", function (e) 
+    webview.addEventListener("did-stop-loading", function()
     {
-        console.warn("EventListener: dom-ready");
-        //myWebview.openDevTools();
+        console.log("whatsappStart ::: did-stop-loading");
 
-
-        // Start a search
+        // Show devTools if you want
         //
-        console.log("---------------------------------------");
-        console.log("Searching for Droll: ...")
-        const requestId = myWebview.findInPage('Droll')
-        console.log("Request: " + requestId)
-        console.log("---------------------------------------");
+        //webview.openDevTools();
 
+        // Triggering search for unread messages
+        webview.send("request");
 
-        // Try executing code
-        //
-        //myWebview.executeJavaScript(checkUnread(), false);
-    
+        // alert-something
+        //webview.send("alert-something", "Hey, i'm alerting this.");
     });
 
 
+    // WebView Event:  ipc-message
+    webview.addEventListener('ipc-message',function(event)
+    {
+        console.log("whatsappStart ::: IPC message:");
+        //console.log(event);
+        //console.error(event.channel);
 
-    // IPC
-    //
-    myWebview.addEventListener('ipc-message', (event) => {
-        console.log("---------------------------------------");
-        console.log("IPC:")
-        console.log(event.channel)
-        console.log("---------------------------------------");
-        // Prints "pong"
+        // update the badge
+        updateWhatsAppBadge(event.channel);
     });
 
 
-
-
-    // Execute javascript
-    //
-    //console.error("---------------------------------------");
-    //myWebview.executeJavaScript("alert('ole')", false);
-    //myWebview.executeJavaScript(checkUnread(), false);
-    //console.error("---------------------------------------");
-
-
-    console.error("whatsUp ::: End");
+    console.log("whatsappStart ::: End");
 }
 
 
-
-
-
-
-
 /**
-* @name register
+* @name whatsappRegister
 * @summary Register WhatsApp Web sessions
 * @description Flushes the storage data, clears the storage data -> helps running WhatsApp-Web
 */
-function register()
+function whatsappRegister()
 {
-    console.log("register ::: Start");
-    console.log("register ::: Trying to fix WhatsApp-Web connectivity issues");
+    console.log("whatsappRegister ::: Start");
+    console.log("whatsappRegister ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
     const { session } = require("electron");
@@ -127,7 +117,59 @@ function register()
 
     // via: https://github.com/meetfranz/franz/issues/1185
 
-    console.log("register ::: End");
+    console.log("whatsappRegister ::: End");
+}
+
+
+
+
+/**
+* @name updateWhatsAppBadge
+* @summary Updates the unread message badge of WhatsApp
+* @description Updates the unread message badge of WhatsApp
+*/
+function updateWhatsAppBadge(count)
+{
+    console.log("updateWhatsAppBadge ::: Start");
+
+    var unreadMessages = count;
+    if(unreadMessages === 0)
+    {
+        unreadMessages = "";
+    }
+
+    // might be null - should be ignored
+    if(unreadMessages === null)
+    {
+        return;
+    }
+
+    console.log("updateWhatsAppBadge ::: New count is: " + unreadMessages);
+
+    // update UI
+    $( "#badge_whatsapp" ).html( unreadMessages );
+
+
+
+    // change tray icon if count > 0
+    //
+    if(unreadMessages > 0)
+    {
+        console.log("updateWhatsAppBadge ::: Tray icon should now show that there is something to read");
+
+        const {ipcRenderer} = require('electron');
+        ipcRenderer.send('changeTrayIconToUnreadMessages');
+    }
+    else
+    {
+        console.log("updateWhatsAppBadge ::: Tray icon should use the default icon now");
+
+        const {ipcRenderer} = require('electron');
+        ipcRenderer.send('changeTrayIconToDefault');
+    }
+
+
+    console.log("updateWhatsAppBadge ::: End");
 }
 
 
@@ -139,30 +181,14 @@ function register()
 
 
 // via: https://github.com/ramboxapp/community-edition/issues/1446
+/*
 function checkUnread()
 {
     console.log("checkUnread ::: Start");
 
-
-    // test
-    //
-    /*
-    let el = document.querySelector('#WhatsAppWebview');
-    console.log(el)
-    let matches = el.querySelectorAll(".CxUIE, .unread");
-    console.log(matches)
-    */
-
-
-
-
-
-    // default
 	const elements = document.querySelectorAll(".CxUIE, .unread");
     console.error(elements);
 	let count = 0;
-
-    console.log("checkUnread ::: Progress 1");
 
 	for (let i = 0; i < elements.length; i++)
     {
@@ -177,64 +203,6 @@ function checkUnread()
     // run code in loop
     //setTimeout("checkUnread()", 10000);
 
-
     console.log("checkUnread ::: End");
 }
-
-
-
-
-
-// via: https://github.com/ramboxapp/community-edition/issues/1446
-function updateBadge(count)
-{
-	if (count && count >= 1)
-    {
-		//rambox.setUnreadCount(count);
-	}
-    else
-    {
-		//rambox.clearUnreadCount();
-	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function checkForUnreadWhatsAppMessages()
-{
-    window.setInterval(function()
-    {
-        // for testing 
-        updateWhatsAppBadge();
-
-        // the way to go
-        checkUnread();
-    }, 5000);
-}
-
-
-
-function updateWhatsAppBadge()
-{
-     console.log("updateWhatsAppBadge ::: End"); 
-
-    // for test issues we are generating a random number here
-    //var unreadMessages = Math.random();
-    var unreadMessages = Math.floor(Math.random() * 9) + 1 
-
-    $( "#badge_whatsapp" ).html( unreadMessages );
-}
+*/

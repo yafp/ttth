@@ -2,20 +2,18 @@
     "name": "ttth",
     "productName": "ttth",
     "version": "1.0.0",
-    "description": "Open Source application that combines common web applications into one",
+    "description": "ttth (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.",
     "main": "main.js",
     "scripts": {
         "start": "electron .",
         "start-debug": "electron . --enable-logging",
-        "pack-win": "npm run pack-win32 && npm run pack-win64",
-        "pack-win32": "electron-packager . --out=dist --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --app-version=0.2.0 --build-version=32-bit --version-string.CompanyName=\"yafp\" --version-string.ProductName=\"ttth\"  --overwrite",
-        "pack-win64": "electron-packager . --out=dist --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --app-version=0.2.0 --build-version=64-bit --version-string.CompanyName=\"yafp\" --version-string.ProductName=\"ttth\" --overwrite",
+        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-dist",
+        "package-win-32": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-win-64": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-linux-64": "electron-packager . ttth --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=dist",
         "build-win": "build --win --ia32 --x64",
         "build-win32": "build --win --ia32",
         "build-win64": "build --win --x64",
-        "pack-linux": "npm run pack-linux32 && npm run pack-linux64",
-        "pack-linux32": "build --platform=linux --arch=ia32",
-        "pack-linux64": "build --platform=linux --arch=x64",
         "build-linux": "build --linux",
         "build-linux32": "build --linux --ia32",
         "build-linux64": "build --linux --x64"
@@ -135,8 +133,8 @@
         ]
     },
     "devDependencies": {
-        "electron": "^4.1.4",
-        "electron-builder": "^20.39.0",
+        "electron": "^4.2.0",
+        "electron-builder": "^20.40.2",
         "electron-packager": "^13.1.1"
     },
     "dependencies": {

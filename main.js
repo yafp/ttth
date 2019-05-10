@@ -1,5 +1,5 @@
 // Measuring startup
-console.time('init');
+console.time("init");
 
 
 // -----------------------------------------------------------------------------
@@ -7,10 +7,10 @@ console.time('init');
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron");
 const nodeConsole = require("console"); // for writing to terminal
-const defaultUserDataPath = app.getPath('userData'); // for storing window position and size
+const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
 
-var AutoLaunch = require('auto-launch'); // for autostart
+var AutoLaunch = require("auto-launch"); // for autostart
 
 var path = require("path");
 var fs = require("fs");
@@ -18,19 +18,36 @@ var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 // -----------------------------------------------------------------------------
 // CREATING THE MAIN WINDOW
 // -----------------------------------------------------------------------------
-function createWindow () 
+function createWindow ()
 {
     // Check last window position and size from user data
     // source: https://github.com/electron/electron/issues/526
     //
     // Read a local config file
+    var windowWidth;
+    var windowHeight;
+    var windowPositionX;
+    var windowPositionY;
+
     var customUserDataPath = path.join(defaultUserDataPath, "init.json");
     var data;
     try {
-        data = JSON.parse(fs.readFileSync(customUserDataPath, 'utf8'));
+        data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
 
         // size
         windowWidth = data.bounds.width;
@@ -48,11 +65,15 @@ function createWindow ()
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
+        title: "ttth",
+        frame: true, // false results in a borderless window
+        show: false, // hide until: ready-to-show
         width: windowWidth,
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
         backgroundColor: "#ffffff",
+
         icon: path.join(__dirname, "assets/icons/png/64x64.png"),
         webPreferences: {
             nodeIntegration: true
@@ -63,30 +84,10 @@ function createWindow ()
     // Adjust window position if possible
     // requirements: found values in .init.json from the previous session
     //
-    if ( (typeof windowPositionX !== 'undefined') && (typeof windowPositionY !== 'undefined') )
+    if ( (typeof windowPositionX !== "undefined") && (typeof windowPositionY !== "undefined") )
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
-
-
-
-
-    // TODO
-    //
-    // auto-launch
-    //
-    // via: https://www.npmjs.com/package/auto-launch
-    //
-    /*
-    var minecraftAutoLauncher = new AutoLaunch({
-    name: 'Minecraft',
-    path: '/Applications/Minecraft.app',
-    });
- 
-    minecraftAutoLauncher.enable();
-    */
-
-
 
 
     // set the user agent
@@ -101,9 +102,8 @@ function createWindow ()
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
-
     // Emitted before the window is closed.
-    mainWindow.on("close", function () 
+    mainWindow.on("close", function ()
     {
         // get window position and size:
         var data = {
@@ -116,9 +116,23 @@ function createWindow ()
     });
 
 
+    mainWindow.on("unresponsive", function ()
+    {
+    });
+
+
+    // show the formerly hidden main window as it is fully ready now
+    mainWindow.on("ready-to-show", function()
+    {
+        mainWindow.show();
+        mainWindow.focus();
+    });
+
+
+
 
     // Emitted when the window is closed.
-    mainWindow.on("closed", function () 
+    mainWindow.on("closed", function ()
     {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
@@ -127,7 +141,7 @@ function createWindow ()
     });
 
     // Measuring startup
-    console.timeEnd('init')
+    console.timeEnd("init")
 }
 
 
@@ -151,6 +165,10 @@ function createTray()
                 enabled: false
             },
             {
+                type: "separator",
+                enabled: false
+            },
+            {
                 // Window focus
                 id: "show",
                 label: "Show Window",
@@ -164,6 +182,27 @@ function createTray()
                 },
                 enabled: true
             },
+
+            {
+                // Settings Window
+                id: "settings",
+                label: "Settings",
+                click: function () {
+                    // focus the main window
+                    if (mainWindow.isMinimized())
+                    {
+                        mainWindow.restore();
+                    }
+                    mainWindow.focus();
+
+                    // now switch to settings tab
+                    mainWindow.webContents.send( 'open-settings-tab' );
+
+
+                },
+                enabled: true
+            },
+
             {
                 type: "separator",
                 enabled: false
@@ -182,7 +221,24 @@ function createTray()
         tray.setTitle("ttth");
         tray.setToolTip("ttth aka talk to the hand");
         tray.setContextMenu(contextMenu);
+
     });
+
+
+
+    // Change to UnreadMessages Tray Icon
+    //
+    ipcMain.on("changeTrayIconToUnreadMessages", function() {
+        tray.setImage('assets/icons/png/64x64_tray_unread.png');
+    })
+
+    // Change to Default Tray Icon
+    //
+    ipcMain.on("changeTrayIconToUnreadMessages", function() {
+        tray.setImage('assets/icons/png/64x64.png');
+    })
+
+
 }
 
 
@@ -219,7 +275,7 @@ function checkIfPackaged()
     {
        myConsole.log("checkIfPackaged ::: app is packaged");
     }
-    else 
+    else
     {
        myConsole.log("checkIfPackaged ::: app is NOT packaged");
     }
@@ -240,7 +296,6 @@ function resizeAndRepositionMainWindow()
         mainWindow.center();
     });
 }
-
 
 
 
@@ -270,7 +325,7 @@ else
         // Someone tried to run a second instance, we should focus our first instance window.
         if (mainWindow)
         {
-            if (mainWindow.isMinimized()) 
+            if (mainWindow.isMinimized())
             {
                 mainWindow.restore();
             }
@@ -290,7 +345,8 @@ app.on("ready", createWindow);
 
 
 
-app.on('before-quit', function () {
+app.on("before-quit", function ()
+{
 
 });
 
@@ -300,7 +356,7 @@ app.on('before-quit', function () {
 
 
 // Quit when all windows are closed.
-app.on("window-all-closed", function () 
+app.on("window-all-closed", function ()
 {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -312,7 +368,7 @@ app.on("window-all-closed", function ()
 
 
 
-app.on("activate", function () 
+app.on("activate", function ()
 {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
@@ -325,12 +381,8 @@ app.on("activate", function ()
 
 
 
-// create the tray 
+// create the tray
 createTray();
 
 // resize and repositzion the main window
 //resizeAndRepositionMainWindow();
-
-
-
-

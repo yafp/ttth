@@ -20,7 +20,7 @@
 html,body {
     /* height:100%; */
     height: calc(100% - 40px);
-    
+
     background-color: var(--color-main);
 
     padding-right: 0; /*15px in bootstrap.css*/
@@ -128,17 +128,25 @@ h3{
 }
 
 
+/* ########################################################################## */
+/* UI TEXT - MAKE THEM NOT SELECTABLE */
+/* ########################################################################## */
+.my-ui-text {
+    -webkit-user-select:none;
+}
 
 
-
-
+/* ########################################################################## */
+/* Use the “system font/San Francisco” */
+/* ########################################################################## */
+cssbody { font: caption; }
 
 
 /* ########################################################################## */
 /* FADEIN THE WINDOW */
 /* ########################################################################## */
 @keyframes fadein {
-  from 
+  from
   {
     opacity: 0;
   }
@@ -158,7 +166,7 @@ h3{
     /* Make sure this matches the native window background color that you pass to
     * electron.BrowserWindow({...}), otherwise your app startup will look janky. */
     background: rgb(255, 255, 255);
-  
+
     /* Smoother startup */
     animation: fadein 0.5s;
 }
