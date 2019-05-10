@@ -26,84 +26,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>function foo()
-{
-    process.once('document-start', () => {
-        console.log('this is the document start event');
-    });
-}
-
-
-
-
-/**
-* @name toggleSettingAutostart
-* @summary Enables or disables the autostart
-* @description Enables or disables the autostart
-*/
-function toggleSettingAutostart()
-{
-    console.log("toggleSettingAutostart ::: Start");
-
-    // auto-launch
-    //
-    // via: https://www.npmjs.com/package/auto-launch
-    var AutoLaunch = require('auto-launch');
-
-    // FIXME
-    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
-
-    var ttthAutoLauncher = new AutoLaunch({
-        name: 'ttth',
-        path: '/usr/bin/ttth',
-    });
-
-    if($("#checkboxSettingAutostart").prop("checked"))
-    {
-        ttthAutoLauncher.enable();
-
-        writeLocalStorage("settingAutostart", true);
-        console.log("toggleSettingAutostart ::: Enabled Autostart");
-
-        sendNotification("Autostart", "Enabled autostart")
-    }
-    else
-    {
-        ttthAutoLauncher.disable();
-
-        writeLocalStorage("settingAutostart", false);
-        console.log("toggleSettingAutostart ::: Disabled Autostart");
-
-        sendNotification("Autostart", "Disabled autostart")
-    }
-
-    console.log("toggleSettingAutostart ::: End");
-}
-
-
-/**
-* @name sendNotification
-* @summary Send a notification
-* @description Creates a desktop notification
-* @param title- Title string for the notification
-* @return message - Message string for the notification
-*/
-function sendNotification(title, message)
-{
-    let myNotification = new Notification("ttth ::: " + title, {
-        body: message,
-        icon: "../assets/icons/png/64x64.png"
-    });
-
-    /*
-    myNotification.onclick = () => {
-        console.log("Notification clicked")
-    }
-    */
-}
-
-
-/**
+            <pre class="prettyprint source linenums"><code>/**
 * @name readLocalStorage
 * @summary Read from local storage
 * @description Reads a value stored in local storage (for a given key)
@@ -133,6 +56,90 @@ function writeLocalStorage(key, value)
     console.log("writeLocalStorage ::: Start");
     console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
+}
+
+
+/**
+* @name openDevTools
+* @summary Opens Dev Console
+* @description Opens or closes the Developer Console inside the app
+*/
+function openDevTools()
+{
+    console.log("openDevTools ::: Start");
+
+    console.log("openDevTools ::: Opening Developer Console");
+    const remote = require("electron").remote;
+    remote.getCurrentWindow().toggleDevTools();
+
+    console.log("openDevTools ::: End");
+}
+
+
+/**
+* @name sendNotification
+* @summary Send a notification
+* @description Creates a desktop notification
+* @param title- Title string for the notification
+* @return message - Message string for the notification
+*/
+function sendNotification(title, message)
+{
+    let myNotification = new Notification("ttth ::: " + title, {
+        body: message,
+        icon: "../assets/icons/png/64x64.png"
+    });
+
+    /*
+    myNotification.onclick = () => {
+        console.log("Notification clicked")
+    }
+    */
+}
+
+
+/**
+* @name toggleSettingAutostart
+* @summary Enables or disables the autostart
+* @description Enables or disables the autostart
+*/
+function toggleSettingAutostart()
+{
+    console.log("toggleSettingAutostart ::: Start");
+
+    // auto-launch
+    //
+    // via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+    // FIXME
+    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
+
+    var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        path: "/usr/bin/ttth", // seems to be optional for electron apps ...how?
+    });
+
+    if($("#checkboxSettingAutostart").prop("checked"))
+    {
+        ttthAutoLauncher.enable();
+
+        writeLocalStorage("settingAutostart", true);
+        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        sendNotification("Autostart", "Enabled autostart");
+    }
+    else
+    {
+        ttthAutoLauncher.disable();
+
+        writeLocalStorage("settingAutostart", false);
+        console.log("toggleSettingAutostart ::: Disabled Autostart");
+
+        sendNotification("Autostart", "Disabled autostart");
+    }
+
+    console.log("toggleSettingAutostart ::: End");
 }
 
 
@@ -170,7 +177,9 @@ function checkSupportedOperatingSystem()
     var userPlatform = process.platform;
     console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
-    switch(userPlatform) 
+    var errorText = "";
+
+    switch(userPlatform)
     {
         case "linux":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
@@ -178,7 +187,7 @@ function checkSupportedOperatingSystem()
 
         case "windows":
             // define error text
-            var errorText = "is currently in development, but untested.";
+            errorText = "is currently in development, but untested.";
 
             // set ui error message
             $( ".errorText" ).append( "&lt;p>" + userPlatform + " " + errorText + "&lt;/p>" );
@@ -189,10 +198,10 @@ function checkSupportedOperatingSystem()
             console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
 
             break;
-  
+
         default:
             // define error text
-            var errorText = "is currently not supported.";
+            errorText = "is currently not supported.";
 
             // set ui error message
             $( ".errorText" ).append( "&lt;p>" + userPlatform + " " + errorText + "&lt;/p>" );
@@ -201,7 +210,7 @@ function checkSupportedOperatingSystem()
             $("#myModal").modal("show");
 
             console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
-    } 
+    }
 
     console.log("checkSupportedOperatingSystem ::: End");
 }
@@ -416,10 +425,11 @@ function toggleCheckbox(objectName)
     //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
 
 
-    // check if objectName is a valid service name 
+    // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
+    var arrayPosition = ttthAvailableServices.indexOf(objectName);
     var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1)
-    
+
     if(objectNameIsValid === true)
     {
         if($("#" + objectName).prop("checked"))
@@ -438,6 +448,10 @@ function toggleCheckbox(objectName)
             // update status button
             $("#bt_" + objectName).attr("class", "btn btn-success btn-sm");
             $("#bt_" + objectName).attr("title", "enabled");
+
+            // update webview src
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", ttthServicesUrls[arrayPosition]);
+            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
 
             // send notification
             sendNotification("Service activation", "Activated the service &lt;b>" + objectName + "&lt;/b>");
@@ -466,6 +480,10 @@ function toggleCheckbox(objectName)
             $("#bt_" + objectName).attr("class", "btn btn-danger btn-sm");
             $("#bt_" + objectName).attr("title", "disabled");
 
+            // update webview src
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", "");
+            console.log("initSettingsPage ::: webview src of service: " + objectName + " is now empty");
+
             // send notification
             sendNotification("Service deactivation", "Deactivated the service &lt;b>" + objectName + "&lt;/b>");
         }
@@ -477,7 +495,7 @@ function toggleCheckbox(objectName)
     {
         console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
     }
-    
+
 
     console.log("toggleCheckbox ::: End");
 }
@@ -504,13 +522,12 @@ function initSettingsPage()
 
     console.log("initSettingsPage ::: Show enabled services in settings interface");
 
-    // loop over array ttthAvailableServices
+    // loop over array ttthAvailableServices which contains all service-names
     //
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i &lt; arrayLength; i++)
     {
-        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
-
+        console.log("initSettingsPage ::: Checking status of service: " + ttthAvailableServices[i]);
 
 
         // Add service to settings page
@@ -537,10 +554,21 @@ function initSettingsPage()
             // update status button
             $("#bt_" + ttthAvailableServices[i]).attr("class", "btn btn-success btn-sm");
             $("#bt_" + ttthAvailableServices[i]).attr("title", "enabled");
+
+            // set webview src
+            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", ttthServicesUrls[i]);
+
+            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now: " + ttthServicesUrls[i]);
         }
         else
         {
+
             console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is deactivated");
+
+            // set webview src
+            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", "");
+
+            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now empty.");
         }
     }
 
@@ -576,7 +604,7 @@ function initSettingsPage()
 /**
 * @name initMenu
 * @summary Init the menu / navigation on app launch
-* @description Checks which services are enabled and adds or removes them from navigation
+* @description Checks which services are enabled and shows or hides the related tabs from navigation
 */
 function initMenu()
 {
@@ -646,13 +674,13 @@ function checkDisplaySize()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 09 2019 07:59:43 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 10 2019 14:28:20 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

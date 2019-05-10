@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: whatsapp_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,70 +17,83 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: whatsapp_inject.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><p><img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub">
-<a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a></p>
-<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo_128x128.png" alt="logo"></p>
-<h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.</p>
-<h2>services</h2><ul>
-<li>GitHub</li>
-<li>Google Calendar</li>
-<li>Google Contacts</li>
-<li>Google Keep</li>
-<li>Google Mail</li>
-<li>Google Messages</li>
-<li>Slack</li>
-<li>Telegram</li>
-<li>Threema</li>
-<li>WhatsApp Web</li>
-</ul>
-<h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png" alt="logo"></p>
-<h2>install</h2><p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
-<h3>linux</h3><h4>.deb</h4><ul>
-<li>Download the latest .deb</li>
-<li>execute: <code>sudo dpkg -i /path/to/local/ttth-file.deb</code></li>
-</ul>
-<h4>AppImage</h4><ul>
-<li>Download the latest .AppImage</li>
-<li>Copy the AppImage to the desired location</li>
-<li>Make it executable: <code>chmod +x /path/to/local/ttth-file.AppImage</code></li>
-<li>Execute it</li>
-</ul>
-<h4>Snap</h4><ul>
-<li>Download the latest .snap</li>
-<li>execute: <code>sudo snap install /path/to/local/ttth-file.snap</code></li>
-</ul>
-<h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
-<h2>getting involved</h2><p>Please see the <a href="DEVELOPMENT.md">developers informations</a> for more details.</p>
-<h2>faq</h2><h3>Where is the user data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>// source
+// https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
+
+
+// Get the ipcRenderer of electron
+const {ipcRenderer} = require('electron');
+
+
+
+// Do something according to a request of your mainview
+//
+ipcRenderer.on('request', function()
+{
+    console.log("request ::: Start");
+    ipcRenderer.sendToHost(getUnreadWhatsAppMessageCount());
+    console.log("request ::: End");
+});
+
+
+
+ipcRenderer.on("alert-something",function(event,data)
+{
+    alert(data);
+});
+
+
+ipcRenderer.on("change-text-element",function(event,data)
+{
+    // the document references to the document of the &lt;webview>
+    document.getElementById(data.id).innerHTML = data.text;
+});
+
+
+
+/**
+ * Simple function to return the source path of all the scripts in the document
+ * of the &lt;webview>
+ *
+ *@returns {String}
+ **/
+function getUnreadWhatsAppMessageCount()
+{
+
+    console.log("getUnreadWhatsAppMessageCount ::: Start");
+
+
+    // try to count unread messages
+    //
+    //
+    const elements = document.querySelectorAll(".CxUIE, .unread");
+    //console.log(elements);
+
+    let count = 0;
+
+    for (let i = 0; i &lt; elements.length; i++)
+    {
+        if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0)
+        {
+            count += 1;
+            console.log("checkUnread ::: Found unread message");
+        }
+    }
+    console.log("getUnreadWhatsAppMessageCount ::: Unread messages in WhatsApp: " + count);
+    ipcRenderer.sendToHost(count);
+}
+</code></pre>
+        </article>
     </section>
-
-
 
 
 
