@@ -5,13 +5,13 @@
 
 
 // Get the ipcRenderer of electron
-const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require("electron");
 
 
 
 // Do something according to a request of your mainview
 //
-ipcRenderer.on('request', function()
+ipcRenderer.on("request", function()
 {
     console.log("request ::: Start");
     ipcRenderer.sendToHost(getUnreadTelegramMessageCount());
@@ -68,13 +68,13 @@ function getUnreadTelegramMessageCount()
     //
     var counter = 0;
     var intervalID = window.setInterval(myCallback, 50);
-    function myCallback() 
+    function myCallback()
     {
-        var eventToClick = document.getElementsByClassName('im_dialog_badge badge');
-        if (eventToClick.length > 0) 
+        var eventToClick = document.getElementsByClassName("im_dialog_badge badge");
+        if (eventToClick.length > 0)
         {
             console.log(eventToClick);
-            for (var i = 0; i < eventToClick.length; i++) 
+            for (var i = 0; i < eventToClick.length; i++)
             {
                 console.log(eventToClick[i]);
 

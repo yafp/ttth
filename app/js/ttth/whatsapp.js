@@ -28,7 +28,7 @@ function whatsappStart()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 15000);
+    }, 30000);
 
 
     // WebView Event: did-start-loading
@@ -74,7 +74,7 @@ function whatsappStart()
 
 
     // WebView Event:  ipc-message
-    webview.addEventListener('ipc-message',function(event)
+    webview.addEventListener("ipc-message",function(event)
     {
         console.log("whatsappStart ::: IPC message:");
         //console.log(event);
@@ -149,32 +149,11 @@ function updateWhatsAppBadge(count)
     // update UI
     $( "#badge_whatsapp" ).html( unreadMessages );
 
-
-
-    // change tray icon if count > 0
-    //
-    if(unreadMessages > 0)
-    {
-        console.log("updateWhatsAppBadge ::: Tray icon should now show that there is something to read");
-
-        const {ipcRenderer} = require('electron');
-        ipcRenderer.send('changeTrayIconToUnreadMessages');
-    }
-    else
-    {
-        console.log("updateWhatsAppBadge ::: Tray icon should use the default icon now");
-
-        const {ipcRenderer} = require('electron');
-        ipcRenderer.send('changeTrayIconToDefault');
-    }
-
+    // Update tray icon status if needed
+    updateTrayIconStatus();
 
     console.log("updateWhatsAppBadge ::: End");
 }
-
-
-
-
 
 
 

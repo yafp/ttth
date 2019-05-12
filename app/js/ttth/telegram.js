@@ -23,7 +23,7 @@ function telegramStart()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 15000);
+    }, 30000);
 
 
     // WebView Event: did-start-loading
@@ -106,6 +106,7 @@ function updateTelegramBadge(count)
 
     // change tray icon if count > 0
     //
+    /*
     if(unreadMessages > 0)
     {
         console.log("updateTelegramBadge ::: Tray icon should now show that there is something to read");
@@ -120,7 +121,10 @@ function updateTelegramBadge(count)
         const {ipcRenderer} = require('electron');
         ipcRenderer.send('changeTrayIconToDefault');
     }
+    */
 
+
+    updateTrayIconStatus();
 
 
     console.log("updateTelegramBadge ::: End");

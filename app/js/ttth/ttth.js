@@ -10,6 +10,50 @@ function openSettings()
 
 
 
+function updateTrayIconStatus()
+{
+    console.log("updateTrayIconStatus ::: Start");
+
+    var overallUnreadMessages = 0;
+    var curServiceUnreadMessageCount = 0;
+
+    // loop over all services and count the unread messages badge value together
+    // loop over array ttthAvailableServices which contains all service-names
+    //
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i < arrayLength; i++)
+    {
+        curServiceUnreadMessageCount = 0;
+
+        // get value of current service from tab
+        curServiceUnreadMessageCount = $('#badge_' + ttthAvailableServices[i].toLowerCase()).text();
+
+        console.log("updateTrayIconStatus ::: Unread messages count of service: " + ttthAvailableServices[i] + " is: " + curServiceUnreadMessageCount);
+
+        // make the math
+        overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+    }
+
+    console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
+
+
+    if(overallUnreadMessages === 0 )
+    {
+        // tray should show the default icon
+        const {ipcRenderer} = require('electron');
+        ipcRenderer.send('changeTrayIconToDefault');
+    }
+    else
+    {
+        // tray should show that we got unread messages
+        const {ipcRenderer} = require('electron');
+        ipcRenderer.send('changeTrayIconToUnreadMessages');
+    }
+
+    console.log("updateTrayIconStatus ::: End");
+}
+
+
 
 /**
 * @name readLocalStorage
@@ -413,7 +457,7 @@ function toggleCheckbox(objectName)
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
     var arrayPosition = ttthAvailableServices.indexOf(objectName);
-    var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1)
+    var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1);
 
     if(objectNameIsValid === true)
     {
@@ -568,7 +612,7 @@ function initSettingsPage()
 
     // Setting: Autostart
     //
-    curSettingAutostart = readLocalStorage("settingAutostart");
+    var curSettingAutostart = readLocalStorage("settingAutostart");
     if(curSettingAutostart === "true")
     {
         console.log("initSettingsPage ::: Setting Autostart is configured");

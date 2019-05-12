@@ -141,7 +141,7 @@ function createWindow ()
     });
 
     // Measuring startup
-    console.timeEnd("init")
+    console.timeEnd("init");
 }
 
 
@@ -196,7 +196,7 @@ function createTray()
                     mainWindow.focus();
 
                     // now switch to settings tab
-                    mainWindow.webContents.send( 'open-settings-tab' );
+                    mainWindow.webContents.send( "open-settings-tab" );
 
 
                 },
@@ -229,13 +229,13 @@ function createTray()
     // Change to UnreadMessages Tray Icon
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage('assets/icons/png/64x64_tray_unread.png');
+        tray.setImage("assets/icons/png/64x64_tray_unread.png");
     })
 
     // Change to Default Tray Icon
     //
-    ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage('assets/icons/png/64x64.png');
+    ipcMain.on("changeTrayIconToDefault", function() {
+        tray.setImage("assets/icons/png/64x64.png");
     })
 
 
