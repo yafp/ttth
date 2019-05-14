@@ -1,4 +1,37 @@
 /**
+* @name updateWhatsAppBadge
+* @summary Updates the unread message badge of WhatsApp
+* @description Updates the unread message badge of WhatsApp
+*/
+function updateWhatsAppBadge(count)
+{
+    console.log("updateWhatsAppBadge ::: Start");
+
+    // might be null - should be ignored
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateWhatsAppBadge ::: New count is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update UI
+    $( "#badge_whatsapp" ).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateWhatsAppBadge ::: End");
+}
+
+
+
+/**
 * @name whatsappStart
 * @summary Adds several event listener to WhatsApp WebView
 * @description Adds several event listener to WhatsApp WebView
@@ -119,38 +152,4 @@ function whatsappRegister()
     // via: https://github.com/meetfranz/franz/issues/1185
 
     console.log("whatsappRegister ::: End");
-}
-
-
-
-
-/**
-* @name updateWhatsAppBadge
-* @summary Updates the unread message badge of WhatsApp
-* @description Updates the unread message badge of WhatsApp
-*/
-function updateWhatsAppBadge(count)
-{
-    console.log("updateWhatsAppBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateWhatsAppBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_whatsapp" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateWhatsAppBadge ::: End");
 }

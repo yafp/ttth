@@ -1,3 +1,32 @@
+
+function updateSlackBadge(count)
+{
+    console.log("updateSlackBadge ::: Start");
+
+    // might be null - should be ignored
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateSlackBadge ::: New count is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update UI
+    $( "#badge_slack" ).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateSlackBadge ::: End");
+}
+
+
+
 function slackStart()
 {
     console.log("slackStart ::: Start");
@@ -57,7 +86,7 @@ function slackStart()
 
 
     // WebView Event:  ipc-message
-    webview.addEventListener('ipc-message',function(event)
+    webview.addEventListener("ipc-message",function(event)
     {
         console.log("slackStart ::: IPC message:");
         //console.log(event);
@@ -68,34 +97,4 @@ function slackStart()
     });
 
     console.log("slackStart ::: End");
-}
-
-
-
-
-
-function updateSlackBadge(count)
-{
-    console.log("updateSlackBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateSlackBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_slack" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateSlackBadge ::: End");
 }

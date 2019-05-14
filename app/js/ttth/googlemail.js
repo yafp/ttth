@@ -1,3 +1,30 @@
+function updateGoogleMailBadge(count)
+{
+    console.log("updateGoogleMailBadge ::: Start");
+
+    // might be null - should be ignored
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateGoogleMailBadge ::: New count is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update UI
+    $( "#badge_googlemail" ).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateGoogleMailBadge ::: End");
+}
+
+
 function googlemailStart()
 {
     console.log("googlemailStart ::: Start");
@@ -60,7 +87,7 @@ function googlemailStart()
 
 
     // WebView Event:  ipc-message
-    webview.addEventListener('ipc-message',function(event)
+    webview.addEventListener("ipc-message",function(event)
     {
         console.log("googlemailStart ::: IPC message:");
 
@@ -70,33 +97,4 @@ function googlemailStart()
 
 
     console.log("googlemailStart ::: End");
-}
-
-
-
-
-function updateGoogleMailBadge(count)
-{
-    console.log("updateGoogleMailBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateGoogleMailBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_googlemail" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateGoogleMailBadge ::: End");
 }

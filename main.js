@@ -51,7 +51,7 @@ function createWindow ()
     }
 
     // Create the browser window.
-    mainWindow = new BrowserWindow({
+    var mainWindow = new BrowserWindow({
         title: "ttth",
         frame: true, // false results in a borderless window
         show: false, // hide until: ready-to-show
@@ -78,9 +78,6 @@ function createWindow ()
 
     // set the user agent
     //changeUserAgent();
-
-    // Check if project is packaged or not
-    //checkIfPackaged();
 
     // and load the index.html of the app.
     mainWindow.loadFile("app/index.html");
@@ -187,24 +184,24 @@ function createTray()
 
 
         // copied from rambox
-        switch (process.platform) 
+        switch (process.platform)
         {
-            case 'darwin':
+            case "darwin":
                 break;
 
-            case 'linux':
-            case 'freebsd':
+            case "linux":
+            case "freebsd":
                 // Double click is not supported and Click its only supported when app indicator is not used.
                 // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
-                tray.on('click', function() {
+                tray.on("click", function() {
                     //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
                     myConsole.log("createTray ::: Linux click");
                 });
-                
+
                 break;
 
-            case 'win32':
-                tray.on('double-click', function() {
+            case "win32":
+                tray.on("double-click", function() {
                     //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
                     myConsole.log("createTray ::: win32 double-click");
                 });
@@ -223,17 +220,14 @@ function createTray()
     // Change to UnreadMessages Tray Icon
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        //myConsole.log("createTray ::: Use unread icon");
         tray.setImage("resources/installer/icons/64x64_tray_unread.png");
     })
 
     // Change to Default Tray Icon
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        //myConsole.log("createTray ::: Use default icon");
         tray.setImage("resources/installer/icons/64x64_tray_default.png");
     })
-
 
 }
 
@@ -263,23 +257,6 @@ function changeUserAgent()
 
 
 // -----------------------------------------------------------------------------
-// CHECK IF PACKAGED
-// -----------------------------------------------------------------------------
-function checkIfPackaged()
-{
-    if(app.isPackaged)
-    {
-       myConsole.log("checkIfPackaged ::: app is packaged");
-    }
-    else
-    {
-       myConsole.log("checkIfPackaged ::: app is NOT packaged");
-    }
-}
-
-
-
-// -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
 
@@ -287,9 +264,7 @@ function checkIfPackaged()
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-
 // Force single-app-instance
-//
 if (!gotTheLock)
 {
     // quit the second instance
@@ -315,7 +290,6 @@ else
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-//
 app.on("ready", createWindow);
 
 

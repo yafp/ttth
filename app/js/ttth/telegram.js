@@ -57,9 +57,9 @@ function telegramStart()
     });
 
     // WebView Event:  ipc-message
-    webview.addEventListener('ipc-message',function(event)
+    webview.addEventListener("ipc-message",function(event)
     {
-        console.log("telegramStart ::: IPC message:);
+        console.log("telegramStart ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
