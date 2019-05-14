@@ -7,6 +7,7 @@ const {ipcRenderer} = require("electron");
 
 
 
+
 // Do something according to a request of your mainview
 //
 ipcRenderer.on("request", function()
@@ -32,11 +33,8 @@ ipcRenderer.on("change-text-element",function(event,data)
 
 
 
+
 /**
- * Simple function to return the source path of all the scripts in the document
- * of the <webview>
- *
- *@returns {String}
  **/
 function getUnreadWhatsAppMessageCount()
 {
@@ -45,7 +43,6 @@ function getUnreadWhatsAppMessageCount()
 
     // try to count unread messages
     const elements = document.querySelectorAll(".CxUIE, .unread");
-
 
     let count = 0;
 
@@ -60,3 +57,5 @@ function getUnreadWhatsAppMessageCount()
     console.log("getUnreadWhatsAppMessageCount ::: Unread messages in WhatsApp: " + count);
     ipcRenderer.sendToHost(count);
 }
+
+

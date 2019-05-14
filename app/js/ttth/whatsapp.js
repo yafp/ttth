@@ -97,6 +97,7 @@ function whatsappStart()
 function whatsappRegister()
 {
     console.log("whatsappRegister ::: Start");
+
     console.log("whatsappRegister ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
@@ -132,56 +133,24 @@ function updateWhatsAppBadge(count)
 {
     console.log("updateWhatsAppBadge ::: Start");
 
-    var unreadMessages = count;
-    if(unreadMessages === 0)
-    {
-        unreadMessages = "";
-    }
-
     // might be null - should be ignored
-    if(unreadMessages === null)
+    if(count === null)
     {
         return;
     }
 
-    console.log("updateWhatsAppBadge ::: New count is: " + unreadMessages);
+    console.log("updateWhatsAppBadge ::: New count is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
 
     // update UI
-    $( "#badge_whatsapp" ).html( unreadMessages );
+    $( "#badge_whatsapp" ).html( count );
 
     // Update tray icon status if needed
     updateTrayIconStatus();
 
     console.log("updateWhatsAppBadge ::: End");
 }
-
-
-
-
-
-// via: https://github.com/ramboxapp/community-edition/issues/1446
-/*
-function checkUnread()
-{
-    console.log("checkUnread ::: Start");
-
-	const elements = document.querySelectorAll(".CxUIE, .unread");
-    console.error(elements);
-	let count = 0;
-
-	for (let i = 0; i < elements.length; i++)
-    {
-		if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0)
-        {
-			count += 1;
-            console.log("checkUnread ::: Found unread message");
-		}
-	}
-
-
-    // run code in loop
-    //setTimeout("checkUnread()", 10000);
-
-    console.log("checkUnread ::: End");
-}
-*/
