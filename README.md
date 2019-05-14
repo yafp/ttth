@@ -22,16 +22,19 @@
 * Google Contacts
 * Google Keep
 * Google Mail
-* Google Messages
+* Google Messages (1)
 * Google Photos
-* Slack (**)
-* Telegram (*)
-* Threema
-* WhatsApp (*)
+* Slack (1, 2)
+* Telegram (1)
+* Threema (1)
+* WhatsApp (1)
 
 
-* * = featuring unread messages badge
-* ** = experimental 
+<sub><sup>
+**Legend:**  
+1 = featuring basic unread messages badge;  
+2 = experimental
+</sup></sub>
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png)
@@ -77,4 +80,3 @@ Please check ```%APPDATA%\ttth```
 Using a .desktop entry in ```~/.config/autostart/```
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
-
