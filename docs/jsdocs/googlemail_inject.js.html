@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: telegram_inject.js</title>
+    <title>JSDoc: Source: googlemail_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: telegram_inject.js</h1>
+    <h1 class="page-title">Source: googlemail_inject.js</h1>
 
     
 
@@ -31,66 +31,43 @@ const {ipcRenderer} = require("electron");
 
 
 // Do something according to a request of your mainview
-//
 ipcRenderer.on("request", function()
 {
     console.log("request ::: Start");
-    ipcRenderer.sendToHost(getUnreadTelegramMessageCount());
+    ipcRenderer.sendToHost(getUnreadGoogleMailMessageCount());
     console.log("request ::: End");
 });
 
 
-/*
 ipcRenderer.on("alert-something",function(event,data)
 {
     alert(data);
 });
-*/
 
-/*
+
 ipcRenderer.on("change-text-element",function(event,data)
 {
     // the document references to the document of the &lt;webview>
     document.getElementById(data.id).innerHTML = data.text;
 });
-*/
 
 
 /**
  **/
-function getUnreadTelegramMessageCount()
+function getUnreadGoogleMailMessageCount()
 {
-    console.log("getUnreadTelegramMessageCount ::: Start");
+    console.log("getUnreadGoogleMailMessageCount ::: Start");
 
-    var counter = 0;
-    var intervalID = window.setInterval(myCallback, 50);
-    function myCallback()
-    {
-        var eventToClick = document.getElementsByClassName("im_dialog_badge badge");
-        if (eventToClick.length > 0)
-        {
-            console.log(eventToClick);
-            for (var i = 0; i &lt; eventToClick.length; i++)
-            {
-                console.log(eventToClick[i]);
+    
+    var counter = document.querySelector(".aim .aio").querySelector("span").querySelector("a").getAttribute("aria-label").replace(/\D/g, "");
+    
+    console.log("getUnreadGoogleMailMessageCount ::: Total GoogleMail unread messages: " + counter);
 
-                // Check if we count this element or not
-                if(!eventToClick[i].classList.contains("ng-hide")) // Count it
-                {
-                    console.log("getUnreadTelegramMessageCount ::: Found communication with unread messages. +1");
-                    counter = counter +1;
-                }
-            }
-            clearInterval(intervalID);
-        }
+    // send back from webview to main
+    ipcRenderer.sendToHost(counter);
 
-        console.log("getUnreadTelegramMessageCount ::: Total Telegram chats with unread messages: " + counter);
+    return counter;
 
-        // send back from webview to main
-        ipcRenderer.sendToHost(counter);
-
-        return counter;
-    }
 }
 </code></pre>
         </article>

@@ -44,9 +44,17 @@
 
     <section>
         <article><p><img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub">
-<a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a></p>
+<a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a>
+<img src="https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/release/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat" alt="">
+<img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt=""></p>
 <p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo_128x128.png" alt="logo"></p>
-<h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.</p>
+<h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.</p>
 <h2>services</h2><ul>
 <li>GitHub</li>
 <li>Google Calendar</li>
@@ -54,10 +62,18 @@
 <li>Google Keep</li>
 <li>Google Mail</li>
 <li>Google Messages</li>
-<li>Slack</li>
-<li>Telegram</li>
+<li>Google Photos</li>
+<li>Slack (**)</li>
+<li>Telegram (*)</li>
 <li>Threema</li>
-<li>WhatsApp Web</li>
+<li>WhatsApp (*)</li>
+</ul>
+<ul>
+<li><ul>
+<li>= featuring unread messages badge</li>
+</ul>
+</li>
+<li>** = experimental </li>
 </ul>
 <h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png" alt="logo"></p>
 <h2>install</h2><p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
@@ -77,7 +93,10 @@
 </ul>
 <h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
 <h2>getting involved</h2><p>Please see the <a href="DEVELOPMENT.md">developers informations</a> for more details.</p>
-<h2>faq</h2><h3>Where is the user data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p></article>
+<h2>faq</h2><h3>Where is the user data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p>
+<h4>Windows</h4><p>Please check <code>%APPDATA%\ttth</code></p>
+<h3>How is the autostart information stored?</h3><h4>Linux</h4><p>Using a .desktop entry in <code>~/.config/autostart/</code></p>
+<h4>Windows</h4><p>Using a registry entry in <code>\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p></article>
     </section>
 
 
@@ -88,13 +107,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 10 2019 14:28:20 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 14 2019 15:19:18 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

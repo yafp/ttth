@@ -31,13 +31,14 @@
 
 
 // Get the ipcRenderer of electron
-const {ipcRenderer} = require('electron');
+const {ipcRenderer} = require("electron");
+
 
 
 
 // Do something according to a request of your mainview
 //
-ipcRenderer.on('request', function()
+ipcRenderer.on("request", function()
 {
     console.log("request ::: Start");
     ipcRenderer.sendToHost(getUnreadWhatsAppMessageCount());
@@ -60,29 +61,22 @@ ipcRenderer.on("change-text-element",function(event,data)
 
 
 
+
 /**
- * Simple function to return the source path of all the scripts in the document
- * of the &lt;webview>
- *
- *@returns {String}
  **/
 function getUnreadWhatsAppMessageCount()
 {
 
     console.log("getUnreadWhatsAppMessageCount ::: Start");
 
-
     // try to count unread messages
-    //
-    //
     const elements = document.querySelectorAll(".CxUIE, .unread");
-    //console.log(elements);
 
     let count = 0;
 
     for (let i = 0; i &lt; elements.length; i++)
     {
-        if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0)
+        if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
         {
             count += 1;
             console.log("checkUnread ::: Found unread message");
@@ -91,6 +85,8 @@ function getUnreadWhatsAppMessageCount()
     console.log("getUnreadWhatsAppMessageCount ::: Unread messages in WhatsApp: " + count);
     ipcRenderer.sendToHost(count);
 }
+
+
 </code></pre>
         </article>
     </section>
@@ -101,13 +97,13 @@ function getUnreadWhatsAppMessageCount()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkDisplaySize">checkDisplaySize</a></li><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 10 2019 14:28:20 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 14 2019 15:19:18 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
