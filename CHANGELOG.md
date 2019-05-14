@@ -4,7 +4,10 @@
 ### ttth 1.0.0 (2019xxyy) CUR DEV
 ####  ```Added```
 * Initial version,
-* supporting linux only
+* Ooperating systems
+  * linux (tested)
+  * windows ( almost untested)
+  * mac (not supported so far)
 * Electron: 4.1.4
 * Javascript libraries
   * jQuery: 3.3.1
@@ -32,9 +35,10 @@
   * WhatsApp Web (minimal support for unread messages)
 * Basic tray icon
 * Basic notifications
+* Basic support for localization using i18next
+* Basic jsdoc documentation
 * Check for new releases
 * Forcing single app instance
-* Basic jsdoc documentation
 
 
 

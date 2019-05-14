@@ -2,15 +2,15 @@
     "name": "ttth",
     "productName": "ttth",
     "version": "1.0.0",
-    "description": "ttth (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.",
+    "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.",
     "main": "main.js",
     "scripts": {
         "start": "electron .",
         "start-debug": "electron . --enable-logging",
-        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-dist",
-        "package-win-32": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=ia32 --icon=assets/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
-        "package-win-64": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icons/win/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
-        "package-linux-64": "electron-packager . ttth --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=dist",
+        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=resources/installer/Icon.icns --prune=true --out=release-dist",
+        "package-win-32": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=ia32 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-win-64": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-linux-64": "electron-packager . ttth --overwrite --asar=true --platform=linux --arch=x64 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
         "build-win": "build --win --ia32 --x64",
         "build-win32": "build --win --ia32",
         "build-win64": "build --win --x64",
@@ -29,16 +29,32 @@
     "keywords": [
         "Electron",
         "messenger",
-        "whatsapp",
+        "github",
         "google calendar",
         "google contacts",
-        "google keep"
+        "google keep",
+        "google mail",
+        "google messages",
+        "slack",
+        "telegram",
+        "threema",
+        "whatsapp"
     ],
     "author": "yafp <fidel@yafp.de>",
     "license": "GPL-3.0",
     "build": {
         "productName": "ttth",
-        "appId": "ttth",
+        "appId": "de.yafp.ttth",
+        "extraResources": [
+            {
+                "from": "resources/installer",
+                "to": "installer"
+            }
+        ],
+        "extraFiles": [
+            "LICENSE"
+        ],
+        "asar": true,
         "mac": {
             "category": "public.app-category.productivity",
             "artifactName": "ttth-${version}-mac.${ext}",
@@ -75,7 +91,7 @@
         "linux": {
             "executableName": "ttth",
             "artifactName": "ttth-${version}-linux-${arch}.${ext}",
-            "description": "A simple web services application",
+            "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.",
             "category": "Network",
             "desktop": {
                 "Terminal": "false",
@@ -109,18 +125,11 @@
                         "x64",
                         "ia32"
                     ]
-                },
-                {
-                    "target": "tar.gz",
-                    "arch": [
-                        "x64",
-                        "ia32"
-                    ]
                 }
             ]
         },
         "directories": {
-            "buildResources": "assets/",
+            "buildResources": "resources/installer/",
             "output": "dist/"
         },
         "publish": [
@@ -138,6 +147,11 @@
         "electron-packager": "^13.1.1"
     },
     "dependencies": {
-        "auto-launch": "^5.0.5"
+        "auto-launch": "^5.0.5",
+        "electron-i18n": "^1.1335.0",
+        "i18next": "^15.1.0",
+        "i18next-electron-language-detector": "0.0.10",
+        "i18next-node-fs-backend": "^2.1.3",
+        "i18next-sync-fs-backend": "^1.1.1"
     }
 }

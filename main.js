@@ -17,19 +17,6 @@ var fs = require("fs");
 var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // -----------------------------------------------------------------------------
 // CREATING THE MAIN WINDOW
 // -----------------------------------------------------------------------------
@@ -73,8 +60,7 @@ function createWindow ()
         minWidth: 800,
         minHeight: 600,
         backgroundColor: "#ffffff",
-
-        icon: path.join(__dirname, "assets/icons/png/64x64.png"),
+        icon: path.join(__dirname, "resources/installer/icons/64x64.png"),
         webPreferences: {
             nodeIntegration: true
         }
@@ -129,8 +115,6 @@ function createWindow ()
     });
 
 
-
-
     // Emitted when the window is closed.
     mainWindow.on("closed", function ()
     {
@@ -155,12 +139,12 @@ function createTray()
     let tray = null;
     app.on("ready", () => {
 
-        tray = new Tray("assets/icons/png/64x64.png");
+        tray = new Tray("resources/installer/icons/64x64.png");
         const contextMenu = Menu.buildFromTemplate([
             {
                 // Appname & Version
                 id: "info",
-                icon: "assets/icons/png/24x24.png",
+                icon: "resources/installer/icons/24x24.png",
                 label: app.getName() + " (Version: " + app.getVersion() + ")",
                 enabled: false
             },
@@ -182,27 +166,6 @@ function createTray()
                 },
                 enabled: true
             },
-
-            {
-                // Settings Window
-                id: "settings",
-                label: "Settings",
-                click: function () {
-                    // focus the main window
-                    if (mainWindow.isMinimized())
-                    {
-                        mainWindow.restore();
-                    }
-                    mainWindow.focus();
-
-                    // now switch to settings tab
-                    mainWindow.webContents.send( "open-settings-tab" );
-
-
-                },
-                enabled: true
-            },
-
             {
                 type: "separator",
                 enabled: false
@@ -222,20 +185,53 @@ function createTray()
         tray.setToolTip("ttth aka talk to the hand");
         tray.setContextMenu(contextMenu);
 
-    });
 
+        // copied from rambox
+        switch (process.platform) 
+        {
+            case 'darwin':
+                break;
+
+            case 'linux':
+            case 'freebsd':
+                // Double click is not supported and Click its only supported when app indicator is not used.
+                // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
+                tray.on('click', function() {
+                    //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
+                    myConsole.log("createTray ::: Linux click");
+                });
+                
+                break;
+
+            case 'win32':
+                tray.on('double-click', function() {
+                    //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
+                    myConsole.log("createTray ::: win32 double-click");
+                });
+
+                break;
+
+            default:
+                break;
+        }
+
+
+
+    });
 
 
     // Change to UnreadMessages Tray Icon
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage("assets/icons/png/64x64_tray_unread.png");
+        //myConsole.log("createTray ::: Use unread icon");
+        tray.setImage("resources/installer/icons/64x64_tray_unread.png");
     })
 
     // Change to Default Tray Icon
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        tray.setImage("assets/icons/png/64x64.png");
+        //myConsole.log("createTray ::: Use default icon");
+        tray.setImage("resources/installer/icons/64x64_tray_default.png");
     })
 
 
@@ -282,23 +278,6 @@ function checkIfPackaged()
 }
 
 
-// -----------------------------------------------------------------------------
-// RESIZE AND REPOSITION MAIN WINDOW
-// -----------------------------------------------------------------------------
-function resizeAndRepositionMainWindow()
-{
-    ipcMain.on("resize-me-please", (event, windowWidth, windowHeight) =>
-    {
-        // resize window
-        mainWindow.setSize(windowWidth, windowHeight);
-
-        // center window
-        mainWindow.center();
-    });
-}
-
-
-
 
 // -----------------------------------------------------------------------------
 // LETS GO
@@ -311,8 +290,6 @@ let mainWindow;
 
 // Force single-app-instance
 //
-
-
 if (!gotTheLock)
 {
     // quit the second instance
@@ -342,19 +319,6 @@ else
 app.on("ready", createWindow);
 
 
-
-
-
-app.on("before-quit", function ()
-{
-
-});
-
-
-
-
-
-
 // Quit when all windows are closed.
 app.on("window-all-closed", function ()
 {
@@ -365,7 +329,6 @@ app.on("window-all-closed", function ()
         app.quit();
     }
 });
-
 
 
 app.on("activate", function ()
@@ -379,10 +342,5 @@ app.on("activate", function ()
 });
 
 
-
-
 // create the tray
 createTray();
-
-// resize and repositzion the main window
-//resizeAndRepositionMainWindow();

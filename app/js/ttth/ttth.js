@@ -1,21 +1,15 @@
-function openSettings()
-{
-    console.log("openSettings ::: Start");
-
-    // activate the related tab
-    $("#target_settings").trigger("click");
-
-    console.log("openSettings ::: End");
-}
-
-
-
+/**
+* @name updateTrayIconStatus
+* @summary Updates the tray icon
+* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
+*/
 function updateTrayIconStatus()
 {
     console.log("updateTrayIconStatus ::: Start");
 
     var overallUnreadMessages = 0;
     var curServiceUnreadMessageCount = 0;
+    var serviceName = "";
 
     // loop over all services and count the unread messages badge value together
     // loop over array ttthAvailableServices which contains all service-names
@@ -23,36 +17,41 @@ function updateTrayIconStatus()
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
+        serviceName = ttthAvailableServices[i].toLowerCase();
+
         curServiceUnreadMessageCount = 0;
 
         // get value of current service from tab
-        curServiceUnreadMessageCount = $('#badge_' + ttthAvailableServices[i].toLowerCase()).text();
+        curServiceUnreadMessageCount = $("#badge_" + serviceName ).html();
 
-        console.log("updateTrayIconStatus ::: Unread messages count of service: " + ttthAvailableServices[i] + " is: " + curServiceUnreadMessageCount);
+        // if the current service has a significant unread message count -> log it and add it to overall counter
+        if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
+        {
+            console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
 
-        // make the math
-        overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+            // increate the overall counter
+            overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+        }
     }
 
     console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
 
 
-    if(overallUnreadMessages === 0 )
+    const {ipcRenderer} = require('electron');
+
+    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
     {
         // tray should show the default icon
-        const {ipcRenderer} = require('electron');
         ipcRenderer.send('changeTrayIconToDefault');
     }
     else
     {
         // tray should show that we got unread messages
-        const {ipcRenderer} = require('electron');
         ipcRenderer.send('changeTrayIconToUnreadMessages');
     }
 
     console.log("updateTrayIconStatus ::: End");
 }
-
 
 
 /**
@@ -90,7 +89,7 @@ function writeLocalStorage(key, value)
 
 /**
 * @name openDevTools
-* @summary Opens Dev Console
+* @summary Toggles DevConsole
 * @description Opens or closes the Developer Console inside the app
 */
 function openDevTools()
@@ -114,9 +113,12 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
+    /* var path = require("path"); */
+
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: "../assets/icons/png/64x64.png"
+        icon: "../resources/installer/icons/64x64.png"
+        /* icon: path.join(__dirname, 'resources/installier/icons/64x64.png') */
     });
 
     /*
@@ -136,17 +138,16 @@ function toggleSettingAutostart()
 {
     console.log("toggleSettingAutostart ::: Start");
 
-    // auto-launch
-    //
-    // via: https://www.npmjs.com/package/auto-launch
+    // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
-
-    // FIXME
-    // path must be adjusted (.deb vs .snap vs .AppImage) - but how?
 
     var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
-        path: "/usr/bin/ttth", // seems to be optional for electron apps ...how?
+        // path seems to be optional for electron apps
+        // seems like it: ....guess based on process.execPath
+        /*
+        path: "/usr/bin/ttth", 
+        */
     });
 
     if($("#checkboxSettingAutostart").prop("checked"))
@@ -154,18 +155,16 @@ function toggleSettingAutostart()
         ttthAutoLauncher.enable();
 
         writeLocalStorage("settingAutostart", true);
-        console.log("toggleSettingAutostart ::: Enabled Autostart");
-
         sendNotification("Autostart", "Enabled autostart");
+        console.log("toggleSettingAutostart ::: Enabled Autostart");
     }
     else
     {
         ttthAutoLauncher.disable();
 
         writeLocalStorage("settingAutostart", false);
-        console.log("toggleSettingAutostart ::: Disabled Autostart");
-
         sendNotification("Autostart", "Disabled autostart");
+        console.log("toggleSettingAutostart ::: Disabled Autostart");
     }
 
     console.log("toggleSettingAutostart ::: End");
@@ -203,42 +202,72 @@ function checkSupportedOperatingSystem()
 {
     console.log("checkSupportedOperatingSystem ::: Start");
 
+    var tttModalSubject = "";
+    var ttthModalMessage = "";
     var userPlatform = process.platform;
-    console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
-    var errorText = "";
+    console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
     switch(userPlatform)
     {
         case "linux":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
+
+            // hide OS information
+            $("#operatingSystemInformation").hide();
+
             break;
 
+        case "win32":
         case "windows":
-            // define error text
-            errorText = "is currently in development, but untested.";
+            // define subject & message
+            tttModalSubject = "Warning"
+            ttthModalMessage = "is currently in development, but untested.";
 
-            // set ui error message
-            $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
+            /*
+            // update the modal
+            $( ".modalSubject" ).append( tttModalSubject );
+            $( ".modalMessage" ).append( "<p>" + userPlatform + " " + ttthModalMessage + "</p>" );
 
-            // show  error dialog
+            // show the modal
             $("#myModal").modal("show");
+            */
 
-            console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
+            // update the OS-text
+            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+
+            // change class
+            $("#operatingSystemInformation").attr('class', 'alert alert-warning');
+
+            // show OS information
+            $("#operatingSystemInformation").show();
+
+            console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + ttthModalMessage );
 
             break;
 
         default:
-            // define error text
-            errorText = "is currently not supported.";
+            // define subjexct & message
+            tttModalSubject = "Error"
+            ttthModalMessage = "is currently not supported.";
 
-            // set ui error message
-            $( ".errorText" ).append( "<p>" + userPlatform + " " + errorText + "</p>" );
+            // update the modal
+            $( ".modalSubject" ).append( tttModalSubject );
+            $( ".modalMessage" ).append( "<p>" + userPlatform + " " + ttthModalMessage + "</p>" );
 
-            // show  error dialog
+            // show the modal
             $("#myModal").modal("show");
 
-            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + errorText );
+            // update the os-info text
+            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+
+            // change class
+            $("#operatingSystemInformation").attr('class', 'alert alert-danger');
+
+            // show os information
+            $("#operatingSystemInformation").show();
+
+            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + ttthModalMessage );
     }
 
     console.log("checkSupportedOperatingSystem ::: End");
@@ -247,17 +276,17 @@ function checkSupportedOperatingSystem()
 
 /**
 * @name switchToService
-* @summary Opens a supllied service
-* @description Loads the supplied service to the content view
-* @param pageName - Name of the service
+* @summary Activates a given service tab
+* @description Activates the tab of a given service. Needed for handling DefaultView setting.
+* @param serviceName - Name of the service
 */
-function switchToService(pageName)
+function switchToService(serviceName)
 {
     console.log("switchToService ::: Start");
-    console.log("switchToService ::: Loading: " + pageName.toLowerCase());
+    console.log("switchToService ::: Loading: " + serviceName.toLowerCase());
 
     // activate the related tab
-    $("#target_"+pageName.toLowerCase()).trigger("click");
+    $("#target_" + serviceName.toLowerCase()).trigger("click");
 
     console.log("switchToService ::: End");
 }
@@ -277,6 +306,8 @@ function checkForNewRelease()
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
+    console.log("checkForNewRelease ::: Checking " + url + " for available releases");
+
     $.get(url).done(function (data)
     {
         var versions = data.sort(function (v1, v2)
@@ -284,12 +315,21 @@ function checkForNewRelease()
             return semver.compare(v2.name, v1.name);
         });
 
-        // get the current latest public release version number
-        //
-        // TODO / FIXME
-        //var remoteAppVersionLatest = versions[0].name;
+        // if we got no reply from checking for latest release
+        if ( typeof versions[0] === "undefined" ) 
+        {
+            console.warn("checkForNewRelease ::: No release found on " + url + ". Aborting update check.");
 
-        // get local version
+            // hide update information
+            $("#updateInformation").hide();
+
+            return;
+        }
+
+        // remote version
+        var remoteAppVersionLatest = versions[0].name;
+
+        // local version
         var localAppVersion = require("electron").remote.app.getVersion();
 
         console.log("checkForNewRelease ::: Local version: " + localAppVersion);
@@ -352,49 +392,54 @@ function updateDefaultView()
 */
 function validateConfiguredDefaultView()
 {
-  // read from local storage
-  var curDefaultView = readLocalStorage("defaultView");
+    console.log("validateConfiguredDefaultView ::: Start");
 
-  if(curDefaultView === null) // no default view configured
-  {
-      console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
-  }
-  else
-  {
-    console.log("validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
+    // read from local storage
+    var curDefaultView = readLocalStorage("defaultView");
 
-    // check if the configured service is enabled or not
-    console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
-
-    var exists = false;
-
-    // Check if Dropdown contains the defined default view as enabled service
-    $("#selectDefaultView option").each(function(){
-        if (this.value === curDefaultView)
-        {
-            exists = true;
-            return false;
-        }
-    });
-
-    if(exists)
+    if(curDefaultView === null) // no default view configured
     {
-        console.log("validateConfiguredDefaultView ::: Configured default view is valid");
-
-        // Update select
-        $("#selectDefaultView").val(curDefaultView);
+        console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
     }
     else
     {
-        console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+        console.log("validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
 
-        // reset the selection of the select item
-        $("#selectDefaultView").prop("selectedIndex",0);
+        // check if the configured service is enabled or not
+        console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
 
-        // delete the localstorage entry for defaultview
-        resetDefaultView();
+        var exists = false;
+
+        // Check if Dropdown contains the defined default view as enabled service
+        $("#selectDefaultView option").each(function()
+        {
+            if (this.value === curDefaultView)
+            {
+                exists = true;
+                return false;
+            }
+        });
+
+        if(exists)
+        {
+            console.log("validateConfiguredDefaultView ::: Configured default view is valid");
+
+            // Update select
+            $("#selectDefaultView").val(curDefaultView);
+        }
+        else
+        {
+            console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+
+            // reset the selection of the select item
+            $("#selectDefaultView").prop("selectedIndex",0);
+
+            // delete the localstorage entry for defaultview
+            resetDefaultView();
+        }
     }
-  }
+
+    console.log("validateConfiguredDefaultView ::: End");
 }
 
 
@@ -426,8 +471,8 @@ function loadDefaultView()
 
 /**
 * @name openURL
-* @summary Opens a supllied url in default browser
-* @description Opens a supllied url in default browser
+* @summary Opens an url in browser
+* @description Opens a given url in default browser
 * @param url - URL string which contains the target url
 */
 function openURL(url)
@@ -452,7 +497,6 @@ function toggleCheckbox(objectName)
 {
     console.log("toggleCheckbox ::: Start");
     //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
-
 
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
@@ -481,6 +525,9 @@ function toggleCheckbox(objectName)
             // update webview src
             document.getElementById( objectName + "Webview" ).setAttribute( "src", ttthServicesUrls[arrayPosition]);
             console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
+
+            // check if there is service-specific code to load
+            loadServiceSpecificCode(objectName);
 
             // send notification
             sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
@@ -525,7 +572,6 @@ function toggleCheckbox(objectName)
         console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
     }
 
-
     console.log("toggleCheckbox ::: End");
 }
 
@@ -544,60 +590,64 @@ function initSettingsPage()
     // get appname and version
     var appVersion = require("electron").remote.app.getVersion();
     var appName = require("electron").remote.app.getName();
+    var serviceName;
+    var curSettingAutostart;
 
     // show appname and version
     $( "#settingsAppName" ).html( appName );
     $( "#settingsAppVersion" ).html( appVersion );
 
-    console.log("initSettingsPage ::: Show enabled services in settings interface");
+
+    console.log("initSettingsPage ::: Load all services and its status to the settings interface");
 
     // loop over array ttthAvailableServices which contains all service-names
     //
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
-        console.log("initSettingsPage ::: Checking status of service: " + ttthAvailableServices[i]);
+        serviceName =  ttthAvailableServices[i];
 
+        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
 
         // Add service to settings page
-        // formerley hardcoded in index.html
         //
         //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
         //
-        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
+        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ serviceName +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
 
 
         // Show activated services as enabled in settings
         // add them to the default view select item
-        // update the related status button
-        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
+        // uand pdate the related status button
+        var curServiceStatus = readLocalStorage(serviceName);
         if(curServiceStatus === "true")
         {
-            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is activated");
+            console.log("initSettingsPage ::: Service: " + serviceName + " is activated");
 
             // check the checkbox
-            $("#"+ttthAvailableServices[i]).prop("checked", true);
+            $("#" + serviceName).prop("checked", true);
 
             // add to defaultView select item
-            $("#selectDefaultView").append(new Option(ttthAvailableServices[i], ttthAvailableServices[i]));
+            $("#selectDefaultView").append(new Option(serviceName, serviceName));
 
             // update status button
-            $("#bt_" + ttthAvailableServices[i]).attr("class", "btn btn-success btn-sm");
-            $("#bt_" + ttthAvailableServices[i]).attr("title", "enabled");
+            $("#bt_" + serviceName).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + serviceName).attr("title", "enabled");
 
             // set webview src
-            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", ttthServicesUrls[i]);
+            document.getElementById( serviceName + "Webview" ).setAttribute( "src", ttthServicesUrls[i]);
+            console.log("initSettingsPage ::: webview src of service: " + serviceName + " is now: " + ttthServicesUrls[i]);
 
-            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now: " + ttthServicesUrls[i]);
+            // check if there is service-specific code to load
+            loadServiceSpecificCode(serviceName);
         }
         else
         {
-            console.log("initSettingsPage ::: Service: " + ttthAvailableServices[i] + " is deactivated");
+            console.log("initSettingsPage ::: Service: " + serviceName + " is deactivated");
 
             // set webview src
-            document.getElementById( ttthAvailableServices[i] + "Webview" ).setAttribute( "src", "");
-
-            console.log("initSettingsPage ::: webview src of service: " + ttthAvailableServices[i] + " is now empty.");
+            document.getElementById( serviceName + "Webview" ).setAttribute( "src", "");
+            console.log("initSettingsPage ::: webview src of service: " + serviceName + " is now empty.");
         }
     }
 
@@ -612,7 +662,7 @@ function initSettingsPage()
 
     // Setting: Autostart
     //
-    var curSettingAutostart = readLocalStorage("settingAutostart");
+    curSettingAutostart = readLocalStorage("settingAutostart");
     if(curSettingAutostart === "true")
     {
         console.log("initSettingsPage ::: Setting Autostart is configured");
@@ -630,6 +680,53 @@ function initSettingsPage()
 
 
 /**
+* @name loadServiceSpecificCode
+* @summary Executes service specific javascript code on service-activation
+* @description Executes service specific javascript code on service-activation
+* @param serviceName - Name of the service
+*/
+function loadServiceSpecificCode(serviceName)
+{
+    console.log("loadServiceSpecificCode ::: Start");
+
+    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
+
+    switch (serviceName) 
+    {
+        case "GoogleMail":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
+            googlemailStart();
+            break;
+
+         case "Slack":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
+            slackStart();
+            break;
+
+        case "Telegram":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
+            telegramStart();
+            break;
+
+        case "Threema":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
+            threemaStart();
+            break;
+
+        case "WhatsApp":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
+            whatsappStart();
+            break;
+  
+        default:
+            console.log("loadServiceSpecificCode ::: Nothing to do here");
+    }
+
+    console.log("loadServiceSpecificCode ::: End");
+}
+
+
+/**
 * @name initMenu
 * @summary Init the menu / navigation on app launch
 * @description Checks which services are enabled and shows or hides the related tabs from navigation
@@ -638,27 +735,31 @@ function initMenu()
 {
     console.log("initMenu ::: Start");
 
+    var serviceName;
+
     // loop over array ttthAvailableServices
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
-        console.log("initMenu ::: Checking status of service: " + ttthAvailableServices[i]);
+        serviceName = ttthAvailableServices[i];
 
-        var curServiceStatus = readLocalStorage(ttthAvailableServices[i]);
+        console.log("initMenu ::: Checking status of service: " + serviceName);
+
+        var curServiceStatus = readLocalStorage(serviceName);
 
         if(curServiceStatus === "true")
         {
-            console.log("initMenu ::: Activating " + ttthAvailableServices[i] );
+            console.log("initMenu ::: Activating " + serviceName );
 
             // show service in menu
-            $("#menu_" + ttthAvailableServices[i].toLowerCase()).show();
+            $("#menu_" + serviceName.toLowerCase()).show();
         }
         else
         {
-            console.log("initMenu ::: Deactivating " + ttthAvailableServices[i]);
+            console.log("initMenu ::: Deactivating " + serviceName);
 
             // hide service from menu
-            $("#menu_" + ttthAvailableServices[i].toLowerCase()).hide();
+            $("#menu_" + serviceName.toLowerCase()).hide();
         }
     }
 

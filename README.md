@@ -1,11 +1,20 @@
 ![GitHub](https://img.shields.io/github/license/yafp/ttth.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
+![](https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat)
+![](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
+
 
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo_128x128.png)
 
 # ttth
 ## about
-**ttth** (talk to the hand) is an electron based desktop app for services like WhatsApp-Web, Threema-Web, Telegram-Web and several Google services.
+**ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.
 
 ## services
 * GitHub
@@ -14,11 +23,15 @@
 * Google Keep
 * Google Mail
 * Google Messages
-* Slack
-* Telegram
+* Google Photos
+* Slack (**)
+* Telegram (*)
 * Threema
-* WhatsApp Web
+* WhatsApp (*)
 
+
+* * = featuring unread messages badge
+* ** = experimental 
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png)
@@ -56,3 +69,12 @@ Please see the [developers informations](DEVELOPMENT.md) for more details.
 ### Where is the user data stored?
 #### Linux
 Please check ```~/.config/ttth/```
+#### Windows
+Please check ```%APPDATA%\ttth```
+
+### How is the autostart information stored?
+#### Linux
+Using a .desktop entry in ```~/.config/autostart/```
+#### Windows
+Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+

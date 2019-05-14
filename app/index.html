@@ -35,12 +35,20 @@
     <!-- 2.0.0 -->
     <script type="text/javascript" src="js/semver/2.0.0/semver.min.js" async></script>
 
+
     <!-- ttth -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services.js" async></script>
     <!-- ttth service specific -->
+    <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
+    <script type="text/javascript" src="js/ttth/slack.js" async></script>
     <script type="text/javascript" src="js/ttth/telegram.js" async></script>
+    <script type="text/javascript" src="js/ttth/threema.js" async></script>
     <script type="text/javascript" src="js/ttth/whatsapp.js" async></script>
+
+    <!-- translation -->
+    <script type="text/javascript" src="js/ttth/translate.js" async></script>
+
 
 </head>
 
@@ -102,6 +110,14 @@
                 </li>
                 <!-- /Google Messages -->
 
+                <!-- Google Photos -->
+                 <li class="nav-item" id="menu_googlephotos">
+                    <a class="nav-link my-ui-text" id="target_googlephotos" href="#googlePhotos" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Photos <span id="badge_googlephotos" class="badge badge-success"></span>
+                    </a>
+                </li>
+                <!-- /Google Photos -->
+
                 <!-- Slack -->
                 <li class="nav-item " id="menu_slack">
                     <a class="nav-link my-ui-text" id="target_slack" href="#slack" role="tab" data-toggle="tab">
@@ -136,8 +152,8 @@
 
                 <!-- Settings -->
                 <li class="nav-item ml-auto">
-                    <a class="nav-link my-ui-text active" id="target_settings" href="#settings" role="tab" data-toggle="tab">
-                        <i class="fas fa-cog"></i> Settings
+                    <a class="nav-link my-ui-text active" id="target_settings" href="#settings" role="tab" data-toggle="tab" >
+                        <i class="fas fa-cog"></i> <span i18n-text="tabnamesSettings"><!-- Settings --></span>
                     </a>
                 </li>
             </ul>
@@ -157,14 +173,14 @@
 
                     <!-- Modal Header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Error</h4>
+                        <h4 class="modal-title modalSubject"></h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
                     <!-- Modal body -->
                     <div class="modal-body">
                         <!-- text gets inserted by javascript -->
-                        <div class="errorText"></div>
+                        <div class="modalMessage"></div>
                     </div>
 
                     <!-- Modal footer -->
@@ -234,6 +250,7 @@
                     <webview
                         id="GoogleMailWebview"
                         class="inner"
+                        preload="./js/ttth/googlemail_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -251,11 +268,22 @@
                 <!-- Tab: Google Messages -->
 
 
+                <!-- Tab: Google Photos -->
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googlePhotos">
+                    <webview
+                        id="GooglePhotosWebview"
+                        class="inner"
+                        src="">
+                    </webview>
+                </div>
+                <!-- Tab: Google Photos -->
+
                 <!-- Tab: Slack -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="slack">
                     <webview
                         id="SlackWebview"
                         class="inner"
+                        preload="./js/ttth/slack_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -263,9 +291,6 @@
 
 
                 <!-- Tab: Telegram -->
-                <!--
-                <script>checkUnreadTelegramMessageCount();</script>
-                -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="telegram">
                     <webview
                         id="TelegramWebview"
@@ -283,6 +308,7 @@
                     <webview
                         id="ThreemaWebview"
                         class="inner"
+                        preload="./js/ttth/threema_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -310,7 +336,7 @@
                 <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="settings">
 
                     <!-- About -->
-                    <h3 class="my-ui-text">About</h3>
+                    <h3 class="my-ui-text" i18n-text="settingsSectionAbout"><!-- About --></h3>
                     <div>
                         <span class="my-ui-text">Name: </span><abbr title="Talk to the Hand"><span id="settingsAppName" class="badge badge-secondary my-ui-text"></span></abbr>
                     </div>
@@ -318,8 +344,8 @@
                         <span class="my-ui-text">Version: </span><span id="settingsAppVersion" class="badge badge-secondary my-ui-text"></span>
                     </div>
 
-
-                    <div>
+                    <!-- List of buttons with links -->
+                    <div class="my-ui-text">
                         <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md">Readme</a>
                         <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases">Releases</a>
                         <a href="#" class="btn btn-outline-success btn-sm" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md">Changelog</a>
@@ -332,7 +358,7 @@
 
 
                     <!-- Services -->
-                    <h3 class="my-ui-text">Services</h3>
+                    <h3 class="my-ui-text" i18n-text="settingsSectionServices"><!-- Services --></h3>
                     <p class="my-ui-text">You can <span class="badge badge-secondary">enable</span> or <span class="badge badge-secondary">disable</span> available services here.</p>
 
                     <div id="settingsAvailableServices">
@@ -360,7 +386,7 @@
 
 
                     <!-- Startup Options-->
-                    <h3 class="my-ui-text">Startup options</h3>
+                    <h3 class="my-ui-text" i18n-text="settingsSectionStartup"><!-- Startup options --></h3>
                     <p class="my-ui-text">You can <span class="badge badge-secondary">configure</span> available startup-options here.</p>
 
                     <!-- View on start-->
@@ -370,7 +396,7 @@
                                 <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
                             </div>
                         </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Default service to display when application starts" disabled>
+                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default service to display when application starts" disabled>
 
                         <div class="input-group-prepend">
                             <div class="input-group-text">
@@ -415,7 +441,6 @@
                     <!-- /start minimized -->
 
 
-
                 </div>
                 <!-- /Tab: Settings -->
 
@@ -423,8 +448,6 @@
 
             </div>
             <!-- /Tab panes -->
-
-
 
 
 
@@ -437,6 +460,13 @@
             <i class="fas fa-spinner fa-spin"></i> checking for updates ...
         </div>
         <!-- update information -->
+
+
+        <!-- operating systems information -->
+        <div class="alert alert-success" role="alert" id="operatingSystemInformation">
+             <i class="fas fa-spinner fa-spin"></i> checking support for used operating system ...
+        </div>
+        <!-- operating systems information -->
 
 
     </div>
@@ -452,6 +482,9 @@
 $( document ).ready(function()
 {
     console.log( "ready!" );
+
+    // hide the entire body
+    $('body').css('display', 'none');
 
 
     $('#myTabs a').click(function (link)
@@ -472,29 +505,28 @@ $( document ).ready(function()
     // check operating system
     checkSupportedOperatingSystem();
 
-    // init the settings tab
-    initSettingsPage();
-
     // check for updates
     checkForNewRelease();
+
+    // init the settings tab
+    initSettingsPage();
 
     // Load default view
     loadDefaultView();
 
     // Check for unread messages for certain services
     //
-    telegramStart();
-    whatsappStart();
+    //telegramStart();
+    //whatsappStart();
 
     // send notification
     sendNotification("State", "Finished initializing.");
 
+    // fade in the UI (1 sec animation)
+    $('body').fadeIn(1000);
 
-    // FIXME
-    //
-    ipcRenderer.on("open-settings-tab",function(event,data)
-    {
-        openSettings();
-    });
+    // Try to use i18next
+    doTranslate();
+
 });
 </script>
