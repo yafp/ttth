@@ -37,17 +37,17 @@ function updateTrayIconStatus()
     console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
 
 
-    const {ipcRenderer} = require('electron');
+    const {ipcRenderer} = require("electron");
 
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
     {
         // tray should show the default icon
-        ipcRenderer.send('changeTrayIconToDefault');
+        ipcRenderer.send("changeTrayIconToDefault");
     }
     else
     {
         // tray should show that we got unread messages
-        ipcRenderer.send('changeTrayIconToUnreadMessages');
+        ipcRenderer.send("changeTrayIconToUnreadMessages");
     }
 
     console.log("updateTrayIconStatus ::: End");
@@ -146,7 +146,7 @@ function toggleSettingAutostart()
         // path seems to be optional for electron apps
         // seems like it: ....guess based on process.execPath
         /*
-        path: "/usr/bin/ttth", 
+        path: "/usr/bin/ttth",
         */
     });
 
@@ -221,7 +221,7 @@ function checkSupportedOperatingSystem()
         case "win32":
         case "windows":
             // define subject & message
-            tttModalSubject = "Warning"
+            tttModalSubject = "Warning";
             ttthModalMessage = "is currently in development, but untested.";
 
             /*
@@ -237,7 +237,7 @@ function checkSupportedOperatingSystem()
             $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
 
             // change class
-            $("#operatingSystemInformation").attr('class', 'alert alert-warning');
+            $("#operatingSystemInformation").attr("class", "alert alert-warning");
 
             // show OS information
             $("#operatingSystemInformation").show();
@@ -248,7 +248,7 @@ function checkSupportedOperatingSystem()
 
         default:
             // define subjexct & message
-            tttModalSubject = "Error"
+            tttModalSubject = "Error";
             ttthModalMessage = "is currently not supported.";
 
             // update the modal
@@ -262,7 +262,7 @@ function checkSupportedOperatingSystem()
             $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
 
             // change class
-            $("#operatingSystemInformation").attr('class', 'alert alert-danger');
+            $("#operatingSystemInformation").attr("class", "alert alert-danger");
 
             // show os information
             $("#operatingSystemInformation").show();
@@ -316,7 +316,7 @@ function checkForNewRelease()
         });
 
         // if we got no reply from checking for latest release
-        if ( typeof versions[0] === "undefined" ) 
+        if ( typeof versions[0] === "undefined" )
         {
             console.warn("checkForNewRelease ::: No release found on " + url + ". Aborting update check.");
 
@@ -484,6 +484,53 @@ function openURL(url)
     shell.openExternal(url);
 
     console.log("openURL ::: End");
+}
+
+
+/**
+* @name loadServiceSpecificCode
+* @summary Executes service specific javascript code on service-activation
+* @description Executes service specific javascript code on service-activation
+* @param serviceName - Name of the service
+*/
+function loadServiceSpecificCode(serviceName)
+{
+    console.log("loadServiceSpecificCode ::: Start");
+
+    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
+
+    switch (serviceName)
+    {
+        case "GoogleMail":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            googlemailStart();
+            break;
+
+         case "Slack":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            slackStart();
+            break;
+
+        case "Telegram":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            telegramStart();
+            break;
+
+        case "Threema":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            threemaStart();
+            break;
+
+        case "WhatsApp":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            whatsappStart();
+            break;
+
+        default:
+            console.log("loadServiceSpecificCode ::: Nothing to do here");
+    }
+
+    console.log("loadServiceSpecificCode ::: End");
 }
 
 
@@ -676,53 +723,6 @@ function initSettingsPage()
     }
 
     console.log("initSettingsPage ::: End");
-}
-
-
-/**
-* @name loadServiceSpecificCode
-* @summary Executes service specific javascript code on service-activation
-* @description Executes service specific javascript code on service-activation
-* @param serviceName - Name of the service
-*/
-function loadServiceSpecificCode(serviceName)
-{
-    console.log("loadServiceSpecificCode ::: Start");
-
-    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
-
-    switch (serviceName) 
-    {
-        case "GoogleMail":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            googlemailStart();
-            break;
-
-         case "Slack":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            slackStart();
-            break;
-
-        case "Telegram":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            telegramStart();
-            break;
-
-        case "Threema":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            threemaStart();
-            break;
-
-        case "WhatsApp":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            whatsappStart();
-            break;
-  
-        default:
-            console.log("loadServiceSpecificCode ::: Nothing to do here");
-    }
-
-    console.log("loadServiceSpecificCode ::: End");
 }
 
 
