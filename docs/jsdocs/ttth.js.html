@@ -40,8 +40,6 @@ function updateTrayIconStatus()
     var serviceName = "";
 
     // loop over all services and count the unread messages badge value together
-    // loop over array ttthAvailableServices which contains all service-names
-    //
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i &lt; arrayLength; i++)
     {
@@ -65,17 +63,17 @@ function updateTrayIconStatus()
     console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
 
 
-    const {ipcRenderer} = require('electron');
+    const {ipcRenderer} = require("electron");
 
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
     {
         // tray should show the default icon
-        ipcRenderer.send('changeTrayIconToDefault');
+        ipcRenderer.send("changeTrayIconToDefault");
     }
     else
     {
         // tray should show that we got unread messages
-        ipcRenderer.send('changeTrayIconToUnreadMessages');
+        ipcRenderer.send("changeTrayIconToUnreadMessages");
     }
 
     console.log("updateTrayIconStatus ::: End");
@@ -171,11 +169,6 @@ function toggleSettingAutostart()
 
     var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
-        // path seems to be optional for electron apps
-        // seems like it: ....guess based on process.execPath
-        /*
-        path: "/usr/bin/ttth", 
-        */
     });
 
     if($("#checkboxSettingAutostart").prop("checked"))
@@ -183,33 +176,120 @@ function toggleSettingAutostart()
         ttthAutoLauncher.enable();
 
         writeLocalStorage("settingAutostart", true);
-        sendNotification("Autostart", "Enabled autostart");
-        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        console.log("toggleSettingAutostart ::: Finished enabling Autostart");
+
     }
     else
     {
         ttthAutoLauncher.disable();
 
         writeLocalStorage("settingAutostart", false);
-        sendNotification("Autostart", "Disabled autostart");
-        console.log("toggleSettingAutostart ::: Disabled Autostart");
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        // adjust UI
+        //
+        // make sure check checkfor for  AutostartStartMinimized is unchecked as well
+        $("#checkboxSettingAutostartMinimized").prop("checked", false);
+
+        console.log("toggleSettingAutostart ::: Finished disabling Autostart");
+
     }
 
     console.log("toggleSettingAutostart ::: End");
 }
 
 
-/**
-* @name resetDefaultView
-* @summary Reset the stored default view
-* @description Deletes the localstorage key 'defaultview'
-*/
-function resetDefaultView()
+
+
+
+function toggleSettingAutostartMinimized()
 {
-    console.log("resetDefaultView ::: Start");
+    console.log("toggleSettingAutostartMinimized ::: Start");
+
+    // auto-launch - via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+
+    if($("#checkboxSettingAutostartMinimized").prop("checked"))
+    {
+        // enable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: true
+        });
+
+        // Write AutoStart &amp; AutostartMinimized to local storage
+        writeLocalStorage("settingAutostart", true);
+        writeLocalStorage("settingAutostartMinimized", true);
+
+        // adjust UI
+        //
+        // make sure check checkfor for general Autostart is checked as well
+        // FIXME: nonext line is not working so far
+        $("#checkboxSettingAutostart").attr("checked", true);
+
+        ttthAutoLauncher.enable();
+
+        console.log("toggleSettingAutostartMinimized ::: Finished enabling minimized Autostart");
+
+    }
+    else
+    {
+        // disable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: false
+        });
+
+        // Write AutostartMinimized to local storage
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        
+
+        ttthAutoLauncher.enable();
+
+        console.log("toggleSettingAutostartMinimized ::: Finished disabling minimized Autostart");
+    }
+
+    console.log("toggleSettingAutostartMinimized ::: End");
+}
+
+
+/**
+* @name settingDefaultViewUpdate
+* @summary Stores a new default view to local storage
+* @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
+*/
+function settingDefaultViewUpdate()
+{
+    console.log("settingDefaultViewUpdate ::: Start");
+
+    // get currently selected value from select
+    var newDefaultView = $( "#selectDefaultView" ).val();
+    console.log("settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
+
+    // Store new default view in local storage
+    writeLocalStorage("settingDefaultView", newDefaultView);
+
+    // send notification
+    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+
+    console.log("settingDefaultViewUpdate ::: End");
+}
+
+
+/**
+* @name settingDefaultViewReset
+* @summary Reset the stored default view
+* @description Deletes the localstorage key 'settingDefaultview'
+*/
+function settingDefaultViewReset()
+{
+    console.log("settingDefaultViewReset ::: Start");
 
     // delete local storage key and its related value
-    localStorage.removeItem("defaultView");
+    localStorage.removeItem("settingDefaultView");
 
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
@@ -217,7 +297,7 @@ function resetDefaultView()
     // send notification
     sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
 
-    console.log("resetDefaultView ::: Start");
+    console.log("settingDefaultViewReset ::: Start");
 }
 
 
@@ -249,7 +329,7 @@ function checkSupportedOperatingSystem()
         case "win32":
         case "windows":
             // define subject &amp; message
-            tttModalSubject = "Warning"
+            tttModalSubject = "Warning";
             ttthModalMessage = "is currently in development, but untested.";
 
             /*
@@ -265,7 +345,7 @@ function checkSupportedOperatingSystem()
             $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
 
             // change class
-            $("#operatingSystemInformation").attr('class', 'alert alert-warning');
+            $("#operatingSystemInformation").attr("class", "alert alert-warning");
 
             // show OS information
             $("#operatingSystemInformation").show();
@@ -276,7 +356,7 @@ function checkSupportedOperatingSystem()
 
         default:
             // define subjexct &amp; message
-            tttModalSubject = "Error"
+            tttModalSubject = "Error";
             ttthModalMessage = "is currently not supported.";
 
             // update the modal
@@ -290,7 +370,7 @@ function checkSupportedOperatingSystem()
             $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
 
             // change class
-            $("#operatingSystemInformation").attr('class', 'alert alert-danger');
+            $("#operatingSystemInformation").attr("class", "alert alert-danger");
 
             // show os information
             $("#operatingSystemInformation").show();
@@ -344,7 +424,7 @@ function checkForNewRelease()
         });
 
         // if we got no reply from checking for latest release
-        if ( typeof versions[0] === "undefined" ) 
+        if ( typeof versions[0] === "undefined" )
         {
             console.warn("checkForNewRelease ::: No release found on " + url + ". Aborting update check.");
 
@@ -387,29 +467,6 @@ function checkForNewRelease()
     });
 
     console.log("checkForNewRelease ::: End");
-}
-
-
-/**
-* @name updateDefaultView
-* @summary Stores a new default view to local storage
-* @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
-*/
-function updateDefaultView()
-{
-    console.log("updateDefaultView ::: Start");
-
-    // get currently selected value from select
-    var newDefaultView = $( "#selectDefaultView" ).val();
-    console.log("updateDefaultView ::: New default view on start is set to: " + newDefaultView);
-
-    // Store new default view in local storage
-    writeLocalStorage("defaultView", newDefaultView);
-
-    // send notification
-    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
-
-    console.log("updateDefaultView ::: End");
 }
 
 
@@ -463,7 +520,7 @@ function validateConfiguredDefaultView()
             $("#selectDefaultView").prop("selectedIndex",0);
 
             // delete the localstorage entry for defaultview
-            resetDefaultView();
+            settingDefaultViewReset();
         }
     }
 
@@ -516,6 +573,106 @@ function openURL(url)
 
 
 /**
+* @name loadServiceSpecificCode
+* @summary Executes service specific javascript code on service-activation
+* @description Executes service specific javascript code on service-activation
+* @param serviceName - Name of the service
+*/
+function loadServiceSpecificCode(serviceName)
+{
+    console.log("loadServiceSpecificCode ::: Start");
+
+    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
+
+    switch (serviceName)
+    {
+        case "GoogleMail":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            googlemailStart();
+            break;
+
+         case "Slack":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            slackStart();
+            break;
+
+        case "Telegram":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            telegramStart();
+            break;
+
+        case "Threema":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            threemaStart();
+            break;
+
+        case "WhatsApp":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            whatsappStart();
+            break;
+
+        default:
+            console.log("loadServiceSpecificCode ::: Nothing to do here");
+    }
+
+    console.log("loadServiceSpecificCode ::: End");
+}
+
+
+
+/**
+* @name initMattermost
+* @summary checks if local storage contains a custom mattermost url
+* @description Checks if custom mattermost url is stored in local storage. If not a prompt appears where the user can define the target url.
+*/
+function initMattermost()
+{
+    console.log("initMattermost ::: Start");
+
+    // check if there is a url specificed in local storage
+    var mattermostUrl = readLocalStorage("serviceMattermostUrl");
+    if( (mattermostUrl === "") || (mattermostUrl === null) )
+    {
+        console.warn("initMattermost ::: Custom Mattermost URL is not yet defined.");
+
+        const prompt = require('electron-prompt');
+ 
+        prompt({
+            title: 'Mattermost url',
+            label: 'Your mattermost server URL:',
+            value: 'http://mattermost.example.org',
+            inputAttrs: {
+                type: 'url'
+            }
+        })
+        .then((r) => {
+            if(r === null) {
+                console.log("initMattermost ::: User cancelled the URL dialog.");
+            } 
+            else 
+            {
+                console.log('result', r);
+                mattermostUrl = r;
+                console.log("initMattermost ::: Custom Mattermost URL is now set to: " + mattermostUrl);
+
+                // Save value to local storage
+                writeLocalStorage("serviceMattermostUrl", mattermostUrl);
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        // set src of mattermost webview
+        document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+    }
+
+    console.log("initMattermost ::: End");
+}
+
+
+
+/**
 * @name toggleCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
@@ -559,6 +716,16 @@ function toggleCheckbox(objectName)
 
             // send notification
             sendNotification("Service activation", "Activated the service &lt;b>" + objectName + "&lt;/b>");
+
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                initMattermost();
+            }
+
+
         }
         else
         {
@@ -679,6 +846,9 @@ function initSettingsPage()
         }
     }
 
+    // specialcase: Mattermost
+    initMattermost();
+
     // Setting: DefaultView
     //
     // Change defaultView select item to select2 item
@@ -703,54 +873,25 @@ function initSettingsPage()
         console.log("initSettingsPage ::: Setting Autostart is not configured");
     }
 
-    console.log("initSettingsPage ::: End");
-}
 
-
-/**
-* @name loadServiceSpecificCode
-* @summary Executes service specific javascript code on service-activation
-* @description Executes service specific javascript code on service-activation
-* @param serviceName - Name of the service
-*/
-function loadServiceSpecificCode(serviceName)
-{
-    console.log("loadServiceSpecificCode ::: Start");
-
-    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
-
-    switch (serviceName) 
+    // Setting: AutostartMinimized
+    //
+    curSettingAutostartMinimized = readLocalStorage("settingAutostartMinimized");
+    if(curSettingAutostartMinimized === "true")
     {
-        case "GoogleMail":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            googlemailStart();
-            break;
+        console.log("initSettingsPage ::: Setting AutostartMinimized is configured");
 
-         case "Slack":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            slackStart();
-            break;
-
-        case "Telegram":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            telegramStart();
-            break;
-
-        case "Threema":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            threemaStart();
-            break;
-
-        case "WhatsApp":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things")
-            whatsappStart();
-            break;
-  
-        default:
-            console.log("loadServiceSpecificCode ::: Nothing to do here");
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+        $("#checkboxSettingAutostartMinimized").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
     }
 
-    console.log("loadServiceSpecificCode ::: End");
+
+    console.log("initSettingsPage ::: End");
 }
 
 
@@ -803,13 +944,13 @@ function initMenu()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 14 2019 15:19:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 15 2019 14:51:14 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

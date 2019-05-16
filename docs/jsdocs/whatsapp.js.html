@@ -27,6 +27,39 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+* @name updateWhatsAppBadge
+* @summary Updates the unread message badge of WhatsApp
+* @description Updates the unread message badge of WhatsApp
+*/
+function updateWhatsAppBadge(count)
+{
+    console.log("updateWhatsAppBadge ::: Start");
+
+    // might be null - should be ignored
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateWhatsAppBadge ::: New count is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update UI
+    $( "#badge_whatsapp" ).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateWhatsAppBadge ::: End");
+}
+
+
+
+/**
 * @name whatsappStart
 * @summary Adds several event listener to WhatsApp WebView
 * @description Adds several event listener to WhatsApp WebView
@@ -56,7 +89,7 @@ function whatsappStart()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 30000);
+    }, 5000);
 
 
     // WebView Event: did-start-loading
@@ -148,40 +181,6 @@ function whatsappRegister()
 
     console.log("whatsappRegister ::: End");
 }
-
-
-
-
-/**
-* @name updateWhatsAppBadge
-* @summary Updates the unread message badge of WhatsApp
-* @description Updates the unread message badge of WhatsApp
-*/
-function updateWhatsAppBadge(count)
-{
-    console.log("updateWhatsAppBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateWhatsAppBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_whatsapp" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateWhatsAppBadge ::: End");
-}
 </code></pre>
         </article>
     </section>
@@ -192,13 +191,13 @@ function updateWhatsAppBadge(count)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#resetDefaultView">resetDefaultView</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateDefaultView">updateDefaultView</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 14 2019 15:19:18 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 15 2019 14:51:14 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
