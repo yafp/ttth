@@ -9,6 +9,9 @@ const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron")
 const nodeConsole = require("console"); // for writing to terminal
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
+const shell = require('electron').shell
+
+const openAboutWindow = require('about-window').default;
 
 var AutoLaunch = require("auto-launch"); // for autostart
 
@@ -51,7 +54,7 @@ function createWindow ()
     }
 
     // Create the browser window.
-    var mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         title: "ttth",
         frame: true, // false results in a borderless window
         show: false, // hide until: ready-to-show
@@ -65,6 +68,129 @@ function createWindow ()
             nodeIntegration: true
         }
     });
+
+
+
+    // Create a custom menu
+    //
+    var menu = Menu.buildFromTemplate([
+    // Menu: File    
+    {
+        label: 'File',
+        submenu: [
+        {
+            label:'Reload',
+            click() { 
+                mainWindow.reload()
+            },
+             accelerator: 'CmdOrCtrl+R'
+        },
+        {
+            type:'separator'
+        },
+        {
+            label:'Exit',
+            click() { 
+                app.quit() 
+            },
+            accelerator: 'CmdOrCtrl+Q'
+        }
+    ]
+    },
+    // Menu: Window    
+    {
+        label: 'Window',
+        submenu: [
+        {
+            label:'Toggle Fullscreen',
+            click() { 
+                if(mainWindow.isFullScreen())
+                {
+                    mainWindow.setFullScreen(false)
+                }
+                else
+                {
+                    mainWindow.setFullScreen(true)
+                }
+                
+            },
+            accelerator: 'F11'
+        },
+        {
+            label:'Minimize',
+            enabled: false
+        },
+        {
+            label:'Console',
+            enabled: false
+        }
+    ]
+    },
+    // Menu: Help
+    {
+        label: 'Help',
+        submenu: [
+        {
+            label:'Homepage',
+            click() { 
+                shell.openExternal("https://github.com/yafp/ttth")
+            },
+            accelerator: 'F1'
+        },
+        // report issue
+        {
+            label:'Report issue',
+            click() { 
+                shell.openExternal("https://github.com/yafp/ttth/issues")
+            },
+            accelerator: 'F2'
+        },
+        // Updates
+        {
+            label:'Search for updates',
+            enabled: false
+        },
+        // About
+        {
+            label:'About',
+            click() { 
+                openAboutWindow({
+                    icon_path: path.join(__dirname, '/resources/installer/icons/512x512.png'),
+                     open_devtools: false,
+                     win_options: {
+                        // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                        //
+                        opacity: 0.9, // not implemented on linux
+                        autoHideMenuBar: true,
+                        titleBarStyle: 'hidden', 
+                        minimizable: false, // not implemented on linux
+                        maximizable: false, // not implemented on linux
+                        movable: false, // not implemented on linux
+                        resizable: false, 
+                        maximizable: false,
+                        //center: true,
+                        alwaysOnTop: true,
+                        fullscreenable: false,
+                        skipTaskbar: false
+                        //frame: false
+                    }
+                });
+
+            },
+
+        },
+        ]
+    }
+    //
+    ])
+
+
+    // use the menu
+    //
+    Menu.setApplicationMenu(menu); 
+
+
+
 
 
     // Adjust window position if possible
@@ -124,6 +250,9 @@ function createWindow ()
     // Measuring startup
     console.timeEnd("init");
 }
+
+
+
 
 
 
@@ -194,16 +323,24 @@ function createTray()
                 // Double click is not supported and Click its only supported when app indicator is not used.
                 // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
                 tray.on("click", function() {
-                    //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
                     myConsole.log("createTray ::: Linux click");
                 });
 
                 break;
 
             case "win32":
+                tray.on("click", function() {
+                    myConsole.log("createTray ::: win32 click");
+                });
+
+                // only: mac & win
                 tray.on("double-click", function() {
-                    //win.webContents.executeJavaScript('ipc.send("toggleWin", true);');
                     myConsole.log("createTray ::: win32 double-click");
+                });
+
+                // only: mac & win
+                tray.on("right-click", function() {
+                    myConsole.log("createTray ::: win32 right-click");
                 });
 
                 break;
@@ -256,6 +393,9 @@ function changeUserAgent()
 }
 
 
+
+
+
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -290,7 +430,9 @@ else
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+//
 app.on("ready", createWindow);
+
 
 
 // Quit when all windows are closed.
@@ -318,3 +460,6 @@ app.on("activate", function ()
 
 // create the tray
 createTray();
+
+
+

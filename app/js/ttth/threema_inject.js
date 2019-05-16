@@ -12,22 +12,6 @@ ipcRenderer.on("request", function()
 });
 
 
-
-ipcRenderer.on("alert-something",function(event,data)
-{
-    alert(data);
-});
-
-
-ipcRenderer.on("change-text-element",function(event,data)
-{
-    // the document references to the document of the <webview>
-    document.getElementById(data.id).innerHTML = data.text;
-});
-
-
-/**
- **/
 function getUnreadThreemaMessageCount()
 {
     console.log("getUnreadThreemaMessageCount ::: Start");
@@ -35,7 +19,9 @@ function getUnreadThreemaMessageCount()
     let newUnread = 0;
     try 
     {
-        let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
+        //let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
+        //
+        let webClientService = angular.element(document.documentElement).injector().get('WebClientService');
         let conversations = webClientService.conversations.conversations; 
         conversations.forEach(function(conversation) 
         { 
@@ -44,6 +30,7 @@ function getUnreadThreemaMessageCount()
     } 
     catch (e) 
     { 
+
     } 
 
     if (newUnread !== unreadCount) 
@@ -55,7 +42,7 @@ function getUnreadThreemaMessageCount()
 
     } 
 
-         console.log("getUnreadThreemaMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
+    console.log("getUnreadThreemaMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
 }
 
 

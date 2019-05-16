@@ -1,7 +1,7 @@
 # ttth
 ## changelog
 
-### ttth 1.0.0 (2019xxyy) CUR DEV
+### ttth 1.0.0 (20190516)
 ####  ```Added```
 * Initial version,
 * Ooperating systems
@@ -15,29 +15,33 @@
   * FontAwesome: 5.8.1
   * SemVer: 2.0.0
 * Settings
-  * Enable and disable available services
-  * Shows status of each service
   * Lists external links to issues, license etc
   * Gives access to developer console
+  * Enable and disable available services
+  * Shows status of each service
   * Startup options
     * Define default view on start
     * Configure autostart
+    * Configure autostart option minimized
 * Services:
   * GitHub
   * Google Calendar
   * Google Contacts
   * Google Keep
-  * Google Mail
+  * Google Mail (minimal support for unread messages)
   * Google Messages
-  * Slack
+  * Google Photos
+  * Mattermost
+  * Slack (minimal support for unread messages)
   * Telegram (minimal support for unread messages)
-  * Threema
+  * Threema (minimal support for unread messages)
+  * Twitter
   * WhatsApp Web (minimal support for unread messages)
 * Basic tray icon
 * Basic notifications
-* Basic support for localization using i18next
+* Basic support for localization using i18next (en / de)
 * Basic jsdoc documentation
-* Check for new releases
+* Check for new releases on startup
 * Forcing single app instance
 
 

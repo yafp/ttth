@@ -2,6 +2,13 @@ function doTranslate()
 {
   console.log("doTranslate ::: Start");
 
+  var userLang = navigator.language || navigator.userLanguage;
+
+  // for development screenshot - overwrite the language
+  //userLang = "en";
+
+  console.log("doTranslate ::: Detected user language: " + userLang);
+
   var i18next = require("i18next");
   var Backend = require("i18next-sync-fs-backend");
 
@@ -15,7 +22,7 @@ function doTranslate()
   .init({
     debug: true,
     whitelist: ["en", "de"],
-    lng: "en",
+    lng: userLang,
     fallbackLng: "en",
     ns: "translation",
     defaultNS: "translation",
@@ -27,7 +34,6 @@ function doTranslate()
 
       // path to post missing resources
       addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
-
 
     // jsonIndent to use when storing json files
     jsonIndent: 2

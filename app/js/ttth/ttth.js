@@ -12,8 +12,6 @@ function updateTrayIconStatus()
     var serviceName = "";
 
     // loop over all services and count the unread messages badge value together
-    // loop over array ttthAvailableServices which contains all service-names
-    //
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
@@ -143,11 +141,6 @@ function toggleSettingAutostart()
 
     var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
-        // path seems to be optional for electron apps
-        // seems like it: ....guess based on process.execPath
-        /*
-        path: "/usr/bin/ttth",
-        */
     });
 
     if($("#checkboxSettingAutostart").prop("checked"))
@@ -155,33 +148,120 @@ function toggleSettingAutostart()
         ttthAutoLauncher.enable();
 
         writeLocalStorage("settingAutostart", true);
-        sendNotification("Autostart", "Enabled autostart");
-        console.log("toggleSettingAutostart ::: Enabled Autostart");
+
+        console.log("toggleSettingAutostart ::: Finished enabling Autostart");
+
     }
     else
     {
         ttthAutoLauncher.disable();
 
         writeLocalStorage("settingAutostart", false);
-        sendNotification("Autostart", "Disabled autostart");
-        console.log("toggleSettingAutostart ::: Disabled Autostart");
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        // adjust UI
+        //
+        // make sure check checkfor for  AutostartStartMinimized is unchecked as well
+        $("#checkboxSettingAutostartMinimized").prop("checked", false);
+
+        console.log("toggleSettingAutostart ::: Finished disabling Autostart");
+
     }
 
     console.log("toggleSettingAutostart ::: End");
 }
 
 
-/**
-* @name resetDefaultView
-* @summary Reset the stored default view
-* @description Deletes the localstorage key 'defaultview'
-*/
-function resetDefaultView()
+
+
+
+function toggleSettingAutostartMinimized()
 {
-    console.log("resetDefaultView ::: Start");
+    console.log("toggleSettingAutostartMinimized ::: Start");
+
+    // auto-launch - via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+
+    if($("#checkboxSettingAutostartMinimized").prop("checked"))
+    {
+        // enable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: true
+        });
+
+        // Write AutoStart & AutostartMinimized to local storage
+        writeLocalStorage("settingAutostart", true);
+        writeLocalStorage("settingAutostartMinimized", true);
+
+        // adjust UI
+        //
+        // make sure check checkfor for general Autostart is checked as well
+        // FIXME: nonext line is not working so far
+        $("#checkboxSettingAutostart").attr("checked", true);
+
+        ttthAutoLauncher.enable();
+
+        console.log("toggleSettingAutostartMinimized ::: Finished enabling minimized Autostart");
+
+    }
+    else
+    {
+        // disable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: false
+        });
+
+        // Write AutostartMinimized to local storage
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        
+
+        ttthAutoLauncher.enable();
+
+        console.log("toggleSettingAutostartMinimized ::: Finished disabling minimized Autostart");
+    }
+
+    console.log("toggleSettingAutostartMinimized ::: End");
+}
+
+
+/**
+* @name settingDefaultViewUpdate
+* @summary Stores a new default view to local storage
+* @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
+*/
+function settingDefaultViewUpdate()
+{
+    console.log("settingDefaultViewUpdate ::: Start");
+
+    // get currently selected value from select
+    var newDefaultView = $( "#selectDefaultView" ).val();
+    console.log("settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
+
+    // Store new default view in local storage
+    writeLocalStorage("settingDefaultView", newDefaultView);
+
+    // send notification
+    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+
+    console.log("settingDefaultViewUpdate ::: End");
+}
+
+
+/**
+* @name settingDefaultViewReset
+* @summary Reset the stored default view
+* @description Deletes the localstorage key 'settingDefaultview'
+*/
+function settingDefaultViewReset()
+{
+    console.log("settingDefaultViewReset ::: Start");
 
     // delete local storage key and its related value
-    localStorage.removeItem("defaultView");
+    localStorage.removeItem("settingDefaultView");
 
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
@@ -189,7 +269,7 @@ function resetDefaultView()
     // send notification
     sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
 
-    console.log("resetDefaultView ::: Start");
+    console.log("settingDefaultViewReset ::: Start");
 }
 
 
@@ -363,29 +443,6 @@ function checkForNewRelease()
 
 
 /**
-* @name updateDefaultView
-* @summary Stores a new default view to local storage
-* @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
-*/
-function updateDefaultView()
-{
-    console.log("updateDefaultView ::: Start");
-
-    // get currently selected value from select
-    var newDefaultView = $( "#selectDefaultView" ).val();
-    console.log("updateDefaultView ::: New default view on start is set to: " + newDefaultView);
-
-    // Store new default view in local storage
-    writeLocalStorage("defaultView", newDefaultView);
-
-    // send notification
-    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
-
-    console.log("updateDefaultView ::: End");
-}
-
-
-/**
 * @name validateConfiguredDefaultView
 * @summary Checks on startup if the service configured as default view is a valid / enabled service
 * @description Checks if the default view is valid, otherwise fallbacks to settings view
@@ -435,7 +492,7 @@ function validateConfiguredDefaultView()
             $("#selectDefaultView").prop("selectedIndex",0);
 
             // delete the localstorage entry for defaultview
-            resetDefaultView();
+            settingDefaultViewReset();
         }
     }
 
@@ -506,6 +563,11 @@ function loadServiceSpecificCode(serviceName)
             googlemailStart();
             break;
 
+        case "Mattermost":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            mattermostStart();
+            break;
+
          case "Slack":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             slackStart();
@@ -532,6 +594,83 @@ function loadServiceSpecificCode(serviceName)
 
     console.log("loadServiceSpecificCode ::: End");
 }
+
+
+
+/**
+* @name initMattermost
+* @summary checks if local storage contains a custom mattermost url
+* @description Checks if custom mattermost url is stored in local storage. If not a prompt appears where the user can define the target url.
+*/
+function initMattermost()
+{
+    console.log("initMattermost ::: Start");
+
+    // check if there is a url specificed in local storage
+    var mattermostUrl = readLocalStorage("serviceMattermostUrl");
+    if( (mattermostUrl === "") || (mattermostUrl === null) )
+    {
+        console.warn("initMattermost ::: Custom Mattermost URL is not yet defined.");
+
+        const prompt = require("electron-prompt");
+ 
+        prompt({
+            title: "Mattermost url",
+            label: "Please insert your mattermost server URL",
+            value: "https://mattermost.example.org",
+            inputAttrs: {
+                type: "url"
+            },
+            icon: '../../img/icon/icon_64x64.png'
+            //icon: "../resources/installer/icons/64x64.png"
+        })
+        .then((r) => {
+            if(r === null) {
+                console.log("initMattermost ::: User cancelled the URL dialog.");
+                
+                // hide tab
+                $("#menu_mattermost").hide();
+
+                // uncheck service checkbox
+                $("#Mattermost").prop("checked", false);
+
+                // set service mattermost to false
+                writeLocalStorage("Mattermost", "false");
+            } 
+            else 
+            {
+                // TODO: check if url is reachable 
+
+                console.log('result', r);
+                mattermostUrl = r;
+
+                // update title property of service
+                $('#label_Mattermost').prop('title', mattermostUrl);
+
+                // Save value to local storage
+                writeLocalStorage("serviceMattermostUrl", mattermostUrl);
+
+                console.log("initMattermost ::: Custom Mattermost URL is now set to: " + mattermostUrl + ". Stored value in local storage");
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        // set src of mattermost webview
+        document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+
+        // show custom url in services-list
+        //$('#label_Mattermost').val($('#label_Mattermost').val() + ' (url: ' + mattermostUrl + ')');
+
+        // adjust title
+        $('#label_Mattermost').prop('title', mattermostUrl);
+
+    }
+
+    console.log("initMattermost ::: End");
+}
+
 
 
 /**
@@ -578,6 +717,16 @@ function toggleCheckbox(objectName)
 
             // send notification
             sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
+
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                initMattermost();
+            }
+
+
         }
         else
         {
@@ -609,6 +758,19 @@ function toggleCheckbox(objectName)
 
             // send notification
             sendNotification("Service deactivation", "Deactivated the service <b>" + objectName + "</b>");
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceMattermostUrl");
+
+                // adjust service label back to default
+                //$('#label_Mattermost').val("Mattermost");
+                $('#label_Mattermost').prop('title', "");
+
+            }
         }
 
         validateConfiguredDefaultView();
@@ -636,12 +798,11 @@ function initSettingsPage()
 
     // get appname and version
     var appVersion = require("electron").remote.app.getVersion();
-    var appName = require("electron").remote.app.getName();
+    //var appName = require("electron").remote.app.getName();
     var serviceName;
     var curSettingAutostart;
 
     // show appname and version
-    $( "#settingsAppName" ).html( appName );
     $( "#settingsAppVersion" ).html( appVersion );
 
 
@@ -653,6 +814,7 @@ function initSettingsPage()
     for (var i = 0; i < arrayLength; i++)
     {
         serviceName =  ttthAvailableServices[i];
+        serviceUrl = ttthServicesUrls[i];
 
         console.log("initSettingsPage ::: Checking status of service: " + serviceName);
 
@@ -660,7 +822,7 @@ function initSettingsPage()
         //
         //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
         //
-        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ serviceName +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
+        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
 
 
         // Show activated services as enabled in settings
@@ -698,6 +860,14 @@ function initSettingsPage()
         }
     }
 
+    // specialcase: Mattermost
+    var mattermostEnabled = readLocalStorage("Mattermost")
+    if(mattermostEnabled === "true")
+    {
+        initMattermost();
+    }
+    
+
     // Setting: DefaultView
     //
     // Change defaultView select item to select2 item
@@ -721,6 +891,24 @@ function initSettingsPage()
     {
         console.log("initSettingsPage ::: Setting Autostart is not configured");
     }
+
+
+    // Setting: AutostartMinimized
+    //
+    curSettingAutostartMinimized = readLocalStorage("settingAutostartMinimized");
+    if(curSettingAutostartMinimized === "true")
+    {
+        console.log("initSettingsPage ::: Setting AutostartMinimized is configured");
+
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+        $("#checkboxSettingAutostartMinimized").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
+    }
+
 
     console.log("initSettingsPage ::: End");
 }

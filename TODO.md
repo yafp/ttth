@@ -4,22 +4,16 @@
 * Services
   * Google Mail
     * Check for unread messages
-  * StackExchange ..
-  * discord?
+  * Google MEssages -> add unread message function  
+  * StackExchange?
+  * Discord?
   * Google Duo (video -> webcam)?
   * YouTube?
-  * Mattermost ( needs a custom url)
+  * xing?
+  * linkedin?
+  * skype?
 
 * Build: minify js on build / uglify
-
-* Settings
-  * Start on user-login -> https://electronjs.org/docs/api/app#appsetloginitemsettingssettings-macos-windows
-    * Windows and Mac: https://stackoverflow.com/questions/46318177/how-to-use-auto-launch-to-start-app-on-system-startup
-  * start minimized
-  * support for languages / Localization https://www.christianengvall.se/electron-localization/
-     detect local language: app.getLocale() or navigator.language
-
-
 
 ## maybe / ideas / brainstorming
 * Splashscreen
@@ -28,5 +22,5 @@
   * Slim it down (size-wise) - see: https://blog.webjeda.com/optimize-fontawesome/ - maybe using: IcoMoon
 
 
-
-* Rambox app/store/ServicesList.js -> resource for checkUnread functions for several services 
+## Source for unread message functions
+* Rambox: app/store/ServicesList.js

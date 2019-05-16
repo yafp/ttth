@@ -17,17 +17,20 @@
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.
 
 ## services
+* Freenode
 * GitHub
 * Google Calendar
 * Google Contacts
 * Google Keep
-* Google Mail
-* Google Messages (1)
+* Google Mail <sub><sup>(1)<sub><sup>
+* Google Messages
 * Google Photos
-* Slack (1, 2)
-* Telegram (1)
-* Threema (1)
-* WhatsApp (1)
+* Mattermost <sub><sup>(2)<sub><sup>
+* Slack <sub><sup>(1, 2)<sub><sup>
+* Telegram <sub><sup>(1)<sub><sup>
+* Threema <sub><sup>(1, 2)<sub><sup>
+* Twitter
+* WhatsApp <sub><sup>(1)<sub><sup>
 
 
 <sub><sup>
@@ -37,7 +40,7 @@
 </sup></sub>
 
 ## ui
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/ui_latest.png)
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshot/ui_latest.png)
 
 
 ## install
@@ -58,6 +61,18 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 #### Snap
 * Download the latest .snap
 * execute: ```sudo snap install /path/to/local/ttth-file.snap```
+
+
+### windows
+
+#### portable
+* missing
+
+#### installer
+* missing
+
+#### zip
+* missing
 
 
 ## changelog
