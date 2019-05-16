@@ -1,6 +1,16 @@
 {
     "tabnamesSettings": "Einstellungen",
     "settingsSectionAbout": "Über",
+    "settingsSectionAboutDescription": "ttth (talk to the hand) ist eine auf Electron basierende Desktop Anwendung für Online Dienste wie WhatsApp, Threema, Telegram, Twitter, Google und diverse andere.",
+    "settingsSectionAboutButtonReadme": "Lies mich",
+    "settingsSectionAboutButtonReleases": "Versionen",
+    "settingsSectionAboutButtonChangelog": "Änderungsprotokoll",
+    "settingsSectionAboutButtonLicense": "Lizenz",
+    "settingsSectionAboutButtonGitHub": "GitHub",
+    "settingsSectionAboutButtonIssues": "Probleme",
+    "settingsSectionAboutButtonConsole": "Entwickler Konsole",
     "settingsSectionServices": "Dienste",
-    "settingsSectionStartup": "Startoptionen"
+    "settingsSectionServicesInfo": "Du kannst die angebotenen Dienste hier aktivieren oder deaktivieren.",
+    "settingsSectionStartup": "Startoptionen",
+    "settingsSectionStartupInfo": "Du kannst hier einige Startoptionen konfigurieren."
 }
