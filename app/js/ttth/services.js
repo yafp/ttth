@@ -2,6 +2,7 @@
 // AVAILABLE SERVICES
 // -----------------------------------------------------------------------------
 var ttthAvailableServices = new Array(
+    "Freenode",
     "GitHub",
     "GoogleCalendar",
     "GoogleContacts",
@@ -9,9 +10,11 @@ var ttthAvailableServices = new Array(
     "GoogleMail",
     "GoogleMessages",
     "GooglePhotos",
+    "Mattermost",
     "Slack",
     "Telegram",
     "Threema",
+    "Twitter",
     "WhatsApp",
 );
 
@@ -19,6 +22,7 @@ var ttthAvailableServices = new Array(
 // SERVICE URLS
 // -----------------------------------------------------------------------------
 var ttthServicesUrls = new Array(
+    "https://webchat.freenode.net",
     "https://github.com/",
     "https://calendar.google.com/calendar/r",
     "https://contacts.google.com/",
@@ -26,8 +30,10 @@ var ttthServicesUrls = new Array(
     "https://mail.google.com/mail/",
     "https://messages.google.com/web",
     "https://photos.google.com/",
+    "https://", // Mattermost is using user specific custom url
     "https://slack.com",
     "https://web.telegram.org/",
     "https://web.threema.ch/",
+    "https://mobile.twitter.com/",
     "https://web.whatsapp.com/",
 );
