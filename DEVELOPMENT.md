@@ -92,3 +92,4 @@ This document contains informations for ttth developers
 * Send and retrieve informations from webview: https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
 * https://github.com/hokein/electron-sample-apps
 * Localization: https://www.christianengvall.se/electron-localization/
+* Keyboard Shortcuts: https://electronjs.org/docs/api/accelerator
