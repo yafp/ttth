@@ -6,9 +6,7 @@ const {ipcRenderer} = require("electron");
 //
 ipcRenderer.on("request", function()
 {
-    console.log("request ::: Start");
     ipcRenderer.sendToHost(getUnreadTelegramMessageCount());
-    console.log("request ::: End");
 });
 
 
@@ -61,6 +59,6 @@ function getUnreadTelegramMessageCount()
         // send back from webview to main
         ipcRenderer.sendToHost(counter);
 
-        return counter;
+        //return counter;
     }
 }

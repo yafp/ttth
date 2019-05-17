@@ -36,20 +36,16 @@
     <script type="text/javascript" src="js/semver/2.0.0/semver.min.js" async></script>
 
 
-    <!-- ttth -->
+    <!-- ttth: general -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services.js" async></script>
-    <!-- ttth service specific -->
+    <!-- ttth: service specific scripts -->
     <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
     <script type="text/javascript" src="js/ttth/mattermost.js" async></script>
     <script type="text/javascript" src="js/ttth/slack.js" async></script>
     <script type="text/javascript" src="js/ttth/telegram.js" async></script>
     <script type="text/javascript" src="js/ttth/threema.js" async></script>
     <script type="text/javascript" src="js/ttth/whatsapp.js" async></script>
-
-    <!-- translation -->
-    <script type="text/javascript" src="js/ttth/translate.js" async></script>
-
 
 </head>
 
@@ -393,7 +389,7 @@
                 <!-- TabContent: WhatsApp -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
 
-                    <script>whatsappRegister();</script>
+                    <script>serviceWhatsAppRegister();</script>
 
                     <webview
                         id="WhatsAppWebview"
@@ -564,15 +560,14 @@ $( document ).ready(function()
 
     $('#myTabs a').click(function (link)
     {
-        console.log("ready ::: Activating tab: " + link.currentTarget.innerText);
+        console.log("ready ::: Switching to tab: " + link.currentTarget.innerText);
 
         console.log(link.currentTarget.innerText);
         if(link.currentTarget.innerText === " WhatsApp")
         {
-            //register();
+            // do something
         }
     })
-
 
     // init menu / navigation
     initMenu();
@@ -581,7 +576,7 @@ $( document ).ready(function()
     checkSupportedOperatingSystem();
 
     // check for updates
-    checkForNewRelease();
+    searchUpdate();
 
     // init the settings tab
     initSettingsPage();
@@ -589,19 +584,15 @@ $( document ).ready(function()
     // Load default view
     loadDefaultView();
 
-    // Check for unread messages for certain services
-    //
-    //telegramStart();
-    //whatsappStart();
+    // Translate using i18next
+    localizeUserInterface();
 
     // send notification
-    sendNotification("State", "Finished initializing.");
+    sendNotification("State", "Ready");
 
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
 
-    // Try to use i18next
-    doTranslate();
 
 });
 </script>

@@ -9,9 +9,9 @@ const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron")
 const nodeConsole = require("console"); // for writing to terminal
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
-const shell = require('electron').shell
+const shell = require("electron").shell;
 
-const openAboutWindow = require('about-window').default;
+const openAboutWindow = require("about-window").default;
 
 var AutoLaunch = require("auto-launch"); // for autostart
 
@@ -63,7 +63,7 @@ function createWindow ()
         minWidth: 800,
         minHeight: 600,
         backgroundColor: "#ffffff",
-        icon: path.join(__dirname, "resources/installer/icons/64x64.png"),
+        icon: path.join(__dirname, "app/img/icon/64x64.png"),
         webPreferences: {
             nodeIntegration: true
         }
@@ -74,36 +74,36 @@ function createWindow ()
     // Create a custom menu
     //
     var menu = Menu.buildFromTemplate([
-    // Menu: File    
+    // Menu: File
     {
-        label: 'File',
+        label: "File",
         submenu: [
         {
-            label:'Reload',
-            click() { 
+            label: "Reload",
+            click() {
                 mainWindow.reload()
             },
-             accelerator: 'CmdOrCtrl+R'
+             accelerator: "CmdOrCtrl+R"
         },
         {
-            type:'separator'
+            type: "separator"
         },
         {
-            label:'Exit',
-            click() { 
-                app.quit() 
+            label: "Exit",
+            click() {
+                app.quit()
             },
-            accelerator: 'CmdOrCtrl+Q'
+            accelerator: "CmdOrCtrl+Q"
         }
     ]
     },
-    // Menu: Window    
+    // Menu: Window
     {
-        label: 'Window',
+        label: "View",
         submenu: [
         {
-            label:'Toggle Fullscreen',
-            click() { 
+            label: "Toggle Fullscreen",
+            click() {
                 if(mainWindow.isFullScreen())
                 {
                     mainWindow.setFullScreen(false)
@@ -112,67 +112,81 @@ function createWindow ()
                 {
                     mainWindow.setFullScreen(true)
                 }
-                
+
             },
-            accelerator: 'F11'
+            accelerator: "F11"
         },
         {
-            label:'Minimize',
+            label: "Toggle MenuBar",
+            click() {
+                if(mainWindow.isMenuBarVisible())
+                {
+                    mainWindow.setMenuBarVisibility(false);
+                }
+                else
+                {
+                    mainWindow.setMenuBarVisibility(true);
+                }
+
+            },
+            accelerator: "F3"
+        },
+
+        {
+            label: "Minimize",
             enabled: false
         },
         {
-            label:'Console',
+            label: "Console",
             enabled: false
         }
     ]
     },
     // Menu: Help
     {
-        label: 'Help',
+        label: "Help",
         submenu: [
         {
-            label:'Homepage',
-            click() { 
+            label: "Homepage",
+            click() {
                 shell.openExternal("https://github.com/yafp/ttth")
             },
-            accelerator: 'F1'
+            accelerator: "F1"
         },
         // report issue
         {
-            label:'Report issue',
-            click() { 
+            label: "Report issue",
+            click() {
                 shell.openExternal("https://github.com/yafp/ttth/issues")
             },
-            accelerator: 'F2'
+            accelerator: "F2"
         },
         // Updates
         {
-            label:'Search for updates',
+            label: "Search for updates",
             enabled: false
         },
         // About
         {
-            label:'About',
-            click() { 
+            label: "About",
+            click() {
                 openAboutWindow({
-                    icon_path: path.join(__dirname, '/resources/installer/icons/512x512.png'),
-                     open_devtools: false,
-                     win_options: {
-                        // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
-                        //
+                    icon_path: path.join(__dirname, "app/img/about/512x512.png"),
+                    open_devtools: false,
+                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                    {
                         opacity: 0.9, // not implemented on linux
                         autoHideMenuBar: true,
-                        titleBarStyle: 'hidden', 
+                        titleBarStyle: "hidden",
                         minimizable: false, // not implemented on linux
                         maximizable: false, // not implemented on linux
                         movable: false, // not implemented on linux
-                        resizable: false, 
+                        resizable: false,
                         maximizable: false,
-                        //center: true,
                         alwaysOnTop: true,
                         fullscreenable: false,
                         skipTaskbar: false
-                        //frame: false
+                        //css_path: "app/css/ttth/about.css"
                     }
                 });
 
@@ -187,9 +201,11 @@ function createWindow ()
 
     // use the menu
     //
-    Menu.setApplicationMenu(menu); 
+    Menu.setApplicationMenu(menu);
 
 
+    // hide menubar on launch
+    mainWindow.setMenuBarVisibility(false);
 
 
 
@@ -265,12 +281,14 @@ function createTray()
     let tray = null;
     app.on("ready", () => {
 
-        tray = new Tray("resources/installer/icons/64x64.png");
+
+        tray = new Tray(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
+
         const contextMenu = Menu.buildFromTemplate([
             {
                 // Appname & Version
                 id: "info",
-                icon: "resources/installer/icons/24x24.png",
+                icon: path.join(__dirname, "app/img/tray/24x24.png"),
                 label: app.getName() + " (Version: " + app.getVersion() + ")",
                 enabled: false
             },
@@ -312,7 +330,7 @@ function createTray()
         tray.setContextMenu(contextMenu);
 
 
-        // copied from rambox
+        // from rambox
         switch (process.platform)
         {
             case "darwin":
@@ -349,21 +367,19 @@ function createTray()
                 break;
         }
 
-
-
     });
 
 
     // Change to UnreadMessages Tray Icon
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage("resources/installer/icons/64x64_tray_unread.png");
+        tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_unread.png"));
     })
 
     // Change to Default Tray Icon
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        tray.setImage("resources/installer/icons/64x64_tray_default.png");
+        tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
     })
 
 }
@@ -460,6 +476,3 @@ app.on("activate", function ()
 
 // create the tray
 createTray();
-
-
-

@@ -1,11 +1,11 @@
 /**
-* @name updateWhatsAppBadge
+* @name serviceWhatsAppUpdateBadge
 * @summary Updates the unread message badge of WhatsApp
 * @description Updates the unread message badge of WhatsApp
 */
-function updateWhatsAppBadge(count)
+function serviceWhatsAppUpdateBadge(count)
 {
-    console.log("updateWhatsAppBadge ::: Start");
+    console.log("serviceWhatsAppUpdateBadge ::: Start");
 
     // might be null - should be ignored
     if(count === null)
@@ -13,7 +13,7 @@ function updateWhatsAppBadge(count)
         return;
     }
 
-    console.log("updateWhatsAppBadge ::: New count is: " + count);
+    console.log("serviceWhatsAppUpdateBadge ::: New count is: " + count);
 
     if(count === 0)
     {
@@ -26,19 +26,19 @@ function updateWhatsAppBadge(count)
     // Update tray icon status if needed
     updateTrayIconStatus();
 
-    console.log("updateWhatsAppBadge ::: End");
+    console.log("serviceWhatsAppUpdateBadge ::: End");
 }
 
 
 
 /**
-* @name whatsappStart
+* @name serviceWhatsAppAddEventListener
 * @summary Adds several event listener to WhatsApp WebView
 * @description Adds several event listener to WhatsApp WebView
 */
-function whatsappStart()
+function serviceWhatsAppAddEventListener()
 {
-    console.log("whatsappStart ::: Start");
+    console.log("serviceWhatsAppAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("WhatsAppWebview");
@@ -68,7 +68,7 @@ function whatsappStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("whatsappStart ::: did-start-loading.");
+        console.log("serviceWhatsAppAddEventListener ::: did-start-loading.");
     });
 
 
@@ -76,7 +76,7 @@ function whatsappStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("whatsappStart ::: DOM-Ready");
+        console.log("serviceWhatsAppAddEventListener ::: DOM-Ready");
     });
 
 
@@ -84,7 +84,7 @@ function whatsappStart()
     //
     webview.addEventListener("did-frame-finish-load", function()
     {
-        console.log("whatsappStart ::: did-frame-finish-load.");
+        console.log("serviceWhatsAppAddEventListener ::: did-frame-finish-load.");
     });
 
 
@@ -92,7 +92,7 @@ function whatsappStart()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("whatsappStart ::: did-stop-loading");
+        console.log("serviceWhatsAppAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //
@@ -100,38 +100,34 @@ function whatsappStart()
 
         // Triggering search for unread messages
         webview.send("request");
-
-        // alert-something
-        //webview.send("alert-something", "Hey, i'm alerting this.");
     });
 
 
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("whatsappStart ::: IPC message:");
+        console.log("serviceWhatsAppAddEventListener ::: IPC message:");
         //console.log(event);
         //console.error(event.channel);
 
         // update the badge
-        updateWhatsAppBadge(event.channel);
+        serviceWhatsAppUpdateBadge(event.channel);
     });
 
-
-    console.log("whatsappStart ::: End");
+    console.log("serviceWhatsAppAddEventListener ::: End");
 }
 
 
 /**
-* @name whatsappRegister
+* @name serviceWhatsAppRegister
 * @summary Register WhatsApp Web sessions
 * @description Flushes the storage data, clears the storage data -> helps running WhatsApp-Web
 */
-function whatsappRegister()
+function serviceWhatsAppRegister()
 {
-    console.log("whatsappRegister ::: Start");
+    console.log("serviceWhatsAppRegister ::: Start");
 
-    console.log("whatsappRegister ::: Trying to fix WhatsApp-Web connectivity issues");
+    console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
     const { session } = require("electron");
@@ -151,5 +147,5 @@ function whatsappRegister()
 
     // via: https://github.com/meetfranz/franz/issues/1185
 
-    console.log("whatsappRegister ::: End");
+    console.log("serviceWhatsAppRegister ::: End");
 }

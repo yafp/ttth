@@ -8,10 +8,11 @@
         "start": "electron .",
         "start-debug": "electron . --enable-logging",
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=resources/installer/Icon.icns --prune=true --out=release-dist",
-        "package-win-32": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=ia32 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
-        "package-win-64": "electron-packager . ttth --overwrite --asar=true --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
-        "package-linux-32": "electron-packager . ttth --overwrite --asar=true --platform=linux --arch=xia32 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
-        "package-linux-64": "electron-packager . ttth --overwrite --asar=true --platform=linux --arch=x64 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
+        "package-win-32": "electron-packager . ttth --overwrite --platform=win32 --arch=ia32 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-win-64": "electron-packager . ttth --overwrite --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=ttth --version-string.ProductName=\"ttth\"",
+        "package-linux-32": "electron-packager . ttth --overwrite --platform=linux --arch=xia32 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
+        "package-linux-64": "electron-packager . ttth --overwrite --platform=linux --arch=x64 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
+        "build-mac": "build --mac",
         "build-win": "build --win --ia32 --x64",
         "build-win32": "build --win --ia32",
         "build-win64": "build --win --x64",
@@ -33,6 +34,7 @@
     "keywords": [
         "Electron",
         "messenger",
+        "freenode",
         "github",
         "google calendar",
         "google contacts",
@@ -52,12 +54,6 @@
     "build": {
         "productName": "ttth",
         "appId": "de.yafp.ttth",
-        "extraResources": [
-            {
-                "from": "resources/installer",
-                "to": "installer"
-            }
-        ],
         "extraFiles": [
             "LICENSE"
         ],
@@ -92,17 +88,17 @@
             "artifactName": "${productName}-${version}-win-${arch}.${ext}",
             "target": [
                 "zip",
-                "portable",
-                "nsis"
+                "nsis",
+                "portable"
             ]
         },
         "portable": {
             "unicode": false,
-            "artifactName": "${productName}-${version}-win-portable.${arch}.${ext}"
+            "artifactName": "${productName}-${version}-win-portable-${arch}.${ext}"
         },
         "nsis": {
             "unicode": false,
-            "artifactName": "${productName}-${version}-win-installer.${arch}.${ext}"
+            "artifactName": "${productName}-${version}-win-installer-${arch}.${ext}"
         },
         "linux": {
             "executableName": "ttth",

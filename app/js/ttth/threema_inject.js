@@ -3,12 +3,9 @@ const {ipcRenderer} = require("electron");
 
 
 // Do something according to a request of your mainview
-//
 ipcRenderer.on("request", function()
 {
-    console.log("request ::: Start");
     ipcRenderer.sendToHost(getUnreadThreemaMessageCount());
-    console.log("request ::: End");
 });
 
 

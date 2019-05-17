@@ -7,38 +7,8 @@ const {ipcRenderer} = require("electron");
 
 
 
-
-// Do something according to a request of your mainview
-//
-ipcRenderer.on("request", function()
-{
-    console.log("request ::: Start");
-    ipcRenderer.sendToHost(getUnreadWhatsAppMessageCount());
-    console.log("request ::: End");
-});
-
-
-
-ipcRenderer.on("alert-something",function(event,data)
-{
-    alert(data);
-});
-
-
-ipcRenderer.on("change-text-element",function(event,data)
-{
-    // the document references to the document of the <webview>
-    document.getElementById(data.id).innerHTML = data.text;
-});
-
-
-
-
-/**
- **/
 function getUnreadWhatsAppMessageCount()
 {
-
     console.log("getUnreadWhatsAppMessageCount ::: Start");
 
     // try to count unread messages
@@ -55,7 +25,17 @@ function getUnreadWhatsAppMessageCount()
         }
     }
     console.log("getUnreadWhatsAppMessageCount ::: Unread messages in WhatsApp: " + count);
+
     ipcRenderer.sendToHost(count);
+
+    console.log("getUnreadWhatsAppMessageCount ::: End");
 }
 
 
+
+// Do something according to a request of your mainview
+//
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(getUnreadWhatsAppMessageCount());
+});

@@ -1,7 +1,7 @@
 # ttth
 ## changelog
 
-### ttth 1.0.0 (20190516)
+### ttth 1.0.0 (20190517)
 ####  ```Added```
 * Initial version,
 * Ooperating systems
@@ -31,7 +31,7 @@
   * Google Mail (minimal support for unread messages)
   * Google Messages
   * Google Photos
-  * Mattermost
+  * Mattermost (minimal support for unread messages)
   * Slack (minimal support for unread messages)
   * Telegram (minimal support for unread messages)
   * Threema (minimal support for unread messages)

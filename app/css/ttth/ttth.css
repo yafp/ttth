@@ -89,7 +89,7 @@ ul{
 /* SETTINGS */
 /* ########################################################################## */
 .bgimg {
-    background-image: url('../../img/icon/icon_background.png');
+    background-image: url('../../img/settings/icon_background.png');
     background-repeat: no-repeat;
     background-position: right bottom !important; /*Positioning*/
 }

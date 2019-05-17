@@ -115,8 +115,7 @@ function sendNotification(title, message)
 
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: "../resources/installer/icons/64x64.png"
-        /* icon: path.join(__dirname, 'resources/installier/icons/64x64.png') */
+        icon: "img/notification/64x64.png"
     });
 
     /*
@@ -174,7 +173,11 @@ function toggleSettingAutostart()
 
 
 
-
+/**
+* @name toggleSettingAutostartMinimized
+* @summary Enables or disables the autostart minimized
+* @description Enables or disables the autostart minimized
+*/
 function toggleSettingAutostartMinimized()
 {
     console.log("toggleSettingAutostartMinimized ::: Start");
@@ -302,7 +305,7 @@ function checkSupportedOperatingSystem()
         case "windows":
             // define subject & message
             tttModalSubject = "Warning";
-            ttthModalMessage = "is currently in development, but untested.";
+            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
 
             /*
             // update the modal
@@ -314,7 +317,7 @@ function checkSupportedOperatingSystem()
             */
 
             // update the OS-text
-            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+            $("#operatingSystemInformation").html(ttthModalMessage);
 
             // change class
             $("#operatingSystemInformation").attr("class", "alert alert-warning");
@@ -329,17 +332,19 @@ function checkSupportedOperatingSystem()
         default:
             // define subjexct & message
             tttModalSubject = "Error";
-            ttthModalMessage = "is currently not supported.";
+            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
 
+            /*
             // update the modal
             $( ".modalSubject" ).append( tttModalSubject );
             $( ".modalMessage" ).append( "<p>" + userPlatform + " " + ttthModalMessage + "</p>" );
 
             // show the modal
             $("#myModal").modal("show");
+            */
 
             // update the os-info text
-            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+            $("#operatingSystemInformation").html(ttthModalMessage);
 
             // change class
             $("#operatingSystemInformation").attr("class", "alert alert-danger");
@@ -373,38 +378,32 @@ function switchToService(serviceName)
 
 
 /**
-* @name checkForNewRelease
+* @name searchUpdate
 * @summary Checks if there is a new release available
 * @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
 */
-function checkForNewRelease()
+function searchUpdate()
 {
-    console.log("checkForNewRelease ::: Start");
+    console.log("searchUpdate ::: Start");
 
     var remoteAppVersionLatest = "0.0.0";
 
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
-    console.log("checkForNewRelease ::: Checking " + url + " for available releases");
+    console.log("searchUpdate ::: Start checking " + url + " for available releases");
 
-    $.get(url).done(function (data)
+
+    var updateStatus = $.get( url, function( data ) 
     {
+        timeout:3000 // in milliseconds 
+
+        // success
+        //
         var versions = data.sort(function (v1, v2)
         {
             return semver.compare(v2.name, v1.name);
         });
-
-        // if we got no reply from checking for latest release
-        if ( typeof versions[0] === "undefined" )
-        {
-            console.warn("checkForNewRelease ::: No release found on " + url + ". Aborting update check.");
-
-            // hide update information
-            $("#updateInformation").hide();
-
-            return;
-        }
 
         // remote version
         var remoteAppVersionLatest = versions[0].name;
@@ -412,12 +411,12 @@ function checkForNewRelease()
         // local version
         var localAppVersion = require("electron").remote.app.getVersion();
 
-        console.log("checkForNewRelease ::: Local version: " + localAppVersion);
-        console.log("checkForNewRelease ::: Latest public version: " +remoteAppVersionLatest);
+        console.log("searchUpdate ::: Local version: " + localAppVersion);
+        console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
 
-        if(localAppVersion < remoteAppVersionLatest)
+        if( localAppVersion < remoteAppVersionLatest )
         {
-            console.log("checkForNewRelease ::: Found update, notify user");
+            console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
             $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.');
@@ -430,15 +429,35 @@ function checkForNewRelease()
         }
         else
         {
-            console.log("checkForNewRelease ::: No newer version found.");
+            console.log("searchUpdate ::: No newer version found.");
 
             // hide update information
             $("#updateInformation").hide();
-
         }
-    });
 
-    console.log("checkForNewRelease ::: End");
+        console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+    .done(function() 
+    {
+        //alert( "searchUpdate ::: done" );
+        //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+
+    .fail(function() 
+    {
+        //alert( "searchUpdate ::: fail" );
+        console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
+
+        $("#updateInformation").hide();
+    })
+
+    .always(function() 
+    {
+        //alert( "always" );
+        console.log("searchUpdate ::: Finished checking " + url + " for available releases");
+    });
+ 
+    console.log("searchUpdate ::: End");
 }
 
 
@@ -585,7 +604,7 @@ function loadServiceSpecificCode(serviceName)
 
         case "WhatsApp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            whatsappStart();
+            serviceWhatsAppAddEventListener();
             break;
 
         default:
@@ -621,8 +640,7 @@ function initMattermost()
             inputAttrs: {
                 type: "url"
             },
-            icon: '../../img/icon/icon_64x64.png'
-            //icon: "../resources/installer/icons/64x64.png"
+            icon: "img/icon/64x64.png"
         })
         .then((r) => {
             if(r === null) {
@@ -641,11 +659,11 @@ function initMattermost()
             {
                 // TODO: check if url is reachable 
 
-                console.log('result', r);
+                console.log("result", r);
                 mattermostUrl = r;
 
                 // update title property of service
-                $('#label_Mattermost').prop('title', mattermostUrl);
+                $("#label_Mattermost").prop("title", mattermostUrl);
 
                 // Save value to local storage
                 writeLocalStorage("serviceMattermostUrl", mattermostUrl);
@@ -768,7 +786,7 @@ function toggleCheckbox(objectName)
 
                 // adjust service label back to default
                 //$('#label_Mattermost').val("Mattermost");
-                $('#label_Mattermost').prop('title', "");
+                $("#label_Mattermost").prop("title", "");
 
             }
         }
@@ -861,7 +879,7 @@ function initSettingsPage()
     }
 
     // specialcase: Mattermost
-    var mattermostEnabled = readLocalStorage("Mattermost")
+    var mattermostEnabled = readLocalStorage("Mattermost");
     if(mattermostEnabled === "true")
     {
         initMattermost();
@@ -952,4 +970,69 @@ function initMenu()
     }
 
     console.log("initMenu ::: End");
+}
+
+
+/**
+* @name localizeUserInterface
+* @summary Localizes the user interface
+* @description Is using i18next to localize the user interface. Translations are located in app/locales
+*/
+function localizeUserInterface()
+{
+  console.log("localizeUserInterface ::: Start");
+
+  var userLang = navigator.language || navigator.userLanguage;
+
+  // for development screenshot - overwrite the language
+  //userLang = "en";
+
+  console.log("localizeUserInterface ::: Detected user language: " + userLang);
+
+  var i18next = require("i18next");
+  var Backend = require("i18next-sync-fs-backend");
+
+  // should try to detect the user language
+  // and then set the related lang if available
+  var LanguageDetector = require("i18next-electron-language-detector");
+
+  i18next
+  .use(Backend)
+  .use(LanguageDetector)
+  .init({
+    debug: true,
+    whitelist: ["en", "de"],
+    lng: userLang,
+    fallbackLng: "en",
+    ns: "translation",
+    defaultNS: "translation",
+    updateMissing: false,
+    initImmediate: true,
+    backend: {
+      // path where resources get loaded from
+      loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
+
+      // path to post missing resources
+      addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
+
+    // jsonIndent to use when storing json files
+    jsonIndent: 2
+  }
+});
+
+  $(function()
+  {
+    $("[i18n-text]").each(function()
+    {
+      var node = $(this), key = node.attr("i18n-text");
+      node.text(i18next.t(key));
+    });
+    $("[i18n-title]").each(function()
+    {
+      var node = $(this), key = node.attr("i18n-title");
+      node.attr("title", i18next.t(key));
+    });
+  });
+
+  console.log("localizeUserInterface ::: End");
 }
