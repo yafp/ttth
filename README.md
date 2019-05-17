@@ -40,7 +40,7 @@
 </sup></sub>
 
 ## ui
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshot/ui_latest.png)
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 
 ## install
