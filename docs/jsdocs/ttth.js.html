@@ -143,8 +143,7 @@ function sendNotification(title, message)
 
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: "../resources/installer/icons/64x64.png"
-        /* icon: path.join(__dirname, 'resources/installier/icons/64x64.png') */
+        icon: "img/notification/64x64.png"
     });
 
     /*
@@ -202,7 +201,11 @@ function toggleSettingAutostart()
 
 
 
-
+/**
+* @name toggleSettingAutostartMinimized
+* @summary Enables or disables the autostart minimized
+* @description Enables or disables the autostart minimized
+*/
 function toggleSettingAutostartMinimized()
 {
     console.log("toggleSettingAutostartMinimized ::: Start");
@@ -330,7 +333,7 @@ function checkSupportedOperatingSystem()
         case "windows":
             // define subject &amp; message
             tttModalSubject = "Warning";
-            ttthModalMessage = "is currently in development, but untested.";
+            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
 
             /*
             // update the modal
@@ -342,7 +345,7 @@ function checkSupportedOperatingSystem()
             */
 
             // update the OS-text
-            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+            $("#operatingSystemInformation").html(ttthModalMessage);
 
             // change class
             $("#operatingSystemInformation").attr("class", "alert alert-warning");
@@ -357,17 +360,19 @@ function checkSupportedOperatingSystem()
         default:
             // define subjexct &amp; message
             tttModalSubject = "Error";
-            ttthModalMessage = "is currently not supported.";
+            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
 
+            /*
             // update the modal
             $( ".modalSubject" ).append( tttModalSubject );
             $( ".modalMessage" ).append( "&lt;p>" + userPlatform + " " + ttthModalMessage + "&lt;/p>" );
 
             // show the modal
             $("#myModal").modal("show");
+            */
 
             // update the os-info text
-            $("#operatingSystemInformation").html(userPlatform + " " + ttthModalMessage);
+            $("#operatingSystemInformation").html(ttthModalMessage);
 
             // change class
             $("#operatingSystemInformation").attr("class", "alert alert-danger");
@@ -401,38 +406,32 @@ function switchToService(serviceName)
 
 
 /**
-* @name checkForNewRelease
+* @name searchUpdate
 * @summary Checks if there is a new release available
 * @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
 */
-function checkForNewRelease()
+function searchUpdate()
 {
-    console.log("checkForNewRelease ::: Start");
+    console.log("searchUpdate ::: Start");
 
     var remoteAppVersionLatest = "0.0.0";
 
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
-    console.log("checkForNewRelease ::: Checking " + url + " for available releases");
+    console.log("searchUpdate ::: Start checking " + url + " for available releases");
 
-    $.get(url).done(function (data)
+
+    var updateStatus = $.get( url, function( data ) 
     {
+        timeout:3000 // in milliseconds 
+
+        // success
+        //
         var versions = data.sort(function (v1, v2)
         {
             return semver.compare(v2.name, v1.name);
         });
-
-        // if we got no reply from checking for latest release
-        if ( typeof versions[0] === "undefined" )
-        {
-            console.warn("checkForNewRelease ::: No release found on " + url + ". Aborting update check.");
-
-            // hide update information
-            $("#updateInformation").hide();
-
-            return;
-        }
 
         // remote version
         var remoteAppVersionLatest = versions[0].name;
@@ -440,12 +439,12 @@ function checkForNewRelease()
         // local version
         var localAppVersion = require("electron").remote.app.getVersion();
 
-        console.log("checkForNewRelease ::: Local version: " + localAppVersion);
-        console.log("checkForNewRelease ::: Latest public version: " +remoteAppVersionLatest);
+        console.log("searchUpdate ::: Local version: " + localAppVersion);
+        console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
 
-        if(localAppVersion &lt; remoteAppVersionLatest)
+        if( localAppVersion &lt; remoteAppVersionLatest )
         {
-            console.log("checkForNewRelease ::: Found update, notify user");
+            console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
             $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.');
@@ -458,15 +457,35 @@ function checkForNewRelease()
         }
         else
         {
-            console.log("checkForNewRelease ::: No newer version found.");
+            console.log("searchUpdate ::: No newer version found.");
 
             // hide update information
             $("#updateInformation").hide();
-
         }
-    });
 
-    console.log("checkForNewRelease ::: End");
+        console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+    .done(function() 
+    {
+        //alert( "searchUpdate ::: done" );
+        //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+
+    .fail(function() 
+    {
+        //alert( "searchUpdate ::: fail" );
+        console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
+
+        $("#updateInformation").hide();
+    })
+
+    .always(function() 
+    {
+        //alert( "always" );
+        console.log("searchUpdate ::: Finished checking " + url + " for available releases");
+    });
+ 
+    console.log("searchUpdate ::: End");
 }
 
 
@@ -591,6 +610,11 @@ function loadServiceSpecificCode(serviceName)
             googlemailStart();
             break;
 
+        case "Mattermost":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            mattermostStart();
+            break;
+
          case "Slack":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             slackStart();
@@ -608,7 +632,7 @@ function loadServiceSpecificCode(serviceName)
 
         case "WhatsApp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            whatsappStart();
+            serviceWhatsAppAddEventListener();
             break;
 
         default:
@@ -635,28 +659,44 @@ function initMattermost()
     {
         console.warn("initMattermost ::: Custom Mattermost URL is not yet defined.");
 
-        const prompt = require('electron-prompt');
+        const prompt = require("electron-prompt");
  
         prompt({
-            title: 'Mattermost url',
-            label: 'Your mattermost server URL:',
-            value: 'http://mattermost.example.org',
+            title: "Mattermost url",
+            label: "Please insert your mattermost server URL",
+            value: "https://mattermost.example.org",
             inputAttrs: {
-                type: 'url'
-            }
+                type: "url"
+            },
+            icon: "img/icon/64x64.png"
         })
         .then((r) => {
             if(r === null) {
                 console.log("initMattermost ::: User cancelled the URL dialog.");
+                
+                // hide tab
+                $("#menu_mattermost").hide();
+
+                // uncheck service checkbox
+                $("#Mattermost").prop("checked", false);
+
+                // set service mattermost to false
+                writeLocalStorage("Mattermost", "false");
             } 
             else 
             {
-                console.log('result', r);
+                // TODO: check if url is reachable 
+
+                console.log("result", r);
                 mattermostUrl = r;
-                console.log("initMattermost ::: Custom Mattermost URL is now set to: " + mattermostUrl);
+
+                // update title property of service
+                $("#label_Mattermost").prop("title", mattermostUrl);
 
                 // Save value to local storage
                 writeLocalStorage("serviceMattermostUrl", mattermostUrl);
+
+                console.log("initMattermost ::: Custom Mattermost URL is now set to: " + mattermostUrl + ". Stored value in local storage");
             }
         })
         .catch(console.error);
@@ -665,6 +705,13 @@ function initMattermost()
     {
         // set src of mattermost webview
         document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+
+        // show custom url in services-list
+        //$('#label_Mattermost').val($('#label_Mattermost').val() + ' (url: ' + mattermostUrl + ')');
+
+        // adjust title
+        $('#label_Mattermost').prop('title', mattermostUrl);
+
     }
 
     console.log("initMattermost ::: End");
@@ -757,6 +804,19 @@ function toggleCheckbox(objectName)
 
             // send notification
             sendNotification("Service deactivation", "Deactivated the service &lt;b>" + objectName + "&lt;/b>");
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceMattermostUrl");
+
+                // adjust service label back to default
+                //$('#label_Mattermost').val("Mattermost");
+                $("#label_Mattermost").prop("title", "");
+
+            }
         }
 
         validateConfiguredDefaultView();
@@ -784,12 +844,11 @@ function initSettingsPage()
 
     // get appname and version
     var appVersion = require("electron").remote.app.getVersion();
-    var appName = require("electron").remote.app.getName();
+    //var appName = require("electron").remote.app.getName();
     var serviceName;
     var curSettingAutostart;
 
     // show appname and version
-    $( "#settingsAppName" ).html( appName );
     $( "#settingsAppVersion" ).html( appVersion );
 
 
@@ -801,6 +860,7 @@ function initSettingsPage()
     for (var i = 0; i &lt; arrayLength; i++)
     {
         serviceName =  ttthAvailableServices[i];
+        serviceUrl = ttthServicesUrls[i];
 
         console.log("initSettingsPage ::: Checking status of service: " + serviceName);
 
@@ -808,7 +868,7 @@ function initSettingsPage()
         //
         //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
         //
-        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ serviceName +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
 
 
         // Show activated services as enabled in settings
@@ -847,7 +907,12 @@ function initSettingsPage()
     }
 
     // specialcase: Mattermost
-    initMattermost();
+    var mattermostEnabled = readLocalStorage("Mattermost");
+    if(mattermostEnabled === "true")
+    {
+        initMattermost();
+    }
+    
 
     // Setting: DefaultView
     //
@@ -934,6 +999,71 @@ function initMenu()
 
     console.log("initMenu ::: End");
 }
+
+
+/**
+* @name localizeUserInterface
+* @summary Localizes the user interface
+* @description Is using i18next to localize the user interface. Translations are located in app/locales
+*/
+function localizeUserInterface()
+{
+  console.log("localizeUserInterface ::: Start");
+
+  var userLang = navigator.language || navigator.userLanguage;
+
+  // for development screenshot - overwrite the language
+  //userLang = "en";
+
+  console.log("localizeUserInterface ::: Detected user language: " + userLang);
+
+  var i18next = require("i18next");
+  var Backend = require("i18next-sync-fs-backend");
+
+  // should try to detect the user language
+  // and then set the related lang if available
+  var LanguageDetector = require("i18next-electron-language-detector");
+
+  i18next
+  .use(Backend)
+  .use(LanguageDetector)
+  .init({
+    debug: true,
+    whitelist: ["en", "de"],
+    lng: userLang,
+    fallbackLng: "en",
+    ns: "translation",
+    defaultNS: "translation",
+    updateMissing: false,
+    initImmediate: true,
+    backend: {
+      // path where resources get loaded from
+      loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
+
+      // path to post missing resources
+      addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
+
+    // jsonIndent to use when storing json files
+    jsonIndent: 2
+  }
+});
+
+  $(function()
+  {
+    $("[i18n-text]").each(function()
+    {
+      var node = $(this), key = node.attr("i18n-text");
+      node.text(i18next.t(key));
+    });
+    $("[i18n-title]").each(function()
+    {
+      var node = $(this), key = node.attr("i18n-title");
+      node.attr("title", i18next.t(key));
+    });
+  });
+
+  console.log("localizeUserInterface ::: End");
+}
 </code></pre>
         </article>
     </section>
@@ -944,13 +1074,13 @@ function initMenu()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkForNewRelease">checkForNewRelease</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMailMessageCount">getUnreadGoogleMailMessageCount</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#getUnreadWhatsAppMessageCount">getUnreadWhatsAppMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWhatsAppBadge">updateWhatsAppBadge</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#whatsappRegister">whatsappRegister</a></li><li><a href="global.html#whatsappStart">whatsappStart</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#toggleSettingAutostartMinimized">toggleSettingAutostartMinimized</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 15 2019 14:51:14 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 17 2019 15:02:28 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

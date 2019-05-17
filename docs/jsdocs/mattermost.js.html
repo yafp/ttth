@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: telegram_inject.js</title>
+    <title>JSDoc: Source: mattermost.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: telegram_inject.js</h1>
+    <h1 class="page-title">Source: mattermost.js</h1>
 
     
 
@@ -26,69 +26,109 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
-const {ipcRenderer} = require("electron");
-
-
-// Do something according to a request of your mainview
-//
-ipcRenderer.on("request", function()
-{
-    ipcRenderer.sendToHost(getUnreadTelegramMessageCount());
-});
-
-
-/*
-ipcRenderer.on("alert-something",function(event,data)
-{
-    alert(data);
-});
+            <pre class="prettyprint source linenums"><code>/**
+* @name telegramStart
+* @summary Adds several EventListeners to the webview of the service
+* @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-
-/*
-ipcRenderer.on("change-text-element",function(event,data)
+function mattermostStart()
 {
-    // the document references to the document of the &lt;webview>
-    document.getElementById(data.id).innerHTML = data.text;
-});
-*/
+    console.log("mattermostStart ::: Start");
+
+    // get webview
+    var webview = document.getElementById("MattermostWebview");
+
+    // run it periodically
+    //
+    //  5.000 =  5 sec
+    var intervalID = setInterval(function()
+    {
+        webview.send("request");
+    }, 30000);
+
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        console.log("mattermostStart ::: did-start-loading.");
+        webview.send("request");
+    });
+
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
+    {
+        console.log("mattermostStart ::: DOM-Ready");
+        webview.send("request");
+    });
+
+    // WebView Event: did-frame-finish-load
+    //
+    /*
+    webview.addEventListener("did-frame-finish-load", function()
+    {
+        console.log("telegramStart ::: did-frame-finish-load.");
+    });
+    */
+
+    // WebView Event: did-stop-loading
+    //
+    webview.addEventListener("did-stop-loading", function()
+    {
+        console.log("mattermostStart ::: did-stop-loading");
+
+        // Show devTools if you want
+        //webview.openDevTools();
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+    // WebView Event:  ipc-message
+    webview.addEventListener("ipc-message",function(event)
+    {
+        console.log("mattermostStart ::: IPC message:");
+        //console.log(event);
+        //console.info(event.channel);
+
+        // update the badge
+        updateMattermostBadge(event.channel);
+    });
+
+    console.log("mattermostStart ::: End");
+}
 
 
 /**
- **/
-function getUnreadTelegramMessageCount()
+* @name updateMattermostBadge
+* @summary Update the mattermost badge
+* @description Gets the current unread message count and adjust the badge according to it
+* @param count - Amount of unread messages
+*/
+function updateMattermostBadge(count)
 {
-    console.log("getUnreadTelegramMessageCount ::: Start");
+    console.log("updateMattermostBadge ::: Start");
 
-    var counter = 0;
-    var intervalID = window.setInterval(myCallback, 50);
-    function myCallback()
+    // might be null - should be ignored
+    if(count === null)
     {
-        var eventToClick = document.getElementsByClassName("im_dialog_badge badge");
-        if (eventToClick.length > 0)
-        {
-            console.log(eventToClick);
-            for (var i = 0; i &lt; eventToClick.length; i++)
-            {
-                console.log(eventToClick[i]);
-
-                // Check if we count this element or not
-                if(!eventToClick[i].classList.contains("ng-hide")) // Count it
-                {
-                    console.log("getUnreadTelegramMessageCount ::: Found communication with unread messages. +1");
-                    counter = counter +1;
-                }
-            }
-            clearInterval(intervalID);
-        }
-
-        console.log("getUnreadTelegramMessageCount ::: Total Telegram chats with unread messages: " + counter);
-
-        // send back from webview to main
-        ipcRenderer.sendToHost(counter);
-
-        //return counter;
+        return;
     }
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    console.log("updateMattermostBadge ::: New badge value is: " + count);
+
+    // update UI
+    $( "#badge_mattermost" ).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateMattermostBadge ::: End");
 }
 </code></pre>
         </article>
