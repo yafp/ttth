@@ -1,11 +1,12 @@
 // Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
-
 function serviceSlackGetUnreadMessageCount()
 {
-    //console.log("getUnreadSlackMessageCount ::: Start");
     console.log("serviceSlackGetUnreadMessageCount ::: Start");
+
+    var n;
+    var counter;
 
     var a=document.querySelectorAll(".p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)").length;
     n=0;

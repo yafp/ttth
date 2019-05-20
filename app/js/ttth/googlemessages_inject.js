@@ -2,11 +2,7 @@
 const {ipcRenderer} = require("electron");
 
 
-// Do something according to a request of your mainview
-ipcRenderer.on("request", function()
-{
-    ipcRenderer.sendToHost(getUnreadGoogleMessagesCount());
-});
+
 
 
 function getUnreadGoogleMessagesCount()
@@ -19,6 +15,10 @@ function getUnreadGoogleMessagesCount()
 
     // send back from webview to main
     ipcRenderer.sendToHost(counter);
-
-    //return counter;
 }
+
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(getUnreadGoogleMessagesCount());
+});
