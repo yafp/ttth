@@ -45,15 +45,16 @@
     <section>
         <article><p><img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub">
 <a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a>
-<img src="https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/release/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat" alt="">
-<img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo_128x128.png" alt="logo"></p>
+<img src="https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat" alt="Languages">
+<img src="https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat" alt="Repo Size">
+<img src="https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat" alt="Code Size">
+<img src="https://img.shields.io/github/release/yafp/ttth.svg?style=flat" alt="GitHub Current Release">
+<img src="https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat" alt="GitHub Release Date">
+<img src="https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat" alt="GitHub Last Commit">
+<img src="https://img.shields.io/github/downloads/yafp/ttth/total.svg" alt="GitHub All Releases">
+<img src="https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Closed">
+<img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Open"></p>
+<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/64x64.png" alt="logo"></p>
 <h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.</p>
 <h2>services</h2><ul>
 <li>Freenode</li>
@@ -74,7 +75,7 @@
 <p><sub><sup>
 <strong>Legend:</strong><br>1 = featuring basic unread messages badge;<br>2 = experimental
 </sup></sub></p>
-<h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshot/ui_latest.png" alt="logo"></p>
+<h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png" alt="logo"></p>
 <h2>install</h2><p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
 <h3>linux</h3><h4>.deb</h4><ul>
 <li>Download the latest .deb</li>
@@ -90,17 +91,12 @@
 <li>Download the latest .snap</li>
 <li>execute: <code>sudo snap install /path/to/local/ttth-file.snap</code></li>
 </ul>
-<h3>windows</h3><h4>portable</h4><ul>
-<li>missing</li>
-</ul>
-<h4>installer</h4><ul>
-<li>missing</li>
-</ul>
-<h4>zip</h4><ul>
-<li>missing</li>
+<h3>windows</h3><h4>installer</h4><ul>
+<li>Download the latest *win-installer.exe</li>
+<li>Execute the *win-installer.exe</li>
 </ul>
 <h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
-<h2>getting involved</h2><p>Please see the <a href="DEVELOPMENT.md">developers informations</a> for more details.</p>
+<h2>getting involved</h2><p>Please see the <a href="CONTRIBUTING.md">contributing informations</a> for more details.</p>
 <h2>faq</h2><h3>Where is the user data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p>
 <h4>Windows</h4><p>Please check <code>%APPDATA%\ttth</code></p>
 <h3>How is the autostart information stored?</h3><h4>Linux</h4><p>Using a .desktop entry in <code>~/.config/autostart/</code></p>
@@ -115,13 +111,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initMenu">initMenu</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#telegramStart">telegramStart</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#toggleSettingAutostart">toggleSettingAutostart</a></li><li><a href="global.html#toggleSettingAutostartMinimized">toggleSettingAutostartMinimized</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 17 2019 15:02:28 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 20 2019 11:39:58 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
