@@ -15,7 +15,6 @@
     <!-- 4.3.1 -->
     <link href="js/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
-
     <!-- JAVASCRIPT -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
@@ -35,18 +34,17 @@
     <!-- 2.0.0 -->
     <script type="text/javascript" src="js/semver/2.0.0/semver.min.js" async></script>
 
-
     <!-- ttth: general -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services.js" async></script>
     <!-- ttth: service specific scripts -->
     <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
+    <script type="text/javascript" src="js/ttth/googlemessages.js" async></script>
     <script type="text/javascript" src="js/ttth/mattermost.js" async></script>
     <script type="text/javascript" src="js/ttth/slack.js" async></script>
     <script type="text/javascript" src="js/ttth/telegram.js" async></script>
     <script type="text/javascript" src="js/ttth/threema.js" async></script>
     <script type="text/javascript" src="js/ttth/whatsapp.js" async></script>
-
 </head>
 
 <body>
@@ -202,37 +200,33 @@
     <!-- container -->
     <div class="container-fluid h-100 d-flex flex-column">
 
-         <!-- The Modal - ased as error dialog. Is hidden out of the box-->
+         <!-- The Modal - used as error dialog. Is hidden out of the box-->
+         <!--
         <div class="modal" id="myModal">
             <div class="modal-dialog">
                 <div class="modal-content">
 
-                    <!-- Modal Header -->
                     <div class="modal-header">
                         <h4 class="modal-title modalSubject"></h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
-                    <!-- Modal body -->
                     <div class="modal-body">
-                        <!-- text gets inserted by javascript -->
                         <div class="modalMessage"></div>
                     </div>
 
-                    <!-- Modal footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
         </div>
+        -->
         <!-- /Modal Error Dialog -->
-
 
 
         <!-- Tab Content -->
         <div class="row flex-fill">
-
 
             <!-- Tab panes -->
             <div class="tab-content container-fluid">
@@ -412,10 +406,6 @@
                     <div>
                         <span class="my-ui-text" i18n-text="settingsSectionAboutDescription" id="settingsAppDescription"><!-- Description --></span>
                     </div>
-                    <!-- About: Version -->
-                    <div>
-                        <span class="my-ui-text">Version: </span><span id="settingsAppVersion" class="badge badge-secondary my-ui-text"></span>
-                    </div>
 
                     <!-- List of buttons with links -->
                     <div class="my-ui-text">
@@ -432,7 +422,6 @@
 
                     <!-- Services -->
                     <h3 class="my-ui-text" i18n-text="settingsSectionServices"><!-- Services --></h3>
-                    <p class="my-ui-text" i18n-text="settingsSectionServicesInfo"><!-- Info --></p>
 
                     <div id="settingsAvailableServices">
                         <!-- dynamic service listing via initSettingsPage() && js/ttth/services.js -->
@@ -460,7 +449,6 @@
 
                     <!-- Startup Options-->
                     <h3 class="my-ui-text" i18n-text="settingsSectionStartup"><!-- Startup options --></h3>
-                    <p class="my-ui-text" i18n-text="settingsSectionStartupInfo"><!-- Info --></p>
 
                     <!-- Setting: DefaultView-->
                     <div class="input-group input-group-sm mb-1">
@@ -491,7 +479,7 @@
                     <div class="input-group input-group-sm mb-1">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for following text input" onClick="toggleSettingAutostart();">
+                                <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for following text input" onClick="settingToggleAutostart();">
                             </div>
                         </div>
                         <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login" i18n-text="settingsSectionStartupInfo" disabled>
@@ -504,7 +492,7 @@
                     <div class="input-group input-group-sm mb-1">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="toggleSettingAutostartMinimized();">
+                                <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="settingToggleAutostartMinimized();">
                             </div>
                         </div>
                         <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized (on login)" disabled>
@@ -515,12 +503,8 @@
                 </div>
                 <!-- /Tab: Settings -->
 
-
-
             </div>
             <!-- /Tab panes -->
-
-
 
         </div>
         <!-- /Tab Content -->
@@ -570,7 +554,7 @@ $( document ).ready(function()
     })
 
     // init menu / navigation
-    initMenu();
+    initNavigationTabs();
 
     // check operating system
     checkSupportedOperatingSystem();
@@ -592,7 +576,5 @@ $( document ).ready(function()
 
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
-
-
 });
 </script>

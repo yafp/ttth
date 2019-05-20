@@ -10,7 +10,6 @@ const nodeConsole = require("console"); // for writing to terminal
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
 const shell = require("electron").shell;
-
 const openAboutWindow = require("about-window").default;
 
 var AutoLaunch = require("auto-launch"); // for autostart
@@ -18,6 +17,144 @@ var AutoLaunch = require("auto-launch"); // for autostart
 var path = require("path");
 var fs = require("fs");
 var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
+
+
+
+// -----------------------------------------------------------------------------
+// CREATING THE MENU
+// -----------------------------------------------------------------------------
+function createMenu()
+{
+    // Create a custom menu
+    //
+    var menu = Menu.buildFromTemplate([
+    // Menu: File
+    {
+        label: "File",
+        submenu: [
+        {
+            label: "Exit",
+            click() {
+                app.quit()
+            },
+            accelerator: "CmdOrCtrl+Q"
+        }
+    ]
+    },
+    // Menu: Window
+    {
+        label: "View",
+        submenu: [
+        {
+            label: "Reload",
+            click() {
+                mainWindow.reload()
+            },
+             accelerator: "CmdOrCtrl+R"
+        },
+        {
+            type: "separator"
+        },
+        {
+            label: "Toggle Fullscreen",
+            click() {
+                if(mainWindow.isFullScreen())
+                {
+                    mainWindow.setFullScreen(false)
+                }
+                else
+                {
+                    mainWindow.setFullScreen(true)
+                }
+
+            },
+            accelerator: "F11"
+        },
+        {
+            label: "Toggle MenuBar",
+            click() {
+                if(mainWindow.isMenuBarVisible())
+                {
+                    mainWindow.setMenuBarVisibility(false);
+                }
+                else
+                {
+                    mainWindow.setMenuBarVisibility(true);
+                }
+            },
+            accelerator: "F3"
+        }
+    ]
+    },
+    // Menu: Help
+    {
+        label: "Help",
+        submenu: [
+        // About
+        {
+            label: "About",
+            click() {
+                openAboutWindow({
+                    icon_path: path.join(__dirname, "app/img/about/512x512.png"),
+                    open_devtools: false,
+                    css_path: "app/css/ttth/about.css",
+                    use_version_info: true,
+                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                    {
+                        opacity: 0.9, // not implemented on linux
+                        autoHideMenuBar: true,
+                        titleBarStyle: "hidden",
+                        minimizable: false, // not implemented on linux
+                        maximizable: false, // not implemented on linux
+                        movable: false, // not implemented on linux
+                        resizable: false,
+                        maximizable: false,
+                        alwaysOnTop: true,
+                        fullscreenable: false,
+                        skipTaskbar: false
+                    }
+                });
+
+            },
+        },
+        {
+            label: "Homepage",
+            click() {
+                shell.openExternal("https://github.com/yafp/ttth")
+            },
+            accelerator: "F1"
+        },
+        // report issue
+        {
+            label: "Report issue",
+            click() {
+                shell.openExternal("https://github.com/yafp/ttth/issues")
+            },
+            accelerator: "F2"
+        },
+        {
+            type: "separator"
+        },
+        // Console
+        {
+            label: "Console",
+            click() {
+                mainWindow.webContents.openDevTools();
+            },
+            enabled: true,
+            accelerator: "F12"
+        },
+        ]
+    }
+    ])
+
+    // use the menu
+    Menu.setApplicationMenu(menu);
+
+    // hide menubar on launch
+    mainWindow.setMenuBarVisibility(false);
+}
+
 
 
 // -----------------------------------------------------------------------------
@@ -70,153 +207,16 @@ function createWindow ()
     });
 
 
+    // create a menu
+    createMenu();
 
-    // Create a custom menu
+    // Restore window position if possible
     //
-    var menu = Menu.buildFromTemplate([
-    // Menu: File
-    {
-        label: "File",
-        submenu: [
-        {
-            label: "Reload",
-            click() {
-                mainWindow.reload()
-            },
-             accelerator: "CmdOrCtrl+R"
-        },
-        {
-            type: "separator"
-        },
-        {
-            label: "Exit",
-            click() {
-                app.quit()
-            },
-            accelerator: "CmdOrCtrl+Q"
-        }
-    ]
-    },
-    // Menu: Window
-    {
-        label: "View",
-        submenu: [
-        {
-            label: "Toggle Fullscreen",
-            click() {
-                if(mainWindow.isFullScreen())
-                {
-                    mainWindow.setFullScreen(false)
-                }
-                else
-                {
-                    mainWindow.setFullScreen(true)
-                }
-
-            },
-            accelerator: "F11"
-        },
-        {
-            label: "Toggle MenuBar",
-            click() {
-                if(mainWindow.isMenuBarVisible())
-                {
-                    mainWindow.setMenuBarVisibility(false);
-                }
-                else
-                {
-                    mainWindow.setMenuBarVisibility(true);
-                }
-
-            },
-            accelerator: "F3"
-        },
-
-        {
-            label: "Minimize",
-            enabled: false
-        },
-        {
-            label: "Console",
-            enabled: false
-        }
-    ]
-    },
-    // Menu: Help
-    {
-        label: "Help",
-        submenu: [
-        {
-            label: "Homepage",
-            click() {
-                shell.openExternal("https://github.com/yafp/ttth")
-            },
-            accelerator: "F1"
-        },
-        // report issue
-        {
-            label: "Report issue",
-            click() {
-                shell.openExternal("https://github.com/yafp/ttth/issues")
-            },
-            accelerator: "F2"
-        },
-        // Updates
-        {
-            label: "Search for updates",
-            enabled: false
-        },
-        // About
-        {
-            label: "About",
-            click() {
-                openAboutWindow({
-                    icon_path: path.join(__dirname, "app/img/about/512x512.png"),
-                    open_devtools: false,
-                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
-                    {
-                        opacity: 0.9, // not implemented on linux
-                        autoHideMenuBar: true,
-                        titleBarStyle: "hidden",
-                        minimizable: false, // not implemented on linux
-                        maximizable: false, // not implemented on linux
-                        movable: false, // not implemented on linux
-                        resizable: false,
-                        maximizable: false,
-                        alwaysOnTop: true,
-                        fullscreenable: false,
-                        skipTaskbar: false
-                        //css_path: "app/css/ttth/about.css"
-                    }
-                });
-
-            },
-
-        },
-        ]
-    }
-    //
-    ])
-
-
-    // use the menu
-    //
-    Menu.setApplicationMenu(menu);
-
-
-    // hide menubar on launch
-    mainWindow.setMenuBarVisibility(false);
-
-
-
-    // Adjust window position if possible
     // requirements: found values in .init.json from the previous session
-    //
     if ( (typeof windowPositionX !== "undefined") && (typeof windowPositionY !== "undefined") )
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
-
 
     // set the user agent
     //changeUserAgent();
@@ -247,6 +247,7 @@ function createWindow ()
 
 
     // show the formerly hidden main window as it is fully ready now
+    //
     mainWindow.on("ready-to-show", function()
     {
         mainWindow.show();
@@ -262,14 +263,7 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
     });
-
-    // Measuring startup
-    console.timeEnd("init");
 }
-
-
-
-
 
 
 
@@ -280,7 +274,6 @@ function createTray()
 {
     let tray = null;
     app.on("ready", () => {
-
 
         tray = new Tray(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
 
@@ -476,3 +469,6 @@ app.on("activate", function ()
 
 // create the tray
 createTray();
+
+// Measuring startup
+console.timeEnd("init");
