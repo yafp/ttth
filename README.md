@@ -1,6 +1,7 @@
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true)](https://ci.appveyor.com/project/yafp/ttth)
+[![Build Status](https://travis-ci.org/yafp/ttth.svg?branch=master)](https://travis-ci.org/yafp/ttth)
 ![GitHub Current Release](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
 ![GitHub Release Date](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
 ![GitHub All Releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
