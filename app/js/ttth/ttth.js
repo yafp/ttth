@@ -1,40 +1,6 @@
 /* global _ */
 
 
-
-/**
-* @name updateServiceBadge
-* @summary Updates the badge of a single service
-* @description gets the name of a service and its current unread message count. Updates the badge of the related service
-* @param serviceName - Name of the service
-* @param count - Amount of unread messages
-*/
-function updateServiceBadge(serviceName, count)
-{
-    console.log("updateServiceBadge ::: Start");
-
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateServiceBadge ::: New count for service _" + serviceName + "_ is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update the badge
-    $( "#badge_" + serviceName.toLowerCase()).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateServiceBadge ::: End");
-}
-
-
 /**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
@@ -84,6 +50,39 @@ function updateTrayIconStatus()
     }
 
     console.log("updateTrayIconStatus ::: End");
+}
+
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceName - Name of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceName, count)
+{
+    console.log("updateServiceBadge ::: Start");
+
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateServiceBadge ::: New count for service _" + serviceName + "_ is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceName.toLowerCase()).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateServiceBadge ::: End");
 }
 
 
@@ -189,7 +188,7 @@ function settingToggleAutostart()
         writeLocalStorage("settingAutostartMinimized", false);
 
         // adjust UI:
-        // make sure check checkfor for  AutostartStartMinimized is unchecked as well
+        // make sure check checkfor for AutostartStartMinimized is unchecked as well
         $("#checkboxSettingAutostartMinimized").prop("checked", false);
 
         console.log("settingToggleAutostart ::: Finished disabling Autostart");
@@ -308,8 +307,7 @@ function checkSupportedOperatingSystem()
 {
     console.log("checkSupportedOperatingSystem ::: Start");
 
-    var tttModalSubject = "";
-    var ttthModalMessage = "";
+    var supportedOperatingSystemMessage = "";
     var userPlatform = process.platform;
 
     console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
@@ -677,26 +675,26 @@ function initMattermost()
 
 
 /**
-* @name toggleCheckbox
+* @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
 * @param objectName - Name of the checkbox
 */
-function toggleCheckbox(objectName)
+function settingsToggleSingleServiceCheckbox(objectName)
 {
-    console.log("toggleCheckbox ::: Start");
-    //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
+    console.log("settingsToggleSingleServiceCheckbox ::: Start");
 
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
     var arrayPosition = ttthAvailableServices.indexOf(objectName);
     var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1);
+    var curServiceUrl = ttthServicesUrls[arrayPosition];
 
     if(objectNameIsValid === true)
     {
         if($("#" + objectName).prop("checked"))
         {
-            console.log("toggleCheckbox ::: Activating " + objectName);
+            console.log("settingsToggleSingleServiceCheckbox ::: Activating " + objectName);
 
             // write to local storage
             writeLocalStorage(objectName, "true");
@@ -712,8 +710,8 @@ function toggleCheckbox(objectName)
             $("#bt_" + objectName).attr("title", "enabled");
 
             // update webview src
-            document.getElementById( objectName + "Webview" ).setAttribute( "src", ttthServicesUrls[arrayPosition]);
-            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", curServiceUrl);
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now: " + curServiceUrl);
 
             // check if there is service-specific code to load
             loadServiceSpecificCode(objectName);
@@ -730,7 +728,7 @@ function toggleCheckbox(objectName)
         }
         else
         {
-            console.log("toggleCheckbox ::: Deactivating " + objectName);
+            console.log("settingsToggleSingleServiceCheckbox ::: Deactivating " + objectName);
 
             // write to local storage
             writeLocalStorage(objectName, "false");
@@ -743,7 +741,7 @@ function toggleCheckbox(objectName)
             {
                 if (this.value === objectName)
                 {
-                    console.log("toggleCheckbox ::: Deleting item from select");
+                    console.log("settingsToggleSingleServiceCheckbox ::: Deleting item from select");
                     this.remove();
                 }
             });
@@ -754,7 +752,7 @@ function toggleCheckbox(objectName)
 
             // update webview src
             document.getElementById( objectName + "Webview" ).setAttribute( "src", "");
-            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now empty");
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
             sendNotification("Service deactivation", "Deactivated the service <b>" + objectName + "</b>");
@@ -767,7 +765,6 @@ function toggleCheckbox(objectName)
                 localStorage.removeItem("serviceMattermostUrl");
 
                 // adjust service label back to default
-                //$('#label_Mattermost').val("Mattermost");
                 $("#label_Mattermost").prop("title", "");
 
             }
@@ -778,10 +775,10 @@ function toggleCheckbox(objectName)
     }
     else
     {
-        console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
+        console.warn("settingsToggleSingleServiceCheckbox ::: Got an invalid objectName: " + objectName);
     }
 
-    console.log("toggleCheckbox ::: End");
+    console.log("settingsToggleSingleServiceCheckbox ::: End");
 }
 
 
@@ -819,8 +816,8 @@ function initSettingsPage()
 
         // Add service to settings page
         //
-        //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
-        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
+        //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="settingsToggleSingleServiceCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
+        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
 
         // Show activated services as enabled in settings
         // add them to the default view select item
@@ -1002,7 +999,6 @@ function localizeUserInterface()
       node.attr("title", i18next.t(key));
     });
   });
-  
 
   console.log("localizeUserInterface ::: End");
 }

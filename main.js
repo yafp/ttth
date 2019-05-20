@@ -35,7 +35,7 @@ function createMenu()
         {
             label: "Exit",
             click() {
-                app.quit()
+                app.quit();
             },
             accelerator: "CmdOrCtrl+Q"
         }
@@ -48,7 +48,7 @@ function createMenu()
         {
             label: "Reload",
             click() {
-                mainWindow.reload()
+                mainWindow.reload();
             },
              accelerator: "CmdOrCtrl+R"
         },
@@ -60,11 +60,11 @@ function createMenu()
             click() {
                 if(mainWindow.isFullScreen())
                 {
-                    mainWindow.setFullScreen(false)
+                    mainWindow.setFullScreen(false);
                 }
                 else
                 {
-                    mainWindow.setFullScreen(true)
+                    mainWindow.setFullScreen(true);
                 }
 
             },
@@ -108,7 +108,6 @@ function createMenu()
                         maximizable: false, // not implemented on linux
                         movable: false, // not implemented on linux
                         resizable: false,
-                        maximizable: false,
                         alwaysOnTop: true,
                         fullscreenable: false,
                         skipTaskbar: false
@@ -120,7 +119,7 @@ function createMenu()
         {
             label: "Homepage",
             click() {
-                shell.openExternal("https://github.com/yafp/ttth")
+                shell.openExternal("https://github.com/yafp/ttth");
             },
             accelerator: "F1"
         },
@@ -128,7 +127,7 @@ function createMenu()
         {
             label: "Report issue",
             click() {
-                shell.openExternal("https://github.com/yafp/ttth/issues")
+                shell.openExternal("https://github.com/yafp/ttth/issues");
             },
             accelerator: "F2"
         },
@@ -146,7 +145,7 @@ function createMenu()
         },
         ]
     }
-    ])
+    ]);
 
     // use the menu
     Menu.setApplicationMenu(menu);
@@ -367,13 +366,13 @@ function createTray()
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_unread.png"));
-    })
+    });
 
     // Change to Default Tray Icon
     //
     ipcMain.on("changeTrayIconToDefault", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
-    })
+    });
 
 }
 
