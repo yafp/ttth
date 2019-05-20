@@ -1,20 +1,27 @@
-![GitHub](https://img.shields.io/github/license/yafp/ttth.svg)
+![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
-![](https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat)
-![](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true)](https://ci.appveyor.com/project/yafp/ttth)
+![GitHub Current Release](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
+![GitHub Release Date](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
+![GitHub All Releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
+![GutHub Languages](https://img.shields.io/github/languages/count/yafp/ttth.svg?style=flat)
+![GitHub Repo Size](https://img.shields.io/github/repo-size/yafp/ttth.svg?style=flat)
+![GitHub Code Size](https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat)
+![GitHub Issues Closed](https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat)
+![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
 
 
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo_128x128.png)
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/64x64.png)
 
 # ttth
 ## about
-**ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp-Web, Threema-Web, Telegram-Web, Google and several other services.
+**ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
+
+
+## history
+It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+
 
 ## services
 * Freenode
@@ -23,9 +30,9 @@
 * Google Contacts
 * Google Keep
 * Google Mail <sub><sup>(1)<sub><sup>
-* Google Messages
+* Google Messages <sub><sup>(1, 2)<sub><sup>
 * Google Photos
-* Mattermost <sub><sup>(2)<sub><sup>
+* Mattermost <sub><sup>(1)<sub><sup>
 * Slack <sub><sup>(1, 2)<sub><sup>
 * Telegram <sub><sup>(1)<sub><sup>
 * Threema <sub><sup>(1, 2)<sub><sup>
@@ -65,14 +72,10 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ### windows
 
-#### portable
-* missing
-
 #### installer
-* missing
+* Download the latest *win-installer.exe
+* Execute the *win-installer.exe
 
-#### zip
-* missing
 
 
 ## changelog
@@ -80,7 +83,7 @@ Please see the [changlog](CHANGELOG.md) for more details.
 
 
 ## getting involved
-Please see the [developers informations](DEVELOPMENT.md) for more details.
+Please see the [contributing informations](CONTRIBUTING.md) for more details.
 
 
 ## faq

@@ -1,6 +1,24 @@
 # ttth
 ## changelog
 
+### ttth 1.1.0 (2019xxyy)
+####  ```Added```
+* Menu: Added console entry to view menu, see #6
+* Services: Added unread message function for GoogleMessages, see #7
+
+####```Changed```
+* UI: Changed the app icon, see #5
+* Settings: Optimized settings view for smaller screens, see #4
+* Operating systems: Windows is now officially supported, see #3
+
+#### ```Removed```
+* Settings: Removed the app version from settings view, see #4
+
+#### ```Fixed```
+* Settings: Fixing broken load default-view function, see #1
+
+
+
 ### ttth 1.0.0 (20190517)
 ####  ```Added```
 * Initial version,
