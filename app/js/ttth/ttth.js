@@ -1,3 +1,40 @@
+/* global _ */
+
+
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceName - Name of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceName, count)
+{
+    console.log("updateServiceBadge ::: Start");
+
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateServiceBadge ::: New count for service _" + serviceName + "_ is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceName.toLowerCase()).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateServiceBadge ::: End");
+}
+
+
 /**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
@@ -34,9 +71,7 @@ function updateTrayIconStatus()
 
     console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
 
-
     const {ipcRenderer} = require("electron");
-
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
     {
         // tray should show the default icon
@@ -62,10 +97,9 @@ function updateTrayIconStatus()
 function readLocalStorage(key)
 {
     console.log("readLocalStorage ::: Start");
-
     var value = localStorage.getItem(key);
-
     console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    console.log("readLocalStorage ::: End");
     return(value);
 }
 
@@ -82,6 +116,7 @@ function writeLocalStorage(key, value)
     console.log("writeLocalStorage ::: Start");
     console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
+    console.log("writeLocalStorage ::: End");
 }
 
 
@@ -93,11 +128,9 @@ function writeLocalStorage(key, value)
 function openDevTools()
 {
     console.log("openDevTools ::: Start");
-
     console.log("openDevTools ::: Opening Developer Console");
     const remote = require("electron").remote;
     remote.getCurrentWindow().toggleDevTools();
-
     console.log("openDevTools ::: End");
 }
 
@@ -111,8 +144,6 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
-    /* var path = require("path"); */
-
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
         icon: "img/notification/64x64.png"
@@ -127,13 +158,13 @@ function sendNotification(title, message)
 
 
 /**
-* @name toggleSettingAutostart
+* @name  settingToggleAutostart
 * @summary Enables or disables the autostart
 * @description Enables or disables the autostart
 */
-function toggleSettingAutostart()
+function settingToggleAutostart()
 {
-    console.log("toggleSettingAutostart ::: Start");
+    console.log("settingToggleAutostart ::: Start");
 
     // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
@@ -148,8 +179,7 @@ function toggleSettingAutostart()
 
         writeLocalStorage("settingAutostart", true);
 
-        console.log("toggleSettingAutostart ::: Finished enabling Autostart");
-
+        console.log("settingToggleAutostart ::: Finished enabling Autostart");
     }
     else
     {
@@ -158,29 +188,25 @@ function toggleSettingAutostart()
         writeLocalStorage("settingAutostart", false);
         writeLocalStorage("settingAutostartMinimized", false);
 
-        // adjust UI
-        //
+        // adjust UI:
         // make sure check checkfor for  AutostartStartMinimized is unchecked as well
         $("#checkboxSettingAutostartMinimized").prop("checked", false);
 
-        console.log("toggleSettingAutostart ::: Finished disabling Autostart");
-
+        console.log("settingToggleAutostart ::: Finished disabling Autostart");
     }
 
-    console.log("toggleSettingAutostart ::: End");
+    console.log("settingToggleAutostart ::: End");
 }
 
 
-
-
 /**
-* @name toggleSettingAutostartMinimized
+* @name settingToggleAutostartMinimized
 * @summary Enables or disables the autostart minimized
 * @description Enables or disables the autostart minimized
 */
-function toggleSettingAutostartMinimized()
+function settingToggleAutostartMinimized()
 {
-    console.log("toggleSettingAutostartMinimized ::: Start");
+    console.log("settingToggleAutostartMinimized ::: Start");
 
     // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
@@ -206,8 +232,7 @@ function toggleSettingAutostartMinimized()
 
         ttthAutoLauncher.enable();
 
-        console.log("toggleSettingAutostartMinimized ::: Finished enabling minimized Autostart");
-
+        console.log("settingToggleAutostartMinimized ::: Finished enabling minimized Autostart");
     }
     else
     {
@@ -220,14 +245,12 @@ function toggleSettingAutostartMinimized()
         // Write AutostartMinimized to local storage
         writeLocalStorage("settingAutostartMinimized", false);
 
-        
-
         ttthAutoLauncher.enable();
 
-        console.log("toggleSettingAutostartMinimized ::: Finished disabling minimized Autostart");
+        console.log("settingToggleAutostartMinimized ::: Finished disabling minimized Autostart");
     }
 
-    console.log("toggleSettingAutostartMinimized ::: End");
+    console.log("settingToggleAutostartMinimized ::: End");
 }
 
 
@@ -293,6 +316,8 @@ function checkSupportedOperatingSystem()
 
     switch(userPlatform)
     {
+        case "win32":
+        case "windows":
         case "linux":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
 
@@ -301,50 +326,12 @@ function checkSupportedOperatingSystem()
 
             break;
 
-        case "win32":
-        case "windows":
-            // define subject & message
-            tttModalSubject = "Warning";
-            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
-
-            /*
-            // update the modal
-            $( ".modalSubject" ).append( tttModalSubject );
-            $( ".modalMessage" ).append( "<p>" + userPlatform + " " + ttthModalMessage + "</p>" );
-
-            // show the modal
-            $("#myModal").modal("show");
-            */
-
-            // update the OS-text
-            $("#operatingSystemInformation").html(ttthModalMessage);
-
-            // change class
-            $("#operatingSystemInformation").attr("class", "alert alert-warning");
-
-            // show OS information
-            $("#operatingSystemInformation").show();
-
-            console.warn("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + ttthModalMessage );
-
-            break;
-
         default:
-            // define subjexct & message
-            tttModalSubject = "Error";
-            ttthModalMessage = "Support for " + userPlatform + " is experimental.";
-
-            /*
-            // update the modal
-            $( ".modalSubject" ).append( tttModalSubject );
-            $( ".modalMessage" ).append( "<p>" + userPlatform + " " + ttthModalMessage + "</p>" );
-
-            // show the modal
-            $("#myModal").modal("show");
-            */
+            // define message
+            supportedOperatingSystemMessage = "Support for " + userPlatform + " is experimental.";
 
             // update the os-info text
-            $("#operatingSystemInformation").html(ttthModalMessage);
+            $("#operatingSystemInformation").html(supportedOperatingSystemMessage);
 
             // change class
             $("#operatingSystemInformation").attr("class", "alert alert-danger");
@@ -352,7 +339,7 @@ function checkSupportedOperatingSystem()
             // show os information
             $("#operatingSystemInformation").show();
 
-            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " " + ttthModalMessage );
+            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " - " + supportedOperatingSystemMessage );
     }
 
     console.log("checkSupportedOperatingSystem ::: End");
@@ -394,12 +381,11 @@ function searchUpdate()
     console.log("searchUpdate ::: Start checking " + url + " for available releases");
 
 
-    var updateStatus = $.get( url, function( data ) 
+    var updateStatus = $.get( url, function( data )
     {
-        timeout:3000 // in milliseconds 
+        timeout:3000; // in milliseconds
 
         // success
-        //
         var versions = data.sort(function (v1, v2)
         {
             return semver.compare(v2.name, v1.name);
@@ -437,26 +423,24 @@ function searchUpdate()
 
         console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
     })
-    .done(function() 
+    .done(function()
     {
         //alert( "searchUpdate ::: done" );
         //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
     })
 
-    .fail(function() 
+    .fail(function()
     {
-        //alert( "searchUpdate ::: fail" );
         console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
 
         $("#updateInformation").hide();
     })
 
-    .always(function() 
+    .always(function()
     {
-        //alert( "always" );
         console.log("searchUpdate ::: Finished checking " + url + " for available releases");
     });
- 
+
     console.log("searchUpdate ::: End");
 }
 
@@ -471,7 +455,7 @@ function validateConfiguredDefaultView()
     console.log("validateConfiguredDefaultView ::: Start");
 
     // read from local storage
-    var curDefaultView = readLocalStorage("defaultView");
+    var curDefaultView = readLocalStorage("settingDefaultView");
 
     if(curDefaultView === null) // no default view configured
     {
@@ -529,7 +513,7 @@ function loadDefaultView()
     console.log("loadDefaultView ::: Start");
 
     // read from local storage
-    var curDefaultView = readLocalStorage("defaultView");
+    var curDefaultView = readLocalStorage("settingDefaultView");
 
     if(curDefaultView === null) // no default view configured
     {
@@ -579,27 +563,32 @@ function loadServiceSpecificCode(serviceName)
     {
         case "GoogleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            googlemailStart();
+            serviceGoogleMailAddEventListener();
+            break;
+
+        case "GoogleMessages":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceGoogleMessagesAddEventListener();
             break;
 
         case "Mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            mattermostStart();
+            serviceMattermostAddEventListener();
             break;
 
          case "Slack":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            slackStart();
+            serviceSlackAddEventListener();
             break;
 
         case "Telegram":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            telegramStart();
+            serviceTelegramAddEventListener();
             break;
 
         case "Threema":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            threemaStart();
+            serviceThreemaAddEventListener();
             break;
 
         case "WhatsApp":
@@ -632,7 +621,7 @@ function initMattermost()
         console.warn("initMattermost ::: Custom Mattermost URL is not yet defined.");
 
         const prompt = require("electron-prompt");
- 
+
         prompt({
             title: "Mattermost url",
             label: "Please insert your mattermost server URL",
@@ -645,7 +634,7 @@ function initMattermost()
         .then((r) => {
             if(r === null) {
                 console.log("initMattermost ::: User cancelled the URL dialog.");
-                
+
                 // hide tab
                 $("#menu_mattermost").hide();
 
@@ -654,10 +643,10 @@ function initMattermost()
 
                 // set service mattermost to false
                 writeLocalStorage("Mattermost", "false");
-            } 
-            else 
+            }
+            else
             {
-                // TODO: check if url is reachable 
+                // TODO: check if url is reachable
 
                 console.log("result", r);
                 mattermostUrl = r;
@@ -678,12 +667,8 @@ function initMattermost()
         // set src of mattermost webview
         document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
 
-        // show custom url in services-list
-        //$('#label_Mattermost').val($('#label_Mattermost').val() + ' (url: ' + mattermostUrl + ')');
-
         // adjust title
-        $('#label_Mattermost').prop('title', mattermostUrl);
-
+        $("#label_Mattermost").prop("title", mattermostUrl);
     }
 
     console.log("initMattermost ::: End");
@@ -736,15 +721,12 @@ function toggleCheckbox(objectName)
             // send notification
             sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
 
-
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
             if( objectName === "Mattermost" )
             {
                 initMattermost();
             }
-
-
         }
         else
         {
@@ -806,28 +788,27 @@ function toggleCheckbox(objectName)
 /**
 * @name initSettingsPage
 * @summary Initializes the settings page
-* @description Shows appname, version, links to github informations. update informations. Initializes the service-checkboxes on loading the view
+* @description Shows links to github informations. update informations. Initializes the service-checkboxes on loading the view
 */
 function initSettingsPage()
 {
     console.log("initSettingsPage ::: Start");
 
-    console.log("initSettingsPage ::: Show appname and version");
-
     // get appname and version
-    var appVersion = require("electron").remote.app.getVersion();
+    //var appVersion = require("electron").remote.app.getVersion();
     //var appName = require("electron").remote.app.getName();
+
     var serviceName;
+    var serviceUrl;
     var curSettingAutostart;
+    var curSettingAutostartMinimized;
 
     // show appname and version
-    $( "#settingsAppVersion" ).html( appVersion );
-
-
-    console.log("initSettingsPage ::: Load all services and its status to the settings interface");
+    //$( "#settingsAppVersion" ).html( appVersion );
 
     // loop over array ttthAvailableServices which contains all service-names
     //
+    console.log("initSettingsPage ::: Start to load all services and its status to the settings interface");
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
@@ -839,9 +820,7 @@ function initSettingsPage()
         // Add service to settings page
         //
         //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
-        //
         $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
-
 
         // Show activated services as enabled in settings
         // add them to the default view select item
@@ -884,16 +863,10 @@ function initSettingsPage()
     {
         initMattermost();
     }
-    
 
-    // Setting: DefaultView
-    //
-    // Change defaultView select item to select2 item
-    //$('#selectDefaultView').select2();
-    //
-    // now validate the optional configured default view
+
+    // Setting: DefaultView - now validate the optional configured default view
     validateConfiguredDefaultView();
-
 
     // Setting: Autostart
     //
@@ -927,19 +900,18 @@ function initSettingsPage()
         console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
     }
 
-
     console.log("initSettingsPage ::: End");
 }
 
 
 /**
-* @name initMenu
+* @name initNavigationTabs
 * @summary Init the menu / navigation on app launch
 * @description Checks which services are enabled and shows or hides the related tabs from navigation
 */
-function initMenu()
+function initNavigationTabs()
 {
-    console.log("initMenu ::: Start");
+    console.log("initNavigationTabs ::: Start");
 
     var serviceName;
 
@@ -948,28 +920,27 @@ function initMenu()
     for (var i = 0; i < arrayLength; i++)
     {
         serviceName = ttthAvailableServices[i];
-
-        console.log("initMenu ::: Checking status of service: " + serviceName);
+        console.log("initNavigationTabs ::: Checking status of service: " + serviceName);
 
         var curServiceStatus = readLocalStorage(serviceName);
 
         if(curServiceStatus === "true")
         {
-            console.log("initMenu ::: Activating " + serviceName );
+            console.log("initNavigationTabs ::: Activating " + serviceName );
 
-            // show service in menu
+            // show service-tab in navigation
             $("#menu_" + serviceName.toLowerCase()).show();
         }
         else
         {
-            console.log("initMenu ::: Deactivating " + serviceName);
+            console.log("initNavigationTabs ::: Deactivating " + serviceName);
 
-            // hide service from menu
+            // hide service-tab in navigation
             $("#menu_" + serviceName.toLowerCase()).hide();
         }
     }
 
-    console.log("initMenu ::: End");
+    console.log("initNavigationTabs ::: End");
 }
 
 
@@ -991,14 +962,11 @@ function localizeUserInterface()
 
   var i18next = require("i18next");
   var Backend = require("i18next-sync-fs-backend");
-
-  // should try to detect the user language
-  // and then set the related lang if available
-  var LanguageDetector = require("i18next-electron-language-detector");
+  //var LanguageDetector = require("i18next-electron-language-detector");
 
   i18next
   .use(Backend)
-  .use(LanguageDetector)
+  //.use(LanguageDetector)
   .init({
     debug: true,
     whitelist: ["en", "de"],
@@ -1008,16 +976,17 @@ function localizeUserInterface()
     defaultNS: "translation",
     updateMissing: false,
     initImmediate: true,
-    backend: {
-      // path where resources get loaded from
-      loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
+    backend:
+    {
+        // path where resources get loaded from
+        loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
 
-      // path to post missing resources
-      addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
+        // path to post missing resources
+        addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
 
-    // jsonIndent to use when storing json files
-    jsonIndent: 2
-  }
+        // jsonIndent to use when storing json files
+        jsonIndent: 2
+    }
 });
 
   $(function()
@@ -1033,6 +1002,7 @@ function localizeUserInterface()
       node.attr("title", i18next.t(key));
     });
   });
+  
 
   console.log("localizeUserInterface ::: End");
 }

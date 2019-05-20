@@ -1,7 +1,7 @@
 
-function updateSlackBadge(count)
+function serviceSlackUpdateBadge(count)
 {
-    console.log("updateSlackBadge ::: Start");
+    console.log("serviceSlackUpdateBadge ::: Start");
 
     // might be null - should be ignored
     if(count === null)
@@ -9,7 +9,7 @@ function updateSlackBadge(count)
         return;
     }
 
-    console.log("updateSlackBadge ::: New count is: " + count);
+    console.log("serviceSlackUpdateBadge ::: New count is: " + count);
 
     if(count === 0)
     {
@@ -22,14 +22,14 @@ function updateSlackBadge(count)
     // Update tray icon status if needed
     updateTrayIconStatus();
 
-    console.log("updateSlackBadge ::: End");
+    console.log("serviceSlackUpdateBadge ::: End");
 }
 
 
 
-function slackStart()
+function serviceSlackAddEventListener()
 {
-    console.log("slackStart ::: Start");
+    console.log("serviceSlackAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("SlackWebview");
@@ -48,7 +48,7 @@ function slackStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("slackStart ::: did-start-loading.");
+        console.log("serviceSlackAddEventListener ::: did-start-loading.");
         webview.send("request");
     });
 
@@ -57,16 +57,8 @@ function slackStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("slackStart ::: DOM-Ready");
+        console.log("serviceSlackAddEventListener ::: DOM-Ready");
         webview.send("request");
-    });
-
-
-    // WebView Event: did-frame-finish-load
-    //
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("slackStart ::: did-frame-finish-load.");
     });
 
 
@@ -74,7 +66,7 @@ function slackStart()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("slackStart ::: did-stop-loading");
+        console.log("serviceSlackAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //
@@ -88,13 +80,13 @@ function slackStart()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("slackStart ::: IPC message:");
+        console.log("serviceSlackAddEventListener ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
         // update the badge
-        updateSlackBadge(event.channel);
+        serviceSlackUpdateBadge(event.channel);
     });
 
-    console.log("slackStart ::: End");
+    console.log("serviceSlackAddEventListener ::: End");
 }

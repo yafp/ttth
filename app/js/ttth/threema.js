@@ -25,9 +25,9 @@ function updateThreemaBadge(count)
 }
 
 
-function threemaStart()
+function serviceThreemaAddEventListener()
 {
-    console.log("threemaStart ::: Start");
+    console.log("serviceThreemaAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("ThreemaWebview");
@@ -47,9 +47,8 @@ function threemaStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("threemaStart ::: did-start-loading.");
-
-         webview.send("request");
+        console.log("serviceThreemaAddEventListener ::: did-start-loading.");
+        webview.send("request");
     });
 
 
@@ -57,9 +56,8 @@ function threemaStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("threemaStart ::: DOM-Ready");
-
-         webview.send("request");
+        console.log("serviceThreemaAddEventListener ::: DOM-Ready");
+        webview.send("request");
     });
 
 
@@ -67,7 +65,7 @@ function threemaStart()
     //
     webview.addEventListener("did-frame-finish-load", function()
     {
-        console.log("threemaStart ::: did-frame-finish-load.");
+        console.log("serviceThreemaAddEventListener ::: did-frame-finish-load.");
     });
 
 
@@ -75,7 +73,7 @@ function threemaStart()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("threemaStart ::: did-stop-loading");
+        console.log("serviceThreemaAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //
@@ -89,7 +87,7 @@ function threemaStart()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("threemaStart ::: IPC message:");
+        console.log("serviceThreemaAddEventListener ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
@@ -98,5 +96,5 @@ function threemaStart()
     });
 
 
-    console.log("threemaStart ::: End");
+    console.log("serviceThreemaAddEventListener ::: End");
 }

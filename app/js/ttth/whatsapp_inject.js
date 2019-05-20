@@ -7,9 +7,9 @@ const {ipcRenderer} = require("electron");
 
 
 
-function getUnreadWhatsAppMessageCount()
+function serviceWhatsAppGetUnreadMessageCount()
 {
-    console.log("getUnreadWhatsAppMessageCount ::: Start");
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
 
     // try to count unread messages
     const elements = document.querySelectorAll(".CxUIE, .unread");
@@ -24,11 +24,11 @@ function getUnreadWhatsAppMessageCount()
             console.log("checkUnread ::: Found unread message");
         }
     }
-    console.log("getUnreadWhatsAppMessageCount ::: Unread messages in WhatsApp: " + count);
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: " + count);
 
     ipcRenderer.sendToHost(count);
 
-    console.log("getUnreadWhatsAppMessageCount ::: End");
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: End");
 }
 
 
@@ -37,5 +37,5 @@ function getUnreadWhatsAppMessageCount()
 //
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(getUnreadWhatsAppMessageCount());
+    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
 });

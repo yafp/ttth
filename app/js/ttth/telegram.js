@@ -1,11 +1,11 @@
 /**
-* @name telegramStart
+* @name serviceTelegramAddEventListener
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function telegramStart()
+function serviceTelegramAddEventListener()
 {
-    console.log("telegramStart ::: Start");
+    console.log("serviceTelegramAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("TelegramWebview");
@@ -22,7 +22,7 @@ function telegramStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("telegramStart ::: did-start-loading.");
+        console.log("serviceTelegramAddEventListener ::: did-start-loading.");
         webview.send("request");
     });
 
@@ -30,7 +30,7 @@ function telegramStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("telegramStart ::: DOM-Ready");
+        console.log("serviceTelegramAddEventListener ::: DOM-Ready");
         webview.send("request");
     });
 
@@ -47,7 +47,7 @@ function telegramStart()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("telegramStart ::: did-stop-loading");
+        console.log("serviceTelegramAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //webview.openDevTools();
@@ -59,7 +59,7 @@ function telegramStart()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("telegramStart ::: IPC message:");
+        console.log("serviceTelegramAddEventListener ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
@@ -67,7 +67,7 @@ function telegramStart()
         updateTelegramBadge(event.channel);
     });
 
-    console.log("telegramStart ::: End");
+    console.log("serviceTelegramAddEventListener ::: End");
 }
 
 

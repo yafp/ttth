@@ -25,9 +25,9 @@ function updateGoogleMailBadge(count)
 }
 
 
-function googlemailStart()
+function serviceGoogleMailAddEventListener()
 {
-    console.log("googlemailStart ::: Start");
+    console.log("serviceGoogleMailAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("GoogleMailWebview");
@@ -47,9 +47,8 @@ function googlemailStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("googlemailStart ::: did-start-loading.");
-
-         webview.send("request");
+        console.log("serviceGoogleMailAddEventListener ::: did-start-loading.");
+        webview.send("request");
     });
 
 
@@ -57,9 +56,8 @@ function googlemailStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("googlemailStart ::: DOM-Ready");
-
-         webview.send("request");
+        console.log("serviceGoogleMailAddEventListener ::: DOM-Ready");
+        webview.send("request");
     });
 
 
@@ -67,7 +65,7 @@ function googlemailStart()
     //
     webview.addEventListener("did-frame-finish-load", function()
     {
-        console.log("googlemailStart ::: did-frame-finish-load.");
+        console.log("serviceGoogleMailAddEventListener ::: did-frame-finish-load.");
     });
 
 
@@ -75,7 +73,7 @@ function googlemailStart()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("googlemailStart ::: did-stop-loading");
+        console.log("serviceGoogleMailAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //
@@ -89,12 +87,12 @@ function googlemailStart()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("googlemailStart ::: IPC message:");
+        console.log("serviceGoogleMailAddEventListener ::: IPC message:");
 
         // update the badge
         updateGoogleMailBadge(event.channel);
     });
 
 
-    console.log("googlemailStart ::: End");
+    console.log("serviceGoogleMailAddEventListener ::: End");
 }

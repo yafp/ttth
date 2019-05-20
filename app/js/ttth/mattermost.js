@@ -1,11 +1,11 @@
 /**
-* @name telegramStart
+* @name serviceMattermostAddEventListener
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function mattermostStart()
+function serviceMattermostAddEventListener()
 {
-    console.log("mattermostStart ::: Start");
+    console.log("serviceMattermostAddEventListener ::: Start");
 
     // get webview
     var webview = document.getElementById("MattermostWebview");
@@ -22,7 +22,7 @@ function mattermostStart()
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("mattermostStart ::: did-start-loading.");
+        console.log("serviceMattermostAddEventListener ::: did-start-loading.");
         webview.send("request");
     });
 
@@ -30,24 +30,15 @@ function mattermostStart()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("mattermostStart ::: DOM-Ready");
+        console.log("serviceMattermostAddEventListener ::: DOM-Ready");
         webview.send("request");
     });
-
-    // WebView Event: did-frame-finish-load
-    //
-    /*
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("telegramStart ::: did-frame-finish-load.");
-    });
-    */
 
     // WebView Event: did-stop-loading
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("mattermostStart ::: did-stop-loading");
+        console.log("serviceMattermostAddEventListener ::: did-stop-loading");
 
         // Show devTools if you want
         //webview.openDevTools();
@@ -59,7 +50,7 @@ function mattermostStart()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("mattermostStart ::: IPC message:");
+        console.log("serviceMattermostAddEventListener ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
@@ -67,7 +58,7 @@ function mattermostStart()
         updateMattermostBadge(event.channel);
     });
 
-    console.log("mattermostStart ::: End");
+    console.log("serviceMattermostAddEventListener ::: End");
 }
 
 

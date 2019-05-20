@@ -64,30 +64,6 @@ function serviceWhatsAppAddEventListener()
     }, 5000);
 
 
-    // WebView Event: did-start-loading
-    //
-    webview.addEventListener("did-start-loading", function()
-    {
-        console.log("serviceWhatsAppAddEventListener ::: did-start-loading.");
-    });
-
-
-    // WebView Event: dom-ready
-    //
-    webview.addEventListener("dom-ready", function()
-    {
-        console.log("serviceWhatsAppAddEventListener ::: DOM-Ready");
-    });
-
-
-    // WebView Event: did-frame-finish-load
-    //
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("serviceWhatsAppAddEventListener ::: did-frame-finish-load.");
-    });
-
-
     // WebView Event: did-stop-loading
     //
     webview.addEventListener("did-stop-loading", function()
@@ -111,7 +87,9 @@ function serviceWhatsAppAddEventListener()
         //console.error(event.channel);
 
         // update the badge
-        serviceWhatsAppUpdateBadge(event.channel);
+        //
+        //serviceWhatsAppUpdateBadge(event.channel); // Baustelle
+        updateServiceBadge("WhatsApp", event.channel); // Baustelle
     });
 
     console.log("serviceWhatsAppAddEventListener ::: End");
@@ -125,6 +103,8 @@ function serviceWhatsAppAddEventListener()
 */
 function serviceWhatsAppRegister()
 {
+    // via: https://github.com/meetfranz/franz/issues/1185
+    
     console.log("serviceWhatsAppRegister ::: Start");
 
     console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
@@ -145,7 +125,6 @@ function serviceWhatsAppRegister()
         }
     });
 
-    // via: https://github.com/meetfranz/franz/issues/1185
-
+    
     console.log("serviceWhatsAppRegister ::: End");
 }
