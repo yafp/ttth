@@ -8,7 +8,7 @@ exclude_paths:
   - '.github/**'
   - '.github/**/*'
   - 'CHANGELOG.md'
-  - 'DEVELOPMENT.md'
+  - 'CONTRIBUTING.md'
   - 'LICENSE'
   - 'README.md'
   - 'TODO.md'
