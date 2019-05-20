@@ -10,7 +10,5 @@
     "settingsSectionAboutButtonIssues": "Issues",
     "settingsSectionAboutButtonConsole": "Console",
     "settingsSectionServices": "Services",
-    "settingsSectionServicesInfo": "You can enable or disable available services here.",
-    "settingsSectionStartup": "Startup options",
-    "settingsSectionStartupInfo": "You can configure available startup options here."
+    "settingsSectionStartup": "Startup options"
 }

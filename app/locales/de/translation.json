@@ -10,7 +10,5 @@
     "settingsSectionAboutButtonIssues": "Probleme",
     "settingsSectionAboutButtonConsole": "Entwickler Konsole",
     "settingsSectionServices": "Dienste",
-    "settingsSectionServicesInfo": "Du kannst die angebotenen Dienste hier aktivieren oder deaktivieren.",
-    "settingsSectionStartup": "Startoptionen",
-    "settingsSectionStartupInfo": "Du kannst hier einige Startoptionen konfigurieren."
+    "settingsSectionStartup": "Startoptionen"
 }
