@@ -1,6 +1,9 @@
 // Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
+
+
+
 function getUnreadThreemaMessageCount()
 {
     console.log("getUnreadThreemaMessageCount ::: Start");
@@ -16,11 +19,11 @@ function getUnreadThreemaMessageCount()
             newUnread += conversation.unreadCount;
         });
     }
-    /*
     catch (e)
     {
+         console.log("getUnreadThreemaMessageCount ::: Catch");
     }
-    */
+    
 
     if (newUnread !== unreadCount)
     {

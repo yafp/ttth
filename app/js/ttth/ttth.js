@@ -1,6 +1,40 @@
 /* global _ */
 
 
+
+require('electron').ipcRenderer.on('reloadCurrentService', function(event, message)
+{
+    console.log("reloadCurrentService ::: Start");
+
+    //console.log(message);  // Prints "whoooooooh!"
+
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1);
+    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+
+    // TODO:
+    // reload the service - see #9
+    switch (tabValue)
+    {
+        case "whatsApp":
+            console.error("doh");
+            alert("pre");
+            serviceWhatsAppInit();
+            alert("post");
+            break;
+
+        default:
+            // Anweisungen werden ausgeführt,
+            break;
+    }
+
+    console.log("reloadCurrentService ::: Start");
+});
+
+
+
+
 /**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
@@ -145,7 +179,7 @@ function sendNotification(title, message)
 {
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: "img/notification/64x64.png"
+        icon: "img/notification/icon_notification.png"
     });
 
     /*
@@ -317,6 +351,7 @@ function checkSupportedOperatingSystem()
         case "win32":
         case "windows":
         case "linux":
+        case "darwin":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
 
             // hide OS information
@@ -559,6 +594,11 @@ function loadServiceSpecificCode(serviceName)
 
     switch (serviceName)
     {
+        case "Freenode":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceFreenodeAddEventListener();
+            break;
+
         case "GoogleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceGoogleMailAddEventListener();
@@ -627,7 +667,7 @@ function initMattermost()
             inputAttrs: {
                 type: "url"
             },
-            icon: "img/icon/64x64.png"
+            icon: "img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {

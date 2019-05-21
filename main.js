@@ -53,6 +53,15 @@ function createMenu()
              accelerator: "CmdOrCtrl+R"
         },
         {
+            label: "Reload current service",
+            click() {
+                // calling the renderer process from main.js
+                mainWindow.webContents.send('reloadCurrentService', 'whoooooooh!');
+            },
+            accelerator: "CmdOrCtrl+S",
+            enabled: false
+        },
+        {
             type: "separator"
         },
         {
@@ -95,7 +104,7 @@ function createMenu()
             label: "About",
             click() {
                 openAboutWindow({
-                    icon_path: path.join(__dirname, "app/img/about/512x512.png"),
+                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
                     open_devtools: false,
                     css_path: "app/css/ttth/about.css",
                     use_version_info: true,
@@ -199,7 +208,7 @@ function createWindow ()
         minWidth: 800,
         minHeight: 600,
         backgroundColor: "#ffffff",
-        icon: path.join(__dirname, "app/img/icon/64x64.png"),
+        icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true
         }
@@ -274,9 +283,10 @@ function createTray()
     let tray = null;
     app.on("ready", () => {
 
-        tray = new Tray(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
+        tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
 
         const contextMenu = Menu.buildFromTemplate([
+            /*
             {
                 // Appname & Version
                 id: "info",
@@ -288,6 +298,7 @@ function createTray()
                 type: "separator",
                 enabled: false
             },
+            */
             {
                 // Window focus
                 id: "show",
@@ -308,8 +319,8 @@ function createTray()
             },
             {
                 // Quit
-                id: "quit",
-                label: "Quit",
+                id: "exit",
+                label: "Exit",
                 enabled: true,
                 click: function () {
                     app.quit();
@@ -317,8 +328,8 @@ function createTray()
             }
 
         ]);
-        tray.setTitle("ttth");
-        tray.setToolTip("ttth aka talk to the hand");
+        // tray.setTitle("ttth"); // see #10
+        tray.setToolTip("ttth");
         tray.setContextMenu(contextMenu);
 
 
@@ -365,13 +376,13 @@ function createTray()
     // Change to UnreadMessages Tray Icon
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_unread.png"));
+        tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
     });
 
     // Change to Default Tray Icon
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/64x64_tray_default.png"));
+        tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
     });
 
 }

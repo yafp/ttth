@@ -64,6 +64,42 @@ function serviceWhatsAppAddEventListener()
     }, 5000);
 
 
+
+
+    // WebView: Event Listener to open links
+    //
+    /*
+    webview.addEventListener('new-window', (e) =>
+    {
+        const protocol = require('url').parse(e.url).protocol;
+        if (protocol === 'http:' || protocol === 'https:')
+        {
+            shell.openExternal(e.url)
+            let win = new BrowserWindow({width: 800, height: 600})
+            win.loadURL(e.url);
+        }
+
+    });
+    */
+
+
+    // WebView Event: new-window
+    //
+    webview.addEventListener('new-window', function(e)
+    {
+        console.log("serviceWhatsAppAddEventListener ::: new-window");
+
+        const BrowserWindow = require("electron");
+        const shell = require("electron").shell;
+        const protocol = require('url').parse(e.url).protocol;
+
+        if (protocol === 'http:' || protocol === 'https:')
+        {
+            shell.openExternal(e.url);
+        }
+    });
+
+
     // WebView Event: did-stop-loading
     //
     webview.addEventListener("did-stop-loading", function()
@@ -104,7 +140,7 @@ function serviceWhatsAppAddEventListener()
 function serviceWhatsAppRegister()
 {
     // via: https://github.com/meetfranz/franz/issues/1185
-    
+
     console.log("serviceWhatsAppRegister ::: Start");
 
     console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
@@ -125,6 +161,19 @@ function serviceWhatsAppRegister()
         }
     });
 
-    
+
     console.log("serviceWhatsAppRegister ::: End");
+}
+
+
+
+function serviceWhatsAppInit()
+{
+    console.log("serviceWhatsAppInit ::: Start");
+
+    document.getElementById( "WhatsAppWebview" ).setAttribute( "src", "https://web.whatsapp.com/");
+
+    serviceWhatsAppRegister();
+
+    console.log("serviceWhatsAppInit ::: End");
 }

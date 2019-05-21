@@ -44,6 +44,23 @@ function serviceSlackAddEventListener()
     }, 30000);
 
 
+    // WebView Event: new-window
+    //
+    webview.addEventListener('new-window', function(e)
+    {
+        console.log("serviceFreenodeAddEventListener ::: new-window");
+
+        const BrowserWindow = require("electron");
+        const shell = require("electron").shell;
+        const protocol = require('url').parse(e.url).protocol;
+
+        if (protocol === 'http:' || protocol === 'https:')
+        {
+            shell.openExternal(e.url);
+        }
+    });
+
+
     // WebView Event: did-start-loading
     //
     webview.addEventListener("did-start-loading", function()

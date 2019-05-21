@@ -38,6 +38,7 @@
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services.js" async></script>
     <!-- ttth: service specific scripts -->
+    <script type="text/javascript" src="js/ttth/freenode.js" async></script>
     <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
     <script type="text/javascript" src="js/ttth/googlemessages.js" async></script>
     <script type="text/javascript" src="js/ttth/mattermost.js" async></script>
@@ -383,7 +384,9 @@
                 <!-- TabContent: WhatsApp -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
 
+                    <!--
                     <script>serviceWhatsAppRegister();</script>
+                    -->
 
                     <webview
                         id="WhatsAppWebview"
@@ -538,19 +541,22 @@ $( document ).ready(function()
 {
     console.log( "ready!" );
 
-    // hide the entire body
+    // hide the entire body on launch
+    // we'll fade it back in later ...
     $('body').css('display', 'none');
 
-
+    // Click handler for navigation/tabs
     $('#myTabs a').click(function (link)
     {
         console.log("ready ::: Switching to tab: " + link.currentTarget.innerText);
+        //console.log(link.currentTarget.innerText);
 
-        console.log(link.currentTarget.innerText);
+        /*
         if(link.currentTarget.innerText === " WhatsApp")
         {
             // do something
         }
+        */
     })
 
     // init menu / navigation
