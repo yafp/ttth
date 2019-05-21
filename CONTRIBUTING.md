@@ -1,7 +1,7 @@
 # Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change. 
+email, or any other method with the owners of this repository before making a change.
 
 
 
@@ -74,14 +74,19 @@ email, or any other method with the owners of this repository before making a ch
 ##### Linux
 * Execute: ```npm run build-linux```
 
+##### mac
+* Execute: ```npm run build-mac```
+
 ##### Windows
 * Execute: ```npm run build-win```
 
 
 ### Auto builds on commits
-The pproject repository is using 
+The project repository is using:
+
 * Travis CI (Linux builds)
 * AppVeyor (Windows builds)
+
 for Continuos Integration aspects.
 
 
@@ -95,6 +100,7 @@ for Continuos Integration aspects.
   * Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f
   * Linux building configuration: https://www.electron.build/configuration/linux
   * Building for Windows on Linux: https://blog.aaronlenoir.com/2017/03/03/building-electron-apps-for-windows-on-debian/
+  * GitHub Release Stats: https://www.somsubhra.com/github-release-stats/
 * Misc
   * App icons: https://www.christianengvall.se/electron-app-icons/
   * https://blog.dcpos.ch/how-to-make-your-electron-app-sexy

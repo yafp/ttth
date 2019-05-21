@@ -13,9 +13,23 @@
 ![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
 
 
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/64x64.png)
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
 
 # ttth
+
+
+## table of contents
+
+- [about](#about)
+- [history](#history)
+- [services](#services)
+- [ui](#ui)
+- [install](#install)
+- [changelog](#changelog)
+- [contributing](#contributing)
+- [keyboard-shortcuts](#keyboard-shortcuts)
+- [faq](#faq)
+
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 
@@ -78,14 +92,25 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 * Execute the *win-installer.exe
 
 
-
 ## changelog
 Please see the [changlog](CHANGELOG.md) for more details.
 
 
-## getting involved
+## contributing
 Please see the [contributing informations](CONTRIBUTING.md) for more details.
 
+
+## keyboard-shortcuts
+
+| Shortcut   | Description                              |
+| -----------| ---------------------------------------- |
+| F1         | Homepage                                 |
+| F2         | Report issue                             |
+| F3         | Toggle the visibility of the menubar     |
+| F11        | Toggle Fullscreen                        |
+| F12        | Open developer console                   |
+| CTRL + Q   | Quit/ext the application                 |
+| CTRL + R   | Reload the application                   |
 
 ## faq
 ### Where is the user data stored?

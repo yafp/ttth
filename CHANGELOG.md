@@ -1,7 +1,7 @@
 # ttth
 ## changelog
 
-### ttth 1.1.0 (2019xxyy)
+### ttth 1.1.0 (20190521)
 ####  ```Added```
 * Menu: Added console entry to view menu, see #6
 * Services: Added unread message function for GoogleMessages, see #7
@@ -9,22 +9,23 @@
 ####```Changed```
 * UI: Changed the app icon, see #5
 * Settings: Optimized settings view for smaller screens, see #4
-* Operating systems: Windows is now officially supported, see #3
+* Operating systems: Windows and macOS are now officially supported, see #3
 
 #### ```Removed```
 * Settings: Removed the app version from settings view, see #4
 
 #### ```Fixed```
 * Settings: Fixing broken load default-view function, see #1
-
+* Service: Fixed url handling. Should now open clicks on urls in external browser (implemented for Freenode, Mattermost, Slack, Telegram, Whatsapp). See #8
+* Mac: Fixed some issues with the tray icon on macOS. See #10
 
 
 ### ttth 1.0.0 (20190517)
 ####  ```Added```
 * Initial version,
-* Ooperating systems
+* Operating systems
   * linux (tested)
-  * windows ( almost untested)
+  * windows (almost untested)
   * mac (not supported so far)
 * Electron: 4.1.4
 * Javascript libraries

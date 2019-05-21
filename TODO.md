@@ -1,6 +1,6 @@
 # ttth
 ## todos
-* Services 
+* Services
   * StackExchange?
   * Discord?
   * Google Duo (video -> webcam)?
@@ -15,8 +15,7 @@
 * FontAwesome
   * Slim it down (size-wise) - see: https://blog.webjeda.com/optimize-fontawesome/ - maybe using: IcoMoon
 * Add reference to https://appimage.github.io/wishlist/
-* Check: https://github.com/sindresorhus/electron-debug
-* Builds: 
+* Builds:
   * Linux: pacman?
   * Mac: dmg
 
