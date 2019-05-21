@@ -92,27 +92,39 @@ function serviceWhatsAppAddEventListener()
     }, 5000);
 
 
-    // WebView Event: did-start-loading
+
+
+    // WebView: Event Listener to open links
     //
-    webview.addEventListener("did-start-loading", function()
+    /*
+    webview.addEventListener('new-window', (e) =>
     {
-        console.log("serviceWhatsAppAddEventListener ::: did-start-loading.");
+        const protocol = require('url').parse(e.url).protocol;
+        if (protocol === 'http:' || protocol === 'https:')
+        {
+            shell.openExternal(e.url)
+            let win = new BrowserWindow({width: 800, height: 600})
+            win.loadURL(e.url);
+        }
+
     });
+    */
 
 
-    // WebView Event: dom-ready
+    // WebView Event: new-window
     //
-    webview.addEventListener("dom-ready", function()
+    webview.addEventListener('new-window', function(e)
     {
-        console.log("serviceWhatsAppAddEventListener ::: DOM-Ready");
-    });
+        console.log("serviceWhatsAppAddEventListener ::: new-window");
 
+        const BrowserWindow = require("electron");
+        const shell = require("electron").shell;
+        const protocol = require('url').parse(e.url).protocol;
 
-    // WebView Event: did-frame-finish-load
-    //
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("serviceWhatsAppAddEventListener ::: did-frame-finish-load.");
+        if (protocol === 'http:' || protocol === 'https:')
+        {
+            shell.openExternal(e.url);
+        }
     });
 
 
@@ -139,7 +151,9 @@ function serviceWhatsAppAddEventListener()
         //console.error(event.channel);
 
         // update the badge
-        serviceWhatsAppUpdateBadge(event.channel);
+        //
+        //serviceWhatsAppUpdateBadge(event.channel); // Baustelle
+        updateServiceBadge("WhatsApp", event.channel); // Baustelle
     });
 
     console.log("serviceWhatsAppAddEventListener ::: End");
@@ -153,6 +167,8 @@ function serviceWhatsAppAddEventListener()
 */
 function serviceWhatsAppRegister()
 {
+    // via: https://github.com/meetfranz/franz/issues/1185
+
     console.log("serviceWhatsAppRegister ::: Start");
 
     console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
@@ -173,9 +189,21 @@ function serviceWhatsAppRegister()
         }
     });
 
-    // via: https://github.com/meetfranz/franz/issues/1185
 
     console.log("serviceWhatsAppRegister ::: End");
+}
+
+
+
+function serviceWhatsAppInit()
+{
+    console.log("serviceWhatsAppInit ::: Start");
+
+    document.getElementById( "WhatsAppWebview" ).setAttribute( "src", "https://web.whatsapp.com/");
+
+    serviceWhatsAppRegister();
+
+    console.log("serviceWhatsAppInit ::: End");
 }
 </code></pre>
         </article>
@@ -187,13 +215,13 @@ function serviceWhatsAppRegister()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMessagesCount">getUnreadGoogleMessagesCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 20 2019 11:39:58 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 21 2019 13:08:47 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

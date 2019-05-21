@@ -26,7 +26,44 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>/* global _ */
+
+
+
+require('electron').ipcRenderer.on('reloadCurrentService', function(event, message)
+{
+    console.log("reloadCurrentService ::: Start");
+
+    //console.log(message);  // Prints "whoooooooh!"
+
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1);
+    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+
+    // TODO:
+    // reload the service - see #9
+    switch (tabValue)
+    {
+        case "whatsApp":
+            console.error("doh");
+            alert("pre");
+            serviceWhatsAppInit();
+            alert("post");
+            break;
+
+        default:
+            // Anweisungen werden ausgeführt,
+            break;
+    }
+
+    console.log("reloadCurrentService ::: Start");
+});
+
+
+
+
+/**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
 * @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
@@ -75,6 +112,39 @@ function updateTrayIconStatus()
     }
 
     console.log("updateTrayIconStatus ::: End");
+}
+
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceName - Name of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceName, count)
+{
+    console.log("updateServiceBadge ::: Start");
+
+    if(count === null)
+    {
+        return;
+    }
+
+    console.log("updateServiceBadge ::: New count for service _" + serviceName + "_ is: " + count);
+
+    if(count === 0)
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceName.toLowerCase()).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+
+    console.log("updateServiceBadge ::: End");
 }
 
 
@@ -137,7 +207,7 @@ function sendNotification(title, message)
 {
     let myNotification = new Notification("ttth ::: " + title, {
         body: message,
-        icon: "img/notification/64x64.png"
+        icon: "img/notification/icon_notification.png"
     });
 
     /*
@@ -180,7 +250,7 @@ function settingToggleAutostart()
         writeLocalStorage("settingAutostartMinimized", false);
 
         // adjust UI:
-        // make sure check checkfor for  AutostartStartMinimized is unchecked as well
+        // make sure check checkfor for AutostartStartMinimized is unchecked as well
         $("#checkboxSettingAutostartMinimized").prop("checked", false);
 
         console.log("settingToggleAutostart ::: Finished disabling Autostart");
@@ -299,8 +369,7 @@ function checkSupportedOperatingSystem()
 {
     console.log("checkSupportedOperatingSystem ::: Start");
 
-    var tttModalSubject = "";
-    var ttthModalMessage = "";
+    var supportedOperatingSystemMessage = "";
     var userPlatform = process.platform;
 
     console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
@@ -310,6 +379,7 @@ function checkSupportedOperatingSystem()
         case "win32":
         case "windows":
         case "linux":
+        case "darwin":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
 
             // hide OS information
@@ -552,9 +622,19 @@ function loadServiceSpecificCode(serviceName)
 
     switch (serviceName)
     {
+        case "Freenode":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceFreenodeAddEventListener();
+            break;
+
         case "GoogleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceGoogleMailAddEventListener();
+            break;
+
+        case "GoogleMessages":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceGoogleMessagesAddEventListener();
             break;
 
         case "Mattermost":
@@ -615,7 +695,7 @@ function initMattermost()
             inputAttrs: {
                 type: "url"
             },
-            icon: "img/icon/64x64.png"
+            icon: "img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {
@@ -663,26 +743,26 @@ function initMattermost()
 
 
 /**
-* @name toggleCheckbox
+* @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
 * @param objectName - Name of the checkbox
 */
-function toggleCheckbox(objectName)
+function settingsToggleSingleServiceCheckbox(objectName)
 {
-    console.log("toggleCheckbox ::: Start");
-    //console.log("toggleCheckbox ::: Checkbox is: " + objectName);
+    console.log("settingsToggleSingleServiceCheckbox ::: Start");
 
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
     var arrayPosition = ttthAvailableServices.indexOf(objectName);
     var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1);
+    var curServiceUrl = ttthServicesUrls[arrayPosition];
 
     if(objectNameIsValid === true)
     {
         if($("#" + objectName).prop("checked"))
         {
-            console.log("toggleCheckbox ::: Activating " + objectName);
+            console.log("settingsToggleSingleServiceCheckbox ::: Activating " + objectName);
 
             // write to local storage
             writeLocalStorage(objectName, "true");
@@ -698,8 +778,8 @@ function toggleCheckbox(objectName)
             $("#bt_" + objectName).attr("title", "enabled");
 
             // update webview src
-            document.getElementById( objectName + "Webview" ).setAttribute( "src", ttthServicesUrls[arrayPosition]);
-            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now: " + ttthServicesUrls[arrayPosition]);
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", curServiceUrl);
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now: " + curServiceUrl);
 
             // check if there is service-specific code to load
             loadServiceSpecificCode(objectName);
@@ -716,7 +796,7 @@ function toggleCheckbox(objectName)
         }
         else
         {
-            console.log("toggleCheckbox ::: Deactivating " + objectName);
+            console.log("settingsToggleSingleServiceCheckbox ::: Deactivating " + objectName);
 
             // write to local storage
             writeLocalStorage(objectName, "false");
@@ -729,7 +809,7 @@ function toggleCheckbox(objectName)
             {
                 if (this.value === objectName)
                 {
-                    console.log("toggleCheckbox ::: Deleting item from select");
+                    console.log("settingsToggleSingleServiceCheckbox ::: Deleting item from select");
                     this.remove();
                 }
             });
@@ -740,7 +820,7 @@ function toggleCheckbox(objectName)
 
             // update webview src
             document.getElementById( objectName + "Webview" ).setAttribute( "src", "");
-            console.log("toggleCheckbox ::: webview src of service: " + objectName + " is now empty");
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
             sendNotification("Service deactivation", "Deactivated the service &lt;b>" + objectName + "&lt;/b>");
@@ -753,7 +833,6 @@ function toggleCheckbox(objectName)
                 localStorage.removeItem("serviceMattermostUrl");
 
                 // adjust service label back to default
-                //$('#label_Mattermost').val("Mattermost");
                 $("#label_Mattermost").prop("title", "");
 
             }
@@ -764,24 +843,24 @@ function toggleCheckbox(objectName)
     }
     else
     {
-        console.warn("toggleCheckbox ::: Got an invalid objectName: " + objectName);
+        console.warn("settingsToggleSingleServiceCheckbox ::: Got an invalid objectName: " + objectName);
     }
 
-    console.log("toggleCheckbox ::: End");
+    console.log("settingsToggleSingleServiceCheckbox ::: End");
 }
 
 
 /**
 * @name initSettingsPage
 * @summary Initializes the settings page
-* @description Shows appname, version, links to github informations. update informations. Initializes the service-checkboxes on loading the view
+* @description Shows links to github informations. update informations. Initializes the service-checkboxes on loading the view
 */
 function initSettingsPage()
 {
     console.log("initSettingsPage ::: Start");
 
     // get appname and version
-    var appVersion = require("electron").remote.app.getVersion();
+    //var appVersion = require("electron").remote.app.getVersion();
     //var appName = require("electron").remote.app.getName();
 
     var serviceName;
@@ -790,7 +869,7 @@ function initSettingsPage()
     var curSettingAutostartMinimized;
 
     // show appname and version
-    $( "#settingsAppVersion" ).html( appVersion );
+    //$( "#settingsAppVersion" ).html( appVersion );
 
     // loop over array ttthAvailableServices which contains all service-names
     //
@@ -805,8 +884,8 @@ function initSettingsPage()
 
         // Add service to settings page
         //
-        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="toggleCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
-        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="toggleCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="settingsToggleSingleServiceCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
 
         // Show activated services as enabled in settings
         // add them to the default view select item
@@ -988,7 +1067,6 @@ function localizeUserInterface()
       node.attr("title", i18next.t(key));
     });
   });
-  
 
   console.log("localizeUserInterface ::: End");
 }
@@ -1002,13 +1080,13 @@ function localizeUserInterface()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadTelegramMessageCount">getUnreadTelegramMessageCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#toggleCheckbox">toggleCheckbox</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMessagesCount">getUnreadGoogleMessagesCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 20 2019 11:39:58 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 21 2019 13:08:47 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
