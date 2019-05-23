@@ -5,7 +5,7 @@
     ],
     "recurseDepth": 10,
     "source": {
-        "include": [ "app/js/ttth/" ],
+        "include": [ "app/js/ttth/", "main.js" ],
         "exclude": [  ],
         "includePattern": ".+\\.js(doc|x)?$",
         "excludePattern": "(^|\\/|\\\\)_"
