@@ -23,7 +23,7 @@ let mainWindow;
 
 /**
 * @name createMenu
-* @summary Creates the menu 
+* @summary Creates the menu
 * @description Creates the menu and auto-hides it on init
 */
 function createMenu()
@@ -57,38 +57,38 @@ function createMenu()
     {
         label: "Edit",
         submenu: [
-        { 
-            label: "Undo", 
-            accelerator: "CmdOrCtrl+Z", 
-            selector: "undo:" 
+        {
+            label: "Undo",
+            accelerator: "CmdOrCtrl+Z",
+            selector: "undo:"
         },
-        { 
-            label: "Redo", 
-            accelerator: "Shift+CmdOrCtrl+Z", 
-            selector: "redo:" 
+        {
+            label: "Redo",
+            accelerator: "Shift+CmdOrCtrl+Z",
+            selector: "redo:"
         },
-        { 
-            type: "separator" 
+        {
+            type: "separator"
         },
-        { 
-            label: "Cut", 
-            accelerator: "CmdOrCtrl+X", 
-            selector: "cut:" 
+        {
+            label: "Cut",
+            accelerator: "CmdOrCtrl+X",
+            selector: "cut:"
         },
-        { 
-            label: "Copy", 
-            accelerator: "CmdOrCtrl+C", 
-            selector: "copy:" 
+        {
+            label: "Copy",
+            accelerator: "CmdOrCtrl+C",
+            selector: "copy:"
         },
-        { 
-            label: "Paste", 
-            accelerator: "CmdOrCtrl+V", 
-            selector: "paste:" 
+        {
+            label: "Paste",
+            accelerator: "CmdOrCtrl+V",
+            selector: "paste:"
         },
-        { 
-            label: "Select All", 
-            accelerator: "CmdOrCtrl+A", 
-            selector: "selectAll:" 
+        {
+            label: "Select All",
+            accelerator: "CmdOrCtrl+A",
+            selector: "selectAll:"
         }
     ]
     },
@@ -628,9 +628,9 @@ app.on("window-all-closed", function ()
 });
 
 
-// macOS only: 
-// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time, 
-// attempting to re-launch the application when it's already running, 
+// macOS only:
+// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time,
+// attempting to re-launch the application when it's already running,
 // or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
@@ -651,28 +651,3 @@ createTray();
 
 // Measuring startup
 console.timeEnd("init");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const contextMenu = require('electron-context-menu');
-
-contextMenu({
-    prepend: (defaultActions, params, browserWindow) => [{
-        label: 'Rainbow',
-        // Only show it when right-clicking images
-        visible: params.mediaType === 'image'
-    }]
-});
-
-
