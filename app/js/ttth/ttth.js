@@ -1,130 +1,5 @@
 /* global _ */
 
-
-// Call from main.js
-//
-require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
-{
-    console.log("reloadCurrentService ::: Start");
-
-    //console.log(message);  // Prints "whoooooooh!"
-
-    // get href of current active tab
-    var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1);
-    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
-
-    // TODO:
-    // reload the service - see #9
-    switch (tabValue)
-    {
-        case "whatsApp":
-            console.error("doh");
-            serviceWhatsAppInit();
-            break;
-
-        default:
-            // do something
-            break;
-    }
-
-    console.log("reloadCurrentService ::: Start");
-});
-
-
-
-// Call from main.js: switch to settings tab
-//
-require("electron").ipcRenderer.on("showSettings", function(event)
-{
-    console.log("showSettings ::: Start");
-
-    switchToService("Settings");
-
-    console.log("showSettings ::: End");
-});
-
-
-
-// Call from main.js: Start search for new updates
-//
-require("electron").ipcRenderer.on("startSearchUpdates", function(event)
-{
-    console.log("startSearchUpdates ::: Start");
-
-    // show update information
-    $("#updateInformation").show();
-
-    searchUpdate();
-
-    console.log("startSearchUpdates ::: End");
-});
-
-
-
-
-// Call from main.js: Switch to next tab
-//
-require("electron").ipcRenderer.on("nextTab", function(event)
-{
-    console.log("nextTab ::: Start");
-
-    // variables
-    var currentTabId;
-    var enabledTabsArray = []; // should store all visible names
-    var currentActiveTabId; // Id of active tab
-    var serviceName; // used to call  the function switchToService()
-
-    // get current selected / active tab
-    currentActiveTabId = $(".nav-item .active").attr("id");
-    currentActiveTabId = currentActiveTabId.replace("target_", "");
-    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
-
-    // get list of all visible service-tabs
-    $('#myTabs li a').each(function()
-    {
-        currentTabId = $(this).attr("id");
-
-        // check if entry is visible or not
-        if($("#"+currentTabId).is(":visible"))
-        {
-            currentTabId = currentTabId.replace("target_", "");
-            if(currentTabId !== "settings")
-            {
-                enabledTabsArray.push(currentTabId);
-            }
-        }
-    })
-
-    // find position of current tab in the array of enabled services
-    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
-
-    // get next array position
-    if(currentPositionInArray < enabledTabsArray.length -1) // 
-    {
-        serviceName = enabledTabsArray[currentPositionInArray+1];
-    }
-    else
-    {
-        serviceName = enabledTabsArray[0];
-    }
-
-    console.log("nextTab ::: Should switch to: " + serviceName + " now.")
-
-    // jump to next tab
-    switchToService(serviceName)
-
-    console.log("nextTab ::: End");
-});
-
-
-
-
-
-
-
-
-
 function settingToggleMenubarVisibility()
 {
     console.log("settingToggleMenubarVisibility ::: Start");
@@ -1071,9 +946,9 @@ function initSettingsPage()
 
 
         // Adding all services to settings page
-        // 
+        //
         // since 1.2.0
-        if (i%2 == 0) // Odd and Even
+        if (i%2 === 0) // Odd and Even
         {
             // create a new row
             $( "#settingsAvailableServices" ).append('<div class="row" id=' + i + '></div>');
@@ -1310,3 +1185,121 @@ function localizeUserInterface()
 
   console.log("localizeUserInterface ::: End");
 }
+
+
+
+// Call from main.js
+//
+require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
+{
+    console.log("reloadCurrentService ::: Start");
+
+    //console.log(message);  // Prints "whoooooooh!"
+
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1);
+    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+
+    // TODO:
+    // reload the service - see #9
+    switch (tabValue)
+    {
+        case "whatsApp":
+            console.error("doh");
+            serviceWhatsAppInit();
+            break;
+
+        default:
+            // do something
+            break;
+    }
+
+    console.log("reloadCurrentService ::: Start");
+});
+
+
+
+// Call from main.js: switch to settings tab
+//
+require("electron").ipcRenderer.on("showSettings", function(event)
+{
+    console.log("showSettings ::: Start");
+
+    switchToService("Settings");
+
+    console.log("showSettings ::: End");
+});
+
+
+
+// Call from main.js: Start search for new updates
+//
+require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+{
+    console.log("startSearchUpdates ::: Start");
+
+    // show update information
+    $("#updateInformation").show();
+
+    searchUpdate();
+
+    console.log("startSearchUpdates ::: End");
+});
+
+
+
+
+// Call from main.js: Switch to next tab
+//
+require("electron").ipcRenderer.on("nextTab", function(event)
+{
+    console.log("nextTab ::: Start");
+
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    });
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get next array position
+    if(currentPositionInArray < enabledTabsArray.length -1) //
+    {
+        serviceName = enabledTabsArray[currentPositionInArray+1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[0];
+    }
+
+    console.log("nextTab ::: Should switch to: " + serviceName + " now.");
+
+    // jump to next tab
+    switchToService(serviceName)
+
+    console.log("nextTab ::: End");
+});
