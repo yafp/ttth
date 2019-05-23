@@ -3,10 +3,7 @@
 /* ########################################################################## */
 :root {
 
-    /* --color-main: #DFDCD9; */
-    /* --color-main: limegreen; */
     --color-main: white;
-
     --color-menuBackground: #333;
     --color-menuBackgroundHover: #111;
     --color-menuForeground: white;
@@ -19,7 +16,7 @@
 /* ########################################################################## */
 html,body {
     /* height:100%; */
-    height: calc(100% - 40px);
+    height: calc(100% - 20px);
 
     background-color: var(--color-main);
 
@@ -29,18 +26,24 @@ html,body {
     margin: 0px;
     margin-left: 0;
     margin-right: 0;
+
 }
 
 .container-fluid
 {
     background-color: var(--color-main);
 
-    padding-right: 0; /*15px in bootstrap.css*/
-    padding-left: 0;  /*idem*/
+    padding-right: 0;  /*15px in bootstrap.css*/
+    padding-left: 0 ;  /*idem*/
+    
     margin-right: auto;
-    margin-left: auto;
+    margin-left: auto; 
 
-    /* padding-bottom: 5px; */
+
+    /* test */
+    /*
+    background-color:  var(--color-menuForegroundHover);
+    */
 }
 
 
@@ -63,12 +66,20 @@ ul{
     margin-right: 10px;
 }
 
-
 .nav-item{
     border: 1px solid white;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     margin-left: 5px;
+    margin-right: 0px;
+}
+
+.nav-item a {
+    /* works - but breaks with hover */
+    /*
+    margin-left: -5px !important;
+    margin-right: -5px !important;
+    */
 }
 
 
@@ -91,7 +102,7 @@ ul{
 .bgimg {
     background-image: url('../../img/settings/icon_background.png');
     background-repeat: no-repeat;
-    background-position: right bottom !important; /*Positioning*/
+    background-position: center bottom !important; /*Positioning*/
 }
 
 
@@ -107,7 +118,7 @@ ul{
 
 
 .flex-fill {
-  flex:1 1 auto;
+    flex:1 1 auto;
 }
 
 
@@ -115,9 +126,18 @@ ul{
     background-color: var(--color-main);
     height: 100%;
     min-height: 100%;
-    /* height: calc(100% - 10px); */
     width: 100%;
     min-width: 100%;
+
+
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+
+    /* content/tab */
+    /*
+    background-color: red;
+    */
 }
 
 
@@ -125,7 +145,7 @@ ul{
 h3{
     padding-top: 15px;
     border-bottom: 1px solid var(--color-menuForegroundHover);
-    font-size: 20px;
+    font-size: 24px !important;
 }
 
 
@@ -135,14 +155,15 @@ h3{
 .my-ui-text {
     -webkit-user-select:none;
     -moz-user-select: none;
-
 }
 
 
 /* ########################################################################## */
 /* Use the “system font/San Francisco” */
 /* ########################################################################## */
-cssbody { font: caption; }
+cssbody { 
+    font: caption; 
+}
 
 
 /* ########################################################################## */
