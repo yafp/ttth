@@ -33,7 +33,7 @@
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 
 * It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
-* Builds are available for [linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux.png) linux, [apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple.png) macOS and [windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows.png) windows.
+* Builds are available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows.png) windows.
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
@@ -109,19 +109,19 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ## keyboard-shortcuts
 
-| Shortcut   | Description                              | Limitations                |
-| -----------| ---------------------------------------- | -------------------------- |
-| F1         | Homepage                                 |                            |
-| F2         | Report issue                             |                            |
-| F10        | Toggle menubar                           | Linux and Windows only     |
-| F11        | Toggle Fullscreen mode                   |                            |
-| F12        | Toggle developer console                 |                            |
-| CTRL + ,   | Show Settings                            |                            |
-| CTRL + N   | Jump to next tab                         |                            |
-| CTRL + Q   | Quit/exit the application                |                            |
-| CTRL + R   | Reload the application                   |                            |
-| CTRL + H   | Minimize window                          |                            |
-| CTRL + M   | Maximize window                          |                            |
+| Function                        | Linux     | macOS     | Windows   |
+| ------------------------------- | --------- | --------- | ----------
+| Homepage                        | F1        | F1        | F1        |
+| Report issue                    | F2        | F2        | F2        |
+| Toggle menubar                  | F10       | -         | F10       |
+| Toggle Fullscreen mode          | F11       | F11       | F11       |
+| Toggle developer console        | F12       | F12       | F12       |
+| Show Settings                   | CTRL + ,  | CMD + ,   | CTRL + ,  |
+| Jump to next tab                | CTRL + N  | CMD + N   | CTRL + N  |
+| Quit/exit the application       | CTRL + Q  | CMD + Q   | CTRL + Q  |
+| Reload the application          | CTRL + R  | CMD + R   | CTRL + R  |
+| Minimize window                 | CTRL + H  | CMD + H   | CTRL + H  |
+| Maximize window                 | CTRL + M  | CMD + M   | CTRL + M  |
 
 
 ## faq
