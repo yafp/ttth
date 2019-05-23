@@ -1,5 +1,8 @@
 # ttth
 ## todos
+* Build: find a way to minify js-code on build (using uglify or similar)
+
+## maybe / ideas / brainstorming
 * Services
   * StackExchange?
   * Discord?
@@ -8,16 +11,11 @@
   * xing?
   * linkedin?
   * skype?
-
-* Build: minify js on build / uglify
-
-## maybe / ideas / brainstorming
 * FontAwesome
   * Slim it down (size-wise) - see: https://blog.webjeda.com/optimize-fontawesome/ - maybe using: IcoMoon
-* Add reference to https://appimage.github.io/wishlist/
 * Builds:
   * Linux: pacman?
-  * Mac: dmg
+* Context Menu in WebView: https://github.com/sindresorhus/electron-context-menu
 
-## Source for unread message functions
+## Reminder: Source for unread message functions
 * Rambox: app/store/ServicesList.js

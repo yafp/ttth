@@ -1,12 +1,36 @@
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
+
 # ttth
 ## changelog
+
+
+### ttth 1.2.0 (2019xxyy)
+####  ```Added```
+* Window: changes opacity (from 1.0 to 0.9) if it loses focus (macOS/Windows only). See #17
+* Menu: Added 'Settings' entry to menubar (File -> Settings). See #11
+* Menu: Added 'Minimize' entry to menubar (Window -> Minimize). See #11
+* Menu: Added 'Maximize' entry to menubar (Window -> Mazimize). See #11
+* Setting: Added 'Hide menubar' option to startup section of Settings. See #18
+* Update Information: Added close button to update-information. See #20
+
+#### ```Changed```
+* Settings: AutoStart on macOS should now use LaunchAgent (no longer AppleScript). See #13
+* Settings: Now showing 2 services per line to reduce vertical space-usage. See #14
+* Menubar: F12 now toggles the console (Help -> Console). See #15
+* Menubar: F10 now toggles the menubar (View -> Toggle Menubar). Was F3 before. See #16
+* UI: Improved CSS -> reducing the borders on left/white/bottom. See #19
+* Service Slack: Added handling for custom workspace definition. See #22 (untested due to missing slack account)
+
+#### ```Fixed```
+* Mac: Copy and paste was not working. Fixed by adding an 'Edit' section to the menu. See #23
+
 
 ### ttth 1.1.0 (20190521)
 ####  ```Added```
 * Menu: Added console entry to view menu, see #6
 * Services: Added unread message function for GoogleMessages, see #7
 
-####```Changed```
+#### ```Changed```
 * UI: Changed the app icon, see #5
 * Settings: Optimized settings view for smaller screens, see #4
 * Operating systems: Windows and macOS are now officially supported, see #3
@@ -43,6 +67,7 @@
     * Configure autostart
     * Configure autostart option minimized
 * Services:
+  * Freenode
   * GitHub
   * Google Calendar
   * Google Contacts
@@ -65,8 +90,8 @@
 
 
 
-
-## Versioning
+## About versioning
+This project is using [Semantic Versioning](https://semver.org/).
 
   ```
   MAJOR.MINOR.PATCH

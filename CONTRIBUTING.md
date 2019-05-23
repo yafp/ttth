@@ -7,7 +7,7 @@ email, or any other method with the owners of this repository before making a ch
 
 ## howto
 
-### Firste steps
+### First steps
 
 #### getting started as developer
 * Clone the repository: ```git clone https://github.com/yafp/ttth```
@@ -100,7 +100,7 @@ for Continuos Integration aspects.
   * Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f
   * Linux building configuration: https://www.electron.build/configuration/linux
   * Building for Windows on Linux: https://blog.aaronlenoir.com/2017/03/03/building-electron-apps-for-windows-on-debian/
-  * GitHub Release Stats: https://www.somsubhra.com/github-release-stats/
+  * GitHub Release Stats: https://www.somsubhra.com/github-release-stats/?username=yafp&repository=ttth
 * Misc
   * App icons: https://www.christianengvall.se/electron-app-icons/
   * https://blog.dcpos.ch/how-to-make-your-electron-app-sexy

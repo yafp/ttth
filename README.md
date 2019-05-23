@@ -17,25 +17,26 @@
 
 # ttth
 
-
 ## table of contents
 
 - [about](#about)
-- [history](#history)
-- [services](#services)
 - [ui](#ui)
-- [install](#install)
+- [services](#services)
 - [changelog](#changelog)
-- [contributing](#contributing)
+- [download](#download)
+- [install](#install)
 - [keyboard-shortcuts](#keyboard-shortcuts)
 - [faq](#faq)
+- [contributing](#contributing)
 
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 
+* It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+* Builds are available for [linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux.png) linux, [apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple.png) macOS and [windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows.png) windows.
 
-## history
-It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+## ui
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 
 ## services
@@ -61,12 +62,16 @@ It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Ram
 2 = experimental
 </sup></sub>
 
-## ui
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
+
+## changelog
+Please see the [changlog](CHANGELOG.md) for more details.
+
+
+## download
+Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 
 ## install
-Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ### linux
 
@@ -84,6 +89,16 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 * Download the latest .snap
 * execute: ```sudo snap install /path/to/local/ttth-file.snap```
 
+### macOS
+#### dmg
+* Download the latest .dmg
+* Mount the .dmg
+* Drag the .app to /Applications
+
+#### zip
+* Download the latest .zip
+* Extract the zip
+* Drag the .app to /Applications
 
 ### windows
 
@@ -92,35 +107,40 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 * Execute the *win-installer.exe
 
 
-## changelog
-Please see the [changlog](CHANGELOG.md) for more details.
-
-
-## contributing
-Please see the [contributing informations](CONTRIBUTING.md) for more details.
-
-
 ## keyboard-shortcuts
 
-| Shortcut   | Description                              |
-| -----------| ---------------------------------------- |
-| F1         | Homepage                                 |
-| F2         | Report issue                             |
-| F3         | Toggle the visibility of the menubar     |
-| F11        | Toggle Fullscreen                        |
-| F12        | Open developer console                   |
-| CTRL + Q   | Quit/ext the application                 |
-| CTRL + R   | Reload the application                   |
+| Shortcut   | Description                              | Limitations                |
+| -----------| ---------------------------------------- | -------------------------- |
+| F1         | Homepage                                 |                            |
+| F2         | Report issue                             |                            |
+| F10        | Toggle menubar                           | Linux and Windows only     |
+| F11        | Toggle Fullscreen mode                   |                            |
+| F12        | Toggle developer console                 |                            |
+| CTRL + ,   | Show Settings                            |                            |
+| CTRL + N   | Jump to next tab                         |                            |
+| CTRL + Q   | Quit/exit the application                |                            |
+| CTRL + R   | Reload the application                   |                            |
+| CTRL + H   | Minimize window                          |                            |
+| CTRL + M   | Maximize window                          |                            |
+
 
 ## faq
 ### Where is the user data stored?
 #### Linux
 Please check ```~/.config/ttth/```
+#### macOS
+Please check ```~/Library/Application Support/ttth/```
 #### Windows
 Please check ```%APPDATA%\ttth```
 
 ### How is the autostart information stored?
 #### Linux
 Using a .desktop entry in ```~/.config/autostart/```
+#### macOS
+Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+
+
+## contributing
+Please see the [contributing informations](CONTRIBUTING.md) for more details.
