@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: ttth.js</title>
+    <title>JSDoc: Source: app/js/ttth/ttth.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: ttth.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/ttth.js</h1>
 
     
 
@@ -29,7 +29,8 @@
             <pre class="prettyprint source linenums"><code>/* global _ */
 
 
-
+// Call from main.js
+//
 require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
 {
     console.log("reloadCurrentService ::: Start");
@@ -57,6 +58,59 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     console.log("reloadCurrentService ::: Start");
 });
+
+
+
+// Call from main.js
+//
+require("electron").ipcRenderer.on("showSettings", function(event)
+{
+    console.log("showSettings ::: Start");
+
+    switchToService("Settings");
+
+    console.log("showSettings ::: End");
+});
+
+
+
+// Call from main.js
+//
+require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+{
+    console.log("startSearchUpdates ::: Start");
+
+    // show update information
+    $("#updateInformation").show();
+
+    searchUpdate();
+
+    console.log("startSearchUpdates ::: End");
+});
+
+
+
+
+
+
+
+
+function settingToggleMenubarVisibility()
+{
+    console.log("settingToggleMenubarVisibility ::: Start");
+
+    if($("#checkboxSettingHideMenubar").prop("checked"))
+    {
+        writeLocalStorage("settingHideMenubar", true);
+    }
+    else
+    {
+        writeLocalStorage("settingHideMenubar", false);
+    }
+
+
+    console.log("settingToggleMenubarVisibility ::: End");
+}
 
 
 
@@ -441,7 +495,6 @@ function searchUpdate()
 
     console.log("searchUpdate ::: Start checking " + url + " for available releases");
 
-
     var updateStatus = $.get( url, function( data )
     {
         timeout:3000; // in milliseconds
@@ -454,6 +507,7 @@ function searchUpdate()
 
         // remote version
         var remoteAppVersionLatest = versions[0].name;
+        //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
 
         // local version
         var localAppVersion = require("electron").remote.app.getVersion();
@@ -466,7 +520,7 @@ function searchUpdate()
             console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
-            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.&lt;button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close">&lt;span aria-hidden="true">&amp;times;&lt;/span>&lt;/button>');
 
             // show update information
             $("#updateInformation").show();
@@ -503,6 +557,18 @@ function searchUpdate()
     });
 
     console.log("searchUpdate ::: End");
+}
+
+
+/**
+* @name hideUpdateInformation
+* @summary Hides the update information
+* @description Hides the info div which shows hint regarding available update, link to changelog and link to release/download
+*/
+function hideUpdateInformation()
+{
+    // hide update information
+    $("#updateInformation").hide();
 }
 
 
@@ -785,7 +851,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             loadServiceSpecificCode(objectName);
 
             // send notification
-            sendNotification("Service activation", "Activated the service &lt;b>" + objectName + "&lt;/b>");
+            sendNotification("Service activation", "Activated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -823,7 +889,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
-            sendNotification("Service deactivation", "Deactivated the service &lt;b>" + objectName + "&lt;/b>");
+            sendNotification("Service deactivation", "Deactivated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -867,6 +933,7 @@ function initSettingsPage()
     var serviceUrl;
     var curSettingAutostart;
     var curSettingAutostartMinimized;
+    var curSettingHideMenubar;
 
     // show appname and version
     //$( "#settingsAppVersion" ).html( appVersion );
@@ -880,16 +947,35 @@ function initSettingsPage()
         serviceName =  ttthAvailableServices[i];
         serviceUrl = ttthServicesUrls[i];
 
-        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
 
-        // Add service to settings page
+        // Adding all services to settings page
+        // 
+        // since 1.2.0
+        if (i%2 == 0) // Odd and Even
+        {
+            // create a new row
+            $( "#settingsAvailableServices" ).append('&lt;div class="row" id=' + i + '>&lt;/div>');
+
+            // add something to this new row
+            $( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+        }
+        else
+        {
+            // add something to the existing row
+            var rowReference = i -1;
+            $( "#" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+        }
+
+
+        // until: 1.2.0:
         //
-        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="settingsToggleSingleServiceCheckbox(\''  + ttthAvailableServices[i]+ '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
-        $( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+
 
         // Show activated services as enabled in settings
         // add them to the default view select item
-        // uand pdate the related status button
+        // and update the related status button
+        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
         var curServiceStatus = readLocalStorage(serviceName);
         if(curServiceStatus === "true")
         {
@@ -965,6 +1051,30 @@ function initSettingsPage()
         console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
     }
 
+
+
+    // Setting: HideMenubar
+    //
+    const {ipcRenderer} = require("electron");
+    curSettingHideMenubar = readLocalStorage("settingHideMenubar");
+    if(curSettingHideMenubar === "true")
+    {
+        // hide menubar
+        console.log("initSettingsPage ::: Hide menubar");
+        $("#checkboxSettingHideMenubar").prop("checked", true);
+        ipcRenderer.send("hideMenubar");
+    }
+    else
+    {
+        // show menubar
+        ipcRenderer.send("showMenubar");
+        $("#checkboxSettingHideMenubar").prop("checked", false);
+        console.log("initSettingsPage ::: Show menubar");
+    }
+
+
+
+
     console.log("initSettingsPage ::: End");
 }
 
@@ -1021,7 +1131,7 @@ function localizeUserInterface()
   var userLang = navigator.language || navigator.userLanguage;
 
   // for development screenshot - overwrite the language
-  //userLang = "en";
+  userLang = "en";
 
   console.log("localizeUserInterface ::: Detected user language: " + userLang);
 
@@ -1080,13 +1190,13 @@ function localizeUserInterface()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 22 2019 14:07:23 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 23 2019 10:22:43 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

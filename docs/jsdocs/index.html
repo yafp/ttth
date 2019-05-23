@@ -56,9 +56,24 @@
 <img src="https://img.shields.io/github/languages/code-size/yafp/ttth.svg?style=flat" alt="GitHub Code Size">
 <img src="https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Closed">
 <img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Open"></p>
-<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/64x64.png" alt="logo"></p>
-<h1>ttth</h1><h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.</p>
-<h2>history</h2><p>It is inspired by apps like <a href="https://github.com/meetfranz/franz">Franz</a> and <a href="https://github.com/ramboxapp/community-edition">Rambox</a>.</p>
+<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png" alt="logo"></p>
+<h1>ttth</h1><h2>table of contents</h2><ul>
+<li><a href="#about">about</a></li>
+<li><a href="#ui">ui</a></li>
+<li><a href="#services">services</a></li>
+<li><a href="#changelog">changelog</a></li>
+<li><a href="#download">download</a></li>
+<li><a href="#install">install</a></li>
+<li><a href="#keyboard-shortcuts">keyboard-shortcuts</a></li>
+<li><a href="#faq">faq</a></li>
+<li><a href="#contributing">contributing</a></li>
+</ul>
+<h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.</p>
+<ul>
+<li>It is inspired by apps like <a href="https://github.com/meetfranz/franz">Franz</a> and <a href="https://github.com/ramboxapp/community-edition">Rambox</a>.</li>
+<li>Builds are available for <a href="https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux.png">linux</a> linux, <a href="https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple.png">apple</a> macOS and <a href="https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows.png">windows</a> windows.</li>
+</ul>
+<h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png" alt="logo"></p>
 <h2>services</h2><ul>
 <li>Freenode</li>
 <li>GitHub</li>
@@ -78,9 +93,9 @@
 <p><sub><sup>
 <strong>Legend:</strong><br>1 = featuring basic unread messages badge;<br>2 = experimental
 </sup></sub></p>
-<h2>ui</h2><p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png" alt="logo"></p>
-<h2>install</h2><p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
-<h3>linux</h3><h4>.deb</h4><ul>
+<h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
+<h2>download</h2><p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
+<h2>install</h2><h3>linux</h3><h4>.deb</h4><ul>
 <li>Download the latest .deb</li>
 <li>execute: <code>sudo dpkg -i /path/to/local/ttth-file.deb</code></li>
 </ul>
@@ -94,16 +109,77 @@
 <li>Download the latest .snap</li>
 <li>execute: <code>sudo snap install /path/to/local/ttth-file.snap</code></li>
 </ul>
+<h3>macOS</h3><h4>dmg</h4><ul>
+<li>Download the latest .dmg</li>
+<li>Mount the .dmg</li>
+<li>Drag the .app to /Applications</li>
+</ul>
+<h4>zip</h4><ul>
+<li>Download the latest .zip</li>
+<li>Extract the zip</li>
+<li>Drag the .app to /Applications</li>
+</ul>
 <h3>windows</h3><h4>installer</h4><ul>
 <li>Download the latest *win-installer.exe</li>
 <li>Execute the *win-installer.exe</li>
 </ul>
-<h2>changelog</h2><p>Please see the <a href="CHANGELOG.md">changlog</a> for more details.</p>
-<h2>getting involved</h2><p>Please see the <a href="CONTRIBUTING.md">contributing informations</a> for more details.</p>
+<h2>keyboard-shortcuts</h2><table>
+<thead>
+<tr>
+<th>Shortcut</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>Homepage</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>Report issue</td>
+</tr>
+<tr>
+<td>F10</td>
+<td>Toggle menubar</td>
+</tr>
+<tr>
+<td>F11</td>
+<td>Toggle Fullscreen mode</td>
+</tr>
+<tr>
+<td>F12</td>
+<td>Toggle developer console</td>
+</tr>
+<tr>
+<td>CTRL + ,</td>
+<td>Show Settings</td>
+</tr>
+<tr>
+<td>CTRL + Q</td>
+<td>Quit/exit the application</td>
+</tr>
+<tr>
+<td>CTRL + R</td>
+<td>Reload the application</td>
+</tr>
+<tr>
+<td>CTRL + H</td>
+<td>Minimize window</td>
+</tr>
+<tr>
+<td>CTRL + M</td>
+<td>Maximize window</td>
+</tr>
+</tbody>
+</table>
 <h2>faq</h2><h3>Where is the user data stored?</h3><h4>Linux</h4><p>Please check <code>~/.config/ttth/</code></p>
+<h4>macOS</h4><p>Please check <code>~/Library/Application Support/ttth/</code></p>
 <h4>Windows</h4><p>Please check <code>%APPDATA%\ttth</code></p>
 <h3>How is the autostart information stored?</h3><h4>Linux</h4><p>Using a .desktop entry in <code>~/.config/autostart/</code></p>
-<h4>Windows</h4><p>Using a registry entry in <code>\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p></article>
+<h4>macOS</h4><p>Using a .plist file in  <code>~/Library/LaunchAgents/</code> to create a Launch Agent</p>
+<h4>Windows</h4><p>Using a registry entry in <code>\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p>
+<h2>contributing</h2><p>Please see the <a href="CONTRIBUTING.md">contributing informations</a> for more details.</p></article>
     </section>
 
 
@@ -114,13 +190,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#getUnreadGoogleMessagesCount">getUnreadGoogleMessagesCount</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceWhatsAppUpdateBadge">serviceWhatsAppUpdateBadge</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateMattermostBadge">updateMattermostBadge</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTelegramBadge">updateTelegramBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 21 2019 13:08:47 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 23 2019 10:22:43 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
