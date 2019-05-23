@@ -1,8 +1,9 @@
 /* global _ */
 
 
-
-require('electron').ipcRenderer.on('reloadCurrentService', function(event, message)
+// Call from main.js
+//
+require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
 {
     console.log("reloadCurrentService ::: Start");
 
@@ -19,18 +20,127 @@ require('electron').ipcRenderer.on('reloadCurrentService', function(event, messa
     {
         case "whatsApp":
             console.error("doh");
-            alert("pre");
             serviceWhatsAppInit();
-            alert("post");
             break;
 
         default:
-            // Anweisungen werden ausgeführt,
+            // do something
             break;
     }
 
     console.log("reloadCurrentService ::: Start");
 });
+
+
+
+// Call from main.js: switch to settings tab
+//
+require("electron").ipcRenderer.on("showSettings", function(event)
+{
+    console.log("showSettings ::: Start");
+
+    switchToService("Settings");
+
+    console.log("showSettings ::: End");
+});
+
+
+
+// Call from main.js: Start search for new updates
+//
+require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+{
+    console.log("startSearchUpdates ::: Start");
+
+    // show update information
+    $("#updateInformation").show();
+
+    searchUpdate();
+
+    console.log("startSearchUpdates ::: End");
+});
+
+
+
+
+// Call from main.js: Switch to next tab
+//
+require("electron").ipcRenderer.on("nextTab", function(event)
+{
+    console.log("nextTab ::: Start");
+
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $('#myTabs li a').each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    })
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get next array position
+    if(currentPositionInArray < enabledTabsArray.length -1) // 
+    {
+        serviceName = enabledTabsArray[currentPositionInArray+1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[0];
+    }
+
+    console.log("nextTab ::: Should switch to: " + serviceName + " now.")
+
+    // jump to next tab
+    switchToService(serviceName)
+
+    console.log("nextTab ::: End");
+});
+
+
+
+
+
+
+
+
+
+function settingToggleMenubarVisibility()
+{
+    console.log("settingToggleMenubarVisibility ::: Start");
+
+    if($("#checkboxSettingHideMenubar").prop("checked"))
+    {
+        writeLocalStorage("settingHideMenubar", true);
+    }
+    else
+    {
+        writeLocalStorage("settingHideMenubar", false);
+    }
+
+
+    console.log("settingToggleMenubarVisibility ::: End");
+}
 
 
 
@@ -204,6 +314,7 @@ function settingToggleAutostart()
 
     var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
+        useLaunchAgent: true,
     });
 
     if($("#checkboxSettingAutostart").prop("checked"))
@@ -244,13 +355,13 @@ function settingToggleAutostartMinimized()
     // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
 
-
     if($("#checkboxSettingAutostartMinimized").prop("checked"))
     {
         // enable start minimized
         var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
-        isHidden: true
+        isHidden: true,
+        useLaunchAgent: true,
         });
 
         // Write AutoStart & AutostartMinimized to local storage
@@ -272,7 +383,8 @@ function settingToggleAutostartMinimized()
         // disable start minimized
         var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
-        isHidden: false
+        isHidden: false,
+        useLaunchAgent: true,
         });
 
         // Write AutostartMinimized to local storage
@@ -413,7 +525,6 @@ function searchUpdate()
 
     console.log("searchUpdate ::: Start checking " + url + " for available releases");
 
-
     var updateStatus = $.get( url, function( data )
     {
         timeout:3000; // in milliseconds
@@ -426,6 +537,7 @@ function searchUpdate()
 
         // remote version
         var remoteAppVersionLatest = versions[0].name;
+        //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
 
         // local version
         var localAppVersion = require("electron").remote.app.getVersion();
@@ -438,7 +550,7 @@ function searchUpdate()
             console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
-            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.<button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
             // show update information
             $("#updateInformation").show();
@@ -475,6 +587,18 @@ function searchUpdate()
     });
 
     console.log("searchUpdate ::: End");
+}
+
+
+/**
+* @name hideUpdateInformation
+* @summary Hides the update information
+* @description Hides the info div which shows hint regarding available update, link to changelog and link to release/download
+*/
+function hideUpdateInformation()
+{
+    // hide update information
+    $("#updateInformation").hide();
 }
 
 
@@ -715,6 +839,79 @@ function initMattermost()
 
 
 /**
+* @name initSlack
+* @summary checks if local storage contains a slack workspacename
+* @description Checks if custom workspacename  is stored in local storage. If not a prompt appears where the user can define the workspacename.
+*/
+function initSlack()
+{
+    console.log("initSlack ::: Start");
+
+    // check if there is a url specificed in local storage
+    var slackWorkspace = readLocalStorage("serviceSlackWorkspace");
+    if( (slackWorkspace === "") || (slackWorkspace === null) )
+    {
+        console.warn("initSlack ::: Custom Slack Workspace is not yet defined.");
+
+        const prompt = require("electron-prompt");
+
+        prompt({
+            title: "Slack Workspace name",
+            label: "Please insert your Slack Workspace name",
+            value: "WORKSPACENAME",
+            inputAttrs: {
+                type: "text"
+            },
+            icon: "img/icon/icon.png"
+        })
+        .then((r) => {
+            if(r === null) {
+                console.log("initSlack ::: User cancelled the URL dialog.");
+
+                // hide tab
+                $("#menu_slack").hide();
+
+                // uncheck service checkbox
+                $("#Slack").prop("checked", false);
+
+                // set service slack to false
+                writeLocalStorage("Slack", "false");
+            }
+            else
+            {
+                // TODO: check if url is reachable
+
+                console.log("result", r);
+                slackWorkspace = r;
+
+                // update title property of service
+                $("#label_Slack").prop("title", "https://" + slackWorkspace + ".slack.com");
+
+                // Save value to local storage
+                writeLocalStorage("serviceSlackWorkspace", slackWorkspace);
+
+                console.log("initSlack ::: Custom Slack Workspace is now set to: " + slackWorkspace + ". Stored value in local storage");
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        // set src of mattermost webview
+        document.getElementById( "SlackWebview" ).setAttribute( "src", slackWorkspace);
+
+        // adjust title
+        $("#label_Slack").prop("title", slackWorkspace);
+    }
+
+    console.log("initSlack ::: End");
+}
+
+
+
+
+
+/**
 * @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
@@ -757,13 +954,20 @@ function settingsToggleSingleServiceCheckbox(objectName)
             loadServiceSpecificCode(objectName);
 
             // send notification
-            sendNotification("Service activation", "Activated the service <b>" + objectName + "</b>");
+            sendNotification("Service activation", "Activated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
             if( objectName === "Mattermost" )
             {
                 initMattermost();
+            }
+
+            // Hackery: Slack is different - as it has a user-specific Workspace
+            //
+            if( objectName === "Slack" )
+            {
+                initSlack();
             }
         }
         else
@@ -795,7 +999,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
-            sendNotification("Service deactivation", "Deactivated the service <b>" + objectName + "</b>");
+            sendNotification("Service deactivation", "Deactivated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -806,6 +1010,18 @@ function settingsToggleSingleServiceCheckbox(objectName)
 
                 // adjust service label back to default
                 $("#label_Mattermost").prop("title", "");
+
+            }
+
+            // Hackery: Slack is different - as it has a user-specific workspace
+            //
+            if( objectName === "Slack" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceSlackWorkspace");
+
+                // adjust service label back to default
+                $("#label_Slack").prop("title", "");
 
             }
         }
@@ -839,6 +1055,7 @@ function initSettingsPage()
     var serviceUrl;
     var curSettingAutostart;
     var curSettingAutostartMinimized;
+    var curSettingHideMenubar;
 
     // show appname and version
     //$( "#settingsAppVersion" ).html( appVersion );
@@ -852,16 +1069,35 @@ function initSettingsPage()
         serviceName =  ttthAvailableServices[i];
         serviceUrl = ttthServicesUrls[i];
 
-        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
 
-        // Add service to settings page
+        // Adding all services to settings page
+        // 
+        // since 1.2.0
+        if (i%2 == 0) // Odd and Even
+        {
+            // create a new row
+            $( "#settingsAvailableServices" ).append('<div class="row" id=' + i + '></div>');
+
+            // add something to this new row
+            $( "#" + i ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
+        }
+        else
+        {
+            // add something to the existing row
+            var rowReference = i -1;
+            $( "#" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
+        }
+
+
+        // until: 1.2.0:
         //
-        //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + ttthAvailableServices[i] + ' name=' + ttthAvailableServices[i] + ' onClick="settingsToggleSingleServiceCheckbox(\''  + ttthAvailableServices[i]+ '\');"></div></div><input type="text" class="form-control" aria-label="Text input with checkbox" value='+ ttthAvailableServices[i] +'  disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ttthAvailableServices[i] +'" title="disabled" disabled></button></div></div>');
-        $( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
+        //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
+
 
         // Show activated services as enabled in settings
         // add them to the default view select item
-        // uand pdate the related status button
+        // and update the related status button
+        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
         var curServiceStatus = readLocalStorage(serviceName);
         if(curServiceStatus === "true")
         {
@@ -902,6 +1138,14 @@ function initSettingsPage()
     }
 
 
+    // specialcase: Mattermost
+    var slackEnabled = readLocalStorage("Slack");
+    if(slackEnabled === "true")
+    {
+        initSlack();
+    }
+
+
     // Setting: DefaultView - now validate the optional configured default view
     validateConfiguredDefaultView();
 
@@ -936,6 +1180,30 @@ function initSettingsPage()
     {
         console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
     }
+
+
+
+    // Setting: HideMenubar
+    //
+    const {ipcRenderer} = require("electron");
+    curSettingHideMenubar = readLocalStorage("settingHideMenubar");
+    if(curSettingHideMenubar === "true")
+    {
+        // hide menubar
+        console.log("initSettingsPage ::: Hide menubar");
+        $("#checkboxSettingHideMenubar").prop("checked", true);
+        ipcRenderer.send("hideMenubar");
+    }
+    else
+    {
+        // show menubar
+        ipcRenderer.send("showMenubar");
+        $("#checkboxSettingHideMenubar").prop("checked", false);
+        console.log("initSettingsPage ::: Show menubar");
+    }
+
+
+
 
     console.log("initSettingsPage ::: End");
 }

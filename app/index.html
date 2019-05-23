@@ -36,22 +36,22 @@
 
     <!-- ttth: general -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
-    <script type="text/javascript" src="js/ttth/services.js" async></script>
+    <script type="text/javascript" src="js/ttth/serviceList.js" async></script>
     <!-- ttth: service specific scripts -->
-    <script type="text/javascript" src="js/ttth/freenode.js" async></script>
-    <script type="text/javascript" src="js/ttth/googlemail.js" async></script>
-    <script type="text/javascript" src="js/ttth/googlemessages.js" async></script>
-    <script type="text/javascript" src="js/ttth/mattermost.js" async></script>
-    <script type="text/javascript" src="js/ttth/slack.js" async></script>
-    <script type="text/javascript" src="js/ttth/telegram.js" async></script>
-    <script type="text/javascript" src="js/ttth/threema.js" async></script>
-    <script type="text/javascript" src="js/ttth/whatsapp.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/freenode.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/googlemail.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/googlemessages.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/mattermost.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/slack.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/telegram.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/threema.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/whatsapp.js" async></script>
+
 </head>
 
 <body>
 
     <nav>
-        <!-- should move tabbar into this section -->
         <!-- tabBar -->
         <div id="tabBar">
             <!-- Tab Names -->
@@ -186,17 +186,20 @@
 
 
                 <!-- Tab: Settings -->
-                <li class="nav-item ml-auto">
+                <li class="nav-item ml-auto" id="menu_settings"> <!-- ml-auto -->
                     <a class="nav-link my-ui-text active" id="target_settings" href="#settings" role="tab" data-toggle="tab" >
                         <i class="fas fa-cog"></i> <span i18n-text="tabnamesSettings"><!-- Settings --></span>
                     </a>
                 </li>
+                <!-- /Settings -->
+
             </ul>
             <!-- /Tab Names -->
 
         </div>
         <!-- /tabBar -->
     </nav>
+
 
     <!-- container -->
     <div class="container-fluid h-100 d-flex flex-column">
@@ -292,7 +295,7 @@
                     <webview
                         id="GoogleMailWebview"
                         class="inner"
-                        preload="./js/ttth/googlemail_inject.js"
+                        preload="./js/ttth/services/googlemail_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -326,7 +329,7 @@
                     <webview
                         id="MattermostWebview"
                         class="inner"
-                        preload="./js/ttth/mattermost_inject.js"
+                        preload="./js/ttth/services/mattermost_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -338,7 +341,7 @@
                     <webview
                         id="SlackWebview"
                         class="inner"
-                        preload="./js/ttth/slack_inject.js"
+                        preload="./js/ttth/services/slack_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -351,7 +354,7 @@
                         id="TelegramWebview"
                         name="TelegramWebview"
                         class="inner"
-                        preload="./js/ttth/telegram_inject.js"
+                        preload="./js/ttth/services/telegram_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -363,7 +366,7 @@
                     <webview
                         id="ThreemaWebview"
                         class="inner"
-                        preload="./js/ttth/threema_inject.js"
+                        preload="./js/ttth/services/threema_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -392,7 +395,7 @@
                         id="WhatsAppWebview"
                         name="WhatsAppWebview"
                         class="inner"
-                        preload="./js/ttth/whatsapp_inject.js"
+                        preload="./js/ttth/services/whatsapp_inject.js"
                         userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
                         src="">
                     </webview>
@@ -460,7 +463,7 @@
                                 <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
                             </div>
                         </div>
-                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default service to display when ttth starts" disabled>
+                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default view on startup (fallback: Settings)" disabled>
 
                         <div class="input-group-prepend">
                             <div class="input-group-text">
@@ -498,9 +501,21 @@
                                 <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="settingToggleAutostartMinimized();">
                             </div>
                         </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized (on login)" disabled>
+                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized on login" disabled>
                     </div>
                     <!-- /Setting: AutostartMinimized  -->
+
+
+                    <!-- Setting: HideMenubarOnStartup -->
+                    <div class="input-group input-group-sm mb-1">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
+                            </div>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar on startup" disabled>
+                    </div>
+                    <!-- /Setting: HideMenubarOnStartup  -->
 
 
                 </div>
@@ -541,8 +556,7 @@ $( document ).ready(function()
 {
     console.log( "ready!" );
 
-    // hide the entire body on launch
-    // we'll fade it back in later ...
+    // hide the entire body on launch. we'll fade it back in later
     $('body').css('display', 'none');
 
     // Click handler for navigation/tabs
@@ -582,5 +596,6 @@ $( document ).ready(function()
 
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
+
 });
 </script>

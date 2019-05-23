@@ -13,25 +13,36 @@ const shell = require("electron").shell;
 const openAboutWindow = require("about-window").default;
 
 var AutoLaunch = require("auto-launch"); // for autostart
-
 var path = require("path");
 var fs = require("fs");
-var myConsole = new nodeConsole.Console(process.stdout, process.stderr);
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let mainWindow;
 
 
-
-// -----------------------------------------------------------------------------
-// CREATING THE MENU
-// -----------------------------------------------------------------------------
+/**
+* @name createMenu
+* @summary Creates the menu 
+* @description Creates the menu and auto-hides it on init
+*/
 function createMenu()
 {
     // Create a custom menu
     //
     var menu = Menu.buildFromTemplate([
+
     // Menu: File
     {
         label: "File",
         submenu: [
+        {
+            label: "Settings",
+            click() {
+                mainWindow.webContents.send("showSettings");
+            },
+            accelerator: "CmdOrCtrl+,"
+        },
         {
             label: "Exit",
             click() {
@@ -41,22 +52,70 @@ function createMenu()
         }
     ]
     },
-    // Menu: Window
+
+    // Menu: Edit
+    {
+        label: "Edit",
+        submenu: [
+        { 
+            label: "Undo", 
+            accelerator: "CmdOrCtrl+Z", 
+            selector: "undo:" 
+        },
+        { 
+            label: "Redo", 
+            accelerator: "Shift+CmdOrCtrl+Z", 
+            selector: "redo:" 
+        },
+        { 
+            type: "separator" 
+        },
+        { 
+            label: "Cut", 
+            accelerator: "CmdOrCtrl+X", 
+            selector: "cut:" 
+        },
+        { 
+            label: "Copy", 
+            accelerator: "CmdOrCtrl+C", 
+            selector: "copy:" 
+        },
+        { 
+            label: "Paste", 
+            accelerator: "CmdOrCtrl+V", 
+            selector: "paste:" 
+        },
+        { 
+            label: "Select All", 
+            accelerator: "CmdOrCtrl+A", 
+            selector: "selectAll:" 
+        }
+    ]
+    },
+
+    // Menu: View
     {
         label: "View",
         submenu: [
+        {
+            label: "Next Tab",
+            click() {
+                mainWindow.webContents.send("nextTab");
+            },
+            accelerator: "CmdOrCtrl+N"
+        },
         {
             label: "Reload",
             click() {
                 mainWindow.reload();
             },
-             accelerator: "CmdOrCtrl+R"
+            accelerator: "CmdOrCtrl+R"
         },
         {
             label: "Reload current service",
             click() {
                 // calling the renderer process from main.js
-                mainWindow.webContents.send('reloadCurrentService', 'whoooooooh!');
+                mainWindow.webContents.send("reloadCurrentService", "whoooooooh!");
             },
             accelerator: "CmdOrCtrl+S",
             enabled: false
@@ -64,6 +123,28 @@ function createMenu()
         {
             type: "separator"
         },
+        {
+            id: "ViewToggleMenubar",
+            label: "Toggle MenuBar",
+            click() {
+                if(mainWindow.isMenuBarVisible())
+                {
+                    mainWindow.setMenuBarVisibility(false);
+                }
+                else
+                {
+                    mainWindow.setMenuBarVisibility(true);
+                }
+            },
+            accelerator: "F10"
+        }
+    ]
+    },
+
+    // Menu: Window
+    {
+        label: "Window",
+        submenu: [
         {
             label: "Toggle Fullscreen",
             click() {
@@ -80,21 +161,36 @@ function createMenu()
             accelerator: "F11"
         },
         {
-            label: "Toggle MenuBar",
+            label: "Minimize",
             click() {
-                if(mainWindow.isMenuBarVisible())
+                if(mainWindow.isMinimized())
                 {
-                    mainWindow.setMenuBarVisibility(false);
+                    //mainWindow.restore();
                 }
                 else
                 {
-                    mainWindow.setMenuBarVisibility(true);
+                    mainWindow.minimize();
                 }
             },
-            accelerator: "F3"
+            accelerator: "CmdOrCtrl+H",
+        },
+        {
+            label: "Maximize",
+            click() {
+                if(mainWindow.isMaximized())
+                {
+                    mainWindow.unmaximize();
+                }
+                else
+                {
+                    mainWindow.maximize();
+                }
+            },
+            accelerator: "CmdOrCtrl+M",
         }
     ]
     },
+
     // Menu: Help
     {
         label: "Help",
@@ -106,7 +202,6 @@ function createMenu()
                 openAboutWindow({
                     icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
                     open_devtools: false,
-                    css_path: "app/css/ttth/about.css",
                     use_version_info: true,
                     win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
                     {
@@ -143,11 +238,25 @@ function createMenu()
         {
             type: "separator"
         },
+        // Update
+        {
+            label: "Search updates",
+            click() {
+                //mainWindow.webContents.toggleDevTools();
+                mainWindow.webContents.send("startSearchUpdates");
+            },
+            enabled: true
+            //accelerator: "F12"
+        },
+        {
+            type: "separator"
+        },
         // Console
         {
+            id: "HelpConsole",
             label: "Console",
             click() {
-                mainWindow.webContents.openDevTools();
+                mainWindow.webContents.toggleDevTools();
             },
             enabled: true,
             accelerator: "F12"
@@ -160,26 +269,51 @@ function createMenu()
     Menu.setApplicationMenu(menu);
 
     // hide menubar on launch
-    mainWindow.setMenuBarVisibility(false);
+    //mainWindow.setMenuBarVisibility(false);
+
+
+    // Hide Menubar
+    //
+    ipcMain.on("hideMenubar", function() {
+        mainWindow.setMenuBarVisibility(false);
+    });
+
+    // Show Menubar
+    //
+    ipcMain.on("showMenubar", function() {
+        mainWindow.setMenuBarVisibility(true);
+    });
+
+
+    // Disable some menu-elements - depending on the platform
+    var os = require("os");
+    if(os.platform() === "darwin")
+    {
+        // see #21
+        Menu.getApplicationMenu().items; // all the items
+        item = Menu.getApplicationMenu().getMenuItemById('ViewToggleMenubar');
+        item.enabled = false;
+    }
+
 }
 
 
 
-// -----------------------------------------------------------------------------
-// CREATING THE MAIN WINDOW
-// -----------------------------------------------------------------------------
+/**
+* @name createWindow
+* @summary Creates the main window  of the app
+* @description Creates the main window, restores window position and size of possible
+*/
 function createWindow ()
 {
     // Check last window position and size from user data
-    // source: https://github.com/electron/electron/issues/526
-    //
-    // Read a local config file
     var windowWidth;
     var windowHeight;
     var windowPositionX;
     var windowPositionY;
 
-    var customUserDataPath = path.join(defaultUserDataPath, "init.json");
+    // Read a local config file
+    var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
     var data;
     try {
         data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
@@ -215,12 +349,9 @@ function createWindow ()
     });
 
 
-    // create a menu
-    createMenu();
-
     // Restore window position if possible
     //
-    // requirements: found values in .init.json from the previous session
+    // requirements: found values in .tttUSerData.json from the previous session
     if ( (typeof windowPositionX !== "undefined") && (typeof windowPositionY !== "undefined") )
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
@@ -244,13 +375,16 @@ function createWindow ()
         };
 
         // store it to file in user data
-        var customUserDataPath = path.join(defaultUserDataPath, "init.json");
+        var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
     });
 
 
+    // When the app is unresponsive
+    //
     mainWindow.on("unresponsive", function ()
     {
+        // nothing to do here
     });
 
 
@@ -263,7 +397,24 @@ function createWindow ()
     });
 
 
+    // when the app loses focus
+    //
+    mainWindow.on("blur", function()
+    {
+        mainWindow.setOpacity(0.9); // macOS & Windows only
+    });
+
+
+    // when the app loses focus
+    //
+    mainWindow.on("focus", function()
+    {
+        mainWindow.setOpacity(1.0); // macOS & Windows only
+    });
+
+
     // Emitted when the window is closed.
+    //
     mainWindow.on("closed", function ()
     {
         // Dereference the window object, usually you would store windows
@@ -271,13 +422,15 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
     });
+
 }
 
 
-
-// -----------------------------------------------------------------------------
-// CREATE A TRAY
-// -----------------------------------------------------------------------------
+/**
+* @name createTray
+* @summary Creates the tray of the app
+* @description Creates the tray and the related menu.
+*/
 function createTray()
 {
     let tray = null;
@@ -326,12 +479,10 @@ function createTray()
                     app.quit();
                 }
             }
-
         ]);
-        // tray.setTitle("ttth"); // see #10
+
         tray.setToolTip("ttth");
         tray.setContextMenu(contextMenu);
-
 
         // from rambox
         switch (process.platform)
@@ -344,24 +495,20 @@ function createTray()
                 // Double click is not supported and Click its only supported when app indicator is not used.
                 // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
                 tray.on("click", function() {
-                    myConsole.log("createTray ::: Linux click");
                 });
 
                 break;
 
             case "win32":
                 tray.on("click", function() {
-                    myConsole.log("createTray ::: win32 click");
                 });
 
                 // only: mac & win
                 tray.on("double-click", function() {
-                    myConsole.log("createTray ::: win32 double-click");
                 });
 
                 // only: mac & win
                 tray.on("right-click", function() {
-                    myConsole.log("createTray ::: win32 right-click");
                 });
 
                 break;
@@ -373,32 +520,34 @@ function createTray()
     });
 
 
-    // Change to UnreadMessages Tray Icon
+
+    // Call from renderer: Change Tray Icon to UnreadMessages
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
     });
 
-    // Change to Default Tray Icon
+    // Call from renderer: Change Tray Icon to Default
     //
     ipcMain.on("changeTrayIconToDefault", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
     });
-
 }
 
 
-// -----------------------------------------------------------------------------
-// CHANGE USER AGENT
-// -----------------------------------------------------------------------------
+/**
+* @name changeUserAgent
+* @summary Can owerwrite the user agent
+* @description Can owerwrite the user agent
+*/
 function changeUserAgent()
 {
-    // show out of the box default userAgent
+    // get the out-of-the-box userAgent
     var defaultAgent = mainWindow.webContents.getUserAgent();
-    myConsole.log("changeUserAgent ::: Default user agent is: " + defaultAgent);
 
     // change user agent of browser
     //
+    // Examples:
     // Windows:       Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36
     //                Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36
     // Linux:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36
@@ -408,53 +557,66 @@ function changeUserAgent()
 
     // check if setting the userAgent worked
     var newAgent = mainWindow.webContents.getUserAgent();
-    myConsole.log("changeUserAgent ::: Changed user agent to: " + newAgent);
 }
 
 
-
+/**
+* @name forceSingleAppInstance
+* @summary Takes care that there is only 1 instance of this app running
+* @description Takes care that there is only 1 instance of this app running
+*/
+function forceSingleAppInstance()
+{
+    if (!gotTheLock)
+    {
+        // quit the second instance
+        app.quit();
+    }
+    else
+    {
+        app.on("second-instance", (event, commandLine, workingDirectory) =>
+        {
+            // Someone tried to run a second instance, we should focus our first instance window.
+            if (mainWindow)
+            {
+                if (mainWindow.isMinimized())
+                {
+                    mainWindow.restore();
+                }
+                mainWindow.focus();
+            }
+        });
+    }
+}
 
 
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-// Force single-app-instance
-if (!gotTheLock)
-{
-    // quit the second instance
-    app.quit();
-}
-else
-{
-    app.on("second-instance", (event, commandLine, workingDirectory) =>
-    {
-        // Someone tried to run a second instance, we should focus our first instance window.
-        if (mainWindow)
-        {
-            if (mainWindow.isMinimized())
-            {
-                mainWindow.restore();
-            }
-            mainWindow.focus();
-        }
-    });
-}
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 //
-app.on("ready", createWindow);
+//app.on("ready", createWindow);
+
+app.on("ready", function ()
+{
+    forceSingleAppInstance();
+    createWindow();
+    createMenu();
+
+});
+
+
+
+
 
 
 
 // Quit when all windows are closed.
+//
 app.on("window-all-closed", function ()
 {
     // On macOS it is common for applications and their menu bar
@@ -466,13 +628,20 @@ app.on("window-all-closed", function ()
 });
 
 
+// macOS only: 
+// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time, 
+// attempting to re-launch the application when it's already running, 
+// or clicking on the application's dock or taskbar icon.
+//
 app.on("activate", function ()
 {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
+        forceSingleAppInstance();
         createWindow();
+        createMenu();
     }
 });
 
@@ -482,3 +651,28 @@ createTray();
 
 // Measuring startup
 console.timeEnd("init");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const contextMenu = require('electron-context-menu');
+
+contextMenu({
+    prepend: (defaultActions, params, browserWindow) => [{
+        label: 'Rainbow',
+        // Only show it when right-clicking images
+        visible: params.mediaType === 'image'
+    }]
+});
+
+
