@@ -18,17 +18,18 @@ function serviceMattermostAddEventListener()
         webview.send("request");
     }, 30000);
 
-    // WebView Event: new-window
+
+    // WebView Event: new-window / clicking links
     //
-    webview.addEventListener('new-window', function(e)
+    webview.addEventListener("new-window", function(e)
     {
-        console.log("serviceWhatsAppAddEventListener ::: new-window");
+        console.log("serviceMattermostAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
-        const protocol = require('url').parse(e.url).protocol;
+        const protocol = require("url").parse(e.url).protocol;
 
-        if (protocol === 'http:' || protocol === 'https:')
+        if (protocol === "http:" || protocol === "https:")
         {
             shell.openExternal(e.url);
         }
@@ -43,6 +44,7 @@ function serviceMattermostAddEventListener()
         webview.send("request");
     });
 
+
     // WebView Event: dom-ready
     //
     webview.addEventListener("dom-ready", function()
@@ -50,6 +52,7 @@ function serviceMattermostAddEventListener()
         console.log("serviceMattermostAddEventListener ::: DOM-Ready");
         webview.send("request");
     });
+
 
     // WebView Event: did-stop-loading
     //
@@ -64,6 +67,7 @@ function serviceMattermostAddEventListener()
         webview.send("request");
     });
 
+
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
@@ -72,41 +76,8 @@ function serviceMattermostAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        updateMattermostBadge(event.channel);
+        updateServiceBadge("Mattermost", event.channel);
     });
 
     console.log("serviceMattermostAddEventListener ::: End");
-}
-
-
-/**
-* @name updateMattermostBadge
-* @summary Update the mattermost badge
-* @description Gets the current unread message count and adjust the badge according to it
-* @param count - Amount of unread messages
-*/
-function updateMattermostBadge(count)
-{
-    console.log("updateMattermostBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    console.log("updateMattermostBadge ::: New badge value is: " + count);
-
-    // update UI
-    $( "#badge_mattermost" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateMattermostBadge ::: End");
 }

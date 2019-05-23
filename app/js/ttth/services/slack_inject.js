@@ -1,6 +1,12 @@
 // Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
+
+/**
+* @name serviceSlackGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Slack
+* @description Gets the amount of unread messages of the service Slack
+*/
 function serviceSlackGetUnreadMessageCount()
 {
     console.log("serviceSlackGetUnreadMessageCount ::: Start");

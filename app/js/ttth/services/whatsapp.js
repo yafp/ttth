@@ -1,37 +1,4 @@
 /**
-* @name serviceWhatsAppUpdateBadge
-* @summary Updates the unread message badge of WhatsApp
-* @description Updates the unread message badge of WhatsApp
-*/
-function serviceWhatsAppUpdateBadge(count)
-{
-    console.log("serviceWhatsAppUpdateBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("serviceWhatsAppUpdateBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_whatsapp" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("serviceWhatsAppUpdateBadge ::: End");
-}
-
-
-
-/**
 * @name serviceWhatsAppAddEventListener
 * @summary Adds several event listener to WhatsApp WebView
 * @description Adds several event listener to WhatsApp WebView
@@ -42,15 +9,6 @@ function serviceWhatsAppAddEventListener()
 
     // get webview
     var webview = document.getElementById("WhatsAppWebview");
-
-
-    // communication between main & webview:
-    // https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
-
-
-    // WebView Events: https://electronjs.org/docs/api/webview-tag#dom-events
-    //
-    //
 
 
     // run it periodically
@@ -65,35 +23,17 @@ function serviceWhatsAppAddEventListener()
 
 
 
-
-    // WebView: Event Listener to open links
-    //
-    /*
-    webview.addEventListener('new-window', (e) =>
-    {
-        const protocol = require('url').parse(e.url).protocol;
-        if (protocol === 'http:' || protocol === 'https:')
-        {
-            shell.openExternal(e.url)
-            let win = new BrowserWindow({width: 800, height: 600})
-            win.loadURL(e.url);
-        }
-
-    });
-    */
-
-
     // WebView Event: new-window
     //
-    webview.addEventListener('new-window', function(e)
+    webview.addEventListener("new-window", function(e)
     {
         console.log("serviceWhatsAppAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
-        const protocol = require('url').parse(e.url).protocol;
+        const protocol = require("url").parse(e.url).protocol;
 
-        if (protocol === 'http:' || protocol === 'https:')
+        if (protocol === "http:" || protocol === "https:")
         {
             shell.openExternal(e.url);
         }

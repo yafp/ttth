@@ -2,11 +2,16 @@
 const {ipcRenderer} = require("electron");
 
 
-
-
-function getUnreadThreemaMessageCount()
+/**
+* @name serviceThreemaGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Threema
+* @description Gets the amount of unread messages of the service Threema
+*/
+function serviceThreemaGetUnreadMessageCount()
 {
-    console.log("getUnreadThreemaMessageCount ::: Start");
+    console.log("serviceThreemaGetUnreadMessageCount ::: Start");
+
+    var unreadCount;
 
     let newUnread = 0;
     try
@@ -21,7 +26,7 @@ function getUnreadThreemaMessageCount()
     }
     catch (e)
     {
-         console.log("getUnreadThreemaMessageCount ::: Catch");
+         console.log("serviceThreemaGetUnreadMessageCount ::: Catch");
     }
     
 
@@ -33,9 +38,9 @@ function getUnreadThreemaMessageCount()
         ipcRenderer.sendToHost(unreadCount);
     }
 
-    console.log("getUnreadThreemaMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
+    console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
 
-    console.log("getUnreadThreemaMessageCount ::: End");
+    console.log("serviceThreemaGetUnreadMessageCount ::: End");
 }
 
 
@@ -43,5 +48,5 @@ function getUnreadThreemaMessageCount()
 // Do something according to a request of your mainview
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(getUnreadThreemaMessageCount());
+    ipcRenderer.sendToHost(serviceThreemaGetUnreadMessageCount());
 });

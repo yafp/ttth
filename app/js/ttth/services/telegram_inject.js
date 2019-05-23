@@ -1,9 +1,15 @@
 // Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
-function getUnreadTelegramMessageCount()
+
+/**
+* @name serviceTelegramGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Telegram
+* @description Gets the amount of unread messages of the service Telegram
+*/
+function serviceTelegramGetUnreadMessageCount()
 {
-    console.log("getUnreadTelegramMessageCount ::: Start");
+    console.log("serviceTelegramGetUnreadMessageCount ::: Start");
 
     var counter = 0;
     var intervalID = window.setInterval(myCallback, 50);
@@ -12,22 +18,22 @@ function getUnreadTelegramMessageCount()
         var eventToClick = document.getElementsByClassName("im_dialog_badge badge");
         if (eventToClick.length > 0)
         {
-            console.log(eventToClick);
+            //console.log(eventToClick);
             for (var i = 0; i < eventToClick.length; i++)
             {
-                console.log(eventToClick[i]);
+                //console.log(eventToClick[i]);
 
                 // Check if we count this element or not
                 if(!eventToClick[i].classList.contains("ng-hide")) // Count it
                 {
-                    console.log("getUnreadTelegramMessageCount ::: Found communication with unread messages. +1");
+                    console.log("serviceTelegramGetUnreadMessageCount ::: Found communication with unread messages. +1");
                     counter = counter +1;
                 }
             }
             clearInterval(intervalID);
         }
 
-        console.log("getUnreadTelegramMessageCount ::: Total Telegram chats with unread messages: " + counter);
+        console.log("serviceTelegramGetUnreadMessageCount ::: Total Telegram chats with unread messages: " + counter);
 
         // send back from webview to main
         ipcRenderer.sendToHost(counter);
@@ -40,5 +46,5 @@ function getUnreadTelegramMessageCount()
 //
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(getUnreadTelegramMessageCount());
+    ipcRenderer.sendToHost(serviceTelegramGetUnreadMessageCount());
 });

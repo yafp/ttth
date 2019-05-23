@@ -1,30 +1,8 @@
-function updateThreemaBadge(count)
-{
-    console.log("updateThreemaBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateThreemaBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_threema" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateThreemaBadge ::: End");
-}
-
-
+/**
+* @name serviceThreemaAddEventListener
+* @summary Adds several event listener to Threema WebView
+* @description Adds several event listener to Threema WebView
+*/
 function serviceThreemaAddEventListener()
 {
     console.log("serviceThreemaAddEventListener ::: Start");
@@ -75,10 +53,6 @@ function serviceThreemaAddEventListener()
     {
         console.log("serviceThreemaAddEventListener ::: did-stop-loading");
 
-        // Show devTools if you want
-        //
-        //webview.openDevTools();
-
         // Triggering search for unread messages
         webview.send("request");
     });
@@ -92,9 +66,8 @@ function serviceThreemaAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        updateThreemaBadge(event.channel);
+        updateServiceBadge("Threema", event.channel);
     });
-
 
     console.log("serviceThreemaAddEventListener ::: End");
 }

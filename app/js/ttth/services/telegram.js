@@ -16,20 +16,20 @@ function serviceTelegramAddEventListener()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 30000);
+    }, 10000);
 
 
     // WebView Event: new-window
     //
-    webview.addEventListener('new-window', function(e)
+    webview.addEventListener("new-window", function(e)
     {
         console.log("serviceWhatsAppAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
-        const protocol = require('url').parse(e.url).protocol;
+        const protocol = require("url").parse(e.url).protocol;
 
-        if (protocol === 'http:' || protocol === 'https:')
+        if (protocol === "http:" || protocol === "https:")
         {
             shell.openExternal(e.url);
         }
@@ -82,41 +82,8 @@ function serviceTelegramAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        updateTelegramBadge(event.channel);
+        updateServiceBadge("Telegram", event.channel);
     });
 
     console.log("serviceTelegramAddEventListener ::: End");
-}
-
-
-/**
-* @name updateTelegramBadge
-* @summary Update the telegram badge
-* @description Gets the current unread message count and adjust the badge according to it
-* @param count - Amount of unread messages
-*/
-function updateTelegramBadge(count)
-{
-    console.log("updateTelegramBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    console.log("updateTelegramBadge ::: New badge value is: " + count);
-
-    // update UI
-    $( "#badge_telegram" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateTelegramBadge ::: End");
 }

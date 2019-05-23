@@ -1,32 +1,8 @@
-
-function serviceSlackUpdateBadge(count)
-{
-    console.log("serviceSlackUpdateBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("serviceSlackUpdateBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_slack" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("serviceSlackUpdateBadge ::: End");
-}
-
-
-
+/**
+* @name serviceSlackAddEventListener
+* @summary Adds several EventListeners to the webview of the service
+* @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
+*/
 function serviceSlackAddEventListener()
 {
     console.log("serviceSlackAddEventListener ::: Start");
@@ -46,15 +22,15 @@ function serviceSlackAddEventListener()
 
     // WebView Event: new-window
     //
-    webview.addEventListener('new-window', function(e)
+    webview.addEventListener("new-window", function(e)
     {
         console.log("serviceFreenodeAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
-        const protocol = require('url').parse(e.url).protocol;
+        const protocol = require("url").parse(e.url).protocol;
 
-        if (protocol === 'http:' || protocol === 'https:')
+        if (protocol === "http:" || protocol === "https:")
         {
             shell.openExternal(e.url);
         }
@@ -85,10 +61,6 @@ function serviceSlackAddEventListener()
     {
         console.log("serviceSlackAddEventListener ::: did-stop-loading");
 
-        // Show devTools if you want
-        //
-        //webview.openDevTools();
-
         // Triggering search for unread messages
         webview.send("request");
     });
@@ -102,7 +74,7 @@ function serviceSlackAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        serviceSlackUpdateBadge(event.channel);
+        updateServiceBadge("Slack", event.channel);
     });
 
     console.log("serviceSlackAddEventListener ::: End");

@@ -6,7 +6,11 @@
 const {ipcRenderer} = require("electron");
 
 
-
+/**
+* @name serviceWhatsAppGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service WhatsApp
+* @description Gets the amount of unread messages of the service WhatsApp
+*/
 function serviceWhatsAppGetUnreadMessageCount()
 {
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");

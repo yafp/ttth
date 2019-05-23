@@ -3,13 +3,13 @@ const {ipcRenderer} = require("electron");
 
 
 /**
-* @name getUnreadGoogleMessagesCount
+* @name serviceGoogleMessagesGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service googleMessages
 * @description Gets the amount of unread messages of the service googleMessages
 */
-function getUnreadGoogleMessagesCount()
+function serviceGoogleMessagesGetUnreadMessageCount()
 {
-    console.log("getUnreadGoogleMessagesCount ::: Start");
+    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Start");
 
     var counter = document.querySelectorAll(".tpEAA.yrs5ff").length;
     if(t>=1)
@@ -17,7 +17,7 @@ function getUnreadGoogleMessagesCount()
         //rambox.setUnreadCount(t)
     }
 
-    console.log("getUnreadGoogleMessagesCount ::: Total GoogleMessages unread messages: " + counter);
+    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Total GoogleMessages unread messages: " + counter);
 
     // send back from webview to main
     ipcRenderer.sendToHost(counter);
@@ -28,5 +28,5 @@ function getUnreadGoogleMessagesCount()
 // Do something according to a request of your mainview
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(getUnreadGoogleMessagesCount());
+    ipcRenderer.sendToHost(serviceGoogleMessagesGetUnreadMessageCount());
 });

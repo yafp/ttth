@@ -1,30 +1,8 @@
-function updateGoogleMessagesBadge(count)
-{
-    console.log("updateGoogleMessagesBadge ::: Start");
-
-    // might be null - should be ignored
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateGoogleMessagesBadge ::: New count is: " + count);
-
-    if(count === 0)
-    {
-        count = "";
-    }
-
-    // update UI
-    $( "#badge_googlemail" ).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-
-    console.log("updateGoogleMessagesBadge ::: End");
-}
-
-
+/**
+* @name serviceGoogleMessagesAddEventListener
+* @summary Adds several EventListeners to the webview of the service
+* @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
+*/
 function serviceGoogleMessagesAddEventListener()
 {
     console.log("serviceGoogleMessagesAddEventListener ::: Start");
@@ -83,7 +61,7 @@ function serviceGoogleMessagesAddEventListener()
         console.log("serviceGoogleMessagesAddEventListener ::: IPC message:");
 
         // update the badge
-        updateGoogleMessagesBadge(event.channel);
+        updateServiceBadge("GoogleMessages", event.channel);
     });
 
 
