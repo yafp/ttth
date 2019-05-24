@@ -387,10 +387,6 @@
                 <!-- TabContent: WhatsApp -->
                 <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
 
-                    <!--
-                    <script>serviceWhatsAppRegister();</script>
-                    -->
-
                     <webview
                         id="WhatsAppWebview"
                         name="WhatsAppWebview"
@@ -507,7 +503,7 @@
 
 
                     <!-- Setting: HideMenubarOnStartup -->
-                    <div class="input-group input-group-sm mb-1">
+                    <div class="input-group input-group-sm mb-1" id="settingsSectionStartupHideMenubar">
                         <div class="input-group-prepend">
                             <div class="input-group-text">
                                 <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
@@ -591,8 +587,11 @@ $( document ).ready(function()
     // Translate using i18next
     localizeUserInterface();
 
+    // FIXME:
+    serviceWhatsAppRegister();
+
     // send notification
-    sendNotification("State", "Ready");
+    //sendNotification("State", "Ready");
 
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);

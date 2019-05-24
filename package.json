@@ -7,6 +7,7 @@
     "scripts": {
         "start": "electron .",
         "start-debug": "electron . --enable-logging",
+        "test": "mocha",
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=resources/installer/icon.icns --prune=true --out=dist",
         "package-win-32": "electron-packager . ttth --overwrite --platform=win32 --arch=ia32 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=${productName} --version-string.ProductName=\"ttth\"",
         "package-win-64": "electron-packager . ttth --overwrite --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=${productName} --version-string.ProductName=\"ttth\"",
@@ -153,7 +154,9 @@
     "devDependencies": {
         "electron": "^4.2.0",
         "electron-builder": "^20.40.2",
-        "electron-packager": "^13.1.1"
+        "electron-packager": "^13.1.1",
+        "mocha": "^6.1.4",
+        "spectron": "^5.0.0"
     },
     "dependencies": {
         "about-window": "^1.13.0",

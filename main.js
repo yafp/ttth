@@ -6,7 +6,7 @@ console.time("init");
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron");
-const nodeConsole = require("console"); // for writing to terminal
+//const nodeConsole = require("console"); // for writing to terminal
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
 const shell = require("electron").shell;
@@ -42,6 +42,9 @@ function createMenu()
                 mainWindow.webContents.send("showSettings");
             },
             accelerator: "CmdOrCtrl+,"
+        },
+        {
+            type: "separator"
         },
         {
             label: "Exit",
@@ -103,6 +106,9 @@ function createMenu()
                 mainWindow.webContents.send("nextTab");
             },
             accelerator: "CmdOrCtrl+N"
+        },
+        {
+            type: "separator"
         },
         {
             label: "Reload",
@@ -286,12 +292,13 @@ function createMenu()
 
 
     // Disable some menu-elements - depending on the platform
+    //
     var os = require("os");
     if(os.platform() === "darwin")
     {
         // see #21
         Menu.getApplicationMenu().items; // all the items
-        item = Menu.getApplicationMenu().getMenuItemById('ViewToggleMenubar');
+        item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
     }
 
@@ -369,6 +376,8 @@ function createWindow ()
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
     {
+        console.log("main.js ::: close");
+
         // get window position and size:
         var data = {
             bounds: mainWindow.getBounds()
@@ -384,7 +393,7 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        // nothing to do here
+        console.log("main.js ::: unresponsive");
     });
 
 
@@ -392,6 +401,8 @@ function createWindow ()
     //
     mainWindow.on("ready-to-show", function()
     {
+        console.log("main.js ::: ready-to-show");
+
         mainWindow.show();
         mainWindow.focus();
     });
@@ -401,6 +412,8 @@ function createWindow ()
     //
     mainWindow.on("blur", function()
     {
+        console.log("main.js ::: blur");
+
         mainWindow.setOpacity(0.9); // macOS & Windows only
     });
 
@@ -409,6 +422,8 @@ function createWindow ()
     //
     mainWindow.on("focus", function()
     {
+        console.log("main.js ::: focus");
+
         mainWindow.setOpacity(1.0); // macOS & Windows only
     });
 
@@ -417,10 +432,20 @@ function createWindow ()
     //
     mainWindow.on("closed", function ()
     {
+        console.log("main.js ::: closed");
+
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+    });
+
+
+    // When the app is crashed
+    //
+    mainWindow.webContents.on("crashed", function ()
+    {
+        console.log("main.js ::: crashed");
     });
 
 }
@@ -611,10 +636,6 @@ app.on("ready", function ()
 
 
 
-
-
-
-
 // Quit when all windows are closed.
 //
 app.on("window-all-closed", function ()
@@ -648,6 +669,15 @@ app.on("activate", function ()
 
 // create the tray
 createTray();
+
+
+process.on('uncaughtException', (err, origin) => {
+  fs.writeSync(
+    process.stderr.fd,
+    `Caught exception: ${err}\n` +
+    `Exception origin: ${origin}`
+  );
+});
 
 // Measuring startup
 console.timeEnd("init");

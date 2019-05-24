@@ -1,23 +1,34 @@
 /* global _ */
 
-function settingToggleMenubarVisibility()
-{
-    console.log("settingToggleMenubarVisibility ::: Start");
 
-    if($("#checkboxSettingHideMenubar").prop("checked"))
+
+/**
+* @name isMac
+* @summary Checks if the operating system type is mac/darwin or not
+* @description Checks if the operating system type is mac/darwin or not
+* @return value - Boolean: True if mac, false if not
+*/
+function isMac()
+{
+    console.log("isMac ::: Start");
+
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    console.log("isMac ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Darwin")
     {
-        writeLocalStorage("settingHideMenubar", true);
+        return true;
     }
     else
     {
-        writeLocalStorage("settingHideMenubar", false);
+        return false;
     }
-
-
-    console.log("settingToggleMenubarVisibility ::: End");
 }
-
-
 
 
 /**
@@ -162,7 +173,7 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
-    let myNotification = new Notification("ttth ::: " + title, {
+    let myNotification = new Notification(title, {
         body: message,
         icon: "img/notification/icon_notification.png"
     });
@@ -192,6 +203,7 @@ function settingToggleAutostart()
         useLaunchAgent: true,
     });
 
+
     if($("#checkboxSettingAutostart").prop("checked"))
     {
         ttthAutoLauncher.enable();
@@ -213,6 +225,19 @@ function settingToggleAutostart()
 
         console.log("settingToggleAutostart ::: Finished disabling Autostart");
     }
+
+
+    ttthAutoLauncher.isEnabled()
+    .then(function(isEnabled){
+        if(isEnabled){
+            return;
+        }
+        ttthAutoLauncher.enable();
+    })
+    .catch(function(err){
+        // handle error
+    });
+
 
     console.log("settingToggleAutostart ::: End");
 }
@@ -316,6 +341,34 @@ function settingDefaultViewReset()
     sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
 
     console.log("settingDefaultViewReset ::: Start");
+}
+
+
+/**
+* @name settingToggleMenubarVisibility
+* @summary Toggles the setting hideMenubar
+* @description Enabled or disables the srtting Hide-Menubar-On-Startup
+*/
+function settingToggleMenubarVisibility()
+{
+    console.log("settingToggleMenubarVisibility ::: Start");
+
+    if($("#checkboxSettingHideMenubar").prop("checked"))
+    {
+        writeLocalStorage("settingHideMenubar", true);
+
+        // send notification
+        sendNotification("Updated Settings", "Hide menubar on startup is now enabled (Settings).");
+    }
+    else
+    {
+        writeLocalStorage("settingHideMenubar", false);
+
+        // send notification
+        sendNotification("Updated Settings", "Hide menubar on startup is now disabled (Settings).");
+    }
+
+    console.log("settingToggleMenubarVisibility ::: End");
 }
 
 
@@ -425,7 +478,7 @@ function searchUpdate()
             console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
-            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>.<button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>. <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
 
             // show update information
             $("#updateInformation").show();
@@ -445,7 +498,6 @@ function searchUpdate()
     })
     .done(function()
     {
-        //alert( "searchUpdate ::: done" );
         //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
     })
 
@@ -630,6 +682,7 @@ function loadServiceSpecificCode(serviceName)
 
         case "WhatsApp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceWhatsAppRegister();
             serviceWhatsAppAddEventListener();
             break;
 
@@ -829,7 +882,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             loadServiceSpecificCode(objectName);
 
             // send notification
-            sendNotification("Service activation", "Activated the service " + objectName + ".");
+            sendNotification("Services", "Activated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -874,7 +927,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
-            sendNotification("Service deactivation", "Deactivated the service " + objectName + ".");
+            sendNotification("Services", "Deactivated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -1058,27 +1111,37 @@ function initSettingsPage()
 
 
 
-    // Setting: HideMenubar
+    // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
     //
     const {ipcRenderer} = require("electron");
     curSettingHideMenubar = readLocalStorage("settingHideMenubar");
-    if(curSettingHideMenubar === "true")
+
+    if(isMac())
     {
-        // hide menubar
-        console.log("initSettingsPage ::: Hide menubar");
-        $("#checkboxSettingHideMenubar").prop("checked", true);
-        ipcRenderer.send("hideMenubar");
+        // ensure the setting is disabled
+        writeLocalStorage("settingHideMenubar", "false");
+
+        // hide the entire setting on settingspage
+        // baustelle
+        $("#settingsSectionStartupHideMenubar").hide();
     }
-    else
+    else // default case (linux or windows)
     {
-        // show menubar
-        ipcRenderer.send("showMenubar");
-        $("#checkboxSettingHideMenubar").prop("checked", false);
-        console.log("initSettingsPage ::: Show menubar");
+        if(curSettingHideMenubar === "true")
+        {
+            // hide menubar
+            console.log("initSettingsPage ::: Hide menubar");
+            $("#checkboxSettingHideMenubar").prop("checked", true);
+            ipcRenderer.send("hideMenubar");
+        }
+        else
+        {
+            // show menubar
+            ipcRenderer.send("showMenubar");
+            $("#checkboxSettingHideMenubar").prop("checked", false);
+            console.log("initSettingsPage ::: Show menubar");
+        }
     }
-
-
-
 
     console.log("initSettingsPage ::: End");
 }
@@ -1299,7 +1362,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
     console.log("nextTab ::: Should switch to: " + serviceName + " now.");
 
     // jump to next tab
-    switchToService(serviceName)
+    switchToService(serviceName);
 
     console.log("nextTab ::: End");
 });
