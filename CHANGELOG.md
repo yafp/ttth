@@ -4,14 +4,15 @@
 ## changelog
 
 
-### ttth 1.2.0 (2019xxyy)
+### ttth 1.2.0 (20190524)
 ####  ```Added```
 * Window: changes opacity (from 1.0 to 0.9) if it loses focus (macOS/Windows only). See #17
 * Menu: Added 'Settings' entry to menubar (File -> Settings). See #11
 * Menu: Added 'Minimize' entry to menubar (Window -> Minimize). See #11
 * Menu: Added 'Maximize' entry to menubar (Window -> Mazimize). See #11
-* Setting: Added 'Hide menubar' option to startup section of Settings. See #18
+* Setting: Added 'Hide menubar' option to startup section of Settings. (for Linux and Windows) See #18
 * Update Information: Added close button to update-information. See #20
+* Added missing url handler for the services GoogleMail and GoogleMessages
 
 #### ```Changed```
 * Settings: AutoStart on macOS should now use LaunchAgent (no longer AppleScript). See #13

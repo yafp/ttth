@@ -32,6 +32,14 @@ email, or any other method with the owners of this repository before making a ch
 * Install dependencies: ```npm install```
 * Run logre: ```npm run start-debug```
 
+#### using devtron
+* Open Developer Tools
+* Enter: ```require('devtron').install()```
+
+
+#### run test
+* Go into the repository: ```cd ttth```
+* Execute: ```npm test```
 
 
 ### Adding functions
@@ -54,7 +62,7 @@ email, or any other method with the owners of this repository before making a ch
 
 ### Creating builds
 
-#### pack using electron-packager (output: dist/)
+#### pack (using electron-packager)
 * Navigate to repository
 
 ##### linux
@@ -68,7 +76,7 @@ email, or any other method with the owners of this repository before making a ch
 * Execute: ```npm run package-win-64```
 
 
-#### build (output: dist/)
+#### build
 * Navigate to repository
 
 ##### Linux
@@ -81,11 +89,11 @@ email, or any other method with the owners of this repository before making a ch
 * Execute: ```npm run build-win```
 
 
-### Auto builds on commits
+### CI
 The project repository is using:
 
-* Travis CI (Linux builds)
-* AppVeyor (Windows builds)
+* Travis CI (for Linux and macOS)
+* AppVeyor (for Windows)
 
 for Continuos Integration aspects.
 
