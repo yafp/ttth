@@ -34,7 +34,7 @@ console.time("init");
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron");
-const nodeConsole = require("console"); // for writing to terminal
+//const nodeConsole = require("console"); // for writing to terminal
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
 const shell = require("electron").shell;
@@ -51,7 +51,7 @@ let mainWindow;
 
 /**
 * @name createMenu
-* @summary Creates the menu 
+* @summary Creates the menu
 * @description Creates the menu and auto-hides it on init
 */
 function createMenu()
@@ -59,6 +59,7 @@ function createMenu()
     // Create a custom menu
     //
     var menu = Menu.buildFromTemplate([
+
     // Menu: File
     {
         label: "File",
@@ -71,6 +72,9 @@ function createMenu()
             accelerator: "CmdOrCtrl+,"
         },
         {
+            type: "separator"
+        },
+        {
             label: "Exit",
             click() {
                 app.quit();
@@ -79,16 +83,67 @@ function createMenu()
         }
     ]
     },
+
+    // Menu: Edit
+    {
+        label: "Edit",
+        submenu: [
+        {
+            label: "Undo",
+            accelerator: "CmdOrCtrl+Z",
+            selector: "undo:"
+        },
+        {
+            label: "Redo",
+            accelerator: "Shift+CmdOrCtrl+Z",
+            selector: "redo:"
+        },
+        {
+            type: "separator"
+        },
+        {
+            label: "Cut",
+            accelerator: "CmdOrCtrl+X",
+            selector: "cut:"
+        },
+        {
+            label: "Copy",
+            accelerator: "CmdOrCtrl+C",
+            selector: "copy:"
+        },
+        {
+            label: "Paste",
+            accelerator: "CmdOrCtrl+V",
+            selector: "paste:"
+        },
+        {
+            label: "Select All",
+            accelerator: "CmdOrCtrl+A",
+            selector: "selectAll:"
+        }
+    ]
+    },
+
     // Menu: View
     {
         label: "View",
         submenu: [
         {
+            label: "Next Tab",
+            click() {
+                mainWindow.webContents.send("nextTab");
+            },
+            accelerator: "CmdOrCtrl+N"
+        },
+        {
+            type: "separator"
+        },
+        {
             label: "Reload",
             click() {
                 mainWindow.reload();
             },
-             accelerator: "CmdOrCtrl+R"
+            accelerator: "CmdOrCtrl+R"
         },
         {
             label: "Reload current service",
@@ -103,6 +158,7 @@ function createMenu()
             type: "separator"
         },
         {
+            id: "ViewToggleMenubar",
             label: "Toggle MenuBar",
             click() {
                 if(mainWindow.isMenuBarVisible())
@@ -118,6 +174,7 @@ function createMenu()
         }
     ]
     },
+
     // Menu: Window
     {
         label: "Window",
@@ -167,6 +224,7 @@ function createMenu()
         }
     ]
     },
+
     // Menu: Help
     {
         label: "Help",
@@ -229,6 +287,7 @@ function createMenu()
         },
         // Console
         {
+            id: "HelpConsole",
             label: "Console",
             click() {
                 mainWindow.webContents.toggleDevTools();
@@ -258,6 +317,19 @@ function createMenu()
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
     });
+
+
+    // Disable some menu-elements - depending on the platform
+    //
+    var os = require("os");
+    if(os.platform() === "darwin")
+    {
+        // see #21
+        Menu.getApplicationMenu().items; // all the items
+        item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
+        item.enabled = false;
+    }
+
 }
 
 
@@ -332,6 +404,8 @@ function createWindow ()
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
     {
+        console.log("main.js ::: close");
+
         // get window position and size:
         var data = {
             bounds: mainWindow.getBounds()
@@ -347,7 +421,7 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        // nothing to do here
+        console.log("main.js ::: unresponsive");
     });
 
 
@@ -355,6 +429,8 @@ function createWindow ()
     //
     mainWindow.on("ready-to-show", function()
     {
+        console.log("main.js ::: ready-to-show");
+
         mainWindow.show();
         mainWindow.focus();
     });
@@ -364,6 +440,8 @@ function createWindow ()
     //
     mainWindow.on("blur", function()
     {
+        console.log("main.js ::: blur");
+
         mainWindow.setOpacity(0.9); // macOS &amp; Windows only
     });
 
@@ -372,6 +450,8 @@ function createWindow ()
     //
     mainWindow.on("focus", function()
     {
+        console.log("main.js ::: focus");
+
         mainWindow.setOpacity(1.0); // macOS &amp; Windows only
     });
 
@@ -380,10 +460,20 @@ function createWindow ()
     //
     mainWindow.on("closed", function ()
     {
+        console.log("main.js ::: closed");
+
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+    });
+
+
+    // When the app is crashed
+    //
+    mainWindow.webContents.on("crashed", function ()
+    {
+        console.log("main.js ::: crashed");
     });
 
 }
@@ -563,6 +653,7 @@ function forceSingleAppInstance()
 // Some APIs can only be used after this event occurs.
 //
 //app.on("ready", createWindow);
+
 app.on("ready", function ()
 {
     forceSingleAppInstance();
@@ -570,6 +661,7 @@ app.on("ready", function ()
     createMenu();
 
 });
+
 
 
 // Quit when all windows are closed.
@@ -585,9 +677,9 @@ app.on("window-all-closed", function ()
 });
 
 
-// macOS only: 
-// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time, 
-// attempting to re-launch the application when it's already running, 
+// macOS only:
+// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time,
+// attempting to re-launch the application when it's already running,
 // or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
@@ -606,6 +698,15 @@ app.on("activate", function ()
 // create the tray
 createTray();
 
+
+process.on('uncaughtException', (err, origin) => {
+  fs.writeSync(
+    process.stderr.fd,
+    `Caught exception: ${err}\n` +
+    `Exception origin: ${origin}`
+  );
+});
+
 // Measuring startup
 console.timeEnd("init");
 </code></pre>
@@ -618,13 +719,13 @@ console.timeEnd("init");
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 23 2019 10:22:43 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 24 2019 14:45:04 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

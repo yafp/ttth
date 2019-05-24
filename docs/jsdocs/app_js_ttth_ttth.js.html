@@ -29,90 +29,34 @@
             <pre class="prettyprint source linenums"><code>/* global _ */
 
 
-// Call from main.js
-//
-require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
+
+/**
+* @name isMac
+* @summary Checks if the operating system type is mac/darwin or not
+* @description Checks if the operating system type is mac/darwin or not
+* @return value - Boolean: True if mac, false if not
+*/
+function isMac()
 {
-    console.log("reloadCurrentService ::: Start");
+    console.log("isMac ::: Start");
 
-    //console.log(message);  // Prints "whoooooooh!"
+    var os = require("os");
 
-    // get href of current active tab
-    var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1);
-    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
-
-    // TODO:
-    // reload the service - see #9
-    switch (tabValue)
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    console.log("isMac ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Darwin")
     {
-        case "whatsApp":
-            console.error("doh");
-            serviceWhatsAppInit();
-            break;
-
-        default:
-            // do something
-            break;
-    }
-
-    console.log("reloadCurrentService ::: Start");
-});
-
-
-
-// Call from main.js
-//
-require("electron").ipcRenderer.on("showSettings", function(event)
-{
-    console.log("showSettings ::: Start");
-
-    switchToService("Settings");
-
-    console.log("showSettings ::: End");
-});
-
-
-
-// Call from main.js
-//
-require("electron").ipcRenderer.on("startSearchUpdates", function(event)
-{
-    console.log("startSearchUpdates ::: Start");
-
-    // show update information
-    $("#updateInformation").show();
-
-    searchUpdate();
-
-    console.log("startSearchUpdates ::: End");
-});
-
-
-
-
-
-
-
-
-function settingToggleMenubarVisibility()
-{
-    console.log("settingToggleMenubarVisibility ::: Start");
-
-    if($("#checkboxSettingHideMenubar").prop("checked"))
-    {
-        writeLocalStorage("settingHideMenubar", true);
+        return true;
     }
     else
     {
-        writeLocalStorage("settingHideMenubar", false);
+        return false;
     }
-
-
-    console.log("settingToggleMenubarVisibility ::: End");
 }
-
-
 
 
 /**
@@ -257,7 +201,7 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
-    let myNotification = new Notification("ttth ::: " + title, {
+    let myNotification = new Notification(title, {
         body: message,
         icon: "img/notification/icon_notification.png"
     });
@@ -287,6 +231,7 @@ function settingToggleAutostart()
         useLaunchAgent: true,
     });
 
+
     if($("#checkboxSettingAutostart").prop("checked"))
     {
         ttthAutoLauncher.enable();
@@ -308,6 +253,19 @@ function settingToggleAutostart()
 
         console.log("settingToggleAutostart ::: Finished disabling Autostart");
     }
+
+
+    ttthAutoLauncher.isEnabled()
+    .then(function(isEnabled){
+        if(isEnabled){
+            return;
+        }
+        ttthAutoLauncher.enable();
+    })
+    .catch(function(err){
+        // handle error
+    });
+
 
     console.log("settingToggleAutostart ::: End");
 }
@@ -411,6 +369,34 @@ function settingDefaultViewReset()
     sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
 
     console.log("settingDefaultViewReset ::: Start");
+}
+
+
+/**
+* @name settingToggleMenubarVisibility
+* @summary Toggles the setting hideMenubar
+* @description Enabled or disables the srtting Hide-Menubar-On-Startup
+*/
+function settingToggleMenubarVisibility()
+{
+    console.log("settingToggleMenubarVisibility ::: Start");
+
+    if($("#checkboxSettingHideMenubar").prop("checked"))
+    {
+        writeLocalStorage("settingHideMenubar", true);
+
+        // send notification
+        sendNotification("Updated Settings", "Hide menubar on startup is now enabled (Settings).");
+    }
+    else
+    {
+        writeLocalStorage("settingHideMenubar", false);
+
+        // send notification
+        sendNotification("Updated Settings", "Hide menubar on startup is now disabled (Settings).");
+    }
+
+    console.log("settingToggleMenubarVisibility ::: End");
 }
 
 
@@ -520,7 +506,7 @@ function searchUpdate()
             console.warn("searchUpdate ::: Found update, notify user");
 
             // update the updater-info text
-            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>.&lt;button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close">&lt;span aria-hidden="true">&amp;times;&lt;/span>&lt;/button>');
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>. &lt;button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close">&lt;span aria-hidden="true">&amp;times;&lt;/span>&lt;/button>');
 
             // show update information
             $("#updateInformation").show();
@@ -540,7 +526,6 @@ function searchUpdate()
     })
     .done(function()
     {
-        //alert( "searchUpdate ::: done" );
         //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
     })
 
@@ -725,6 +710,7 @@ function loadServiceSpecificCode(serviceName)
 
         case "WhatsApp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceWhatsAppRegister();
             serviceWhatsAppAddEventListener();
             break;
 
@@ -809,6 +795,79 @@ function initMattermost()
 
 
 /**
+* @name initSlack
+* @summary checks if local storage contains a slack workspacename
+* @description Checks if custom workspacename  is stored in local storage. If not a prompt appears where the user can define the workspacename.
+*/
+function initSlack()
+{
+    console.log("initSlack ::: Start");
+
+    // check if there is a url specificed in local storage
+    var slackWorkspace = readLocalStorage("serviceSlackWorkspace");
+    if( (slackWorkspace === "") || (slackWorkspace === null) )
+    {
+        console.warn("initSlack ::: Custom Slack Workspace is not yet defined.");
+
+        const prompt = require("electron-prompt");
+
+        prompt({
+            title: "Slack Workspace name",
+            label: "Please insert your Slack Workspace name",
+            value: "WORKSPACENAME",
+            inputAttrs: {
+                type: "text"
+            },
+            icon: "img/icon/icon.png"
+        })
+        .then((r) => {
+            if(r === null) {
+                console.log("initSlack ::: User cancelled the URL dialog.");
+
+                // hide tab
+                $("#menu_slack").hide();
+
+                // uncheck service checkbox
+                $("#Slack").prop("checked", false);
+
+                // set service slack to false
+                writeLocalStorage("Slack", "false");
+            }
+            else
+            {
+                // TODO: check if url is reachable
+
+                console.log("result", r);
+                slackWorkspace = r;
+
+                // update title property of service
+                $("#label_Slack").prop("title", "https://" + slackWorkspace + ".slack.com");
+
+                // Save value to local storage
+                writeLocalStorage("serviceSlackWorkspace", slackWorkspace);
+
+                console.log("initSlack ::: Custom Slack Workspace is now set to: " + slackWorkspace + ". Stored value in local storage");
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        // set src of mattermost webview
+        document.getElementById( "SlackWebview" ).setAttribute( "src", slackWorkspace);
+
+        // adjust title
+        $("#label_Slack").prop("title", slackWorkspace);
+    }
+
+    console.log("initSlack ::: End");
+}
+
+
+
+
+
+/**
 * @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
 * @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
@@ -851,13 +910,20 @@ function settingsToggleSingleServiceCheckbox(objectName)
             loadServiceSpecificCode(objectName);
 
             // send notification
-            sendNotification("Service activation", "Activated the service " + objectName + ".");
+            sendNotification("Services", "Activated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
             if( objectName === "Mattermost" )
             {
                 initMattermost();
+            }
+
+            // Hackery: Slack is different - as it has a user-specific Workspace
+            //
+            if( objectName === "Slack" )
+            {
+                initSlack();
             }
         }
         else
@@ -889,7 +955,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
 
             // send notification
-            sendNotification("Service deactivation", "Deactivated the service " + objectName + ".");
+            sendNotification("Services", "Deactivated the service " + objectName + ".");
 
             // Hackery: Mattermost is different - as it has a user-specific URL
             //
@@ -900,6 +966,18 @@ function settingsToggleSingleServiceCheckbox(objectName)
 
                 // adjust service label back to default
                 $("#label_Mattermost").prop("title", "");
+
+            }
+
+            // Hackery: Slack is different - as it has a user-specific workspace
+            //
+            if( objectName === "Slack" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceSlackWorkspace");
+
+                // adjust service label back to default
+                $("#label_Slack").prop("title", "");
 
             }
         }
@@ -949,9 +1027,9 @@ function initSettingsPage()
 
 
         // Adding all services to settings page
-        // 
+        //
         // since 1.2.0
-        if (i%2 == 0) // Odd and Even
+        if (i%2 === 0) // Odd and Even
         {
             // create a new row
             $( "#settingsAvailableServices" ).append('&lt;div class="row" id=' + i + '>&lt;/div>');
@@ -1016,6 +1094,14 @@ function initSettingsPage()
     }
 
 
+    // specialcase: Mattermost
+    var slackEnabled = readLocalStorage("Slack");
+    if(slackEnabled === "true")
+    {
+        initSlack();
+    }
+
+
     // Setting: DefaultView - now validate the optional configured default view
     validateConfiguredDefaultView();
 
@@ -1053,27 +1139,37 @@ function initSettingsPage()
 
 
 
-    // Setting: HideMenubar
+    // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
     //
     const {ipcRenderer} = require("electron");
     curSettingHideMenubar = readLocalStorage("settingHideMenubar");
-    if(curSettingHideMenubar === "true")
+
+    if(isMac())
     {
-        // hide menubar
-        console.log("initSettingsPage ::: Hide menubar");
-        $("#checkboxSettingHideMenubar").prop("checked", true);
-        ipcRenderer.send("hideMenubar");
+        // ensure the setting is disabled
+        writeLocalStorage("settingHideMenubar", "false");
+
+        // hide the entire setting on settingspage
+        // baustelle
+        $("#settingsSectionStartupHideMenubar").hide();
     }
-    else
+    else // default case (linux or windows)
     {
-        // show menubar
-        ipcRenderer.send("showMenubar");
-        $("#checkboxSettingHideMenubar").prop("checked", false);
-        console.log("initSettingsPage ::: Show menubar");
+        if(curSettingHideMenubar === "true")
+        {
+            // hide menubar
+            console.log("initSettingsPage ::: Hide menubar");
+            $("#checkboxSettingHideMenubar").prop("checked", true);
+            ipcRenderer.send("hideMenubar");
+        }
+        else
+        {
+            // show menubar
+            ipcRenderer.send("showMenubar");
+            $("#checkboxSettingHideMenubar").prop("checked", false);
+            console.log("initSettingsPage ::: Show menubar");
+        }
     }
-
-
-
 
     console.log("initSettingsPage ::: End");
 }
@@ -1131,7 +1227,7 @@ function localizeUserInterface()
   var userLang = navigator.language || navigator.userLanguage;
 
   // for development screenshot - overwrite the language
-  userLang = "en";
+  //userLang = "en";
 
   console.log("localizeUserInterface ::: Detected user language: " + userLang);
 
@@ -1180,6 +1276,124 @@ function localizeUserInterface()
 
   console.log("localizeUserInterface ::: End");
 }
+
+
+
+// Call from main.js
+//
+require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
+{
+    console.log("reloadCurrentService ::: Start");
+
+    //console.log(message);  // Prints "whoooooooh!"
+
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1);
+    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+
+    // TODO:
+    // reload the service - see #9
+    switch (tabValue)
+    {
+        case "whatsApp":
+            console.error("doh");
+            serviceWhatsAppInit();
+            break;
+
+        default:
+            // do something
+            break;
+    }
+
+    console.log("reloadCurrentService ::: Start");
+});
+
+
+
+// Call from main.js: switch to settings tab
+//
+require("electron").ipcRenderer.on("showSettings", function(event)
+{
+    console.log("showSettings ::: Start");
+
+    switchToService("Settings");
+
+    console.log("showSettings ::: End");
+});
+
+
+
+// Call from main.js: Start search for new updates
+//
+require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+{
+    console.log("startSearchUpdates ::: Start");
+
+    // show update information
+    $("#updateInformation").show();
+
+    searchUpdate();
+
+    console.log("startSearchUpdates ::: End");
+});
+
+
+
+
+// Call from main.js: Switch to next tab
+//
+require("electron").ipcRenderer.on("nextTab", function(event)
+{
+    console.log("nextTab ::: Start");
+
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    });
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get next array position
+    if(currentPositionInArray &lt; enabledTabsArray.length -1) //
+    {
+        serviceName = enabledTabsArray[currentPositionInArray+1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[0];
+    }
+
+    console.log("nextTab ::: Should switch to: " + serviceName + " now.");
+
+    // jump to next tab
+    switchToService(serviceName);
+
+    console.log("nextTab ::: End");
+});
 </code></pre>
         </article>
     </section>
@@ -1190,13 +1404,13 @@ function localizeUserInterface()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu May 23 2019 10:22:43 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 24 2019 14:45:04 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
