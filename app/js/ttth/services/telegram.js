@@ -23,7 +23,7 @@ function serviceTelegramAddEventListener()
     //
     webview.addEventListener("new-window", function(e)
     {
-        console.log("serviceWhatsAppAddEventListener ::: new-window");
+        console.log("serviceTelegramAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
@@ -41,25 +41,22 @@ function serviceTelegramAddEventListener()
     webview.addEventListener("did-start-loading", function()
     {
         console.log("serviceTelegramAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
+
 
     // WebView Event: dom-ready
     //
     webview.addEventListener("dom-ready", function()
     {
         console.log("serviceTelegramAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
-    // WebView Event: did-frame-finish-load
-    //
-    /*
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("telegramStart ::: did-frame-finish-load.");
-    });
-    */
 
     // WebView Event: did-stop-loading
     //
@@ -67,12 +64,10 @@ function serviceTelegramAddEventListener()
     {
         console.log("serviceTelegramAddEventListener ::: did-stop-loading");
 
-        // Show devTools if you want
-        //webview.openDevTools();
-
         // Triggering search for unread messages
         webview.send("request");
     });
+
 
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)

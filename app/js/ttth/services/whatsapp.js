@@ -22,7 +22,6 @@ function serviceWhatsAppAddEventListener()
     }, 5000);
 
 
-
     // WebView Event: new-window
     //
     webview.addEventListener("new-window", function(e)
@@ -40,15 +39,41 @@ function serviceWhatsAppAddEventListener()
     });
 
 
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        console.log("serviceWhatsAppAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
+    {
+        console.log("serviceWhatsAppAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+
+    // WebView Event: did-frame-finish-load
+    //
+    webview.addEventListener("did-frame-finish-load", function()
+    {
+        console.log("serviceWhatsAppAddEventListener ::: did-frame-finish-load.");
+    });
+
+
     // WebView Event: did-stop-loading
     //
     webview.addEventListener("did-stop-loading", function()
     {
         console.log("serviceWhatsAppAddEventListener ::: did-stop-loading");
-
-        // Show devTools if you want
-        //
-        //webview.openDevTools();
 
         // Triggering search for unread messages
         webview.send("request");
@@ -63,9 +88,7 @@ function serviceWhatsAppAddEventListener()
         //console.error(event.channel);
 
         // update the badge
-        //
-        //serviceWhatsAppUpdateBadge(event.channel); // Baustelle
-        updateServiceBadge("WhatsApp", event.channel); // Baustelle
+        updateServiceBadge("WhatsApp", event.channel);
     });
 
     console.log("serviceWhatsAppAddEventListener ::: End");
@@ -100,7 +123,6 @@ function serviceWhatsAppRegister()
             registration.unregister(); //Unregisters all the service workers
         }
     });
-
 
     console.log("serviceWhatsAppRegister ::: End");
 }

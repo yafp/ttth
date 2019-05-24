@@ -26,6 +26,8 @@ function serviceThreemaAddEventListener()
     webview.addEventListener("did-start-loading", function()
     {
         console.log("serviceThreemaAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -35,6 +37,8 @@ function serviceThreemaAddEventListener()
     webview.addEventListener("dom-ready", function()
     {
         console.log("serviceThreemaAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 

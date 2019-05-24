@@ -21,11 +21,30 @@ function serviceGoogleMailAddEventListener()
     }, 30000);
 
 
+    // WebView Event: new-window
+    //
+    webview.addEventListener("new-window", function(e)
+    {
+        console.log("serviceGoogleMessagesAddEventListener ::: new-window");
+
+        const BrowserWindow = require("electron");
+        const shell = require("electron").shell;
+        const protocol = require("url").parse(e.url).protocol;
+
+        if (protocol === "http:" || protocol === "https:")
+        {
+            shell.openExternal(e.url);
+        }
+    });
+
+
     // WebView Event: did-start-loading
     //
     webview.addEventListener("did-start-loading", function()
     {
         console.log("serviceGoogleMailAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -35,6 +54,8 @@ function serviceGoogleMailAddEventListener()
     webview.addEventListener("dom-ready", function()
     {
         console.log("serviceGoogleMailAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -66,7 +87,6 @@ function serviceGoogleMailAddEventListener()
         // update the badge
         updateServiceBadge("GoogleMail", event.channel);
     });
-
 
     console.log("serviceGoogleMailAddEventListener ::: End");
 }

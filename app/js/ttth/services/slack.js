@@ -24,7 +24,7 @@ function serviceSlackAddEventListener()
     //
     webview.addEventListener("new-window", function(e)
     {
-        console.log("serviceFreenodeAddEventListener ::: new-window");
+        console.log("serviceSlackAddEventListener ::: new-window");
 
         const BrowserWindow = require("electron");
         const shell = require("electron").shell;
@@ -42,6 +42,8 @@ function serviceSlackAddEventListener()
     webview.addEventListener("did-start-loading", function()
     {
         console.log("serviceSlackAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -51,6 +53,8 @@ function serviceSlackAddEventListener()
     webview.addEventListener("dom-ready", function()
     {
         console.log("serviceSlackAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 

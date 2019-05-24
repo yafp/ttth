@@ -41,6 +41,8 @@ function serviceMattermostAddEventListener()
     webview.addEventListener("did-start-loading", function()
     {
         console.log("serviceMattermostAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -50,6 +52,8 @@ function serviceMattermostAddEventListener()
     webview.addEventListener("dom-ready", function()
     {
         console.log("serviceMattermostAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
         webview.send("request");
     });
 
@@ -59,9 +63,6 @@ function serviceMattermostAddEventListener()
     webview.addEventListener("did-stop-loading", function()
     {
         console.log("serviceMattermostAddEventListener ::: did-stop-loading");
-
-        // Show devTools if you want
-        //webview.openDevTools();
 
         // Triggering search for unread messages
         webview.send("request");
