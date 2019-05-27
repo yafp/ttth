@@ -718,13 +718,17 @@ function initMattermost()
         const prompt = require("electron-prompt");
 
         prompt({
-            title: "Mattermost url",
+            title: "Service: Mattermost",
             label: "Please insert your mattermost <b>server URL</b>.",
             useHtmlLabel: true,
             resizable: false,
-            value: "https://mattermost.example.org",
+            value: "",
+            width: 450,
+            height: 200,
+            menuBarVisible: false,
             inputAttrs: {
-                type: "url"
+                type: "url",
+                placeholder: "https://mattermost.example.org"
             },
             icon: "../img/icon/icon.png"
         })
@@ -791,11 +795,16 @@ function initSlack()
         const prompt = require("electron-prompt");
 
         prompt({
-            title: "Slack Workspace name",
-            label: "Please insert your Slack workspace name",
-            value: "WORKSPACENAME",
+            title: "Service: Slack",
+            label: "Please insert your Slack <b>workspace</b> name",
+            useHtmlLabel: true,
+            value: "",
+            width: 450,
+            height: 200,
+            //menuBarVisible: false,
             inputAttrs: {
-                type: "text"
+                type: "text",
+                placeholder: "WORKSPACENAME"
             },
             icon: "img/icon/icon.png"
         })
@@ -1267,11 +1276,11 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1); // cut the first char ( =  #) 
+    tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
 
-    
+
     var currentPositionInArray = null;
     var serviceName = null;
     var serviceUrl = null;

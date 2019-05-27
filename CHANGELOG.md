@@ -10,6 +10,8 @@
 
 #### ```Changed```
 * Window: Window title now features name and version (before: only name). See #25
+* UI: Added placeholder to input fields of electron-prompts. See #28
+* UI: Remove tab text from Settings tab. Just show the icon. See #29
 
 
 ### ttth 1.2.0 (20190524)
