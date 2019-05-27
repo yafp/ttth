@@ -83,3 +83,21 @@ function serviceSlackAddEventListener()
 
     console.log("serviceSlackAddEventListener ::: End");
 }
+
+
+
+/**
+* @name serviceSlackInit
+* @summary Initializes the Slack Service
+* @description Initializes the Slack Service
+*/
+function serviceSlackInit(serviceName, serviceUrl)
+{
+    console.log("serviceSlackInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceSlackInit ::: End");
+}

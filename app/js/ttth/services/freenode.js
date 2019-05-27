@@ -28,3 +28,21 @@ function serviceFreenodeAddEventListener()
 
     console.log("serviceFreenodeAddEventListener ::: End");
 }
+
+
+
+/**
+* @name serviceFreenodeInit
+* @summary Initializes the Freenode Service
+* @description Initializes the Freenode Service
+*/
+function serviceFreenodeInit(serviceName, serviceUrl)
+{
+    console.log("serviceFreenodeInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceFreenodeInit ::: End");
+}

@@ -104,6 +104,7 @@ for Continuos Integration aspects.
   * Electron documentation: https://electronjs.org/docs
   * Project boilerplate: https://github.com/szwacz/electron-boilerplate
   * Example electron project: https://github.com/electron/electron-quick-start
+  * Main vs Renderer Process: https://github.com/electron/electron/blob/master/docs/tutorial/application-architecture.md#main-and-renderer-processes
 * Building
   * Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f
   * Linux building configuration: https://www.electron.build/configuration/linux

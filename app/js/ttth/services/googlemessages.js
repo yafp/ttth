@@ -83,3 +83,22 @@ function serviceGoogleMessagesAddEventListener()
 
     console.log("serviceGoogleMessagesAddEventListener ::: End");
 }
+
+
+
+
+/**
+* @name serviceGoogleMessagesInit
+* @summary Initializes the GoogleMessages Service
+* @description Initializes the GoogleMessages Service
+*/
+function serviceGoogleMessagesInit(serviceName, serviceUrl)
+{
+    console.log("serviceGoogleMessagesInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceGoogleMessagesInit ::: End");
+}

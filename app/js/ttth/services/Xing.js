@@ -1,14 +1,14 @@
 /**
-* @name serviceThreemaAddEventListener
-* @summary Adds several event listener to Threema WebView
-* @description Adds several event listener to Threema WebView
+* @name serviceXingAddEventListener
+* @summary Adds several event listener to Xing WebView
+* @description Adds several event listener to Xing WebView
 */
-function serviceThreemaAddEventListener()
+function serviceXingAddEventListener()
 {
-    console.log("serviceThreemaAddEventListener ::: Start");
+    console.log("serviceXingAddEventListener ::: Start");
 
     // get webview
-    var webview = document.getElementById("ThreemaWebview");
+    var webview = document.getElementById("XingWebview");
 
 
     // run it periodically
@@ -21,11 +21,15 @@ function serviceThreemaAddEventListener()
     }, 30000);
 
 
+    //toggleDevTools();
+    //openDevTools()
+
+
     // WebView Event: did-start-loading
     //
     webview.addEventListener("did-start-loading", function()
     {
-        console.log("serviceThreemaAddEventListener ::: did-start-loading.");
+        console.log("serviceXingAddEventListener ::: did-start-loading.");
 
         // Triggering search for unread messages
         webview.send("request");
@@ -36,7 +40,7 @@ function serviceThreemaAddEventListener()
     //
     webview.addEventListener("dom-ready", function()
     {
-        console.log("serviceThreemaAddEventListener ::: DOM-Ready");
+        console.log("serviceXingAddEventListener ::: DOM-Ready");
 
         // Triggering search for unread messages
         webview.send("request");
@@ -47,7 +51,7 @@ function serviceThreemaAddEventListener()
     //
     webview.addEventListener("did-frame-finish-load", function()
     {
-        console.log("serviceThreemaAddEventListener ::: did-frame-finish-load.");
+        console.log("serviceXingAddEventListener ::: did-frame-finish-load.");
     });
 
 
@@ -55,7 +59,7 @@ function serviceThreemaAddEventListener()
     //
     webview.addEventListener("did-stop-loading", function()
     {
-        console.log("serviceThreemaAddEventListener ::: did-stop-loading");
+        console.log("serviceXingAddEventListener ::: did-stop-loading");
 
         // Triggering search for unread messages
         webview.send("request");
@@ -65,31 +69,44 @@ function serviceThreemaAddEventListener()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("serviceThreemaAddEventListener ::: IPC message:");
+        console.log("serviceXingAddEventListener ::: IPC message:");
         //console.log(event);
         //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Threema", event.channel);
+        updateServiceBadge("Xing", event.channel);
     });
 
-    console.log("serviceThreemaAddEventListener ::: End");
+    console.log("serviceXingAddEventListener ::: End");
 }
 
 
+
 /**
-* @name serviceThreemaInit
-* @summary Initializes the Threema Service
-* @description Initializes the Threema Service
+* @name serviceXingInit
+* @summary Initializes the Xing Service
+* @description Initializes the Xing Service
 */
-function serviceThreemaInit(serviceName, serviceUrl)
+function serviceXingInit(serviceName, serviceUrl)
 {
-    console.log("serviceThreemaInit ::: Start");
+    console.log("serviceXingInit ::: Start");
 
     // re-set the src for the webview
     //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
     document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
 
-    console.log("serviceThreemaInit ::: End");
+    console.log("serviceXingInit ::: End");
 }
 
+
+
+// untested
+function serviceXingUnload()
+{
+    var webview = document.getElementById("XingWebview");
+
+    // remove all event listeners by cloning?
+    var newWebView = webView.cloneNode(true);
+
+    //webview.removeEventListener('dom-ready', loadPage);
+}

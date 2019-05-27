@@ -18,6 +18,7 @@ var ttthAvailableServices = new Array(
     "Threema",
     "Twitter",
     "WhatsApp",
+    "Xing",
 );
 
 // -----------------------------------------------------------------------------
@@ -38,4 +39,5 @@ var ttthServicesUrls = new Array(
     "https://web.threema.ch/",
     "https://mobile.twitter.com/",
     "https://web.whatsapp.com/",
+    "https://www.xing.com/messages/conversations",
 );

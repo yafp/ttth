@@ -82,3 +82,20 @@ function serviceTelegramAddEventListener()
 
     console.log("serviceTelegramAddEventListener ::: End");
 }
+
+
+/**
+* @name serviceTelegramInit
+* @summary Initializes the Telegram Service
+* @description Initializes the Telegram Service
+*/
+function serviceTelegramInit(serviceName, serviceUrl)
+{
+    console.log("serviceTelegramInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceTelegramInit ::: End");
+}

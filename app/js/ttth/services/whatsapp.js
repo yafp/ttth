@@ -128,13 +128,20 @@ function serviceWhatsAppRegister()
 }
 
 
-
-function serviceWhatsAppInit()
+/**
+* @name serviceWhatsAppInit
+* @summary Initializes the WhatsApp Service
+* @description Initializes the WhatsApp Service
+*/
+function serviceWhatsAppInit(serviceName, serviceUrl)
 {
     console.log("serviceWhatsAppInit ::: Start");
 
-    document.getElementById( "WhatsAppWebview" ).setAttribute( "src", "https://web.whatsapp.com/");
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
 
+     // register
     serviceWhatsAppRegister();
 
     console.log("serviceWhatsAppInit ::: End");

@@ -3,6 +3,14 @@
 # ttth
 ## changelog
 
+### ttth 1.3.0 (2019xxyy)
+####  ```Added```
+* Services: Added new service 'Xing'. See #26
+* Menu: Added 'Reload current service' function (View -> Reload current service). See #9
+
+#### ```Changed```
+* Window: Window title now features name and version (before: only name). See #25
+
 
 ### ttth 1.2.0 (20190524)
 ####  ```Added```

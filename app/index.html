@@ -38,14 +38,21 @@
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/serviceList.js" async></script>
     <!-- ttth: service specific scripts -->
-    <script type="text/javascript" src="js/ttth/services/freenode.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/googlemail.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/googlemessages.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/mattermost.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/slack.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/telegram.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/threema.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/whatsapp.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Freenode.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Github.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleCalendar.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleContacts.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleKeep.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleMail.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleMessages.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GooglePhotos.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Mattermost.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Slack.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Telegram.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Threema.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Twitter.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/WhatsApp.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/Xing.js" async></script>
 
 </head>
 
@@ -60,135 +67,144 @@
 
 
                 <!-- Tab: Freenode -->
-                <li class="nav-item" id="menu_freenode">
-                    <a class="nav-link my-ui-text" id="target_freenode" href="#freenode" role="tab" data-toggle="tab">
-                        <i class="fas fa-terminal"></i> Freenode <span id="badge_freenode" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_Freenode">
+                    <a class="nav-link my-ui-text" id="target_Freenode" href="#Freenode" role="tab" data-toggle="tab">
+                        <i class="fas fa-terminal"></i> Freenode <span id="badge_Freenode" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Freenode -->
 
 
                 <!-- Tab: GitHub -->
-                <li class="nav-item" id="menu_github">
-                    <a class="nav-link my-ui-text" id="target_github" href="#github" role="tab" data-toggle="tab">
-                        <i class="fab fa-github"></i> GitHub <span id="badge_github" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_GitHub">
+                    <a class="nav-link my-ui-text" id="target_GitHub" href="#GitHub" role="tab" data-toggle="tab">
+                        <i class="fab fa-github"></i> GitHub <span id="badge_GitHub" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /GitHub -->
 
 
                 <!-- Tab: Google Calendar -->
-                <li class="nav-item" id="menu_googlecalendar">
-                    <a class="nav-link my-ui-text" id="target_googlecalendar" href="#googleCalendar" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Calendar <span id="badge_googlecalendar" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_GoogleCalendar">
+                    <a class="nav-link my-ui-text" id="target_GoogleCalendar" href="#GoogleCalendar" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Calendar <span id="badge_GoogleCalendar" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Calendar -->
 
 
                 <!-- Tab: Google Contacts -->
-                <li class="nav-item" id="menu_googlecontacts">
-                    <a class="nav-link my-ui-text" id="target_googlecontacts" href="#googleContacts" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Contacts <span id="badge_googlecontacts" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_GoogleContacts">
+                    <a class="nav-link my-ui-text" id="target_GoogleContacts" href="#GoogleContacts" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Contacts <span id="badge_GoogleContacts" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Contacts -->
 
 
                 <!-- Tab: Google Keep -->
-                <li class="nav-item" id="menu_googlekeep">
-                    <a class="nav-link my-ui-text" id="target_googlekeep" href="#googleKeep" role="tab" data-toggle="tab">
-                    </i> <i class="fab fa-google"></i> Keep <span id="badge_googlekeep" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_GoogleKeep">
+                    <a class="nav-link my-ui-text" id="target_GoogleKeep" href="#GoogleKeep" role="tab" data-toggle="tab">
+                    </i> <i class="fab fa-google"></i> Keep <span id="badge_GoogleKeep" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Keep -->
 
 
                 <!-- Tab:  Google Mail -->
-                 <li class="nav-item" id="menu_googlemail">
-                    <a class="nav-link my-ui-text" id="target_googlemail" href="#googleMail" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Mail <span id="badge_googlemail" class="badge badge-success"></span>
+                 <li class="nav-item" id="menu_GoogleMail">
+                    <a class="nav-link my-ui-text" id="target_GoogleMail" href="#GoogleMail" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Mail <span id="badge_GoogleMail" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Mail -->
 
 
                 <!-- Tab:  Google Messages -->
-                 <li class="nav-item" id="menu_googlemessages">
-                    <a class="nav-link my-ui-text" id="target_googlemessages" href="#googleMessages" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Messages <span id="badge_googlemessages" class="badge badge-success"></span>
+                 <li class="nav-item" id="menu_GoogleMessages">
+                    <a class="nav-link my-ui-text" id="target_GoogleMessages" href="#GoogleMessages" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Messages <span id="badge_GoogleMessages" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Messages -->
 
 
                 <!-- Tab:  Google Photos -->
-                 <li class="nav-item" id="menu_googlephotos">
-                    <a class="nav-link my-ui-text" id="target_googlephotos" href="#googlePhotos" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Photos <span id="badge_googlephotos" class="badge badge-success"></span>
+                 <li class="nav-item" id="menu_GooglePhotos">
+                    <a class="nav-link my-ui-text" id="target_GooglePhotos" href="#GooglePhotos" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Photos <span id="badge_GooglePhotos" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Google Photos -->
 
 
                 <!-- Tab:  Mattermost -->
-                <li class="nav-item " id="menu_mattermost">
-                    <a class="nav-link my-ui-text" id="target_mattermost" href="#mattermost" role="tab" data-toggle="tab">
-                        <i class="fas fa-comment"></i> Mattermost <span id="badge_mattermost" class="badge badge-success"></span>
+                <li class="nav-item " id="menu_Mattermost">
+                    <a class="nav-link my-ui-text" id="target_Mattermost" href="#Mattermost" role="tab" data-toggle="tab">
+                        <i class="fas fa-comment"></i> Mattermost <span id="badge_Mattermost" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Mattermost-->
 
 
                 <!-- Tab:  Slack -->
-                <li class="nav-item " id="menu_slack">
-                    <a class="nav-link my-ui-text" id="target_slack" href="#slack" role="tab" data-toggle="tab">
-                        <i class="fab fa-slack"></i> Slack <span id="badge_slack" class="badge badge-success"></span>
+                <li class="nav-item " id="menu_Slack">
+                    <a class="nav-link my-ui-text" id="target_Slack" href="#Slack" role="tab" data-toggle="tab">
+                        <i class="fab fa-slack"></i> Slack <span id="badge_Slack" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Slack -->
 
 
                 <!-- Tab:  Telegram -->
-                <li class="nav-item " id="menu_telegram">
-                    <a class="nav-link my-ui-text" id="target_telegram" href="#telegram" role="tab" data-toggle="tab">
-                        <i class="fab fa-telegram-plane"></i> Telegram <span id="badge_telegram" class="badge badge-success"></span>
+                <li class="nav-item " id="menu_Telegram">
+                    <a class="nav-link my-ui-text" id="target_Telegram" href="#Telegram" role="tab" data-toggle="tab">
+                        <i class="fab fa-telegram-plane"></i> Telegram <span id="badge_Telegram" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Telegram -->
 
 
                 <!-- Tab: Threema -->
-                <li class="nav-item " id="menu_threema">
-                    <a class="nav-link my-ui-text" id="target_threema" href="#threema" role="tab" data-toggle="tab">
-                        <i class="fas fa-comment-dots"></i> Threema <span id="badge_threema" class="badge badge-success"></span>
+                <li class="nav-item " id="menu_Threema">
+                    <a class="nav-link my-ui-text" id="target_Threema" href="#Threema" role="tab" data-toggle="tab">
+                        <i class="fas fa-comment-dots"></i> Threema <span id="badge_Threema" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Threema -->
 
 
                 <!-- Tab: Twitter -->
-                <li class="nav-item " id="menu_twitter">
-                    <a class="nav-link my-ui-text" id="target_twitter" href="#twitter" role="tab" data-toggle="tab">
-                        <i class="fab fa-twitter"></i> Twitter <span id="badge_twitter" class="badge badge-success"></span>
+                <li class="nav-item " id="menu_Twitter">
+                    <a class="nav-link my-ui-text" id="target_Twitter" href="#Twitter" role="tab" data-toggle="tab">
+                        <i class="fab fa-twitter"></i> Twitter <span id="badge_Twitter" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /Twitter -->
 
 
                 <!-- Tab: WhatsApp-->
-                <li class="nav-item" id="menu_whatsapp">
-                    <a class="nav-link my-ui-text" id="target_whatsapp" href="#whatsApp" role="tab" data-toggle="tab">
-                        <i class="fab fa-whatsapp"></i> WhatsApp <span id="badge_whatsapp" class="badge badge-success"></span>
+                <li class="nav-item" id="menu_Whatsapp">
+                    <a class="nav-link my-ui-text" id="target_Whatsapp" href="#WhatsApp" role="tab" data-toggle="tab">
+                        <i class="fab fa-whatsapp"></i> WhatsApp <span id="badge_WhatsApp" class="badge badge-success"></span>
+                    </a>
+                </li>
+                <!-- /WhatsApp-->
+
+
+                <!-- Tab: Xing-->
+                <li class="nav-item" id="menu_Xing">
+                    <a class="nav-link my-ui-text" id="target_Xing" href="#Xing" role="tab" data-toggle="tab">
+                        <i class="fab fa-xing"></i> Xing <span id="badge_Xing" class="badge badge-success"></span>
                     </a>
                 </li>
                 <!-- /WhatsApp-->
 
 
                 <!-- Tab: Settings -->
-                <li class="nav-item ml-auto" id="menu_settings"> <!-- ml-auto -->
-                    <a class="nav-link my-ui-text active" id="target_settings" href="#settings" role="tab" data-toggle="tab" >
-                        <i class="fas fa-cog"></i> <span i18n-text="tabnamesSettings"><!-- Settings --></span>
+                <li class="nav-item ml-auto" id="menu_Settings"> <!-- ml-auto -->
+                    <a class="nav-link my-ui-text active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
+                        <i class="fas fa-cog"></i> <span i18n-text=""><!-- Settings --></span>
                     </a>
                 </li>
                 <!-- /Settings -->
@@ -236,7 +252,7 @@
             <div class="tab-content container-fluid">
 
                 <!-- TabContent: Freenode -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="freenode">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Freenode">
                     <webview
                         id="FreenodeWebview"
                         class="inner"
@@ -247,7 +263,7 @@
 
 
                 <!-- TabContent: GitHub -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="github">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GitHub">
                     <webview
                         id="GitHubWebview"
                         class="inner"
@@ -258,7 +274,7 @@
 
 
                 <!-- TabContent: Google Calendar -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleCalendar">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleCalendar">
                     <webview
                         id="GoogleCalendarWebview"
                         class="inner"
@@ -269,7 +285,7 @@
 
 
                 <!-- TabContent: Google Contacts -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleContacts">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleContacts">
                     <webview
                         id="GoogleContactsWebview"
                         class="inner"
@@ -280,7 +296,7 @@
 
 
                 <!-- TabContent: Google Keep -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleKeep">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleKeep">
                     <webview
                         id="GoogleKeepWebview"
                         class="inner"
@@ -291,11 +307,11 @@
 
 
                 <!-- TabContent: Google Mail -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleMail">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleMail">
                     <webview
                         id="GoogleMailWebview"
                         class="inner"
-                        preload="./js/ttth/services/googlemail_inject.js"
+                        preload="./js/ttth/services/GoogleMail_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -303,7 +319,7 @@
 
 
                 <!-- TabContent: Google Messages -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googleMessages">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleMessages">
                     <webview
                         id="GoogleMessagesWebview"
                         class="inner"
@@ -314,7 +330,7 @@
 
 
                 <!-- TabContent: Google Photos -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="googlePhotos">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GooglePhotos">
                     <webview
                         id="GooglePhotosWebview"
                         class="inner"
@@ -325,11 +341,11 @@
 
 
                 <!-- TabContent: Mattermost -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="mattermost">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Mattermost">
                     <webview
                         id="MattermostWebview"
                         class="inner"
-                        preload="./js/ttth/services/mattermost_inject.js"
+                        preload="./js/ttth/services/Mattermost_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -337,11 +353,11 @@
 
 
                 <!-- TabContent: Slack -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="slack">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Slack">
                     <webview
                         id="SlackWebview"
                         class="inner"
-                        preload="./js/ttth/services/slack_inject.js"
+                        preload="./js/ttth/services/Slack_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -349,12 +365,12 @@
 
 
                 <!-- TabContent: Telegram -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="telegram">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Telegram">
                     <webview
                         id="TelegramWebview"
                         name="TelegramWebview"
                         class="inner"
-                        preload="./js/ttth/services/telegram_inject.js"
+                        preload="./js/ttth/services/Telegram_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -362,11 +378,11 @@
 
 
                 <!-- TabContent: Threema -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="threema">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Threema">
                     <webview
                         id="ThreemaWebview"
                         class="inner"
-                        preload="./js/ttth/services/threema_inject.js"
+                        preload="./js/ttth/services/Threema_inject.js"
                         src="">
                     </webview>
                 </div>
@@ -374,7 +390,7 @@
 
 
                 <!-- TabContent: Twitter -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="twitter">
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Twitter">
                     <webview
                         id="TwitterWebview"
                         class="inner"
@@ -385,13 +401,12 @@
 
 
                 <!-- TabContent: WhatsApp -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="whatsApp">
-
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="WhatsApp">
                     <webview
                         id="WhatsAppWebview"
                         name="WhatsAppWebview"
                         class="inner"
-                        preload="./js/ttth/services/whatsapp_inject.js"
+                        preload="./js/ttth/services/WhatsApp_inject.js"
                         userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
                         src="">
                     </webview>
@@ -399,8 +414,21 @@
                 <!-- /WhatsApp-->
 
 
+                <!-- TabContent: Xing -->
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Xing">
+                    <webview
+                        id="XingWebview"
+                        name="XingWebview"
+                        class="inner"
+                        preload="./js/ttth/services/Xing_inject.js"
+                        src="">
+                    </webview>
+                </div>
+                <!-- /Xing-->
+
+
                 <!-- TabContent: Settings -->
-                <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="settings">
+                <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="Settings">
 
                     <!-- About -->
                     <h3 class="my-ui-text" i18n-text="settingsSectionAbout"><!-- About --></h3>

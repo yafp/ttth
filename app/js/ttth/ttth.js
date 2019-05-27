@@ -48,7 +48,7 @@ function updateTrayIconStatus()
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i < arrayLength; i++)
     {
-        serviceName = ttthAvailableServices[i].toLowerCase();
+        serviceName = ttthAvailableServices[i];
 
         curServiceUnreadMessageCount = 0;
 
@@ -107,7 +107,7 @@ function updateServiceBadge(serviceName, count)
     }
 
     // update the badge
-    $( "#badge_" + serviceName.toLowerCase()).html( count );
+    $( "#badge_" + serviceName).html( count );
 
     // Update tray icon status if needed
     updateTrayIconStatus();
@@ -316,7 +316,7 @@ function settingDefaultViewUpdate()
     writeLocalStorage("settingDefaultView", newDefaultView);
 
     // send notification
-    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+    sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 
     console.log("settingDefaultViewUpdate ::: End");
 }
@@ -338,7 +338,7 @@ function settingDefaultViewReset()
     $("#selectDefaultView").prop("selectedIndex",0);
 
     // send notification
-    sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
+    sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
 
     console.log("settingDefaultViewReset ::: Start");
 }
@@ -358,14 +358,14 @@ function settingToggleMenubarVisibility()
         writeLocalStorage("settingHideMenubar", true);
 
         // send notification
-        sendNotification("Updated Settings", "Hide menubar on startup is now enabled (Settings).");
+        sendNotification("Settings", "Hide menubar on startup is now enabled (Settings).");
     }
     else
     {
         writeLocalStorage("settingHideMenubar", false);
 
         // send notification
-        sendNotification("Updated Settings", "Hide menubar on startup is now disabled (Settings).");
+        sendNotification("Settings", "Hide menubar on startup is now disabled (Settings).");
     }
 
     console.log("settingToggleMenubarVisibility ::: End");
@@ -428,10 +428,10 @@ function checkSupportedOperatingSystem()
 function switchToService(serviceName)
 {
     console.log("switchToService ::: Start");
-    console.log("switchToService ::: Loading: " + serviceName.toLowerCase());
+    console.log("switchToService ::: Switching to tab: " + serviceName);
 
     // activate the related tab
-    $("#target_" + serviceName.toLowerCase()).trigger("click");
+    $("#target_" + serviceName).trigger("click");
 
     console.log("switchToService ::: End");
 }
@@ -686,6 +686,11 @@ function loadServiceSpecificCode(serviceName)
             serviceWhatsAppAddEventListener();
             break;
 
+        case "Xing":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceXingAddEventListener();
+            break;
+
         default:
             console.log("loadServiceSpecificCode ::: Nothing to do here");
     }
@@ -714,22 +719,24 @@ function initMattermost()
 
         prompt({
             title: "Mattermost url",
-            label: "Please insert your mattermost server URL",
+            label: "Please insert your mattermost <b>server URL</b>.",
+            useHtmlLabel: true,
+            resizable: false,
             value: "https://mattermost.example.org",
             inputAttrs: {
                 type: "url"
             },
-            icon: "img/icon/icon.png"
+            icon: "../img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {
                 console.log("initMattermost ::: User cancelled the URL dialog.");
 
                 // hide tab
-                $("#menu_mattermost").hide();
+                $("#menu_Mattermost").hide();
 
                 // uncheck service checkbox
-                $("#Mattermost").prop("checked", false);
+                $("#checkbox_Mattermost").prop("checked", false);
 
                 // set service mattermost to false
                 writeLocalStorage("Mattermost", "false");
@@ -785,7 +792,7 @@ function initSlack()
 
         prompt({
             title: "Slack Workspace name",
-            label: "Please insert your Slack Workspace name",
+            label: "Please insert your Slack workspace name",
             value: "WORKSPACENAME",
             inputAttrs: {
                 type: "text"
@@ -837,8 +844,6 @@ function initSlack()
 
 
 
-
-
 /**
 * @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
@@ -857,7 +862,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
 
     if(objectNameIsValid === true)
     {
-        if($("#" + objectName).prop("checked"))
+        if($("#checkbox_" + objectName).prop("checked"))
         {
             console.log("settingsToggleSingleServiceCheckbox ::: Activating " + objectName);
 
@@ -865,7 +870,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             writeLocalStorage(objectName, "true");
 
             // show service in menu
-            $("#menu_"+objectName.toLowerCase()).show();
+            $("#menu_"+objectName).show();
 
             // add option to DefaultView select
             $("#selectDefaultView").append(new Option(objectName, objectName));
@@ -906,7 +911,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             writeLocalStorage(objectName, "false");
 
             // hide service from menu
-            $("#menu_"+objectName.toLowerCase()).hide();
+            $("#menu_"+objectName).hide();
 
             // update select
             $("#selectDefaultView option").each(function()
@@ -1007,13 +1012,14 @@ function initSettingsPage()
             $( "#settingsAvailableServices" ).append('<div class="row" id=' + i + '></div>');
 
             // add something to this new row
-            $( "#" + i ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
+            //$( "#" + i ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id='+ serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
+            $( "#" + i ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id="checkbox_'+ serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
         }
         else
         {
             // add something to the existing row
             var rowReference = i -1;
-            $( "#" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
+            $( "#" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id="checkbox_' + serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
         }
 
 
@@ -1032,7 +1038,7 @@ function initSettingsPage()
             console.log("initSettingsPage ::: Service: " + serviceName + " is activated");
 
             // check the checkbox
-            $("#" + serviceName).prop("checked", true);
+            $("#checkbox_" + serviceName).prop("checked", true);
 
             // add to defaultView select item
             $("#selectDefaultView").append(new Option(serviceName, serviceName));
@@ -1172,14 +1178,14 @@ function initNavigationTabs()
             console.log("initNavigationTabs ::: Activating " + serviceName );
 
             // show service-tab in navigation
-            $("#menu_" + serviceName.toLowerCase()).show();
+            $("#menu_" + serviceName).show();
         }
         else
         {
             console.log("initNavigationTabs ::: Deactivating " + serviceName);
 
             // hide service-tab in navigation
-            $("#menu_" + serviceName.toLowerCase()).hide();
+            $("#menu_" + serviceName).hide();
         }
     }
 
@@ -1261,16 +1267,98 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1);
+    tabValue = tabValue.substring(1); // cut the first char ( =  #) 
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    // TODO:
+
+    
+    var currentPositionInArray = null;
+    var serviceName = null;
+    var serviceUrl = null;
+
+    // find service name and service url from array
+    currentPositionInArray = ttthAvailableServices.indexOf(tabValue);
+
+    // grab the related vars from the serviceList arrays
+    serviceName = ttthAvailableServices[currentPositionInArray];
+    serviceUrl = ttthServicesUrls[currentPositionInArray];
+
     // reload the service - see #9
-    switch (tabValue)
+    switch (serviceName)
     {
-        case "whatsApp":
-            console.error("doh");
-            serviceWhatsAppInit();
+        case "Freenode":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceFreenodeInit(serviceName, serviceUrl);
+            break;
+
+        case "GitHub":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGitHubInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleCalendar":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleCalendarInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleContacts":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleContactsInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleKeep":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleKeepInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMail":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMailInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMessages":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMessagesInit(serviceName, serviceUrl);
+            break;
+
+        case "GooglePhotos":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGooglePhotosInit(serviceName, serviceUrl);
+            break;
+
+        case "Mattermost":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceMattermostInit(serviceName, serviceUrl);
+            break;
+
+        case "Slack":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceSlackInit(serviceName, serviceUrl);
+            break;
+
+        case "Telegram":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTelegramInit(serviceName, serviceUrl);
+            break;
+
+        case "Threema":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceThreemaInit(serviceName, serviceUrl);
+            break;
+
+        case "Twitter":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTwitterInit(serviceName, serviceUrl);
+            break;
+
+        case "WhatsApp":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceWhatsAppInit(serviceName, serviceUrl);
+            break;
+
+        case "Xing":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceXingInit(serviceName, serviceUrl);
             break;
 
         default:

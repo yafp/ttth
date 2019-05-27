@@ -124,7 +124,7 @@ function createMenu()
                 mainWindow.webContents.send("reloadCurrentService", "whoooooooh!");
             },
             accelerator: "CmdOrCtrl+S",
-            enabled: false
+            enabled: true
         },
         {
             type: "separator"
@@ -298,12 +298,10 @@ function createMenu()
     {
         // see #21
         Menu.getApplicationMenu().items; // all the items
-        item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
+        var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
     }
-
 }
-
 
 
 /**
@@ -341,7 +339,7 @@ function createWindow ()
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        title: "ttth",
+        title: "${productName}",
         frame: true, // false results in a borderless window
         show: false, // hide until: ready-to-show
         width: windowWidth,
@@ -354,6 +352,7 @@ function createWindow ()
             nodeIntegration: true
         }
     });
+
 
 
     // Restore window position if possible
@@ -373,10 +372,136 @@ function createWindow ()
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
+
+
+    // show the formerly hidden main window as it is fully ready now
+    //
+    mainWindow.on("ready-to-show", function()
+    {
+        console.log("main.js ::: Event: ready-to-show");
+
+        mainWindow.show();
+        mainWindow.focus();
+    });
+
+
+    // When dom is ready
+    //
+    mainWindow.webContents.once("dom-ready", () => {
+        console.log("main.js ::: Event: dom-ready");
+        let name = require("./package.json").name;
+        let version = require("./package.json").version;
+        let windowTitle = name + " " + version;
+        mainWindow.setTitle(windowTitle);
+    });
+
+
+    // When page title gets changed
+    //
+    mainWindow.webContents.once("page-title-updated", () => {
+        console.log("main.js ::: Event: page-title-updated");
+    });
+
+
+    // when the app is shown
+    //
+    mainWindow.on("show", function()
+    {
+        console.log("main.js ::: Event: show");
+
+        mainWindow.setOpacity(0.9); // macOS & Windows only
+    });
+
+
+    // when the app loses focus
+    //
+    mainWindow.on("blur", function()
+    {
+        console.log("main.js ::: Event: blur");
+
+        mainWindow.setOpacity(0.9); // macOS & Windows only
+    });
+
+
+    // when the app loses focus
+    //
+    mainWindow.on("focus", function()
+    {
+        console.log("main.js ::: Event: focus");
+
+        mainWindow.setOpacity(1.0); // macOS & Windows only
+    });
+
+
+    // when the app goes fullscreen
+    //
+    mainWindow.on("enter-full-screen", function()
+    {
+        console.log("main.js ::: Event: Enter fullscreen");
+    });
+
+
+    // when the app goes leaves fullscreen
+    //
+    mainWindow.on("leave-full-screen", function()
+    {
+        console.log("main.js ::: Event: Leave fullscreen");
+    });
+
+
+    // when the app gets resized
+    //
+    mainWindow.on("resize", function()
+    {
+        console.log("main.js ::: Event: resize");
+    });
+
+
+    // when the app gets hiden
+    //
+    mainWindow.on("hide", function()
+    {
+        console.log("main.js ::: Event: hide");
+    });
+
+
+    // when the app gets maximized
+    //
+    mainWindow.on("maximize", function()
+    {
+        console.log("main.js ::: Event: maximize");
+    });
+
+
+    // when the app gets unmaximized
+    //
+    mainWindow.on("unmaximize", function()
+    {
+        console.log("main.js ::: Event: unmaximize");
+    });
+
+
+    // when the app gets minimized
+    //
+    mainWindow.on("minimize", function()
+    {
+        console.log("main.js ::: Event: minimize");
+    });
+
+
+    // when the app gets restored from minimized mode
+    //
+    mainWindow.on("restore", function()
+    {
+        console.log("main.js ::: Event: restore");
+    });
+
+
     // Emitted before the window is closed.
+    //
     mainWindow.on("close", function ()
     {
-        console.log("main.js ::: close");
+        console.log("main.js ::: Event: close");
 
         // get window position and size:
         var data = {
@@ -389,50 +514,11 @@ function createWindow ()
     });
 
 
-    // When the app is unresponsive
-    //
-    mainWindow.on("unresponsive", function ()
-    {
-        console.log("main.js ::: unresponsive");
-    });
-
-
-    // show the formerly hidden main window as it is fully ready now
-    //
-    mainWindow.on("ready-to-show", function()
-    {
-        console.log("main.js ::: ready-to-show");
-
-        mainWindow.show();
-        mainWindow.focus();
-    });
-
-
-    // when the app loses focus
-    //
-    mainWindow.on("blur", function()
-    {
-        console.log("main.js ::: blur");
-
-        mainWindow.setOpacity(0.9); // macOS & Windows only
-    });
-
-
-    // when the app loses focus
-    //
-    mainWindow.on("focus", function()
-    {
-        console.log("main.js ::: focus");
-
-        mainWindow.setOpacity(1.0); // macOS & Windows only
-    });
-
-
     // Emitted when the window is closed.
     //
     mainWindow.on("closed", function ()
     {
-        console.log("main.js ::: closed");
+        console.log("main.js ::: Event: closed");
 
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
@@ -441,11 +527,27 @@ function createWindow ()
     });
 
 
+    // When the app is unresponsive
+    //
+    mainWindow.on("unresponsive", function ()
+    {
+        console.log("main.js ::: Event: unresponsive");
+    });
+
+
+    // When the app gets responsive again
+    //
+    mainWindow.on("responsive", function ()
+    {
+        console.log("main.js ::: Event: responsive");
+    });
+
+
     // When the app is crashed
     //
     mainWindow.webContents.on("crashed", function ()
     {
-        console.log("main.js ::: crashed");
+        console.log("main.js ::: Event: crashed");
     });
 
 }
@@ -642,6 +744,7 @@ app.on("window-all-closed", function ()
 {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
+
     if (process.platform !== "darwin")
     {
         app.quit();
@@ -671,13 +774,17 @@ app.on("activate", function ()
 createTray();
 
 
-process.on('uncaughtException', (err, origin) => {
+process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
     process.stderr.fd,
     `Caught exception: ${err}\n` +
     `Exception origin: ${origin}`
   );
 });
+
+
+
+
 
 // Measuring startup
 console.timeEnd("init");

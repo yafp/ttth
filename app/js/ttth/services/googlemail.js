@@ -90,3 +90,21 @@ function serviceGoogleMailAddEventListener()
 
     console.log("serviceGoogleMailAddEventListener ::: End");
 }
+
+
+
+/**
+* @name serviceGoogleMailInit
+* @summary Initializes the GoogleMail Service
+* @description Initializes the GoogleMail Service
+*/
+function serviceGoogleMailInit(serviceName, serviceUrl)
+{
+    console.log("serviceGoogleMailInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceGoogleMailInit ::: End");
+}
