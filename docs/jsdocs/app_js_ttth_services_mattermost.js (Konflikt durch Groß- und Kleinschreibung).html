@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/js/ttth/services/Mattermost.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/js/ttth/services/Mattermost.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* @name serviceMattermostAddEventListener
+* @summary Adds several EventListeners to the webview of the service
+* @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
+*/
+function serviceMattermostAddEventListener()
+{
+    console.log("serviceMattermostAddEventListener ::: Start");
+
+    // get webview
+    var webview = document.getElementById("MattermostWebview");
+
+    // run it periodically
+    //
+    //  5.000 =  5 sec
+    var intervalID = setInterval(function()
+    {
+        webview.send("request");
+    }, 30000);
+
+
+    // WebView Event: new-window / clicking links
+    //
+    webview.addEventListener("new-window", function(e)
+    {
+        console.log("serviceMattermostAddEventListener ::: new-window");
+
+        const BrowserWindow = require("electron");
+        const shell = require("electron").shell;
+        const protocol = require("url").parse(e.url).protocol;
+
+        if (protocol === "http:" || protocol === "https:")
+        {
+            shell.openExternal(e.url);
+        }
+    });
+
+
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        console.log("serviceMattermostAddEventListener ::: did-start-loading.");
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
+    {
+        console.log("serviceMattermostAddEventListener ::: DOM-Ready");
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+
+    // WebView Event: did-stop-loading
+    //
+    webview.addEventListener("did-stop-loading", function()
+    {
+        console.log("serviceMattermostAddEventListener ::: did-stop-loading");
+
+        // Triggering search for unread messages
+        webview.send("request");
+    });
+
+
+    // WebView Event:  ipc-message
+    webview.addEventListener("ipc-message",function(event)
+    {
+        console.log("serviceMattermostAddEventListener ::: IPC message:");
+        //console.log(event);
+        //console.info(event.channel);
+
+        // update the badge
+        updateServiceBadge("Mattermost", event.channel);
+    });
+
+    console.log("serviceMattermostAddEventListener ::: End");
+}
+
+
+
+
+/**
+* @name serviceMattermostInit
+* @summary Initializes the Mattermost Service
+* @description Initializes the Mattermost Service
+*/
+function serviceMattermostInit(serviceName, serviceUrl)
+{
+    console.log("serviceMattermostInit ::: Start");
+
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+
+    console.log("serviceMattermostInit ::: End");
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 27 2019 13:44:58 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

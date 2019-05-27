@@ -76,7 +76,7 @@ function updateTrayIconStatus()
     var arrayLength = ttthAvailableServices.length;
     for (var i = 0; i &lt; arrayLength; i++)
     {
-        serviceName = ttthAvailableServices[i].toLowerCase();
+        serviceName = ttthAvailableServices[i];
 
         curServiceUnreadMessageCount = 0;
 
@@ -135,7 +135,7 @@ function updateServiceBadge(serviceName, count)
     }
 
     // update the badge
-    $( "#badge_" + serviceName.toLowerCase()).html( count );
+    $( "#badge_" + serviceName).html( count );
 
     // Update tray icon status if needed
     updateTrayIconStatus();
@@ -344,7 +344,7 @@ function settingDefaultViewUpdate()
     writeLocalStorage("settingDefaultView", newDefaultView);
 
     // send notification
-    sendNotification("Updated Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+    sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 
     console.log("settingDefaultViewUpdate ::: End");
 }
@@ -366,7 +366,7 @@ function settingDefaultViewReset()
     $("#selectDefaultView").prop("selectedIndex",0);
 
     // send notification
-    sendNotification("Updated Settings", "Default view on startup is now set back to defaults (Settings).");
+    sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
 
     console.log("settingDefaultViewReset ::: Start");
 }
@@ -386,14 +386,14 @@ function settingToggleMenubarVisibility()
         writeLocalStorage("settingHideMenubar", true);
 
         // send notification
-        sendNotification("Updated Settings", "Hide menubar on startup is now enabled (Settings).");
+        sendNotification("Settings", "Hide menubar on startup is now enabled (Settings).");
     }
     else
     {
         writeLocalStorage("settingHideMenubar", false);
 
         // send notification
-        sendNotification("Updated Settings", "Hide menubar on startup is now disabled (Settings).");
+        sendNotification("Settings", "Hide menubar on startup is now disabled (Settings).");
     }
 
     console.log("settingToggleMenubarVisibility ::: End");
@@ -456,10 +456,10 @@ function checkSupportedOperatingSystem()
 function switchToService(serviceName)
 {
     console.log("switchToService ::: Start");
-    console.log("switchToService ::: Loading: " + serviceName.toLowerCase());
+    console.log("switchToService ::: Switching to tab: " + serviceName);
 
     // activate the related tab
-    $("#target_" + serviceName.toLowerCase()).trigger("click");
+    $("#target_" + serviceName).trigger("click");
 
     console.log("switchToService ::: End");
 }
@@ -714,6 +714,11 @@ function loadServiceSpecificCode(serviceName)
             serviceWhatsAppAddEventListener();
             break;
 
+        case "Xing":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceXingAddEventListener();
+            break;
+
         default:
             console.log("loadServiceSpecificCode ::: Nothing to do here");
     }
@@ -742,22 +747,24 @@ function initMattermost()
 
         prompt({
             title: "Mattermost url",
-            label: "Please insert your mattermost server URL",
+            label: "Please insert your mattermost &lt;b>server URL&lt;/b>.",
+            useHtmlLabel: true,
+            resizable: false,
             value: "https://mattermost.example.org",
             inputAttrs: {
                 type: "url"
             },
-            icon: "img/icon/icon.png"
+            icon: "../img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {
                 console.log("initMattermost ::: User cancelled the URL dialog.");
 
                 // hide tab
-                $("#menu_mattermost").hide();
+                $("#menu_Mattermost").hide();
 
                 // uncheck service checkbox
-                $("#Mattermost").prop("checked", false);
+                $("#checkbox_Mattermost").prop("checked", false);
 
                 // set service mattermost to false
                 writeLocalStorage("Mattermost", "false");
@@ -813,7 +820,7 @@ function initSlack()
 
         prompt({
             title: "Slack Workspace name",
-            label: "Please insert your Slack Workspace name",
+            label: "Please insert your Slack workspace name",
             value: "WORKSPACENAME",
             inputAttrs: {
                 type: "text"
@@ -865,8 +872,6 @@ function initSlack()
 
 
 
-
-
 /**
 * @name settingsToggleSingleServiceCheckbox
 * @summary Triggered on click on a service checkbox on settings page
@@ -885,7 +890,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
 
     if(objectNameIsValid === true)
     {
-        if($("#" + objectName).prop("checked"))
+        if($("#checkbox_" + objectName).prop("checked"))
         {
             console.log("settingsToggleSingleServiceCheckbox ::: Activating " + objectName);
 
@@ -893,7 +898,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             writeLocalStorage(objectName, "true");
 
             // show service in menu
-            $("#menu_"+objectName.toLowerCase()).show();
+            $("#menu_"+objectName).show();
 
             // add option to DefaultView select
             $("#selectDefaultView").append(new Option(objectName, objectName));
@@ -934,7 +939,7 @@ function settingsToggleSingleServiceCheckbox(objectName)
             writeLocalStorage(objectName, "false");
 
             // hide service from menu
-            $("#menu_"+objectName.toLowerCase()).hide();
+            $("#menu_"+objectName).hide();
 
             // update select
             $("#selectDefaultView option").each(function()
@@ -1035,13 +1040,14 @@ function initSettingsPage()
             $( "#settingsAvailableServices" ).append('&lt;div class="row" id=' + i + '>&lt;/div>');
 
             // add something to this new row
-            $( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+            //$( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id='+ serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+            $( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id="checkbox_'+ serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
         }
         else
         {
             // add something to the existing row
             var rowReference = i -1;
-            $( "#" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+            $( "#" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id="checkbox_' + serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
         }
 
 
@@ -1060,7 +1066,7 @@ function initSettingsPage()
             console.log("initSettingsPage ::: Service: " + serviceName + " is activated");
 
             // check the checkbox
-            $("#" + serviceName).prop("checked", true);
+            $("#checkbox_" + serviceName).prop("checked", true);
 
             // add to defaultView select item
             $("#selectDefaultView").append(new Option(serviceName, serviceName));
@@ -1200,14 +1206,14 @@ function initNavigationTabs()
             console.log("initNavigationTabs ::: Activating " + serviceName );
 
             // show service-tab in navigation
-            $("#menu_" + serviceName.toLowerCase()).show();
+            $("#menu_" + serviceName).show();
         }
         else
         {
             console.log("initNavigationTabs ::: Deactivating " + serviceName);
 
             // hide service-tab in navigation
-            $("#menu_" + serviceName.toLowerCase()).hide();
+            $("#menu_" + serviceName).hide();
         }
     }
 
@@ -1289,16 +1295,98 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1);
+    tabValue = tabValue.substring(1); // cut the first char ( =  #) 
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    // TODO:
+
+    
+    var currentPositionInArray = null;
+    var serviceName = null;
+    var serviceUrl = null;
+
+    // find service name and service url from array
+    currentPositionInArray = ttthAvailableServices.indexOf(tabValue);
+
+    // grab the related vars from the serviceList arrays
+    serviceName = ttthAvailableServices[currentPositionInArray];
+    serviceUrl = ttthServicesUrls[currentPositionInArray];
+
     // reload the service - see #9
-    switch (tabValue)
+    switch (serviceName)
     {
-        case "whatsApp":
-            console.error("doh");
-            serviceWhatsAppInit();
+        case "Freenode":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceFreenodeInit(serviceName, serviceUrl);
+            break;
+
+        case "GitHub":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGitHubInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleCalendar":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleCalendarInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleContacts":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleContactsInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleKeep":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleKeepInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMail":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMailInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMessages":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMessagesInit(serviceName, serviceUrl);
+            break;
+
+        case "GooglePhotos":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGooglePhotosInit(serviceName, serviceUrl);
+            break;
+
+        case "Mattermost":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceMattermostInit(serviceName, serviceUrl);
+            break;
+
+        case "Slack":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceSlackInit(serviceName, serviceUrl);
+            break;
+
+        case "Telegram":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTelegramInit(serviceName, serviceUrl);
+            break;
+
+        case "Threema":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceThreemaInit(serviceName, serviceUrl);
+            break;
+
+        case "Twitter":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTwitterInit(serviceName, serviceUrl);
+            break;
+
+        case "WhatsApp":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceWhatsAppInit(serviceName, serviceUrl);
+            break;
+
+        case "Xing":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceXingInit(serviceName, serviceUrl);
             break;
 
         default:
@@ -1404,13 +1492,13 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri May 24 2019 14:45:04 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 27 2019 15:06:45 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
