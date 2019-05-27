@@ -6,11 +6,8 @@
 
 ## maybe / ideas / brainstorming
 * Services
-  * StackExchange?
   * Discord?
   * Google Duo (video -> webcam)?
-  * YouTube?
-  * xing?
   * linkedin?
   * skype?
 * FontAwesome
@@ -29,7 +26,6 @@
   * 'squirrel-updates-server'
   * 'auto-updater'
   * 'Electron-gh-releases'
-* Package: 'electron-config'
 * Package: 'temp' for handling temporary files
 * Package: 'electron-dl' for handling downloads
 * Spectron (and mocha)-  framework for integrations tests within an Electron application -> do it

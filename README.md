@@ -32,8 +32,10 @@
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 
-* It is inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
-* Builds are available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows.png) windows.
+It is:
+
+* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+* available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_16x16.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_16x16.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_16x16.png) windows.
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
@@ -54,6 +56,7 @@
 * Threema <sub><sup>(1, 2)<sub><sup>
 * Twitter
 * WhatsApp <sub><sup>(1)<sub><sup>
+* Xing <sub><sup>(2)<sub><sup>
 
 
 <sub><sup>
@@ -118,6 +121,7 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 | Toggle developer console        | F12       | F12       | F12       |
 | Show Settings                   | CTRL + ,  | CMD + ,   | CTRL + ,  |
 | Jump to next tab                | CTRL + N  | CMD + N   | CTRL + N  |
+| Reload current service          | CTRL + S  | CMD + S   | CTRL + S  |
 | Quit/exit the application       | CTRL + Q  | CMD + Q   | CTRL + Q  |
 | Reload the application          | CTRL + R  | CMD + R   | CTRL + R  |
 | Minimize window                 | CTRL + H  | CMD + H   | CTRL + H  |
