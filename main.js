@@ -101,11 +101,18 @@ function createMenu()
         label: "View",
         submenu: [
         {
-            label: "Next Tab",
+            label: "Next Service",
             click() {
                 mainWindow.webContents.send("nextTab");
             },
-            accelerator: "CmdOrCtrl+N"
+            accelerator: "CmdOrCtrl+right"
+        },
+        {
+            label: "Previous Service",
+            click() {
+                mainWindow.webContents.send("previousTab");
+            },
+            accelerator: "CmdOrCtrl+left"
         },
         {
             type: "separator"
@@ -167,6 +174,15 @@ function createMenu()
             accelerator: "F11"
         },
         {
+            label: "Hide",
+            click() {
+                mainWindow.hide()
+                //mainWindow.reload();
+            },
+            accelerator: "CmdOrCtrl+H",
+            enabled: true
+        },
+        {
             label: "Minimize",
             click() {
                 if(mainWindow.isMinimized())
@@ -178,7 +194,7 @@ function createMenu()
                     mainWindow.minimize();
                 }
             },
-            accelerator: "CmdOrCtrl+H",
+            accelerator: "CmdOrCtrl+M",
         },
         {
             label: "Maximize",
@@ -192,7 +208,7 @@ function createMenu()
                     mainWindow.maximize();
                 }
             },
-            accelerator: "CmdOrCtrl+M",
+            accelerator: "CmdOrCtrl+K",
         }
     ]
     },
@@ -211,7 +227,6 @@ function createMenu()
                     use_version_info: true,
                     win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
                     {
-                        opacity: 0.9, // not implemented on linux
                         autoHideMenuBar: true,
                         titleBarStyle: "hidden",
                         minimizable: false, // not implemented on linux
@@ -408,28 +423,22 @@ function createWindow ()
     mainWindow.on("show", function()
     {
         console.log("main.js ::: Event: show");
-
-        mainWindow.setOpacity(0.9); // macOS & Windows only
     });
 
 
-    // when the app loses focus
+    // when the app loses focus / aka blur
     //
     mainWindow.on("blur", function()
     {
         console.log("main.js ::: Event: blur");
-
-        mainWindow.setOpacity(0.9); // macOS & Windows only
     });
 
 
-    // when the app loses focus
+    // when the app gets focus
     //
     mainWindow.on("focus", function()
     {
         console.log("main.js ::: Event: focus");
-
-        mainWindow.setOpacity(1.0); // macOS & Windows only
     });
 
 
@@ -494,6 +503,14 @@ function createWindow ()
     mainWindow.on("restore", function()
     {
         console.log("main.js ::: Event: restore");
+    });
+
+
+    // when the app hidden
+    //
+    mainWindow.on("hide", function()
+    {
+        console.log("main.js ::: Event: hide");
     });
 
 
@@ -588,6 +605,11 @@ function createTray()
                     if (mainWindow.isMinimized())
                     {
                         mainWindow.restore();
+                    }
+                    else 
+                    {
+                        // was maybe: hidden via hide()
+                        mainWindow.show();
                     }
                     mainWindow.focus();
                 },
