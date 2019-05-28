@@ -14,10 +14,10 @@ function serviceXingGetUnreadMessageCount()
     let count = null;
 
     //let notificationElement = document.querySelector(\'[data-update="unread_conversations"]\'); 
-    let notificationElement = document.querySelector('[data-update="unread_conversations"]'); 
+    let notificationElement = document.querySelector("[data-update='unread_conversations']"); 
 
     //if (notificationElement && notificationElement.style.display !== \'none\');
-    if (notificationElement && notificationElement.style.display !== 'none');
+    if (notificationElement && notificationElement.style.display !== 'none')
     { 
         count = parseInt(notificationElement.textContent.trim(), 10); 
     }   

@@ -70,8 +70,8 @@ function serviceXingAddEventListener()
     webview.addEventListener("ipc-message",function(event)
     {
         console.log("serviceXingAddEventListener ::: IPC message:");
-        //console.log(event);
-        //console.info(event.channel);
+        console.log(event);
+        console.info(event.channel);
 
         // update the badge
         updateServiceBadge("Xing", event.channel);
