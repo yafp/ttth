@@ -1,14 +1,41 @@
-console.log("Executing: test/spec.js")
+console.log("Executing: test/spec.js");
 
-const Application = require('spectron').Application
-const assert = require('assert')
-const electronPath = require('electron') // Require Electron from the binaries included in node_modules.
-const path = require('path')
+const Application = require("spectron").Application;
+const assert = require("assert");
+const electronPath = require("electron"); // Require Electron from the binaries included in node_modules.
+const path = require("path");
 
-describe('Application launch', function () {
-  this.timeout(10000)
 
-  beforeEach(function () {
+
+// Load chai assertions
+const chaiAsPromised = require("chai-as-promised");
+const chai = require("chai");
+chai.should();
+chai.use(chaiAsPromised);
+
+
+var expect = chai.expect;
+
+
+
+
+describe("Application Window", function ()
+{
+  this.timeout(20000)
+
+
+
+  after(function () {
+   if (this.app && this.app.isRunning()) {
+     return this.app.stop();
+   }
+ });
+
+
+
+
+  beforeEach(function ()
+  {
     this.app = new Application({
       // Your electron path can be any binary
       // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
@@ -30,28 +57,53 @@ describe('Application launch', function () {
       // and the package.json located 1 level above.
       args: [path.join(__dirname, '..')]
     })
-    return this.app.start()
+    return this.app.start();
   })
 
-  afterEach(function () 
+
+  afterEach(function ()
   {
-    if (this.app && this.app.isRunning()) {
+    if (this.app && this.app.isRunning()) 
+    {
       return this.app.stop()
     }
   })
 
-  it('shows an initial window', function () 
+
+  // Check launching the app window
+  //
+  it("Open application window", function ()
   {
-    /*
-    return this.app.client.getWindowCount().then(function (count) 
-    {
-      assert.equal(count, 1)
-
-      // Please note that getWindowCount() will return 2 if `dev tools` are opened.
-      //assert.equal(count, 2)
-    })
-    */
-
-
+    // at least 1 window should be counted
+    return this.app.client.getWindowCount().should.not.equal(0);
   })
-})
+
+
+  // Check the window title
+  //
+  it('Check window title', function () 
+  {
+    return this.app.client.browserWindow.getTitle().then(function(title) {
+      expect(title).to.contain('ttth');
+      return Promise.resolve();
+    });
+  })
+
+
+
+  it('Fetch content of settings tab', function () 
+  {
+    return this.app.client.getText('#target_Settings').then(function (tabText) {
+      expect(tabText).to.equal('');
+      //console.log('The settings tab text is: _' + tabText + '_.')
+    });
+  })
+
+
+
+
+
+
+
+
+});
