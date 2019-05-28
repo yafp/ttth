@@ -16,7 +16,7 @@ function serviceMattermostAddEventListener()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 30000);
+    }, 5000);
 
 
     // WebView Event: new-window / clicking links
