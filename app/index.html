@@ -34,14 +34,18 @@
     <!-- 2.0.0 -->
     <script type="text/javascript" src="js/semver/2.0.0/semver.min.js" async></script>
 
+    <!-- modalLoading -->
+    <script type="text/javascript" src="js/jquery.modalLoading/modalLoading.js"></script>
+
     <!-- ttth: general -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/serviceList.js" async></script>
     <!-- ttth: service specific scripts -->
     <script type="text/javascript" src="js/ttth/services/Freenode.js" async></script>
-    <script type="text/javascript" src="js/ttth/services/Github.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GitHub.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GoogleCalendar.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GoogleContacts.js" async></script>
+    <script type="text/javascript" src="js/ttth/services/GoogleDrive.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GoogleKeep.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GoogleMail.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GoogleMessages.js" async></script>
@@ -100,6 +104,15 @@
                     </a>
                 </li>
                 <!-- /Google Contacts -->
+
+
+                 <!-- Tab: Google Drive -->
+                <li class="nav-item" id="menu_GoogleDrive">
+                    <a class="nav-link my-ui-text" id="target_GoogleDrive" href="#GoogleDrive" role="tab" data-toggle="tab">
+                        <i class="fab fa-google"></i> Drive <span id="badge_GoogleDrive" class="badge badge-success"></span>
+                    </a>
+                </li>
+                <!-- /Google Drive -->
 
 
                 <!-- Tab: Google Keep -->
@@ -198,7 +211,7 @@
                         <i class="fab fa-xing"></i> Xing <span id="badge_Xing" class="badge badge-success"></span>
                     </a>
                 </li>
-                <!-- /WhatsApp-->
+                <!-- /Xing->
 
 
                 <!-- Tab: Settings -->
@@ -293,6 +306,17 @@
                     </webview>
                 </div>
                 <!-- Tab: Google Contacts -->
+
+
+                <!-- TabContent: Google Drive -->
+                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleDrive">
+                    <webview
+                        id="GoogleDriveWebview"
+                        class="inner"
+                        src="">
+                    </webview>
+                </div>
+                <!-- Tab: Google Drive -->
 
 
                 <!-- TabContent: Google Keep -->
@@ -439,12 +463,12 @@
 
                     <!-- List of buttons with links -->
                     <div class="my-ui-text">
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
-                        <a href="#" class="btn btn-outline-success btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
                         <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="settingsSectionAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
                     </div>
                     <!-- /About -->
@@ -542,6 +566,38 @@
                     <!-- /Setting: HideMenubarOnStartup  -->
 
 
+                    <!-- Setting: overwrite hover-color -->
+                    <div class="input-group input-group-sm mb-1">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <input type="checkbox" id="checkboxSettingUserColor" aria-label="Checkbox for following text input" onClick="settingToggleUserColor();">
+                            </div>
+                        </div>
+                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Color Style" disabled>
+
+                       <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <select id="selectUserColor" name="selectUserColor">
+                                    <option value="default.css" selected>Please choose</option>
+                                    <option value="default.css">Default</option>
+                                    <option value="aquamarine.css">aquamarine</option>
+                                    <option value="darkgray.css">darkgray</option>
+                                    <option value="darkorange.css">darkorange</option>
+                                    <option value="lightcoral.css">lightcoral</option>
+                                    <option value="moccasin.css">moccasin</option>
+                                    <option value="skyblue.css">skyblue</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group-prepend">
+                            <button type="button" class="btn btn-success btn-sm" id="bt_updateUserColor" title="Set user color" onClick="settingUserColorUpdate();"><i class="fas fa-save"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm" id="bt_resetUserColor" title="Reset user color" onClick="settingUserColorReset();"><i class="fas fa-trash-alt"></i></button>
+                        </div>
+                    </div>
+                    <!-- /Setting: overwrite hover-color -->
+
+
                 </div>
                 <!-- /Tab: Settings -->
 
@@ -557,6 +613,8 @@
             <i class="fas fa-spinner fa-spin"></i> checking for updates ...
         </div>
         <!-- update information -->
+
+
 
 
         <!-- operating systems information -->
@@ -583,6 +641,9 @@ $( document ).ready(function()
     // hide the entire body on launch. we'll fade it back in later
     $('body').css('display', 'none');
 
+    // start splash
+    loading = $(document.body).modalLoading(100, '<img src="img/splash/icon_splash.png">');
+
     // Click handler for navigation/tabs
     $('#myTabs a').click(function (link)
     {
@@ -590,10 +651,7 @@ $( document ).ready(function()
         //console.log(link.currentTarget.innerText);
 
         /*
-        if(link.currentTarget.innerText === " WhatsApp")
-        {
-            // do something
-        }
+        if(link.currentTarget.innerText === " WhatsApp"){}
         */
     })
 
@@ -618,11 +676,16 @@ $( document ).ready(function()
     // FIXME:
     serviceWhatsAppRegister();
 
-    // send notification
-    //sendNotification("State", "Ready");
-
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
+
+
+    // hide splash 
+    //loading.remove();
+    setInterval(function() 
+    {
+        loading.remove();
+    }, 500);
 
 });
 </script>

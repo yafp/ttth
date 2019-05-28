@@ -32,6 +32,114 @@ function isMac()
 
 
 /**
+* @name settingUserColorUpdate
+* @summary Updates the default color
+* @description Updates the default color
+*/
+function settingUserColorUpdate()
+{
+    console.log("settingUserColorUpdate ::: Start");
+
+    // get value from select
+    var newUserColor = $( "#selectUserColor" ).val();
+    console.log("settingUserColorUpdate ::: New CSS style is set to: " + newUserColor);
+
+    writeLocalStorage("settingUserColorName", newUserColor);
+
+    // reload page
+    location.reload();
+
+    console.log("settingUserColorUpdate ::: End");
+}
+
+
+/**
+* @name settingUserColorReset
+* @summary Resets back to default color
+* @description Resets back to default color
+*/
+function settingUserColorReset()
+{
+    console.log("settingUserColorReset ::: Start");
+
+    writeLocalStorage("settingUserColorName", "default.css");
+
+    $("#selectUserColor").val("default.css");
+
+    // reload page
+    location.reload();
+
+    console.log("settingUserColorReset ::: End");
+}
+
+
+/**
+* @name settingToggleUserColor
+* @summary Executed when user color checkbox in settings gets clicked
+* @description Executed when user color checkbox in settings gets clicked
+*/
+function settingToggleUserColor()
+{
+    console.log("settingToggleUserColor ::: Start");
+
+    if($("#checkboxSettingUserColor").prop("checked"))
+    {
+        // user has enabled a custom user color
+        var userColor = $( "#selectUserColor" ).val();
+
+        // write general setting
+        writeLocalStorage("settingUserColor", true);
+
+        // write color code
+        writeLocalStorage("settingUserColorName", userColor);
+
+        // css-item: .nav-link:hover
+        $(".nav-link:hover").css({"color": "red"});
+    }
+    else
+    {
+        // user has NOT enabled a custom user color
+        // fallback to default css
+
+        writeLocalStorage("settingUserColor", false);
+
+        settingUserColorReset();
+    }
+
+    console.log("settingToggleUserColor ::: End");
+}
+
+
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssStyleName)
+{
+    console.log("settingActivateUserColorCss ::: Start");
+
+    console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
+
+    $("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/styles/" + cssStyleName
+    }).appendTo("head");
+
+    console.log("settingActivateUserColorCss ::: End");
+}
+
+
+
+
+
+
+
+
+
+/**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
 * @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
@@ -722,15 +830,14 @@ function initMattermost()
             label: "Please insert your mattermost <b>server URL</b>.",
             useHtmlLabel: true,
             resizable: false,
-            value: "",
             width: 450,
             height: 200,
-            menuBarVisible: false,
             inputAttrs: {
                 type: "url",
                 placeholder: "https://mattermost.example.org"
             },
-            icon: "../img/icon/icon.png"
+            icon: __dirname + "/img/icon/icon.png",
+            menuBarVisible: false
         })
         .then((r) => {
             if(r === null) {
@@ -788,6 +895,7 @@ function initSlack()
 
     // check if there is a url specificed in local storage
     var slackWorkspace = readLocalStorage("serviceSlackWorkspace");
+    var slackUrl = null;
     if( (slackWorkspace === "") || (slackWorkspace === null) )
     {
         console.warn("initSlack ::: Custom Slack Workspace is not yet defined.");
@@ -796,17 +904,17 @@ function initSlack()
 
         prompt({
             title: "Service: Slack",
-            label: "Please insert your Slack <b>workspace</b> name",
+            label: "Please insert your Slack <b>workspace</b> name.",
             useHtmlLabel: true,
-            value: "",
             width: 450,
             height: 200,
-            //menuBarVisible: false,
             inputAttrs: {
                 type: "text",
-                placeholder: "WORKSPACENAME"
+                required: true,
+                placeholder: "insert name of workspace"
             },
-            icon: "img/icon/icon.png"
+            icon: __dirname + "/img/icon/icon.png",
+            menuBarVisible: false
         })
         .then((r) => {
             if(r === null) {
@@ -816,7 +924,7 @@ function initSlack()
                 $("#menu_slack").hide();
 
                 // uncheck service checkbox
-                $("#Slack").prop("checked", false);
+                $("#checkbox_Slack").prop("checked", false);
 
                 // set service slack to false
                 writeLocalStorage("Slack", "false");
@@ -828,8 +936,14 @@ function initSlack()
                 console.log("result", r);
                 slackWorkspace = r;
 
+                slackUrl = "https://" + slackWorkspace + ".slack.com";
+
+
                 // update title property of service
-                $("#label_Slack").prop("title", "https://" + slackWorkspace + ".slack.com");
+                $("#label_Slack").prop("title", slackUrl);
+
+                // set src of slack webview
+                document.getElementById( "SlackWebview" ).setAttribute( "src", slackUrl);
 
                 // Save value to local storage
                 writeLocalStorage("serviceSlackWorkspace", slackWorkspace);
@@ -841,11 +955,15 @@ function initSlack()
     }
     else
     {
-        // set src of mattermost webview
-        document.getElementById( "SlackWebview" ).setAttribute( "src", slackWorkspace);
+        slackUrl = "https://" + slackWorkspace + ".slack.com";
+        console.log("initSlack ::: Custom Slack Workspace is already configured as: " + slackWorkspace);
+        console.log("initSlack ::: Slack url is set to: " + slackUrl);
+
+        // set src of slack webview
+        document.getElementById( "SlackWebview" ).setAttribute( "src", slackUrl);
 
         // adjust title
-        $("#label_Slack").prop("title", slackWorkspace);
+        $("#label_Slack").prop("title", slackUrl);
     }
 
     console.log("initSlack ::: End");
@@ -998,6 +1116,8 @@ function initSettingsPage()
     var curSettingAutostart;
     var curSettingAutostartMinimized;
     var curSettingHideMenubar;
+    var curSettingUserColor;
+    var curSettingUserColorCode;
 
     // show appname and version
     //$( "#settingsAppVersion" ).html( appVersion );
@@ -1125,7 +1245,6 @@ function initSettingsPage()
     }
 
 
-
     // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
     //
     const {ipcRenderer} = require("electron");
@@ -1157,6 +1276,34 @@ function initSettingsPage()
             console.log("initSettingsPage ::: Show menubar");
         }
     }
+
+
+    // Setting: UserColor
+    //
+    curSettingUserColor = readLocalStorage("settingUserColor");
+    if(curSettingUserColor === "true")
+    {
+        console.log("initSettingsPage ::: Setting UserColor is configured");
+
+        // activate checkbox
+        $("#checkboxSettingUserColor").prop("checked", true);
+
+        // read color code
+        curSettingUserColorCode = readLocalStorage("settingUserColorName");
+
+        // adjust select
+        $("#selectUserColor").val(curSettingUserColorCode);
+
+
+        settingActivateUserColorCss(curSettingUserColorCode);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting UserColor is not configured");
+
+        settingActivateUserColorCss("default.css");
+    }
+
 
     console.log("initSettingsPage ::: End");
 }
@@ -1214,7 +1361,7 @@ function localizeUserInterface()
   var userLang = navigator.language || navigator.userLanguage;
 
   // for development screenshot - overwrite the language
-  //userLang = "en";
+  userLang = "en";
 
   console.log("localizeUserInterface ::: Detected user language: " + userLang);
 
@@ -1313,6 +1460,11 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
         case "GoogleContacts":
             console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
             serviceGoogleContactsInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleDrive":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleDriveInit(serviceName, serviceUrl);
             break;
 
         case "GoogleKeep":
@@ -1436,7 +1588,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
         if($("#"+currentTabId).is(":visible"))
         {
             currentTabId = currentTabId.replace("target_", "");
-            if(currentTabId !== "settings")
+            if(currentTabId !== "Settings")
             {
                 enabledTabsArray.push(currentTabId);
             }
@@ -1463,3 +1615,61 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 
     console.log("nextTab ::: End");
 });
+
+
+
+// Call from main.js: Switch to previous tab
+//
+
+require("electron").ipcRenderer.on("previousTab", function(event)
+{
+    console.log("previousTab ::: Start");
+
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("previous ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "Settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    });
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get previous array position
+    if(currentPositionInArray > 0) //
+    {
+        serviceName = enabledTabsArray[currentPositionInArray-1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[enabledTabsArray.length -1];
+    }
+
+    console.log("previousTab ::: Should switch to: " + serviceName + " now.");
+
+    // jump to next tab
+    switchToService(serviceName);
+
+    console.log("previousTab ::: End");
+});
+
