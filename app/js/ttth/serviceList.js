@@ -8,6 +8,7 @@ var ttthAvailableServices = new Array(
     "GitHub",
     "GoogleCalendar",
     "GoogleContacts",
+    "GoogleDrive",
     "GoogleKeep",
     "GoogleMail",
     "GoogleMessages",
@@ -29,12 +30,13 @@ var ttthServicesUrls = new Array(
     "https://github.com/",
     "https://calendar.google.com/calendar/r",
     "https://contacts.google.com/",
+    "https://drive.google.com/drive/",
     "https://keep.google.com/",
     "https://mail.google.com/mail/",
     "https://messages.google.com/web",
     "https://photos.google.com/",
     "https://", // Mattermost is using user specific custom url
-    "https://slack.com",
+    "https://", // Slack needs a user specific workspace
     "https://web.telegram.org/",
     "https://web.threema.ch/",
     "https://mobile.twitter.com/",
