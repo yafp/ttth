@@ -46,6 +46,7 @@ It is:
 * GitHub
 * Google Calendar
 * Google Contacts
+* Google Drive
 * Google Keep
 * Google Mail <sub><sup>(1)<sub><sup>
 * Google Messages <sub><sup>(1, 2)<sub><sup>
@@ -120,12 +121,14 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 | Toggle Fullscreen mode          | F11       | F11       | F11       |
 | Toggle developer console        | F12       | F12       | F12       |
 | Show Settings                   | CTRL + ,  | CMD + ,   | CTRL + ,  |
-| Jump to next tab                | CTRL + N  | CMD + N   | CTRL + N  |
+| Jump to next service            | CTRL + 🡆 | CMD + 🡆  | CTRL + 🡆  |
+| Jump to previous service        | CTRL + 🡄 | CMD + 🡄  | CTRL + 🡄  |
 | Reload current service          | CTRL + S  | CMD + S   | CTRL + S  |
 | Quit/exit the application       | CTRL + Q  | CMD + Q   | CTRL + Q  |
 | Reload the application          | CTRL + R  | CMD + R   | CTRL + R  |
-| Minimize window                 | CTRL + H  | CMD + H   | CTRL + H  |
-| Maximize window                 | CTRL + M  | CMD + M   | CTRL + M  |
+| Minimize window                 | CTRL + M  | CMD + M   | CTRL + M  |
+| Maximize window                 | CTRL + K  | CMD + K   | CTRL + K  |
+| Hide window                     | CTRL + H  | CMD + H   | CTRL + H  |
 
 
 ## faq

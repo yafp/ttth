@@ -1,3 +1,5 @@
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
+
 # ttth
 ## todos
 * Build: find a way to minify js-code on build (using uglify or similar)

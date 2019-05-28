@@ -6,12 +6,25 @@
 ### ttth 1.3.0 (2019xxyy)
 ####  ```Added```
 * Services: Added new service 'Xing'. See #26
+* Services: Added new service 'Google Drive'. See #33
 * Menu: Added 'Reload current service' function (View -> Reload current service). See #9
+* Menu: Added hide (Window -> Hide). See #11
+* Setting: Added support for css color styles. See #30
+* UI: Added splash screen. See #32
 
 #### ```Changed```
-* Window: Window title now features name and version (before: only name). See #25
-* UI: Added placeholder to input fields of electron-prompts. See #28
+* UI: Window title now features name and version (before: only name). See #25
+* UI: Added placeholder text to input fields of electron-prompts. See #28
 * UI: Remove tab text from Settings tab. Just show the icon. See #29
+* Menu: Minimize is now CTRL + M (Window -> Minimize)
+* Menu: Maximize is now CTRL + K (Window -> Maximize)
+
+#### ```Removed```
+* UI: Removed transparency / opacity behaviour. See #34
+
+#### ```Fixed```
+* UI: Prompt for 'Slack' and 'Mattermost' now show the app icon instead of the default icon. See #31
+* Service: Slack was loading the wrong url - which resulted in a white screen. See #35
 
 
 ### ttth 1.2.0 (20190524)
