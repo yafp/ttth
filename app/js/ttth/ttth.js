@@ -1,7 +1,6 @@
 /* global _ */
 
 
-
 /**
 * @name isMac
 * @summary Checks if the operating system type is mac/darwin or not
@@ -92,9 +91,6 @@ function settingToggleUserColor()
 
         // write color code
         writeLocalStorage("settingUserColorName", userColor);
-
-        // css-item: .nav-link:hover
-        $(".nav-link:hover").css({"color": "red"});
     }
     else
     {
@@ -122,6 +118,7 @@ function settingActivateUserColorCss(cssStyleName)
 
     console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
 
+    // load custom css file
     $("<link/>", {
         rel: "stylesheet",
         type: "text/css",
@@ -130,13 +127,6 @@ function settingActivateUserColorCss(cssStyleName)
 
     console.log("settingActivateUserColorCss ::: End");
 }
-
-
-
-
-
-
-
 
 
 /**
@@ -311,7 +301,7 @@ function settingToggleAutostart()
         useLaunchAgent: true,
     });
 
-
+    // Handle depending on the checkbox state
     if($("#checkboxSettingAutostart").prop("checked"))
     {
         ttthAutoLauncher.enable();
@@ -334,7 +324,6 @@ function settingToggleAutostart()
         console.log("settingToggleAutostart ::: Finished disabling Autostart");
     }
 
-
     ttthAutoLauncher.isEnabled()
     .then(function(isEnabled){
         if(isEnabled){
@@ -345,7 +334,6 @@ function settingToggleAutostart()
     .catch(function(err){
         // handle error
     });
-
 
     console.log("settingToggleAutostart ::: End");
 }
@@ -758,6 +746,21 @@ function loadServiceSpecificCode(serviceName)
             serviceFreenodeAddEventListener();
             break;
 
+        case "GitHub":
+            break;
+
+        case "GoogleCalendar":
+            break;
+
+        case "GoogleContacts":
+            break;
+
+        case "GoogleDrive":
+            break;
+
+        case "GoogleKeep":
+            break;
+
         case "GoogleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceGoogleMailAddEventListener();
@@ -766,6 +769,9 @@ function loadServiceSpecificCode(serviceName)
         case "GoogleMessages":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceGoogleMessagesAddEventListener();
+            break;
+
+        case "GooglePhotos":
             break;
 
         case "Mattermost":
@@ -788,6 +794,9 @@ function loadServiceSpecificCode(serviceName)
             serviceThreemaAddEventListener();
             break;
 
+        case "Twitter":
+            break;
+
         case "WhatsApp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
@@ -805,7 +814,6 @@ function loadServiceSpecificCode(serviceName)
 
     console.log("loadServiceSpecificCode ::: End");
 }
-
 
 
 /**
@@ -881,7 +889,6 @@ function initMattermost()
 
     console.log("initMattermost ::: End");
 }
-
 
 
 /**
@@ -968,7 +975,6 @@ function initSlack()
 
     console.log("initSlack ::: End");
 }
-
 
 
 /**
@@ -1107,10 +1113,6 @@ function initSettingsPage()
 {
     console.log("initSettingsPage ::: Start");
 
-    // get appname and version
-    //var appVersion = require("electron").remote.app.getVersion();
-    //var appName = require("electron").remote.app.getName();
-
     var serviceName;
     var serviceUrl;
     var curSettingAutostart;
@@ -1118,9 +1120,6 @@ function initSettingsPage()
     var curSettingHideMenubar;
     var curSettingUserColor;
     var curSettingUserColorCode;
-
-    // show appname and version
-    //$( "#settingsAppVersion" ).html( appVersion );
 
     // loop over array ttthAvailableServices which contains all service-names
     //
@@ -1131,10 +1130,8 @@ function initSettingsPage()
         serviceName =  ttthAvailableServices[i];
         serviceUrl = ttthServicesUrls[i];
 
-
         // Adding all services to settings page
         //
-        // since 1.2.0
         if (i%2 === 0) // Odd and Even
         {
             // create a new row
@@ -1201,15 +1198,15 @@ function initSettingsPage()
     }
 
 
-    // specialcase: Mattermost
+    // specialcase: Slack
     var slackEnabled = readLocalStorage("Slack");
     if(slackEnabled === "true")
     {
         initSlack();
     }
 
-
     // Setting: DefaultView - now validate the optional configured default view
+    //
     validateConfiguredDefaultView();
 
     // Setting: Autostart
@@ -1277,7 +1274,6 @@ function initSettingsPage()
         }
     }
 
-
     // Setting: UserColor
     //
     curSettingUserColor = readLocalStorage("settingUserColor");
@@ -1303,7 +1299,6 @@ function initSettingsPage()
 
         settingActivateUserColorCss("default.css");
     }
-
 
     console.log("initSettingsPage ::: End");
 }
@@ -1412,7 +1407,6 @@ function localizeUserInterface()
 }
 
 
-
 // Call from main.js
 //
 require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
@@ -1425,8 +1419,6 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
-
-
 
     var currentPositionInArray = null;
     var serviceName = null;
@@ -1531,7 +1523,6 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 });
 
 
-
 // Call from main.js: switch to settings tab
 //
 require("electron").ipcRenderer.on("showSettings", function(event)
@@ -1542,7 +1533,6 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 
     console.log("showSettings ::: End");
 });
-
 
 
 // Call from main.js: Start search for new updates
@@ -1558,8 +1548,6 @@ require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 
     console.log("startSearchUpdates ::: End");
 });
-
-
 
 
 // Call from main.js: Switch to next tab
@@ -1617,10 +1605,8 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 });
 
 
-
 // Call from main.js: Switch to previous tab
 //
-
 require("electron").ipcRenderer.on("previousTab", function(event)
 {
     console.log("previousTab ::: Start");
@@ -1667,9 +1653,8 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 
     console.log("previousTab ::: Should switch to: " + serviceName + " now.");
 
-    // jump to next tab
+    // jump to previous tab
     switchToService(serviceName);
 
     console.log("previousTab ::: End");
 });
-
