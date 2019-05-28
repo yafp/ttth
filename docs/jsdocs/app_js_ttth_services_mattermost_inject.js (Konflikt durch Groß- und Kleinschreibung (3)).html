@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleContacts.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Mattermost_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleContacts.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Mattermost_inject.js</h1>
 
     
 
@@ -26,21 +26,38 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceGoogleContactsInit
-* @summary Initializes the GoogleConstats Service
-* @description Initializes the GoogleContacts Service
+            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
+
+/**
+* @name serviceMattermostGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Mattermost
+* @description Gets the amount of unread messages of the service Mattermost
 */
-function serviceGoogleContactsInit(serviceName, serviceUrl)
+function serviceMattermostGetUnreadMessageCount()
 {
-    console.log("serviceGoogleContactsInit ::: Start");
+    console.log("serviceMattermostGetUnreadMessageCount ::: Start");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    const selectBadges = "#sidebarChannelContainer .unread-title.has-badge > span.badge";
+    const pmUnread = Array.from(document.querySelectorAll(selectBadges)) .reduce((total, el) => total += parseInt(el.innerText), 0);
+    //if (pmUnread) return updateBadge(pmUnread);
+    const channelsUnread = document.querySelectorAll("#sidebarChannelContainer .unread-title:not(.has-badge)").length;
+    const teamsUnread = document.querySelectorAll(".team-sidebar .team-container.unread").length;
 
-    console.log("serviceGoogleContactsInit ::: End");
+    var counter = channelsUnread + teamsUnread;
+
+    console.log("serviceMattermostGetUnreadMessageCount ::: Total Mattermost chats with unread messages: " + counter);
+
+    // send back from webview to main
+    ipcRenderer.sendToHost(counter);
 }
+
+
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceMattermostGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>

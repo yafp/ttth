@@ -60,6 +60,114 @@ function isMac()
 
 
 /**
+* @name settingUserColorUpdate
+* @summary Updates the default color
+* @description Updates the default color
+*/
+function settingUserColorUpdate()
+{
+    console.log("settingUserColorUpdate ::: Start");
+
+    // get value from select
+    var newUserColor = $( "#selectUserColor" ).val();
+    console.log("settingUserColorUpdate ::: New CSS style is set to: " + newUserColor);
+
+    writeLocalStorage("settingUserColorName", newUserColor);
+
+    // reload page
+    location.reload();
+
+    console.log("settingUserColorUpdate ::: End");
+}
+
+
+/**
+* @name settingUserColorReset
+* @summary Resets back to default color
+* @description Resets back to default color
+*/
+function settingUserColorReset()
+{
+    console.log("settingUserColorReset ::: Start");
+
+    writeLocalStorage("settingUserColorName", "default.css");
+
+    $("#selectUserColor").val("default.css");
+
+    // reload page
+    location.reload();
+
+    console.log("settingUserColorReset ::: End");
+}
+
+
+/**
+* @name settingToggleUserColor
+* @summary Executed when user color checkbox in settings gets clicked
+* @description Executed when user color checkbox in settings gets clicked
+*/
+function settingToggleUserColor()
+{
+    console.log("settingToggleUserColor ::: Start");
+
+    if($("#checkboxSettingUserColor").prop("checked"))
+    {
+        // user has enabled a custom user color
+        var userColor = $( "#selectUserColor" ).val();
+
+        // write general setting
+        writeLocalStorage("settingUserColor", true);
+
+        // write color code
+        writeLocalStorage("settingUserColorName", userColor);
+
+        // css-item: .nav-link:hover
+        $(".nav-link:hover").css({"color": "red"});
+    }
+    else
+    {
+        // user has NOT enabled a custom user color
+        // fallback to default css
+
+        writeLocalStorage("settingUserColor", false);
+
+        settingUserColorReset();
+    }
+
+    console.log("settingToggleUserColor ::: End");
+}
+
+
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssStyleName)
+{
+    console.log("settingActivateUserColorCss ::: Start");
+
+    console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
+
+    $("&lt;link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/styles/" + cssStyleName
+    }).appendTo("head");
+
+    console.log("settingActivateUserColorCss ::: End");
+}
+
+
+
+
+
+
+
+
+
+/**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
 * @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
@@ -746,15 +854,19 @@ function initMattermost()
         const prompt = require("electron-prompt");
 
         prompt({
-            title: "Mattermost url",
+            title: "Service: Mattermost",
             label: "Please insert your mattermost &lt;b>server URL&lt;/b>.",
             useHtmlLabel: true,
             resizable: false,
-            value: "https://mattermost.example.org",
+            value: "",
+            width: 450,
+            height: 200,
+            menuBarVisible: false,
             inputAttrs: {
-                type: "url"
+                type: "url",
+                placeholder: "https://mattermost.example.org"
             },
-            icon: "../img/icon/icon.png"
+            icon: __dirname + "/img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {
@@ -819,13 +931,18 @@ function initSlack()
         const prompt = require("electron-prompt");
 
         prompt({
-            title: "Slack Workspace name",
-            label: "Please insert your Slack workspace name",
-            value: "WORKSPACENAME",
+            title: "Service: Slack",
+            label: "Please insert your Slack &lt;b>workspace&lt;/b> name",
+            useHtmlLabel: true,
+            value: "",
+            width: 450,
+            height: 200,
+            //menuBarVisible: false,
             inputAttrs: {
-                type: "text"
+                type: "text",
+                placeholder: "WORKSPACENAME"
             },
-            icon: "img/icon/icon.png"
+            icon: __dirname + "/img/icon/icon.png"
         })
         .then((r) => {
             if(r === null) {
@@ -835,7 +952,7 @@ function initSlack()
                 $("#menu_slack").hide();
 
                 // uncheck service checkbox
-                $("#Slack").prop("checked", false);
+                $("#checkbox_Slack").prop("checked", false);
 
                 // set service slack to false
                 writeLocalStorage("Slack", "false");
@@ -860,7 +977,7 @@ function initSlack()
     }
     else
     {
-        // set src of mattermost webview
+        // set src of slack webview
         document.getElementById( "SlackWebview" ).setAttribute( "src", slackWorkspace);
 
         // adjust title
@@ -1017,6 +1134,8 @@ function initSettingsPage()
     var curSettingAutostart;
     var curSettingAutostartMinimized;
     var curSettingHideMenubar;
+    var curSettingUserColor;
+    var curSettingUserColorCode;
 
     // show appname and version
     //$( "#settingsAppVersion" ).html( appVersion );
@@ -1144,7 +1263,6 @@ function initSettingsPage()
     }
 
 
-
     // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
     //
     const {ipcRenderer} = require("electron");
@@ -1176,6 +1294,34 @@ function initSettingsPage()
             console.log("initSettingsPage ::: Show menubar");
         }
     }
+
+
+    // Setting: UserColor
+    //
+    curSettingUserColor = readLocalStorage("settingUserColor");
+    if(curSettingUserColor === "true")
+    {
+        console.log("initSettingsPage ::: Setting UserColor is configured");
+
+        // activate checkbox
+        $("#checkboxSettingUserColor").prop("checked", true);
+
+        // read color code
+        curSettingUserColorCode = readLocalStorage("settingUserColorName");
+
+        // adjust select
+        $("#selectUserColor").val(curSettingUserColorCode);
+
+
+        settingActivateUserColorCss(curSettingUserColorCode);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting UserColor is not configured");
+
+        settingActivateUserColorCss("default.css");
+    }
+
 
     console.log("initSettingsPage ::: End");
 }
@@ -1295,11 +1441,11 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
-    tabValue = tabValue.substring(1); // cut the first char ( =  #) 
+    tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
 
-    
+
     var currentPositionInArray = null;
     var serviceName = null;
     var serviceUrl = null;
@@ -1492,13 +1638,13 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon May 27 2019 15:06:45 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 28 2019 09:07:51 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleContacts.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Xing_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleContacts.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Xing_inject.js</h1>
 
     
 
@@ -26,21 +26,42 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceGoogleContactsInit
-* @summary Initializes the GoogleConstats Service
-* @description Initializes the GoogleContacts Service
+            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
+
+
+/**
+* @name serviceXingGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Xing
+* @description Gets the amount of unread messages of the service Xing
 */
-function serviceGoogleContactsInit(serviceName, serviceUrl)
+function serviceXingGetUnreadMessageCount()
 {
-    console.log("serviceGoogleContactsInit ::: Start");
+    console.log("serviceXingGetUnreadMessageCount ::: Start");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    let count = null;
 
-    console.log("serviceGoogleContactsInit ::: End");
+    //let notificationElement = document.querySelector(\'[data-update="unread_conversations"]\'); 
+    let notificationElement = document.querySelector('[data-update="unread_conversations"]'); 
+
+    //if (notificationElement &amp;&amp; notificationElement.style.display !== \'none\');
+    if (notificationElement &amp;&amp; notificationElement.style.display !== 'none');
+    { 
+        count = parseInt(notificationElement.textContent.trim(), 10); 
+    }   
+    console.log("serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: " + count);
+
+    ipcRenderer.sendToHost(count);
+
+    console.log("serviceXingGetUnreadMessageCount ::: End");
 }
+
+
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceXingGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>

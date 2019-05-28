@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleContacts.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/GoogleMail_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleContacts.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/GoogleMail_inject.js</h1>
 
     
 
@@ -26,21 +26,33 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceGoogleContactsInit
-* @summary Initializes the GoogleConstats Service
-* @description Initializes the GoogleContacts Service
+            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
+
+
+/**
+* @name serviceGoogleMailGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service GoogleMail
+* @description Gets the amount of unread messages of the service GoogleMail
 */
-function serviceGoogleContactsInit(serviceName, serviceUrl)
+function serviceGoogleMailGetUnreadMessageCount()
 {
-    console.log("serviceGoogleContactsInit ::: Start");
+    console.log("serviceGoogleMailGetUnreadMessageCount ::: Start");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    var counter = document.querySelector(".aim .aio").querySelector("span").querySelector("a").getAttribute("aria-label").replace(/\D/g, "");
 
-    console.log("serviceGoogleContactsInit ::: End");
+    console.log("serviceGoogleMailGetUnreadMessageCount ::: Total GoogleMail unread messages: " + counter);
+
+    // send back from webview to main
+    ipcRenderer.sendToHost(counter);
 }
+
+
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceGoogleMailGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>

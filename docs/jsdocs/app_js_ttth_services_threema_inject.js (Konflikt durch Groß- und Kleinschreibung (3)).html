@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleContacts.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Threema_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleContacts.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Threema_inject.js</h1>
 
     
 
@@ -26,21 +26,58 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceGoogleContactsInit
-* @summary Initializes the GoogleConstats Service
-* @description Initializes the GoogleContacts Service
+            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
+
+
+/**
+* @name serviceThreemaGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Threema
+* @description Gets the amount of unread messages of the service Threema
 */
-function serviceGoogleContactsInit(serviceName, serviceUrl)
+function serviceThreemaGetUnreadMessageCount()
 {
-    console.log("serviceGoogleContactsInit ::: Start");
+    console.log("serviceThreemaGetUnreadMessageCount ::: Start");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    var unreadCount;
 
-    console.log("serviceGoogleContactsInit ::: End");
+    let newUnread = 0;
+    try
+    {
+        //let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
+        let webClientService = angular.element(document.documentElement).injector().get("WebClientService");
+        let conversations = webClientService.conversations.conversations;
+        conversations.forEach(function(conversation)
+        {
+            newUnread += conversation.unreadCount;
+        });
+    }
+    catch (e)
+    {
+         console.log("serviceThreemaGetUnreadMessageCount ::: Catch");
+    }
+    
+
+    if (newUnread !== unreadCount)
+    {
+        unreadCount = newUnread;
+
+        // send back from webview to main
+        ipcRenderer.sendToHost(unreadCount);
+    }
+
+    console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
+
+    console.log("serviceThreemaGetUnreadMessageCount ::: End");
 }
+
+
+
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceThreemaGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>

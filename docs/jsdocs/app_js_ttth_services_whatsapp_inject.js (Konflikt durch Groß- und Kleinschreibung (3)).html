@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleContacts.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/WhatsApp_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleContacts.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp_inject.js</h1>
 
     
 
@@ -26,21 +26,51 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceGoogleContactsInit
-* @summary Initializes the GoogleConstats Service
-* @description Initializes the GoogleContacts Service
+            <pre class="prettyprint source linenums"><code>// source
+// https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
+
+
+// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
+
+
+/**
+* @name serviceWhatsAppGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service WhatsApp
+* @description Gets the amount of unread messages of the service WhatsApp
 */
-function serviceGoogleContactsInit(serviceName, serviceUrl)
+function serviceWhatsAppGetUnreadMessageCount()
 {
-    console.log("serviceGoogleContactsInit ::: Start");
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    // try to count unread messages
+    const elements = document.querySelectorAll(".CxUIE, .unread");
 
-    console.log("serviceGoogleContactsInit ::: End");
+    let count = 0;
+
+    for (let i = 0; i &lt; elements.length; i++)
+    {
+        if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
+        {
+            count += 1;
+            console.log("checkUnread ::: Found unread message");
+        }
+    }
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: " + count);
+
+    ipcRenderer.sendToHost(count);
+
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: End");
 }
+
+
+
+// Do something according to a request of your mainview
+//
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>
