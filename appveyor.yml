@@ -7,7 +7,7 @@ os:
   - unstable
 
 environment:
-  GITHUB_PAT:
+  GH_TOKEN:
     secure: nXAXNM5bulhfFfx7ichSKtJq126w5E4j40ChNFfHr97D80zL2KOcduhg9Alf8EIf
 
 cache:
