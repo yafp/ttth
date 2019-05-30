@@ -75,6 +75,9 @@ function serviceWhatsAppAddEventListener()
     {
         console.log("serviceWhatsAppAddEventListener ::: did-stop-loading");
 
+        // Debug: Open a separate Console Window for this WebView
+        //webview.openDevTools();
+
         // Triggering search for unread messages
         webview.send("request");
     });
@@ -83,13 +86,19 @@ function serviceWhatsAppAddEventListener()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("serviceWhatsAppAddEventListener ::: IPC message:");
-        //console.log(event);
-        //console.error(event.channel);
+        console.log("serviceWhatsAppAddEventListener ::: IPC message: _" + event + "_.");
+        console.log(event);
+        //console.log(event.channel);
 
         // update the badge
-        updateServiceBadge("WhatsApp", event.channel);
+        if(event.channel != null)
+        {
+            updateServiceBadge("WhatsApp", event.channel); 
+        }
     });
+
+
+    //openDevTools();
 
     console.log("serviceWhatsAppAddEventListener ::: End");
 }

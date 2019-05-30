@@ -16,7 +16,7 @@ function serviceTelegramAddEventListener()
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 10000);
+    }, 5000);
 
 
     // WebView Event: new-window
@@ -64,6 +64,9 @@ function serviceTelegramAddEventListener()
     {
         console.log("serviceTelegramAddEventListener ::: did-stop-loading");
 
+        // Debug: Open a separate Console Window for this WebView
+        //webview.openDevTools();
+
         // Triggering search for unread messages
         webview.send("request");
     });
@@ -72,12 +75,15 @@ function serviceTelegramAddEventListener()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("serviceTelegramAddEventListener ::: IPC message:");
+        console.log("serviceTelegramAddEventListener ::: IPC message: _" + event + "_.");
         //console.log(event);
         //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Telegram", event.channel);
+        if(event.channel != null)
+        {
+            updateServiceBadge("Telegram", event.channel);
+        }
     });
 
     console.log("serviceTelegramAddEventListener ::: End");

@@ -64,6 +64,9 @@ function serviceMattermostAddEventListener()
     {
         console.log("serviceMattermostAddEventListener ::: did-stop-loading");
 
+        // Debug: Open a separate Console Window for this WebView
+        //webview.openDevTools();
+
         // Triggering search for unread messages
         webview.send("request");
     });
@@ -72,12 +75,16 @@ function serviceMattermostAddEventListener()
     // WebView Event:  ipc-message
     webview.addEventListener("ipc-message",function(event)
     {
-        console.log("serviceMattermostAddEventListener ::: IPC message:");
+        console.log("serviceMattermostAddEventListener ::: IPC message: _" + event + "_.");
         //console.log(event);
         //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Mattermost", event.channel);
+        if(event.channel != null)
+        {
+            updateServiceBadge("Mattermost", event.channel);
+        }
+        
     });
 
     console.log("serviceMattermostAddEventListener ::: End");

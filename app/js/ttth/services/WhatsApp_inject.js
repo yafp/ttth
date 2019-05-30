@@ -17,18 +17,22 @@ function serviceWhatsAppGetUnreadMessageCount()
 
     // try to count unread messages
     const elements = document.querySelectorAll(".CxUIE, .unread");
+    console.log(elements);
 
     let count = 0;
-
     for (let i = 0; i < elements.length; i++)
     {
         if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
         {
             count += 1;
-            console.log("checkUnread ::: Found unread message");
+            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
+        }
+        else
+        {
+            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
         }
     }
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: " + count);
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
 
     ipcRenderer.sendToHost(count);
 
@@ -43,3 +47,4 @@ ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
 });
+

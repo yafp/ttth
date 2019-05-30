@@ -148,13 +148,15 @@ function updateTrayIconStatus()
     {
         serviceName = ttthAvailableServices[i];
 
-        curServiceUnreadMessageCount = 0;
+        curServiceUnreadMessageCount = 0; // reset to 0
 
         // get value of current service from tab
         curServiceUnreadMessageCount = $("#badge_" + serviceName ).html();
+        curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
 
         // if the current service has a significant unread message count -> log it and add it to overall counter
         if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
+        //if( curServiceUnreadMessageCount !== "")  
         {
             console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
 
@@ -163,7 +165,7 @@ function updateTrayIconStatus()
         }
     }
 
-    console.log("updateTrayIconStatus ::: Overall unread message count is: " + overallUnreadMessages);
+    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
 
     const {ipcRenderer} = require("electron");
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
@@ -191,15 +193,9 @@ function updateTrayIconStatus()
 function updateServiceBadge(serviceName, count)
 {
     console.log("updateServiceBadge ::: Start");
+    console.log("updateServiceBadge ::: New unread count for service _" + serviceName + "_ is: _" + count + "_.");
 
-    if(count === null)
-    {
-        return;
-    }
-
-    console.log("updateServiceBadge ::: New count for service _" + serviceName + "_ is: " + count);
-
-    if(count === 0)
+    if( (count === null) || (count === 0) || (count === "null"))
     {
         count = "";
     }
@@ -537,8 +533,9 @@ function switchToService(serviceName)
 * @name searchUpdate
 * @summary Checks if there is a new release available
 * @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
+* @param silent - Boolean with default value. Shows a feedback in case of no available updates If "silent" = false. Special handling for manually triggered update search
 */
-function searchUpdate()
+function searchUpdate(silent = true)
 {
     console.log("searchUpdate ::: Start");
 
@@ -586,8 +583,17 @@ function searchUpdate()
         {
             console.log("searchUpdate ::: No newer version found.");
 
-            // hide update information
-            $("#updateInformation").hide();
+            if(silent === true) // default case -> when executed on load
+            {
+                // hide update information
+                $("#updateInformation").hide();
+
+            }
+            else // when executed manually via menu -> user should see result of this search
+            {
+                // update the updater-info text
+                $("#updateInformation").html('You are running the latest version of ttth.  <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+            }
         }
 
         console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
@@ -870,6 +876,9 @@ function initMattermost()
                 // update title property of service
                 $("#label_Mattermost").prop("title", mattermostUrl);
 
+                // set src of slack webview
+                document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+
                 // Save value to local storage
                 writeLocalStorage("serviceMattermostUrl", mattermostUrl);
 
@@ -944,7 +953,6 @@ function initSlack()
                 slackWorkspace = r;
 
                 slackUrl = "https://" + slackWorkspace + ".slack.com";
-
 
                 // update title property of service
                 $("#label_Slack").prop("title", slackUrl);
@@ -1515,7 +1523,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
             break;
 
         default:
-            // do something
+            // do nothing
             break;
     }
 
@@ -1528,9 +1536,8 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 require("electron").ipcRenderer.on("showSettings", function(event)
 {
     console.log("showSettings ::: Start");
-
+    console.log("showSettings ::: Switching to Settings tab");
     switchToService("Settings");
-
     console.log("showSettings ::: End");
 });
 
@@ -1544,7 +1551,7 @@ require("electron").ipcRenderer.on("startSearchUpdates", function(event)
     // show update information
     $("#updateInformation").show();
 
-    searchUpdate();
+    searchUpdate(false);
 
     console.log("startSearchUpdates ::: End");
 });

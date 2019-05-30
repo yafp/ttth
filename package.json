@@ -8,6 +8,7 @@
         "start": "electron .",
         "start-debug": "electron . --enable-logging",
         "test": "mocha",
+        "lint": "node_modules/eslint/bin/eslint.js app/js/ttth --ignore-path=.eslintignore",
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=resources/installer/icon.icns --prune=true --out=dist",
         "package-win-32": "electron-packager . ttth --overwrite --platform=win32 --arch=ia32 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=${productName} --version-string.ProductName=\"ttth\"",
         "package-win-64": "electron-packager . ttth --overwrite --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=${productName} --version-string.ProductName=\"ttth\"",
@@ -56,7 +57,9 @@
         "productName": "ttth",
         "appId": "de.yafp.ttth",
         "extraFiles": [
-            "LICENSE"
+            "LICENSE",
+            "CHANGELOG.md",
+            "README.md"
         ],
         "asar": true,
         "mac": {
@@ -157,6 +160,8 @@
         "electron": "^4.2.0",
         "electron-builder": "^20.40.2",
         "electron-packager": "^13.1.1",
+        "eslint": "^5.16.0",
+        "eslint-config-strongloop": "^2.1.0",
         "mocha": "^6.1.4",
         "spectron": "^5.0.0"
     },

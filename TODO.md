@@ -3,8 +3,7 @@
 # ttth
 ## todos
 * Build: find a way to minify js-code on build (using uglify or similar)
-* Via DevTron: asar archiv - see: https://electronjs.org/docs/tutorial/application-packaging
-
+* lint via package-json script using eslint: https://medium.com/the-node-js-collection/why-and-how-to-use-eslint-in-your-project-742d0bc61ed7
 
 ## maybe / ideas / brainstorming
 * Services
@@ -30,9 +29,10 @@
   * 'Electron-gh-releases'
 * Package: 'temp' for handling temporary files
 * Package: 'electron-dl' for handling downloads
-* Spectron (and mocha)-  framework for integrations tests within an Electron application -> do it
-    * https://github.com/electron/spectron
 * matcha - to benchmark the code
 
 ## Reminder: Source for unread message functions
-* Rambox: app/store/ServicesList.js
+* Rambox
+  * app/store/ServicesList.js
+* Franz: Features single repos for each recipt / service
+  * Example WhatsApp: https://github.com/meetfranz/recipe-whatsapp

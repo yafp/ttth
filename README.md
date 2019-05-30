@@ -27,6 +27,7 @@
 - [install](#install)
 - [keyboard-shortcuts](#keyboard-shortcuts)
 - [faq](#faq)
+- [known-issues](#known-issues)
 - [contributing](#contributing)
 
 ## about
@@ -147,6 +148,16 @@ Using a .desktop entry in ```~/.config/autostart/```
 Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+
+
+## known-issues
+### general
+#### Function: Hide
+Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (ALT-TAB) to unhide it won't work so far.
+### macOS
+#### Function Toggle Fullscreen
+F11 should toggle the fullscreen-mode, but macOS seems to use F11 system-wide for "Show Desktop".
+As a result toggle fullscreen-mode on macOS only works by manually selecting it via the menu.
 
 
 ## contributing

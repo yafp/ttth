@@ -11,7 +11,7 @@ function serviceTelegramGetUnreadMessageCount()
 {
     console.log("serviceTelegramGetUnreadMessageCount ::: Start");
 
-    var counter = 0;
+    var count = 0;
     var intervalID = window.setInterval(myCallback, 50);
     function myCallback()
     {
@@ -26,17 +26,18 @@ function serviceTelegramGetUnreadMessageCount()
                 // Check if we count this element or not
                 if(!eventToClick[i].classList.contains("ng-hide")) // Count it
                 {
-                    console.log("serviceTelegramGetUnreadMessageCount ::: Found communication with unread messages. +1");
-                    counter = counter +1;
+                    count = count +1;
+                    console.log("serviceTelegramGetUnreadMessageCount ::: Found communication with unread messages. Current sum is: _" + count + "_.");
+                    
                 }
             }
             clearInterval(intervalID);
         }
 
-        console.log("serviceTelegramGetUnreadMessageCount ::: Total Telegram chats with unread messages: " + counter);
+        console.log("serviceTelegramGetUnreadMessageCount ::: Total Telegram chats with unread messages: _" + count + "_." );
 
         // send back from webview to main
-        ipcRenderer.sendToHost(counter);
+        ipcRenderer.sendToHost(count);
     }
 }
 

@@ -11,17 +11,27 @@ function serviceMattermostGetUnreadMessageCount()
     console.log("serviceMattermostGetUnreadMessageCount ::: Start");
 
     const selectBadges = "#sidebarChannelContainer .unread-title.has-badge > span.badge";
+
     const pmUnread = Array.from(document.querySelectorAll(selectBadges)) .reduce((total, el) => total += parseInt(el.innerText), 0);
-    //if (pmUnread) return updateBadge(pmUnread);
+    console.log("serviceMattermostGetUnreadMessageCount ::: pmUnread: " + pmUnread);
+
     const channelsUnread = document.querySelectorAll("#sidebarChannelContainer .unread-title:not(.has-badge)").length;
+    console.log("serviceMattermostGetUnreadMessageCount ::: channelsUnread: " + channelsUnread);
+
     const teamsUnread = document.querySelectorAll(".team-sidebar .team-container.unread").length;
+    console.log("serviceMattermostGetUnreadMessageCount ::: teamsUnread: " + teamsUnread);
 
-    var counter = channelsUnread + teamsUnread;
+    // do the math
+    var count = 0;
+    count = count + pmUnread + channelsUnread + teamsUnread;
+    console.log("serviceMattermostGetUnreadMessageCount ::: Overall: " + count);
+    //count = channelsUnread + teamsUnread;
 
-    console.log("serviceMattermostGetUnreadMessageCount ::: Total Mattermost chats with unread messages: " + counter);
+
+    console.log("serviceMattermostGetUnreadMessageCount ::: Total Mattermost chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(counter);
+    ipcRenderer.sendToHost(count);
 }
 
 

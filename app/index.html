@@ -197,8 +197,8 @@
 
 
                 <!-- Tab: WhatsApp-->
-                <li class="nav-item" id="menu_Whatsapp">
-                    <a class="nav-link my-ui-text" id="target_Whatsapp" href="#WhatsApp" role="tab" data-toggle="tab">
+                <li class="nav-item" id="menu_WhatsApp">
+                    <a class="nav-link my-ui-text" id="target_WhatsApp" href="#WhatsApp" role="tab" data-toggle="tab">
                         <i class="fab fa-whatsapp"></i> WhatsApp <span id="badge_WhatsApp" class="badge badge-success"></span>
                     </a>
                 </li>
@@ -561,7 +561,7 @@
                                 <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
                             </div>
                         </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar on startup" disabled>
+                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar as default" disabled>
                     </div>
                     <!-- /Setting: HideMenubarOnStartup  -->
 
@@ -650,9 +650,12 @@ $( document ).ready(function()
         console.log("ready ::: Switching to tab: " + link.currentTarget.innerText);
         //console.log(link.currentTarget.innerText);
 
-        /*
-        if(link.currentTarget.innerText === " WhatsApp"){}
-        */
+        if(link.currentTarget.innerText === "Photos")
+        {
+            console.log("index.html ::: Ugly hack to fix load issues for Service GooglePhotos");
+            serviceGooglePhotosInit("GooglePhotos", "https://photos.google.com/");
+        }
+        
     })
 
     // init menu / navigation
@@ -679,9 +682,7 @@ $( document ).ready(function()
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
 
-
     // hide splash 
-    //loading.remove();
     setInterval(function() 
     {
         loading.remove();
