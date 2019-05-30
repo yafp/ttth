@@ -21,89 +21,86 @@ var expect = chai.expect;
 
 describe("Application Window", function ()
 {
-  this.timeout(20000)
+    this.timeout(20000);
 
 
-
-  after(function () {
-   if (this.app && this.app.isRunning()) {
-     return this.app.stop();
-   }
- });
-
-
-
-
-  beforeEach(function ()
-  {
-    this.app = new Application({
-      // Your electron path can be any binary
-      // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
-      // But for the sake of the example we fetch it from our node_modules.
-      path: electronPath,
-
-      // Assuming you have the following directory structure
-
-      //  |__ my project
-      //     |__ ...
-      //     |__ main.js
-      //     |__ package.json
-      //     |__ index.html
-      //     |__ ...
-      //     |__ test
-      //        |__ spec.js  <- You are here! ~ Well you should be.
-
-      // The following line tells spectron to look and use the main.js file
-      // and the package.json located 1 level above.
-      args: [path.join(__dirname, '..')]
-    })
-    return this.app.start();
-  })
-
-
-  afterEach(function ()
-  {
-    if (this.app && this.app.isRunning()) 
+    after(function () 
     {
-      return this.app.stop()
-    }
-  })
-
-
-  // Check launching the app window
-  //
-  it("Open application window", function ()
-  {
-    // at least 1 window should be counted
-    return this.app.client.getWindowCount().should.not.equal(0);
-  })
-
-
-  // Check the window title
-  //
-  it('Check window title', function () 
-  {
-    return this.app.client.browserWindow.getTitle().then(function(title) {
-      expect(title).to.contain('ttth');
-      return Promise.resolve();
+        if (this.app && this.app.isRunning()) 
+        {
+          return this.app.stop();
+        }
     });
-  })
+
+
+    beforeEach(function ()
+    {
+        this.app = new Application(
+        {
+            // Your electron path can be any binary
+            // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
+            // But for the sake of the example we fetch it from our node_modules.
+            path: electronPath,
+
+            // Assuming you have the following directory structure
+
+            //  |__ my project
+            //     |__ ...
+            //     |__ main.js
+            //     |__ package.json
+            //     |__ index.html
+            //     |__ ...
+            //     |__ test
+            //        |__ spec.js  <- You are here! ~ Well you should be.
+
+            // The following line tells spectron to look and use the main.js file
+            // and the package.json located 1 level above.
+            args: [path.join(__dirname, "..")]
+        })
+        return this.app.start();
+    })
+
+
+    afterEach(function ()
+    {
+        if (this.app && this.app.isRunning()) 
+        {
+            return this.app.stop();
+        }
+    })
 
 
 
-  it('Fetch content of settings tab', function () 
-  {
-    return this.app.client.getText('#target_Settings').then(function (tabText) {
-      expect(tabText).to.equal('');
-      //console.log('The settings tab text is: _' + tabText + '_.')
-    });
-  })
+    // TEST: Check launching the app window
+    //
+    it("Open application window", function ()
+    {
+        // at least 1 window should be counted
+        return this.app.client.getWindowCount().should.not.equal(0);
+    })
 
 
+    // TEST: Check the window title
+    //
+    it("Check window title", function () 
+    {
+        return this.app.client.browserWindow.getTitle().then(function(title) 
+        {
+            expect(title).to.contain("ttth");
+            return Promise.resolve();
+        });
+    })
 
 
-
-
+    // TEST:
+    it("Fetch content of settings tab", function () 
+    {
+        return this.app.client.getText("#target_Settings").then(function (tabText) 
+        {
+            expect(tabText).to.equal('');
+            //console.log('The settings tab text is: _' + tabText + '_.')
+        });
+    })
 
 
 });
