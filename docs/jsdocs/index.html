@@ -66,6 +66,7 @@
 <li><a href="#install">install</a></li>
 <li><a href="#keyboard-shortcuts">keyboard-shortcuts</a></li>
 <li><a href="#faq">faq</a></li>
+<li><a href="#known-issues">known-issues</a></li>
 <li><a href="#contributing">contributing</a></li>
 </ul>
 <h2>about</h2><p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.</p>
@@ -80,6 +81,7 @@
 <li>GitHub</li>
 <li>Google Calendar</li>
 <li>Google Contacts</li>
+<li>Google Drive</li>
 <li>Google Keep</li>
 <li>Google Mail <sub><sup>(1)<sub><sup></li>
 <li>Google Messages <sub><sup>(1, 2)<sub><sup></li>
@@ -172,10 +174,16 @@
 <td>CTRL + ,</td>
 </tr>
 <tr>
-<td>Jump to next tab</td>
-<td>CTRL + N</td>
-<td>CMD + N</td>
-<td>CTRL + N</td>
+<td>Jump to next service</td>
+<td>CTRL + 🡆</td>
+<td>CMD + 🡆</td>
+<td>CTRL + 🡆</td>
+</tr>
+<tr>
+<td>Jump to previous service</td>
+<td>CTRL + 🡄</td>
+<td>CMD + 🡄</td>
+<td>CTRL + 🡄</td>
 </tr>
 <tr>
 <td>Reload current service</td>
@@ -197,15 +205,21 @@
 </tr>
 <tr>
 <td>Minimize window</td>
-<td>CTRL + H</td>
-<td>CMD + H</td>
-<td>CTRL + H</td>
-</tr>
-<tr>
-<td>Maximize window</td>
 <td>CTRL + M</td>
 <td>CMD + M</td>
 <td>CTRL + M</td>
+</tr>
+<tr>
+<td>Maximize window</td>
+<td>CTRL + K</td>
+<td>CMD + K</td>
+<td>CTRL + K</td>
+</tr>
+<tr>
+<td>Hide window</td>
+<td>CTRL + H</td>
+<td>CMD + H</td>
+<td>CTRL + H</td>
 </tr>
 </tbody>
 </table>
@@ -215,6 +229,9 @@
 <h3>How is the autostart information stored?</h3><h4>Linux</h4><p>Using a .desktop entry in <code>~/.config/autostart/</code></p>
 <h4>macOS</h4><p>Using a .plist file in  <code>~/Library/LaunchAgents/</code> to create a Launch Agent</p>
 <h4>Windows</h4><p>Using a registry entry in <code>\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</code></p>
+<h2>known-issues</h2><h3>general</h3><h4>Function: Hide</h4><p>Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (ALT-TAB) to unhide it won't work so far.</p>
+<h3>macOS</h3><h4>Function Toggle Fullscreen</h4><p>F11 should toggle the fullscreen-mode, but macOS seems to use F11 system-wide for &quot;Show Desktop&quot;.
+As a result toggle fullscreen-mode on macOS only works by manually selecting it via the menu.</p>
 <h2>contributing</h2><p>Please see the <a href="CONTRIBUTING.md">contributing informations</a> for more details.</p></article>
     </section>
 
@@ -226,13 +243,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleDriveInit">serviceGoogleDriveInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue May 28 2019 09:07:51 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed May 29 2019 14:40:25 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

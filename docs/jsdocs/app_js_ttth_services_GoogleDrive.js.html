@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/Twitter.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/GoogleDrive.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/Twitter.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/GoogleDrive.js</h1>
 
     
 
@@ -27,19 +27,19 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @name serviceTwitterInit
-* @summary Initializes the Twitter Service
-* @description Initializes the Twitter Service
+* @name serviceGoogleDriveInit
+* @summary Initializes the GoogleDrive Service
+* @description Initializes the GoogleDrive Service
 */
-function serviceTwitterInit(serviceName, serviceUrl)
+function serviceGoogleDriveInit(serviceName, serviceUrl)
 {
-    console.log("serviceTwitterInit ::: Start");
+    console.log("serviceGoogleDriveInit ::: Start");
 
     // re-set the src for the webview
     //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
     document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
 
-    console.log("serviceTwitterInit ::: End");
+    console.log("serviceGoogleDriveInit ::: End");
 }
 </code></pre>
         </article>
