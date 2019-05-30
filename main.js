@@ -47,6 +47,7 @@ function createMenu()
             type: "separator"
         },
         {
+            role: 'quit',
             label: "Exit",
             click() {
                 app.quit();
@@ -118,6 +119,7 @@ function createMenu()
             type: "separator"
         },
         {
+            role: 'reload',
             label: "Reload",
             click() {
                 mainWindow.reload();
@@ -159,6 +161,7 @@ function createMenu()
         label: "Window",
         submenu: [
         {
+            role: 'togglefullscreen',
             label: "Toggle Fullscreen",
             click() {
                 if(mainWindow.isFullScreen())
@@ -171,9 +174,10 @@ function createMenu()
                 }
 
             },
-            accelerator: "F11"
+            accelerator: "F11" // is most likely predefined on osx - doesnt work
         },
         {
+            role: 'hide',
             label: "Hide",
             click() {
                 mainWindow.hide()
@@ -183,6 +187,7 @@ function createMenu()
             enabled: true
         },
         {
+            role: 'minimize',
             label: "Minimize",
             click() {
                 if(mainWindow.isMinimized())
@@ -215,10 +220,12 @@ function createMenu()
 
     // Menu: Help
     {
+        role: 'help',
         label: "Help",
         submenu: [
         // About
         {
+            role: 'about',
             label: "About",
             click() {
                 openAboutWindow({
@@ -282,6 +289,41 @@ function createMenu()
             enabled: true,
             accelerator: "F12"
         },
+        {
+            type: "separator"
+        },
+        // SubMenu
+        {
+            label: "Cleaner",
+            submenu: [
+            // Clear cache
+            {
+                id: "ClearCache",
+                label: "Clear cache",
+                click() {
+                    const ses = mainWindow.webContents.session;
+                    ses.clearCache(() => {
+
+                    });
+                    mainWindow.reload();
+                },
+                enabled: true
+            },
+            // Clear Local Storage
+            {
+                id: "ClearLocalStorage",
+                label: "Clear local storage",
+                click() {
+                    const ses = mainWindow.webContents.session;
+                    ses.clearStorageData(() => {
+                        storages: ["localstorage"]
+                    });
+                    mainWindow.reload();
+                },
+                enabled: true
+            },
+            ]
+        }
         ]
     }
     ]);
@@ -466,7 +508,7 @@ function createWindow ()
     });
 
 
-    // when the app gets hiden
+    // when the app gets hidden
     //
     mainWindow.on("hide", function()
     {
@@ -503,14 +545,6 @@ function createWindow ()
     mainWindow.on("restore", function()
     {
         console.log("main.js ::: Event: restore");
-    });
-
-
-    // when the app hidden
-    //
-    mainWindow.on("hide", function()
-    {
-        console.log("main.js ::: Event: hide");
     });
 
 
