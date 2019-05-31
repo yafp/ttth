@@ -604,15 +604,14 @@ function createWindow ()
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
-        if(arg != "")
+        if(arg !== "")
         {
             windowTitle = windowTitle + " - " + arg;
         }
 
         // update title
         mainWindow.setTitle(windowTitle);
-    })
-
+    });
 
 }
 
