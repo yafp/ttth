@@ -410,8 +410,6 @@ function createWindow ()
         }
     });
 
-
-
     // Restore window position if possible
     //
     // requirements: found values in .tttUSerData.json from the previous session
@@ -429,14 +427,11 @@ function createWindow ()
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
-
-
     // show the formerly hidden main window as it is fully ready now
     //
     mainWindow.on("ready-to-show", function()
     {
         console.log("main.js ::: Event: ready-to-show");
-
         mainWindow.show();
         mainWindow.focus();
     });
@@ -601,6 +596,24 @@ function createWindow ()
         console.log("main.js ::: Event: crashed");
     });
 
+
+
+    // Call from renderer: Update Window Title
+    //
+    ipcMain.on("updateWindowTitle", (event, arg) => {
+        let name = require("./package.json").name;
+        let version = require("./package.json").version;
+        let windowTitle = name + " " + version;
+        if(arg != "")
+        {
+            windowTitle = windowTitle + " - " + arg;
+        }
+
+        // update title
+        mainWindow.setTitle(windowTitle);
+    })
+
+
 }
 
 
@@ -617,19 +630,6 @@ function createTray()
         tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
 
         const contextMenu = Menu.buildFromTemplate([
-            /*
-            {
-                // Appname & Version
-                id: "info",
-                icon: path.join(__dirname, "app/img/tray/24x24.png"),
-                label: app.getName() + " (Version: " + app.getVersion() + ")",
-                enabled: false
-            },
-            {
-                type: "separator",
-                enabled: false
-            },
-            */
             {
                 // Window focus
                 id: "show",
@@ -640,7 +640,7 @@ function createTray()
                     {
                         mainWindow.restore();
                     }
-                    else 
+                    else
                     {
                         // was maybe: hidden via hide()
                         mainWindow.show();
@@ -679,7 +679,6 @@ function createTray()
                 // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
                 tray.on("click", function() {
                 });
-
                 break;
 
             case "win32":
@@ -783,7 +782,6 @@ function forceSingleAppInstance()
 // Some APIs can only be used after this event occurs.
 //
 //app.on("ready", createWindow);
-
 app.on("ready", function ()
 {
     forceSingleAppInstance();
@@ -800,7 +798,6 @@ app.on("window-all-closed", function ()
 {
     // On macOS it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
-
     if (process.platform !== "darwin")
     {
         app.quit();
@@ -837,9 +834,6 @@ process.on("uncaughtException", (err, origin) => {
     `Exception origin: ${origin}`
   );
 });
-
-
-
 
 
 // Measuring startup

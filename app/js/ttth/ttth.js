@@ -1,5 +1,19 @@
 /* global _ */
 
+function updateWindowTitle(tabName)
+{
+    console.log("updateWindowTitle ::: Start");
+
+    console.log("updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
+    console.error(tabName);
+
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("updateWindowTitle", tabName);
+
+    console.log("updateWindowTitle ::: End");
+}
+
+
 
 /**
 * @name isMac
@@ -156,7 +170,7 @@ function updateTrayIconStatus()
 
         // if the current service has a significant unread message count -> log it and add it to overall counter
         if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
-        //if( curServiceUnreadMessageCount !== "")  
+        //if( curServiceUnreadMessageCount !== "")
         {
             console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
 
@@ -848,6 +862,7 @@ function initMattermost()
             height: 200,
             inputAttrs: {
                 type: "url",
+                required: true,
                 placeholder: "https://mattermost.example.org"
             },
             icon: __dirname + "/img/icon/icon.png",
@@ -862,6 +877,9 @@ function initMattermost()
 
                 // uncheck service checkbox
                 $("#checkbox_Mattermost").prop("checked", false);
+
+                // button representing the service status should be red
+                $("#bt_Mattermost").attr("class", "btn btn-danger btn-sm");
 
                 // set service mattermost to false
                 writeLocalStorage("Mattermost", "false");
@@ -941,6 +959,9 @@ function initSlack()
 
                 // uncheck service checkbox
                 $("#checkbox_Slack").prop("checked", false);
+
+                // button representing the service status should be red
+                $("#bt_Slack").attr("class", "btn btn-danger btn-sm");
 
                 // set service slack to false
                 writeLocalStorage("Slack", "false");
@@ -1261,7 +1282,6 @@ function initSettingsPage()
         writeLocalStorage("settingHideMenubar", "false");
 
         // hide the entire setting on settingspage
-        // baustelle
         $("#settingsSectionStartupHideMenubar").hide();
     }
     else // default case (linux or windows)

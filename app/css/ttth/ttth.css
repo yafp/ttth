@@ -2,7 +2,6 @@
 /* COLOR VARIABLES */
 /* ########################################################################## */
 :root {
-
     --color-main: white;
     --color-menuBackground: #333;
     --color-menuBackgroundHover: #111;
@@ -39,9 +38,9 @@ html,body {
 
     padding-right: 0;  /*15px in bootstrap.css*/
     padding-left: 0 ;  /*idem*/
-    
+
     margin-right: auto;
-    margin-left: auto; 
+    margin-left: auto;
 
 
     /* test */
@@ -58,11 +57,12 @@ html,body {
 /* ########################################################################## */
 #tabBar{
     background-color: var(--color-menuBackground);
-    height: 40px;
+    height: 40px; /* default: 40px */
 }
 
 .nav{
     /* padding-top: 5px; */
+
 }
 
 ul{
@@ -74,8 +74,8 @@ ul{
     border: 1px solid white;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    margin-left: 5px;
-    margin-right: 0px;
+    margin-left: 0px;
+    margin-right: 3px;
 }
 
 .nav-item a {
@@ -98,6 +98,18 @@ ul{
 .nav-tabs {
     /* margin-bottom: 0; */
 }
+
+
+
+
+/* horizontal scroll */
+.tabs:not(.--jsfied) {
+    /*
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  */
+}
+
 
 
 /* ########################################################################## */
@@ -165,8 +177,8 @@ h3{
 /* ########################################################################## */
 /* Use the “system font/San Francisco” */
 /* ########################################################################## */
-cssbody { 
-    font: caption; 
+cssbody {
+    font: caption;
 }
 
 

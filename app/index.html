@@ -62,11 +62,11 @@
 
 <body>
 
-    <nav>
+    <nav class="tabs">
         <!-- tabBar -->
-        <div id="tabBar">
+        <div id="tabBar" >
             <!-- Tab Names -->
-            <ul class="nav nav-tabs" role="tablist" id="myTabs">
+            <ul class="nav nav-tabs" id="myTabs" role="tablist">
                 <!-- Services -->
 
 
@@ -644,18 +644,25 @@ $( document ).ready(function()
     // start splash
     loading = $(document.body).modalLoading(100, '<img src="img/splash/icon_splash.png">');
 
+    updateWindowTitle("");
+
     // Click handler for navigation/tabs
     $('#myTabs a').click(function (link)
     {
-        console.log("ready ::: Switching to tab: " + link.currentTarget.innerText);
-        //console.log(link.currentTarget.innerText);
+        var target = link.currentTarget.innerText;
 
-        if(link.currentTarget.innerText === "Photos")
+        console.log("ready ::: Switching to tab: " + target);
+
+        // Update window title
+        updateWindowTitle(target);
+
+        // do page-specific things
+        if(target === "Photos")
         {
             console.log("index.html ::: Ugly hack to fix load issues for Service GooglePhotos");
             serviceGooglePhotosInit("GooglePhotos", "https://photos.google.com/");
         }
-        
+
     })
 
     // init menu / navigation
@@ -682,8 +689,8 @@ $( document ).ready(function()
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
 
-    // hide splash 
-    setInterval(function() 
+    // hide splash
+    setInterval(function()
     {
         loading.remove();
     }, 500);
