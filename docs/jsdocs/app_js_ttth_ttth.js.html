@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/js/ttth/ttth.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/js/ttth/ttth.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* global _ */
+
+function updateWindowTitle(tabName)
+{
+    console.log("updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
+
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("updateWindowTitle", tabName);
+}
+
+
+
+/**
+* @name isMac
+* @summary Checks if the operating system type is mac/darwin or not
+* @description Checks if the operating system type is mac/darwin or not
+* @return value - Boolean: True if mac, false if not
+*/
+function isMac()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    console.log("isMac ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Darwin")
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+/**
+* @name settingUserColorUpdate
+* @summary Updates the default color
+* @description Updates the default color
+*/
+function settingUserColorUpdate()
+{
+    // get value from select
+    var newUserColor = $( "#selectUserColor" ).val();
+    console.log("settingUserColorUpdate ::: New CSS style is set to: " + newUserColor);
+
+    writeLocalStorage("settingUserColorName", newUserColor);
+
+    // reload page
+    location.reload();
+}
+
+
+/**
+* @name settingUserColorReset
+* @summary Resets back to default color
+* @description Resets back to default color
+*/
+function settingUserColorReset()
+{
+    writeLocalStorage("settingUserColorName", "default.css");
+
+    console.log("settingUserColorReset ::: Resetting user color style back to default");
+
+    $("#selectUserColor").val("default.css");
+
+    // reload page
+    location.reload();
+}
+
+
+/**
+* @name settingToggleUserColor
+* @summary Executed when user color checkbox in settings gets clicked
+* @description Executed when user color checkbox in settings gets clicked
+*/
+function settingToggleUserColor()
+{
+    if($("#checkboxSettingUserColor").prop("checked"))
+    {
+        console.log("settingToggleUserColor ::: User color style is enabled");
+
+        // user has enabled a custom user color
+        var userColor = $( "#selectUserColor" ).val();
+
+        // write general setting
+        writeLocalStorage("settingUserColor", true);
+
+        // write color code
+        writeLocalStorage("settingUserColorName", userColor);
+    }
+    else
+    {
+        console.log("settingToggleUserColor ::: User color style is disabled");
+
+        // user has NOT enabled a custom user color
+        // fallback to default css
+        writeLocalStorage("settingUserColor", false);
+
+        settingUserColorReset();
+    }
+}
+
+
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssStyleName)
+{
+    console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
+
+    // load custom css file
+    $("&lt;link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/styles/" + cssStyleName
+    }).appendTo("head");
+}
+
+
+/**
+* @name updateTrayIconStatus
+* @summary Updates the tray icon
+* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
+*/
+function updateTrayIconStatus()
+{
+    var overallUnreadMessages = 0;
+    var curServiceUnreadMessageCount = 0;
+    var serviceName = "";
+
+    // loop over all services and count the unread messages badge value together
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i &lt; arrayLength; i++)
+    {
+        serviceName = ttthAvailableServices[i];
+
+        curServiceUnreadMessageCount = 0; // reset to 0
+
+        // get value of current service from tab
+        curServiceUnreadMessageCount = $("#badge_" + serviceName ).html();
+        curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
+
+        // if the current service has a significant unread message count -> log it and add it to overall counter
+        if( (curServiceUnreadMessageCount !== 0) &amp;&amp; (curServiceUnreadMessageCount !== "") &amp;&amp; (curServiceUnreadMessageCount !== null) )
+        //if( curServiceUnreadMessageCount !== "")
+        {
+            console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
+
+            // increate the overall counter
+            overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+        }
+    }
+
+    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
+
+    const {ipcRenderer} = require("electron");
+    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
+    {
+        // tray should show the default icon
+        ipcRenderer.send("changeTrayIconToDefault");
+    }
+    else
+    {
+        // tray should show that we got unread messages
+        ipcRenderer.send("changeTrayIconToUnreadMessages");
+    }
+}
+
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceName - Name of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceName, count)
+{
+    console.log("updateServiceBadge ::: New unread count for service _" + serviceName + "_ is: _" + count + "_.");
+
+    if( (count === null) || (count === 0) || (count === "null"))
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceName).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+}
+
+
+/**
+* @name readLocalStorage
+* @summary Read from local storage
+* @description Reads a value stored in local storage (for a given key)
+* @param key - Name of local storage key
+* @return value - The value of the supplied key
+*/
+function readLocalStorage(key)
+{
+    var value = localStorage.getItem(key);
+    console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    return(value);
+}
+
+
+/**
+* @name writeLocalStorage
+* @summary Write to local storage
+* @description Writes a value for a given key to local storage
+* @param key - Name of local storage key
+* @param value - New value
+*/
+function writeLocalStorage(key, value)
+{
+    console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    localStorage.setItem(key, value);
+}
+
+
+/**
+* @name openDevTools
+* @summary Toggles DevConsole
+* @description Opens or closes the Developer Console inside the app
+*/
+function openDevTools()
+{
+    console.log("openDevTools ::: Opening Developer Console");
+    const remote = require("electron").remote;
+    remote.getCurrentWindow().toggleDevTools();
+}
+
+
+/**
+* @name sendNotification
+* @summary Send a notification
+* @description Creates a desktop notification
+* @param title- Title string for the notification
+* @return message - Message string for the notification
+*/
+function sendNotification(title, message)
+{
+    console.log("sendNotification ::: Sending a notification with the title _" + title + "_ and the message: _" + message + "_.");
+
+    let myNotification = new Notification(title, {
+        body: message,
+        icon: "img/notification/icon_notification.png"
+    });
+
+    /*
+    myNotification.onclick = () => {
+        console.log("Notification clicked")
+    }
+    */
+}
+
+
+/**
+* @name  settingToggleAutostart
+* @summary Enables or disables the autostart
+* @description Enables or disables the autostart
+*/
+function settingToggleAutostart()
+{
+    // auto-launch - via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+    var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        useLaunchAgent: true,
+    });
+
+    // Handle depending on the checkbox state
+    if($("#checkboxSettingAutostart").prop("checked"))
+    {
+        ttthAutoLauncher.enable();
+
+        writeLocalStorage("settingAutostart", true);
+
+        console.log("settingToggleAutostart ::: Finished enabling Autostart");
+    }
+    else
+    {
+        ttthAutoLauncher.disable();
+
+        writeLocalStorage("settingAutostart", false);
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        // adjust UI:
+        // make sure check checkfor for AutostartStartMinimized is unchecked as well
+        $("#checkboxSettingAutostartMinimized").prop("checked", false);
+
+        console.log("settingToggleAutostart ::: Finished disabling Autostart");
+    }
+
+    ttthAutoLauncher.isEnabled()
+    .then(function(isEnabled){
+        if(isEnabled){
+            return;
+        }
+        ttthAutoLauncher.enable();
+    })
+    .catch(function(err){
+        // handle error
+    });
+}
+
+
+/**
+* @name settingToggleAutostartMinimized
+* @summary Enables or disables the autostart minimized
+* @description Enables or disables the autostart minimized
+*/
+function settingToggleAutostartMinimized()
+{
+    // auto-launch - via: https://www.npmjs.com/package/auto-launch
+    var AutoLaunch = require("auto-launch");
+
+    if($("#checkboxSettingAutostartMinimized").prop("checked"))
+    {
+        // enable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: true,
+        useLaunchAgent: true,
+        });
+
+        // Write AutoStart &amp; AutostartMinimized to local storage
+        writeLocalStorage("settingAutostart", true);
+        writeLocalStorage("settingAutostartMinimized", true);
+
+        // adjust UI
+        //
+        // make sure check checkfor for general Autostart is checked as well
+        // FIXME: nonext line is not working so far
+        $("#checkboxSettingAutostart").attr("checked", true);
+
+        ttthAutoLauncher.enable();
+
+        console.log("settingToggleAutostartMinimized ::: Finished enabling minimized Autostart");
+    }
+    else
+    {
+        // disable start minimized
+        var ttthAutoLauncher = new AutoLaunch({
+        name: "ttth",
+        isHidden: false,
+        useLaunchAgent: true,
+        });
+
+        // Write AutostartMinimized to local storage
+        writeLocalStorage("settingAutostartMinimized", false);
+
+        ttthAutoLauncher.enable();
+
+        console.log("settingToggleAutostartMinimized ::: Finished disabling minimized Autostart");
+    }
+}
+
+
+/**
+* @name settingDefaultViewUpdate
+* @summary Stores a new default view to local storage
+* @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
+*/
+function settingDefaultViewUpdate()
+{
+    // get currently selected value from select
+    var newDefaultView = $( "#selectDefaultView" ).val();
+    console.log("settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
+
+    // Store new default view in local storage
+    writeLocalStorage("settingDefaultView", newDefaultView);
+
+    // send notification
+    sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+}
+
+
+/**
+* @name settingDefaultViewReset
+* @summary Reset the stored default view
+* @description Deletes the localstorage key 'settingDefaultview'
+*/
+function settingDefaultViewReset()
+{
+    // delete local storage key and its related value
+    localStorage.removeItem("settingDefaultView");
+
+    // reset the selection of the select item
+    $("#selectDefaultView").prop("selectedIndex",0);
+
+    console.log("settingDefaultViewReset ::: Did reset the default view");
+
+    // send notification
+    sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
+}
+
+
+/**
+* @name settingToggleMenubarVisibility
+* @summary Toggles the setting hideMenubar
+* @description Enabled or disables the srtting Hide-Menubar-On-Startup
+*/
+function settingToggleMenubarVisibility()
+{
+    if($("#checkboxSettingHideMenubar").prop("checked"))
+    {
+        writeLocalStorage("settingHideMenubar", true);
+
+        console.log("settingToggleMenubarVisibility ::: Hide menubar is enabled");
+
+        // send notification
+        sendNotification("Settings", "Hide menubar on startup is now enabled (Settings).");
+    }
+    else
+    {
+        writeLocalStorage("settingHideMenubar", false);
+
+        console.log("settingToggleMenubarVisibility ::: Hide menubar is disabled");
+
+        // send notification
+        sendNotification("Settings", "Hide menubar on startup is now disabled (Settings).");
+    }
+}
+
+
+/**
+* @name checkSupportedOperatingSystem
+* @summary Checks if the operating system is supported or not
+* @description Checks if the operating system is linux. Everything else is untested so far.
+*/
+function checkSupportedOperatingSystem()
+{
+    var supportedOperatingSystemMessage = "";
+    var userPlatform = process.platform;
+
+    console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
+
+    switch(userPlatform)
+    {
+        case "win32":
+        case "windows":
+        case "linux":
+        case "darwin":
+            console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
+
+            // hide OS information
+            $("#operatingSystemInformation").hide();
+
+            break;
+
+        default:
+            // define message
+            supportedOperatingSystemMessage = "Support for " + userPlatform + " is experimental.";
+
+            // update the os-info text
+            $("#operatingSystemInformation").html(supportedOperatingSystemMessage);
+
+            // change class
+            $("#operatingSystemInformation").attr("class", "alert alert-danger");
+
+            // show os information
+            $("#operatingSystemInformation").show();
+
+            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " - " + supportedOperatingSystemMessage );
+    }
+}
+
+
+/**
+* @name switchToService
+* @summary Activates a given service tab
+* @description Activates the tab of a given service. Needed for handling DefaultView setting.
+* @param serviceName - Name of the service
+*/
+function switchToService(serviceName)
+{
+    console.log("switchToService ::: Switching to tab: " + serviceName);
+
+    // activate the related tab
+    $("#target_" + serviceName).trigger("click");
+}
+
+
+/**
+* @name searchUpdate
+* @summary Checks if there is a new release available
+* @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
+* @param silent - Boolean with default value. Shows a feedback in case of no available updates If "silent" = false. Special handling for manually triggered update search
+*/
+function searchUpdate(silent = true)
+{
+    var remoteAppVersionLatest = "0.0.0";
+
+    var gitHubPath = "yafp/ttth";  // user/repo
+    var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
+
+    console.log("searchUpdate ::: Start checking " + url + " for available releases");
+
+    var updateStatus = $.get( url, function( data )
+    {
+        timeout:3000; // in milliseconds
+
+        // success
+        var versions = data.sort(function (v1, v2)
+        {
+            return semver.compare(v2.name, v1.name);
+        });
+
+        // remote version
+        var remoteAppVersionLatest = versions[0].name;
+        //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
+
+        // local version
+        var localAppVersion = require("electron").remote.app.getVersion();
+
+        console.log("searchUpdate ::: Local version: " + localAppVersion);
+        console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
+
+        if( localAppVersion &lt; remoteAppVersionLatest )
+        {
+            console.warn("searchUpdate ::: Found update, notify user");
+
+            // update the updater-info text
+            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog&lt;/a> for details. Download is available &lt;a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here&lt;/a>. &lt;button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close">&lt;span aria-hidden="true">&amp;times;&lt;/span>&lt;/button>');
+
+            // show update information
+            $("#updateInformation").show();
+
+            // send notification
+            sendNotification("Update available", "Version " + remoteAppVersionLatest + " is now available.");
+        }
+        else
+        {
+            console.log("searchUpdate ::: No newer version found.");
+
+            if(silent === true) // default case -> when executed on load
+            {
+                // hide update information
+                $("#updateInformation").hide();
+
+            }
+            else // when executed manually via menu -> user should see result of this search
+            {
+                // update the updater-info text
+                $("#updateInformation").html('You are running the latest version of ttth.  &lt;button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close">&lt;span aria-hidden="true">&amp;times;&lt;/span>&lt;/button>');
+            }
+        }
+
+        console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+    .done(function()
+    {
+        //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+    })
+
+    .fail(function()
+    {
+        console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
+
+        $("#updateInformation").hide();
+    })
+
+    .always(function()
+    {
+        console.log("searchUpdate ::: Finished checking " + url + " for available releases");
+    });
+}
+
+
+/**
+* @name hideUpdateInformation
+* @summary Hides the update information
+* @description Hides the info div which shows hint regarding available update, link to changelog and link to release/download
+*/
+function hideUpdateInformation()
+{
+    console.log("hideUpdateInformation ::: Hiding update information div");
+
+    // hide update information
+    $("#updateInformation").hide();
+}
+
+
+/**
+* @name validateConfiguredDefaultView
+* @summary Checks on startup if the service configured as default view is a valid / enabled service
+* @description Checks if the default view is valid, otherwise fallbacks to settings view
+*/
+function validateConfiguredDefaultView()
+{
+    // read from local storage
+    var curDefaultView = readLocalStorage("settingDefaultView");
+
+    if(curDefaultView === null) // no default view configured
+    {
+        console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
+    }
+    else
+    {
+        console.log("validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
+
+        // check if the configured service is enabled or not
+        console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
+
+        var exists = false;
+
+        // Check if Dropdown contains the defined default view as enabled service
+        $("#selectDefaultView option").each(function()
+        {
+            if (this.value === curDefaultView)
+            {
+                exists = true;
+                return false;
+            }
+        });
+
+        if(exists)
+        {
+            console.log("validateConfiguredDefaultView ::: Configured default view is valid");
+
+            // Update select
+            $("#selectDefaultView").val(curDefaultView);
+        }
+        else
+        {
+            console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+
+            // reset the selection of the select item
+            $("#selectDefaultView").prop("selectedIndex",0);
+
+            // delete the localstorage entry for defaultview
+            settingDefaultViewReset();
+        }
+    }
+}
+
+
+/**
+* @name loadDefaultView
+* @summary Loads the default view
+* @description Loads the default view
+*/
+function loadDefaultView()
+{
+    // read from local storage
+    var curDefaultView = readLocalStorage("settingDefaultView");
+
+    if(curDefaultView === null) // no default view configured
+    {
+        console.log("loadDefaultView ::: No default configured");
+    }
+    else
+    {
+        console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
+        switchToService(curDefaultView);
+    }
+}
+
+
+/**
+* @name openURL
+* @summary Opens an url in browser
+* @description Opens a given url in default browser
+* @param url - URL string which contains the target url
+*/
+function openURL(url)
+{
+    const {shell} = require("electron");
+    console.log("openURL ::: Trying to open the url: " + url);
+    shell.openExternal(url);
+}
+
+
+/**
+* @name loadServiceSpecificCode
+* @summary Executes service specific javascript code on service-activation
+* @description Executes service specific javascript code on service-activation
+* @param serviceName - Name of the service
+*/
+function loadServiceSpecificCode(serviceName)
+{
+    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
+
+    switch (serviceName)
+    {
+        case "Freenode":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceFreenodeAddEventListener();
+            break;
+
+        case "GitHub":
+            break;
+
+        case "GoogleCalendar":
+            break;
+
+        case "GoogleContacts":
+            break;
+
+        case "GoogleDrive":
+            break;
+
+        case "GoogleKeep":
+            break;
+
+        case "GoogleMail":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceGoogleMailAddEventListener();
+            break;
+
+        case "GoogleMessages":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceGoogleMessagesAddEventListener();
+            break;
+
+        case "GooglePhotos":
+            break;
+
+        case "Mattermost":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceMattermostAddEventListener();
+            break;
+
+         case "Slack":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceSlackAddEventListener();
+            break;
+
+        case "Telegram":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceTelegramAddEventListener();
+            break;
+
+        case "Threema":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceThreemaAddEventListener();
+            break;
+
+        case "Twitter":
+            break;
+
+        case "WhatsApp":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceWhatsAppRegister();
+            serviceWhatsAppAddEventListener();
+            break;
+
+        case "Xing":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            serviceXingAddEventListener();
+            break;
+
+        default:
+            console.log("loadServiceSpecificCode ::: Nothing to do here");
+    }
+}
+
+
+/**
+* @name initMattermost
+* @summary checks if local storage contains a custom mattermost url
+* @description Checks if custom mattermost url is stored in local storage. If not a prompt appears where the user can define the target url.
+*/
+function initMattermost()
+{
+    // check if there is a url specificed in local storage
+    var mattermostUrl = readLocalStorage("serviceMattermostUrl");
+    if( (mattermostUrl === "") || (mattermostUrl === null) )
+    {
+        console.warn("initMattermost ::: Custom Mattermost URL is not yet defined.");
+
+        const prompt = require("electron-prompt");
+
+        prompt({
+            title: "Service: Mattermost",
+            label: "Please insert your mattermost &lt;b>server URL&lt;/b>.",
+            useHtmlLabel: true,
+            resizable: false,
+            width: 450,
+            height: 200,
+            inputAttrs: {
+                type: "url",
+                required: true,
+                placeholder: "https://mattermost.example.org"
+            },
+            icon: __dirname + "/img/icon/icon.png",
+            menuBarVisible: false
+        })
+        .then((r) => {
+            if( (r === null) || (r === "") )
+            {
+                console.log("initMattermost ::: User cancelled the URL dialog or confirmed empty input.");
+
+                // hide tab
+                $("#menu_Mattermost").hide();
+
+                // uncheck service checkbox
+                $("#checkbox_Mattermost").prop("checked", false);
+
+                // button representing the service status should be red
+                $("#bt_Mattermost").attr("class", "btn btn-danger btn-sm");
+
+                // set service mattermost to false
+                writeLocalStorage("Mattermost", "false");
+            }
+            else
+            {
+                // TODO: check if url is reachable
+
+                console.log("result", r);
+                mattermostUrl = r;
+
+                // update title property of service
+                $("#label_Mattermost").prop("title", mattermostUrl);
+
+                // set src of slack webview
+                document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+
+                // Save value to local storage
+                writeLocalStorage("serviceMattermostUrl", mattermostUrl);
+
+                console.log("initMattermost ::: Custom Mattermost URL is now set to: " + mattermostUrl + ". Stored value in local storage");
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        // set src of mattermost webview
+        document.getElementById( "MattermostWebview" ).setAttribute( "src", mattermostUrl);
+
+        // adjust title
+        $("#label_Mattermost").prop("title", mattermostUrl);
+    }
+}
+
+
+/**
+* @name initSlack
+* @summary checks if local storage contains a slack workspacename
+* @description Checks if custom workspacename  is stored in local storage. If not a prompt appears where the user can define the workspacename.
+*/
+function initSlack()
+{
+    // check if there is a url specificed in local storage
+    var slackWorkspace = readLocalStorage("serviceSlackWorkspace");
+    var slackUrl = null;
+    if( (slackWorkspace === "") || (slackWorkspace === null) )
+    {
+        console.warn("initSlack ::: Custom Slack Workspace is not yet defined.");
+
+        const prompt = require("electron-prompt");
+
+        prompt({
+            title: "Service: Slack",
+            label: "Please insert your Slack &lt;b>workspace&lt;/b> name.",
+            useHtmlLabel: true,
+            width: 450,
+            height: 200,
+            inputAttrs: {
+                type: "text",
+                required: true,
+                placeholder: "insert name of workspace"
+            },
+            icon: __dirname + "/img/icon/icon.png",
+            menuBarVisible: false
+        })
+        .then((r) => {
+            if( (r === null) || (r === "") )
+            {
+                console.log("initSlack ::: User cancelled the URL dialog or confirmed empty input.");
+
+                // hide tab
+                $("#menu_slack").hide();
+
+                // uncheck service checkbox
+                $("#checkbox_Slack").prop("checked", false);
+
+                // button representing the service status should be red
+                $("#bt_Slack").attr("class", "btn btn-danger btn-sm");
+
+                // set service slack to false
+                writeLocalStorage("Slack", "false");
+            }
+            else
+            {
+                // TODO: check if url is reachable
+
+                console.log("result", r);
+                slackWorkspace = r;
+
+                slackUrl = "https://" + slackWorkspace + ".slack.com";
+
+                // update title property of service
+                $("#label_Slack").prop("title", slackUrl);
+
+                // set src of slack webview
+                document.getElementById( "SlackWebview" ).setAttribute( "src", slackUrl);
+
+                // Save value to local storage
+                writeLocalStorage("serviceSlackWorkspace", slackWorkspace);
+
+                console.log("initSlack ::: Custom Slack Workspace is now set to: " + slackWorkspace + ". Stored value in local storage");
+            }
+        })
+        .catch(console.error);
+    }
+    else
+    {
+        slackUrl = "https://" + slackWorkspace + ".slack.com";
+        console.log("initSlack ::: Custom Slack Workspace is already configured as: " + slackWorkspace);
+        console.log("initSlack ::: Slack url is set to: " + slackUrl);
+
+        // set src of slack webview
+        document.getElementById( "SlackWebview" ).setAttribute( "src", slackUrl);
+
+        // adjust title
+        $("#label_Slack").prop("title", slackUrl);
+    }
+}
+
+
+/**
+* @name settingsToggleSingleServiceCheckbox
+* @summary Triggered on click on a service checkbox on settings page
+* @description Checks which service was clicked and hides or unihdes the related menu items. Writes to local stoage in addition
+* @param objectName - Name of the checkbox
+*/
+function settingsToggleSingleServiceCheckbox(objectName)
+{
+    // check if objectName is a valid service name
+    // if so it should exists in the array: ttthAvailableServices
+    var arrayPosition = ttthAvailableServices.indexOf(objectName);
+    var objectNameIsValid = (ttthAvailableServices.indexOf(objectName) > -1);
+    var curServiceUrl = ttthServicesUrls[arrayPosition];
+
+    if(objectNameIsValid === true)
+    {
+        if($("#checkbox_" + objectName).prop("checked"))
+        {
+            console.log("settingsToggleSingleServiceCheckbox ::: Activating " + objectName);
+
+            // write to local storage
+            writeLocalStorage(objectName, "true");
+
+            // show service in menu
+            $("#menu_"+objectName).show();
+
+            // add option to DefaultView select
+            $("#selectDefaultView").append(new Option(objectName, objectName));
+
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + objectName).attr("title", "enabled");
+
+            // update webview src
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", curServiceUrl);
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now: " + curServiceUrl);
+
+            // check if there is service-specific code to load
+            loadServiceSpecificCode(objectName);
+
+            // send notification
+            sendNotification("Services", "Activated the service " + objectName + ".");
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                initMattermost();
+            }
+
+            // Hackery: Slack is different - as it has a user-specific Workspace
+            //
+            if( objectName === "Slack" )
+            {
+                initSlack();
+            }
+        }
+        else
+        {
+            console.log("settingsToggleSingleServiceCheckbox ::: Deactivating " + objectName);
+
+            // write to local storage
+            writeLocalStorage(objectName, "false");
+
+            // hide service from menu
+            $("#menu_"+objectName).hide();
+
+            // update select
+            $("#selectDefaultView option").each(function()
+            {
+                if (this.value === objectName)
+                {
+                    console.log("settingsToggleSingleServiceCheckbox ::: Deleting item from select");
+                    this.remove();
+                }
+            });
+
+            // update status button
+            $("#bt_" + objectName).attr("class", "btn btn-danger btn-sm");
+            $("#bt_" + objectName).attr("title", "disabled");
+
+            // update webview src
+            document.getElementById( objectName + "Webview" ).setAttribute( "src", "");
+            console.log("settingsToggleSingleServiceCheckbox ::: webview src of service: " + objectName + " is now empty");
+
+            // send notification
+            sendNotification("Services", "Deactivated the service " + objectName + ".");
+
+            // Hackery: Mattermost is different - as it has a user-specific URL
+            //
+            if( objectName === "Mattermost" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceMattermostUrl");
+
+                // adjust service label back to default
+                $("#label_Mattermost").prop("title", "");
+
+            }
+
+            // Hackery: Slack is different - as it has a user-specific workspace
+            //
+            if( objectName === "Slack" )
+            {
+                // delete local storage key and its related value
+                localStorage.removeItem("serviceSlackWorkspace");
+
+                // adjust service label back to default
+                $("#label_Slack").prop("title", "");
+
+            }
+        }
+
+        validateConfiguredDefaultView();
+
+    }
+    else
+    {
+        console.warn("settingsToggleSingleServiceCheckbox ::: Got an invalid objectName: _" + objectName + "_.");
+    }
+}
+
+
+/**
+* @name initSettingsPage
+* @summary Initializes the settings page
+* @description Shows links to github informations. update informations. Initializes the service-checkboxes on loading the view
+*/
+function initSettingsPage()
+{
+    var serviceName;
+    var serviceUrl;
+    var curSettingAutostart;
+    var curSettingAutostartMinimized;
+    var curSettingHideMenubar;
+    var curSettingUserColor;
+    var curSettingUserColorCode;
+
+    // loop over array ttthAvailableServices which contains all service-names
+    //
+    console.log("initSettingsPage ::: Start to load all services and its status to the settings interface");
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i &lt; arrayLength; i++)
+    {
+        serviceName =  ttthAvailableServices[i];
+        serviceUrl = ttthServicesUrls[i];
+
+        // Adding all services to settings page
+        //
+        if (i%2 === 0) // Odd and Even
+        {
+            // create a new row
+            $( "#settingsAvailableServices" ).append('&lt;div class="row" id=' + i + '>&lt;/div>');
+
+            // add something to this new row
+            //$( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id='+ serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+            $( "#" + i ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id="checkbox_'+ serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+        }
+        else
+        {
+            // add something to the existing row
+            var rowReference = i -1;
+            $( "#" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id="checkbox_' + serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+        }
+
+        // until: 1.2.0:
+        //
+        //$( "#settingsAvailableServices" ).append('&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');">&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled>&lt;/button>&lt;/div>&lt;/div>');
+
+        // Show activated services as enabled in settings
+        // add them to the default view select item
+        // and update the related status button
+        console.log("initSettingsPage ::: Checking status of service: " + serviceName);
+        var curServiceStatus = readLocalStorage(serviceName);
+        if(curServiceStatus === "true")
+        {
+            console.log("initSettingsPage ::: Service: " + serviceName + " is activated");
+
+            // check the checkbox
+            $("#checkbox_" + serviceName).prop("checked", true);
+
+            // add to defaultView select item
+            $("#selectDefaultView").append(new Option(serviceName, serviceName));
+
+            // update status button
+            $("#bt_" + serviceName).attr("class", "btn btn-success btn-sm");
+            $("#bt_" + serviceName).attr("title", "enabled");
+
+            // set webview src
+            document.getElementById( serviceName + "Webview" ).setAttribute( "src", ttthServicesUrls[i]);
+            console.log("initSettingsPage ::: webview src of service: " + serviceName + " is now: " + ttthServicesUrls[i]);
+
+            // check if there is service-specific code to load
+            loadServiceSpecificCode(serviceName);
+        }
+        else
+        {
+            console.log("initSettingsPage ::: Service: " + serviceName + " is deactivated");
+
+            // set webview src
+            document.getElementById( serviceName + "Webview" ).setAttribute( "src", "");
+            console.log("initSettingsPage ::: webview src of service: " + serviceName + " is now empty.");
+        }
+    }
+
+    // specialcase: Mattermost
+    var mattermostEnabled = readLocalStorage("Mattermost");
+    if(mattermostEnabled === "true")
+    {
+        initMattermost();
+    }
+
+
+    // specialcase: Slack
+    var slackEnabled = readLocalStorage("Slack");
+    if(slackEnabled === "true")
+    {
+        initSlack();
+    }
+
+    // Setting: DefaultView - now validate the optional configured default view
+    //
+    validateConfiguredDefaultView();
+
+    // Setting: Autostart
+    //
+    curSettingAutostart = readLocalStorage("settingAutostart");
+    if(curSettingAutostart === "true")
+    {
+        console.log("initSettingsPage ::: Setting Autostart is configured");
+
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting Autostart is not configured");
+    }
+
+
+    // Setting: AutostartMinimized
+    //
+    curSettingAutostartMinimized = readLocalStorage("settingAutostartMinimized");
+    if(curSettingAutostartMinimized === "true")
+    {
+        console.log("initSettingsPage ::: Setting AutostartMinimized is configured");
+
+        // activate checkbox
+        $("#checkboxSettingAutostart").prop("checked", true);
+        $("#checkboxSettingAutostartMinimized").prop("checked", true);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
+    }
+
+
+    // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
+    //
+    const {ipcRenderer} = require("electron");
+    curSettingHideMenubar = readLocalStorage("settingHideMenubar");
+
+    if(isMac())
+    {
+        // ensure the setting is disabled
+        writeLocalStorage("settingHideMenubar", "false");
+
+        // hide the entire setting on settingspage
+        $("#settingsSectionStartupHideMenubar").hide();
+    }
+    else // default case (linux or windows)
+    {
+        if(curSettingHideMenubar === "true")
+        {
+            // hide menubar
+            console.log("initSettingsPage ::: Hide menubar");
+            $("#checkboxSettingHideMenubar").prop("checked", true);
+            ipcRenderer.send("hideMenubar");
+        }
+        else
+        {
+            // show menubar
+            ipcRenderer.send("showMenubar");
+            $("#checkboxSettingHideMenubar").prop("checked", false);
+            console.log("initSettingsPage ::: Show menubar");
+        }
+    }
+
+    // Setting: UserColor
+    //
+    curSettingUserColor = readLocalStorage("settingUserColor");
+    if(curSettingUserColor === "true")
+    {
+        console.log("initSettingsPage ::: Setting UserColor is configured");
+
+        // activate checkbox
+        $("#checkboxSettingUserColor").prop("checked", true);
+
+        // read color code
+        curSettingUserColorCode = readLocalStorage("settingUserColorName");
+
+        // adjust select
+        $("#selectUserColor").val(curSettingUserColorCode);
+
+
+        settingActivateUserColorCss(curSettingUserColorCode);
+    }
+    else
+    {
+        console.log("initSettingsPage ::: Setting UserColor is not configured");
+
+        settingActivateUserColorCss("default.css");
+    }
+}
+
+
+/**
+* @name initNavigationTabs
+* @summary Init the menu / navigation on app launch
+* @description Checks which services are enabled and shows or hides the related tabs from navigation
+*/
+function initNavigationTabs()
+{
+    var serviceName;
+
+    // loop over array ttthAvailableServices
+    var arrayLength = ttthAvailableServices.length;
+    for (var i = 0; i &lt; arrayLength; i++)
+    {
+        serviceName = ttthAvailableServices[i];
+        console.log("initNavigationTabs ::: Checking status of service: " + serviceName);
+
+        var curServiceStatus = readLocalStorage(serviceName);
+
+        if(curServiceStatus === "true")
+        {
+            console.log("initNavigationTabs ::: Activating " + serviceName );
+
+            // show service-tab in navigation
+            $("#menu_" + serviceName).show();
+        }
+        else
+        {
+            console.log("initNavigationTabs ::: Deactivating " + serviceName);
+
+            // hide service-tab in navigation
+            $("#menu_" + serviceName).hide();
+        }
+    }
+}
+
+
+/**
+* @name localizeUserInterface
+* @summary Localizes the user interface
+* @description Is using i18next to localize the user interface. Translations are located in app/locales
+*/
+function localizeUserInterface()
+{
+    var userLang = navigator.language || navigator.userLanguage;
+
+    // for development screenshot - overwrite the language if the project is not packaged
+    const isDev = require('electron-is-dev');
+    if (isDev)
+    {
+        userLang = "en";
+    }
+
+    console.log("localizeUserInterface ::: Detected user language: " + userLang);
+
+    var i18next = require("i18next");
+    var Backend = require("i18next-sync-fs-backend");
+    //var LanguageDetector = require("i18next-electron-language-detector");
+
+    i18next
+    .use(Backend)
+    //.use(LanguageDetector)
+    .init({
+        debug: true,
+        whitelist: ["en", "de"],
+        lng: userLang,
+        fallbackLng: "en",
+        ns: "translation",
+        defaultNS: "translation",
+        updateMissing: false,
+        initImmediate: true,
+        backend:
+        {
+            // path where resources get loaded from
+            loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
+
+            // path to post missing resources
+            addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
+
+            // jsonIndent to use when storing json files
+            jsonIndent: 2
+        }
+    });
+
+    $(function()
+    {
+        $("[i18n-text]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-text");
+            node.text(i18next.t(key));
+        });
+        $("[i18n-title]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-title");
+            node.attr("title", i18next.t(key));
+        });
+    });
+}
+
+
+// Call from main.js
+//
+require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
+{
+    //console.log(message);  // Prints "whoooooooh!"
+
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1); // cut the first char ( =  #)
+    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+
+    var currentPositionInArray = null;
+    var serviceName = null;
+    var serviceUrl = null;
+
+    // find service name and service url from array
+    currentPositionInArray = ttthAvailableServices.indexOf(tabValue);
+
+    // grab the related vars from the serviceList arrays
+    serviceName = ttthAvailableServices[currentPositionInArray];
+    serviceUrl = ttthServicesUrls[currentPositionInArray];
+
+    // reload the service - see #9
+    switch (serviceName)
+    {
+        case "Freenode":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceFreenodeInit(serviceName, serviceUrl);
+            break;
+
+        case "GitHub":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGitHubInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleCalendar":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleCalendarInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleContacts":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleContactsInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleDrive":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleDriveInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleKeep":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleKeepInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMail":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMailInit(serviceName, serviceUrl);
+            break;
+
+        case "GoogleMessages":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGoogleMessagesInit(serviceName, serviceUrl);
+            break;
+
+        case "GooglePhotos":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceGooglePhotosInit(serviceName, serviceUrl);
+            break;
+
+        case "Mattermost":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceMattermostInit(serviceName, serviceUrl);
+            break;
+
+        case "Slack":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceSlackInit(serviceName, serviceUrl);
+            break;
+
+        case "Telegram":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTelegramInit(serviceName, serviceUrl);
+            break;
+
+        case "Threema":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceThreemaInit(serviceName, serviceUrl);
+            break;
+
+        case "Twitter":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceTwitterInit(serviceName, serviceUrl);
+            break;
+
+        case "WhatsApp":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceWhatsAppInit(serviceName, serviceUrl);
+            break;
+
+        case "Xing":
+            console.log("reloadCurrentService ::: Reloading the service: " + serviceName);
+            serviceXingInit(serviceName, serviceUrl);
+            break;
+
+        default:
+            // do nothing
+            break;
+    }
+});
+
+
+// Call from main.js: switch to settings tab
+//
+require("electron").ipcRenderer.on("showSettings", function(event)
+{
+    console.log("showSettings ::: Switching to Settings tab");
+    switchToService("Settings");
+});
+
+
+// Call from main.js: Start search for new updates
+//
+require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+{
+    console.log("startSearchUpdates ::: Show update information div");
+
+    // show update information
+    $("#updateInformation").show();
+
+    searchUpdate(false);
+});
+
+
+// Call from main.js: Switch to next tab
+//
+require("electron").ipcRenderer.on("nextTab", function(event)
+{
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "Settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    });
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get next array position
+    if(currentPositionInArray &lt; enabledTabsArray.length -1) //
+    {
+        serviceName = enabledTabsArray[currentPositionInArray+1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[0];
+    }
+
+    console.log("nextTab ::: Should switch to: " + serviceName + " now.");
+
+    // jump to next tab
+    switchToService(serviceName);
+});
+
+
+// Call from main.js: Switch to previous tab
+//
+require("electron").ipcRenderer.on("previousTab", function(event)
+{
+    // variables
+    var currentTabId;
+    var enabledTabsArray = []; // should store all visible names
+    var currentActiveTabId; // Id of active tab
+    var serviceName; // used to call  the function switchToService()
+
+    // get current selected / active tab
+    currentActiveTabId = $(".nav-item .active").attr("id");
+    currentActiveTabId = currentActiveTabId.replace("target_", "");
+    console.log("previous ::: Active tab is: " + currentActiveTabId);
+
+    // get list of all visible service-tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        // check if entry is visible or not
+        if($("#"+currentTabId).is(":visible"))
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            if(currentTabId !== "Settings")
+            {
+                enabledTabsArray.push(currentTabId);
+            }
+        }
+    });
+
+    // find position of current tab in the array of enabled services
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId);
+
+    // get previous array position
+    if(currentPositionInArray > 0) //
+    {
+        serviceName = enabledTabsArray[currentPositionInArray-1];
+    }
+    else
+    {
+        serviceName = enabledTabsArray[enabledTabsArray.length -1];
+    }
+
+    console.log("previousTab ::: Should switch to: " + serviceName + " now.");
+
+    // jump to previous tab
+    switchToService(serviceName);
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initMattermost">initMattermost</a></li><li><a href="global.html#initNavigationTabs">initNavigationTabs</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initSlack">initSlack</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleDriveInit">serviceGoogleDriveInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleServiceCheckbox">settingsToggleSingleServiceCheckbox</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 03 2019 13:40:14 GMT+0200 (CEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
