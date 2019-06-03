@@ -57,7 +57,7 @@ html,body {
 /* ########################################################################## */
 #tabBar{
     background-color: var(--color-menuBackground);
-    height: 40px; /* default: 40px */
+    height: 30px; /* default: 40px */
 }
 
 .nav{
@@ -79,11 +79,7 @@ ul{
 }
 
 .nav-item a {
-    /* works - but breaks with hover */
-    /*
-    margin-left: -5px !important;
-    margin-right: -5px !important;
-    */
+
 }
 
 
@@ -100,20 +96,17 @@ ul{
 }
 
 
-
-
-/* horizontal scroll */
-.tabs:not(.--jsfied) {
-    /*
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  */
+.nav>li>a {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 
 
 /* ########################################################################## */
-/* SETTINGS */
+/* SETTINGS - BACKGROUND IMAGE */
 /* ########################################################################## */
 .bgimg {
     background-image: url('../../img/settings/icon_background.png');
@@ -126,17 +119,14 @@ ul{
 /* ########################################################################## */
 /* CONTENT */
 /* ########################################################################## */
-
 .inner{
     height: 100%;
     min-height: 100%;
 }
 
-
 .flex-fill {
     flex:1 1 auto;
 }
-
 
 .resizer{
     background-color: var(--color-main);
@@ -145,23 +135,14 @@ ul{
     width: 100%;
     min-width: 100%;
 
-
-
     padding-left: 0 !important;
     padding-right: 0 !important;
-
-    /* content/tab */
-    /*
-    background-color: red;
-    */
 }
-
-
 
 h3{
     padding-top: 15px;
     border-bottom: 2px solid var(--color-menuForegroundHover);
-    font-size: 24px !important;
+    font-size: 20px !important;
 }
 
 
