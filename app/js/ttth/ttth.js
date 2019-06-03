@@ -2,15 +2,10 @@
 
 function updateWindowTitle(tabName)
 {
-    console.log("updateWindowTitle ::: Start");
-
     console.log("updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
-    console.error(tabName);
 
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("updateWindowTitle", tabName);
-
-    console.log("updateWindowTitle ::: End");
 }
 
 
@@ -23,8 +18,6 @@ function updateWindowTitle(tabName)
 */
 function isMac()
 {
-    console.log("isMac ::: Start");
-
     var os = require("os");
 
     // os types:
@@ -51,8 +44,6 @@ function isMac()
 */
 function settingUserColorUpdate()
 {
-    console.log("settingUserColorUpdate ::: Start");
-
     // get value from select
     var newUserColor = $( "#selectUserColor" ).val();
     console.log("settingUserColorUpdate ::: New CSS style is set to: " + newUserColor);
@@ -61,8 +52,6 @@ function settingUserColorUpdate()
 
     // reload page
     location.reload();
-
-    console.log("settingUserColorUpdate ::: End");
 }
 
 
@@ -73,16 +62,14 @@ function settingUserColorUpdate()
 */
 function settingUserColorReset()
 {
-    console.log("settingUserColorReset ::: Start");
-
     writeLocalStorage("settingUserColorName", "default.css");
+
+    console.log("settingUserColorReset ::: Resetting user color style back to default");
 
     $("#selectUserColor").val("default.css");
 
     // reload page
     location.reload();
-
-    console.log("settingUserColorReset ::: End");
 }
 
 
@@ -93,10 +80,10 @@ function settingUserColorReset()
 */
 function settingToggleUserColor()
 {
-    console.log("settingToggleUserColor ::: Start");
-
     if($("#checkboxSettingUserColor").prop("checked"))
     {
+        console.log("settingToggleUserColor ::: User color style is enabled");
+
         // user has enabled a custom user color
         var userColor = $( "#selectUserColor" ).val();
 
@@ -108,15 +95,14 @@ function settingToggleUserColor()
     }
     else
     {
+        console.log("settingToggleUserColor ::: User color style is disabled");
+
         // user has NOT enabled a custom user color
         // fallback to default css
-
         writeLocalStorage("settingUserColor", false);
 
         settingUserColorReset();
     }
-
-    console.log("settingToggleUserColor ::: End");
 }
 
 
@@ -128,8 +114,6 @@ function settingToggleUserColor()
 */
 function settingActivateUserColorCss(cssStyleName)
 {
-    console.log("settingActivateUserColorCss ::: Start");
-
     console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
 
     // load custom css file
@@ -138,8 +122,6 @@ function settingActivateUserColorCss(cssStyleName)
         type: "text/css",
         href: "css/ttth/styles/" + cssStyleName
     }).appendTo("head");
-
-    console.log("settingActivateUserColorCss ::: End");
 }
 
 
@@ -150,8 +132,6 @@ function settingActivateUserColorCss(cssStyleName)
 */
 function updateTrayIconStatus()
 {
-    console.log("updateTrayIconStatus ::: Start");
-
     var overallUnreadMessages = 0;
     var curServiceUnreadMessageCount = 0;
     var serviceName = "";
@@ -192,8 +172,6 @@ function updateTrayIconStatus()
         // tray should show that we got unread messages
         ipcRenderer.send("changeTrayIconToUnreadMessages");
     }
-
-    console.log("updateTrayIconStatus ::: End");
 }
 
 
@@ -206,7 +184,6 @@ function updateTrayIconStatus()
 */
 function updateServiceBadge(serviceName, count)
 {
-    console.log("updateServiceBadge ::: Start");
     console.log("updateServiceBadge ::: New unread count for service _" + serviceName + "_ is: _" + count + "_.");
 
     if( (count === null) || (count === 0) || (count === "null"))
@@ -219,8 +196,6 @@ function updateServiceBadge(serviceName, count)
 
     // Update tray icon status if needed
     updateTrayIconStatus();
-
-    console.log("updateServiceBadge ::: End");
 }
 
 
@@ -233,10 +208,8 @@ function updateServiceBadge(serviceName, count)
 */
 function readLocalStorage(key)
 {
-    console.log("readLocalStorage ::: Start");
     var value = localStorage.getItem(key);
     console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
-    console.log("readLocalStorage ::: End");
     return(value);
 }
 
@@ -250,10 +223,8 @@ function readLocalStorage(key)
 */
 function writeLocalStorage(key, value)
 {
-    console.log("writeLocalStorage ::: Start");
     console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
-    console.log("writeLocalStorage ::: End");
 }
 
 
@@ -264,11 +235,9 @@ function writeLocalStorage(key, value)
 */
 function openDevTools()
 {
-    console.log("openDevTools ::: Start");
     console.log("openDevTools ::: Opening Developer Console");
     const remote = require("electron").remote;
     remote.getCurrentWindow().toggleDevTools();
-    console.log("openDevTools ::: End");
 }
 
 
@@ -281,6 +250,8 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
+    console.log("sendNotification ::: Sending a notification with the title _" + title + "_ and the message: _" + message + "_.");
+
     let myNotification = new Notification(title, {
         body: message,
         icon: "img/notification/icon_notification.png"
@@ -301,8 +272,6 @@ function sendNotification(title, message)
 */
 function settingToggleAutostart()
 {
-    console.log("settingToggleAutostart ::: Start");
-
     // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
 
@@ -344,8 +313,6 @@ function settingToggleAutostart()
     .catch(function(err){
         // handle error
     });
-
-    console.log("settingToggleAutostart ::: End");
 }
 
 
@@ -356,8 +323,6 @@ function settingToggleAutostart()
 */
 function settingToggleAutostartMinimized()
 {
-    console.log("settingToggleAutostartMinimized ::: Start");
-
     // auto-launch - via: https://www.npmjs.com/package/auto-launch
     var AutoLaunch = require("auto-launch");
 
@@ -400,8 +365,6 @@ function settingToggleAutostartMinimized()
 
         console.log("settingToggleAutostartMinimized ::: Finished disabling minimized Autostart");
     }
-
-    console.log("settingToggleAutostartMinimized ::: End");
 }
 
 
@@ -412,8 +375,6 @@ function settingToggleAutostartMinimized()
 */
 function settingDefaultViewUpdate()
 {
-    console.log("settingDefaultViewUpdate ::: Start");
-
     // get currently selected value from select
     var newDefaultView = $( "#selectDefaultView" ).val();
     console.log("settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
@@ -423,8 +384,6 @@ function settingDefaultViewUpdate()
 
     // send notification
     sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
-
-    console.log("settingDefaultViewUpdate ::: End");
 }
 
 
@@ -435,18 +394,16 @@ function settingDefaultViewUpdate()
 */
 function settingDefaultViewReset()
 {
-    console.log("settingDefaultViewReset ::: Start");
-
     // delete local storage key and its related value
     localStorage.removeItem("settingDefaultView");
 
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
 
+    console.log("settingDefaultViewReset ::: Did reset the default view");
+
     // send notification
     sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
-
-    console.log("settingDefaultViewReset ::: Start");
 }
 
 
@@ -457,11 +414,11 @@ function settingDefaultViewReset()
 */
 function settingToggleMenubarVisibility()
 {
-    console.log("settingToggleMenubarVisibility ::: Start");
-
     if($("#checkboxSettingHideMenubar").prop("checked"))
     {
         writeLocalStorage("settingHideMenubar", true);
+
+        console.log("settingToggleMenubarVisibility ::: Hide menubar is enabled");
 
         // send notification
         sendNotification("Settings", "Hide menubar on startup is now enabled (Settings).");
@@ -470,11 +427,11 @@ function settingToggleMenubarVisibility()
     {
         writeLocalStorage("settingHideMenubar", false);
 
+        console.log("settingToggleMenubarVisibility ::: Hide menubar is disabled");
+
         // send notification
         sendNotification("Settings", "Hide menubar on startup is now disabled (Settings).");
     }
-
-    console.log("settingToggleMenubarVisibility ::: End");
 }
 
 
@@ -485,8 +442,6 @@ function settingToggleMenubarVisibility()
 */
 function checkSupportedOperatingSystem()
 {
-    console.log("checkSupportedOperatingSystem ::: Start");
-
     var supportedOperatingSystemMessage = "";
     var userPlatform = process.platform;
 
@@ -520,8 +475,6 @@ function checkSupportedOperatingSystem()
 
             console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " - " + supportedOperatingSystemMessage );
     }
-
-    console.log("checkSupportedOperatingSystem ::: End");
 }
 
 
@@ -533,13 +486,10 @@ function checkSupportedOperatingSystem()
 */
 function switchToService(serviceName)
 {
-    console.log("switchToService ::: Start");
     console.log("switchToService ::: Switching to tab: " + serviceName);
 
     // activate the related tab
     $("#target_" + serviceName).trigger("click");
-
-    console.log("switchToService ::: End");
 }
 
 
@@ -551,8 +501,6 @@ function switchToService(serviceName)
 */
 function searchUpdate(silent = true)
 {
-    console.log("searchUpdate ::: Start");
-
     var remoteAppVersionLatest = "0.0.0";
 
     var gitHubPath = "yafp/ttth";  // user/repo
@@ -628,8 +576,6 @@ function searchUpdate(silent = true)
     {
         console.log("searchUpdate ::: Finished checking " + url + " for available releases");
     });
-
-    console.log("searchUpdate ::: End");
 }
 
 
@@ -640,6 +586,8 @@ function searchUpdate(silent = true)
 */
 function hideUpdateInformation()
 {
+    console.log("hideUpdateInformation ::: Hiding update information div");
+
     // hide update information
     $("#updateInformation").hide();
 }
@@ -652,8 +600,6 @@ function hideUpdateInformation()
 */
 function validateConfiguredDefaultView()
 {
-    console.log("validateConfiguredDefaultView ::: Start");
-
     // read from local storage
     var curDefaultView = readLocalStorage("settingDefaultView");
 
@@ -698,8 +644,6 @@ function validateConfiguredDefaultView()
             settingDefaultViewReset();
         }
     }
-
-    console.log("validateConfiguredDefaultView ::: End");
 }
 
 
@@ -710,8 +654,6 @@ function validateConfiguredDefaultView()
 */
 function loadDefaultView()
 {
-    console.log("loadDefaultView ::: Start");
-
     // read from local storage
     var curDefaultView = readLocalStorage("settingDefaultView");
 
@@ -724,8 +666,6 @@ function loadDefaultView()
         console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
         switchToService(curDefaultView);
     }
-
-    console.log("loadDefaultView ::: End");
 }
 
 
@@ -737,13 +677,9 @@ function loadDefaultView()
 */
 function openURL(url)
 {
-    console.log("openURL ::: Start");
-
     const {shell} = require("electron");
     console.log("openURL ::: Trying to open the url: " + url);
     shell.openExternal(url);
-
-    console.log("openURL ::: End");
 }
 
 
@@ -755,8 +691,6 @@ function openURL(url)
 */
 function loadServiceSpecificCode(serviceName)
 {
-    console.log("loadServiceSpecificCode ::: Start");
-
     console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName);
 
     switch (serviceName)
@@ -831,8 +765,6 @@ function loadServiceSpecificCode(serviceName)
         default:
             console.log("loadServiceSpecificCode ::: Nothing to do here");
     }
-
-    console.log("loadServiceSpecificCode ::: End");
 }
 
 
@@ -843,8 +775,6 @@ function loadServiceSpecificCode(serviceName)
 */
 function initMattermost()
 {
-    console.log("initMattermost ::: Start");
-
     // check if there is a url specificed in local storage
     var mattermostUrl = readLocalStorage("serviceMattermostUrl");
     if( (mattermostUrl === "") || (mattermostUrl === null) )
@@ -869,8 +799,9 @@ function initMattermost()
             menuBarVisible: false
         })
         .then((r) => {
-            if(r === null) {
-                console.log("initMattermost ::: User cancelled the URL dialog.");
+            if( (r === null) || (r === "") )
+            {
+                console.log("initMattermost ::: User cancelled the URL dialog or confirmed empty input.");
 
                 // hide tab
                 $("#menu_Mattermost").hide();
@@ -913,8 +844,6 @@ function initMattermost()
         // adjust title
         $("#label_Mattermost").prop("title", mattermostUrl);
     }
-
-    console.log("initMattermost ::: End");
 }
 
 
@@ -925,8 +854,6 @@ function initMattermost()
 */
 function initSlack()
 {
-    console.log("initSlack ::: Start");
-
     // check if there is a url specificed in local storage
     var slackWorkspace = readLocalStorage("serviceSlackWorkspace");
     var slackUrl = null;
@@ -951,8 +878,9 @@ function initSlack()
             menuBarVisible: false
         })
         .then((r) => {
-            if(r === null) {
-                console.log("initSlack ::: User cancelled the URL dialog.");
+            if( (r === null) || (r === "") )
+            {
+                console.log("initSlack ::: User cancelled the URL dialog or confirmed empty input.");
 
                 // hide tab
                 $("#menu_slack").hide();
@@ -1001,8 +929,6 @@ function initSlack()
         // adjust title
         $("#label_Slack").prop("title", slackUrl);
     }
-
-    console.log("initSlack ::: End");
 }
 
 
@@ -1014,8 +940,6 @@ function initSlack()
 */
 function settingsToggleSingleServiceCheckbox(objectName)
 {
-    console.log("settingsToggleSingleServiceCheckbox ::: Start");
-
     // check if objectName is a valid service name
     // if so it should exists in the array: ttthAvailableServices
     var arrayPosition = ttthAvailableServices.indexOf(objectName);
@@ -1126,10 +1050,8 @@ function settingsToggleSingleServiceCheckbox(objectName)
     }
     else
     {
-        console.warn("settingsToggleSingleServiceCheckbox ::: Got an invalid objectName: " + objectName);
+        console.warn("settingsToggleSingleServiceCheckbox ::: Got an invalid objectName: _" + objectName + "_.");
     }
-
-    console.log("settingsToggleSingleServiceCheckbox ::: End");
 }
 
 
@@ -1140,8 +1062,6 @@ function settingsToggleSingleServiceCheckbox(objectName)
 */
 function initSettingsPage()
 {
-    console.log("initSettingsPage ::: Start");
-
     var serviceName;
     var serviceUrl;
     var curSettingAutostart;
@@ -1177,11 +1097,9 @@ function initSettingsPage()
             $( "#" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id="checkbox_' + serviceName + '" name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div></div>');
         }
 
-
         // until: 1.2.0:
         //
         //$( "#settingsAvailableServices" ).append('<div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id=' + serviceName + ' name=' + serviceName + ' onClick="settingsToggleSingleServiceCheckbox(\''  + serviceName + '\');"></div></div><input type="text" class="form-control" id="label_' + serviceName + '" aria-label="Text input with checkbox" value='+ serviceName +' title=' + serviceUrl + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-danger btn-sm" id="bt_'+ serviceName +'" title="disabled" disabled></button></div></div>');
-
 
         // Show activated services as enabled in settings
         // add them to the default view select item
@@ -1327,8 +1245,6 @@ function initSettingsPage()
 
         settingActivateUserColorCss("default.css");
     }
-
-    console.log("initSettingsPage ::: End");
 }
 
 
@@ -1339,8 +1255,6 @@ function initSettingsPage()
 */
 function initNavigationTabs()
 {
-    console.log("initNavigationTabs ::: Start");
-
     var serviceName;
 
     // loop over array ttthAvailableServices
@@ -1367,8 +1281,6 @@ function initNavigationTabs()
             $("#menu_" + serviceName).hide();
         }
     }
-
-    console.log("initNavigationTabs ::: End");
 }
 
 
@@ -1379,59 +1291,59 @@ function initNavigationTabs()
 */
 function localizeUserInterface()
 {
-  console.log("localizeUserInterface ::: Start");
+    var userLang = navigator.language || navigator.userLanguage;
 
-  var userLang = navigator.language || navigator.userLanguage;
-
-  // for development screenshot - overwrite the language
-  userLang = "en";
-
-  console.log("localizeUserInterface ::: Detected user language: " + userLang);
-
-  var i18next = require("i18next");
-  var Backend = require("i18next-sync-fs-backend");
-  //var LanguageDetector = require("i18next-electron-language-detector");
-
-  i18next
-  .use(Backend)
-  //.use(LanguageDetector)
-  .init({
-    debug: true,
-    whitelist: ["en", "de"],
-    lng: userLang,
-    fallbackLng: "en",
-    ns: "translation",
-    defaultNS: "translation",
-    updateMissing: false,
-    initImmediate: true,
-    backend:
+    // for development screenshot - overwrite the language if the project is not packaged
+    const isDev = require('electron-is-dev');
+    if (isDev)
     {
-        // path where resources get loaded from
-        loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
-
-        // path to post missing resources
-        addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
-
-        // jsonIndent to use when storing json files
-        jsonIndent: 2
+        userLang = "en";
     }
-});
 
-  $(function()
-  {
-    $("[i18n-text]").each(function()
-    {
-      var node = $(this), key = node.attr("i18n-text");
-      node.text(i18next.t(key));
-    });
-    $("[i18n-title]").each(function()
-    {
-      var node = $(this), key = node.attr("i18n-title");
-      node.attr("title", i18next.t(key));
-    });
-  });
+    console.log("localizeUserInterface ::: Detected user language: " + userLang);
 
-  console.log("localizeUserInterface ::: End");
+    var i18next = require("i18next");
+    var Backend = require("i18next-sync-fs-backend");
+    //var LanguageDetector = require("i18next-electron-language-detector");
+
+    i18next
+    .use(Backend)
+    //.use(LanguageDetector)
+    .init({
+        debug: true,
+        whitelist: ["en", "de"],
+        lng: userLang,
+        fallbackLng: "en",
+        ns: "translation",
+        defaultNS: "translation",
+        updateMissing: false,
+        initImmediate: true,
+        backend:
+        {
+            // path where resources get loaded from
+            loadPath: __dirname + "/locales/{{lng}}/{{ns}}.json",
+
+            // path to post missing resources
+            addPath: __dirname +  "/locales/{{lng}}/{{ns}}.missing.json",
+
+            // jsonIndent to use when storing json files
+            jsonIndent: 2
+        }
+    });
+
+    $(function()
+    {
+        $("[i18n-text]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-text");
+            node.text(i18next.t(key));
+        });
+        $("[i18n-title]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-title");
+            node.attr("title", i18next.t(key));
+        });
+    });
 }
 
 
@@ -1439,8 +1351,6 @@ function localizeUserInterface()
 //
 require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
 {
-    console.log("reloadCurrentService ::: Start");
-
     //console.log(message);  // Prints "whoooooooh!"
 
     // get href of current active tab
@@ -1546,8 +1456,6 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
             // do nothing
             break;
     }
-
-    console.log("reloadCurrentService ::: Start");
 });
 
 
@@ -1555,10 +1463,8 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 //
 require("electron").ipcRenderer.on("showSettings", function(event)
 {
-    console.log("showSettings ::: Start");
     console.log("showSettings ::: Switching to Settings tab");
     switchToService("Settings");
-    console.log("showSettings ::: End");
 });
 
 
@@ -1566,14 +1472,12 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 //
 require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 {
-    console.log("startSearchUpdates ::: Start");
+    console.log("startSearchUpdates ::: Show update information div");
 
     // show update information
     $("#updateInformation").show();
 
     searchUpdate(false);
-
-    console.log("startSearchUpdates ::: End");
 });
 
 
@@ -1581,8 +1485,6 @@ require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 //
 require("electron").ipcRenderer.on("nextTab", function(event)
 {
-    console.log("nextTab ::: Start");
-
     // variables
     var currentTabId;
     var enabledTabsArray = []; // should store all visible names
@@ -1627,8 +1529,6 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 
     // jump to next tab
     switchToService(serviceName);
-
-    console.log("nextTab ::: End");
 });
 
 
@@ -1636,8 +1536,6 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 //
 require("electron").ipcRenderer.on("previousTab", function(event)
 {
-    console.log("previousTab ::: Start");
-
     // variables
     var currentTabId;
     var enabledTabsArray = []; // should store all visible names
@@ -1682,6 +1580,4 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 
     // jump to previous tab
     switchToService(serviceName);
-
-    console.log("previousTab ::: End");
 });
