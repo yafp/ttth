@@ -21,10 +21,6 @@ function serviceXingAddEventListener()
     }, 30000);
 
 
-    //toggleDevTools();
-    //openDevTools()
-
-
     // WebView Event: did-start-loading
     //
     webview.addEventListener("did-start-loading", function()
