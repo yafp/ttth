@@ -3,7 +3,7 @@
 # ttth
 ## changelog
 
-### ttth 1.3.0 (2019xxyy)
+### ttth 1.3.0 (20190603)
 ####  ```Added```
 * Services: Added new service 'Xing'. See [#26](https://github.com/yafp/ttth/issues/26)
 * Services: Added new service 'Google Drive'. See [#33](https://github.com/yafp/ttth/issues/33)
@@ -19,9 +19,11 @@
 * UI: Added placeholder text to input fields of electron-prompts. See [#28](https://github.com/yafp/ttth/issues/28)
 * UI: Remove tab text from Settings tab. Just show the icon. See [#29](https://github.com/yafp/ttth/issues/29)
 * UI: Window title now features the name of the frontmost service. See [#41](https://github.com/yafp/ttth/issues/41)
+* UI: Shrinked tabs to save space. See See [#45](https://github.com/yafp/ttth/issues/45)
 * Menu: Minimize is now CTRL + M (Window -> Minimize). See [#11](https://github.com/yafp/ttth/issues/11)
 * Menu: Maximize is now CTRL + K (Window -> Maximize). See [#11](https://github.com/yafp/ttth/issues/11)
 * Update search: manually searching for updates shows now always the result. See [#36](https://github.com/yafp/ttth/issues/36)
+* Electron: Update from 4.1.4 to 4.2.2.
 
 #### ```Removed```
 * UI: Removed transparency / opacity behaviour. See [#34](https://github.com/yafp/ttth/issues/34)
@@ -31,7 +33,8 @@
 * UI: Reloading resetted the application title. [#44](https://github.com/yafp/ttth/issues/44)
 * Services: Slack was loading the wrong url - which resulted in a white screen. See [#35](https://github.com/yafp/ttth/issues/35)
 * Services: Mattermost was not setting the correct url to the webview after enabling it. See [#38](https://github.com/yafp/ttth/issues/38)
-* Services: When a user tried to enable Mattermost or Slack and cancelled the prompt, the service status botton was still green. Is now fixed. See [#42](https://github.com/yafp/ttth/issues/42)
+* Services: When a user tried to enable Mattermost or Slack and cancelled the prompt, the service status button was still green. Is now fixed. See [#42](https://github.com/yafp/ttth/issues/42)
+* Services: Unread Message count for Whatsapp was broken. See [#46](https://github.com/yafp/ttth/issues/46)
 
 
 ### ttth 1.2.0 (20190524)
