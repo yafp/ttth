@@ -16,7 +16,8 @@ function serviceWhatsAppGetUnreadMessageCount()
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
 
     // try to count unread messages
-    const elements = document.querySelectorAll(".CxUIE, .unread");
+    //const elements = document.querySelectorAll(".CxUIE, .unread");
+    const elements = document.querySelectorAll('.P6z4j, .unread');
     console.log(elements);
 
     let count = 0;
@@ -47,4 +48,3 @@ ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
 });
-
