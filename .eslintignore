@@ -1,1 +1,5 @@
-/app/js/bootstrap/4.3.1/js/*
+/app/js/bootstrap/*
+/app/js/fontawesome-free-web/*
+/app/js/jquery/*
+/app/js/jquery.modalLoading/*
+/app/js/semver/*
