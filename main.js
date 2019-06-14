@@ -47,7 +47,7 @@ function createMenu()
             type: "separator"
         },
         {
-            role: 'quit',
+            role: "quit",
             label: "Exit",
             click() {
                 app.quit();
@@ -119,7 +119,7 @@ function createMenu()
             type: "separator"
         },
         {
-            role: 'reload',
+            role: "reload",
             label: "Reload",
             click() {
                 mainWindow.reload();
@@ -161,7 +161,7 @@ function createMenu()
         label: "Window",
         submenu: [
         {
-            role: 'togglefullscreen',
+            role: "togglefullscreen",
             label: "Toggle Fullscreen",
             click() {
                 if(mainWindow.isFullScreen())
@@ -177,17 +177,17 @@ function createMenu()
             accelerator: "F11" // is most likely predefined on osx - doesnt work
         },
         {
-            role: 'hide',
+            role: "hide",
             label: "Hide",
             click() {
-                mainWindow.hide()
+                mainWindow.hide();
                 //mainWindow.reload();
             },
             accelerator: "CmdOrCtrl+H",
             enabled: true
         },
         {
-            role: 'minimize',
+            role: "minimize",
             label: "Minimize",
             click() {
                 if(mainWindow.isMinimized())
@@ -220,12 +220,12 @@ function createMenu()
 
     // Menu: Help
     {
-        role: 'help',
+        role: "help",
         label: "Help",
         submenu: [
         // About
         {
-            role: 'about',
+            role: "about",
             label: "About",
             click() {
                 openAboutWindow({
@@ -316,7 +316,7 @@ function createMenu()
                 click() {
                     const ses = mainWindow.webContents.session;
                     ses.clearStorageData(() => {
-                        storages: ["localstorage"]
+                        storages: ["localstorage"];
                     });
                     mainWindow.reload();
                 },
