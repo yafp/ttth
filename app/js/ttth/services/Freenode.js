@@ -3,12 +3,14 @@
 * @summary Adds several event listener to Freenode WebView
 * @description Adds several event listener to Freenode WebView
 */
-function serviceFreenodeAddEventListener()
+function serviceFreenodeAddEventListener(serviceId)
 {
     console.log("serviceFreenodeAddEventListener ::: Start");
 
+    console.log("serviceWhatsAppAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("FreenodeWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
     // WebView Event: new-window
     //

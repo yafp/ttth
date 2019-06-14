@@ -3,12 +3,14 @@
 * @summary Adds several event listener to WhatsApp WebView
 * @description Adds several event listener to WhatsApp WebView
 */
-function serviceWhatsAppAddEventListener()
+function serviceWhatsAppAddEventListener(serviceId)
 {
     console.log("serviceWhatsAppAddEventListener ::: Start");
 
+    console.log("serviceWhatsAppAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("WhatsAppWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
 
     // run it periodically
@@ -93,7 +95,7 @@ function serviceWhatsAppAddEventListener()
         // update the badge
         if(event.channel != null)
         {
-            updateServiceBadge("WhatsApp", event.channel); 
+            updateServiceBadge(serviceId, event.channel);
         }
     });
 
@@ -118,7 +120,7 @@ function serviceWhatsAppRegister()
     console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
-    const { session } = require("electron");
+    const {session} = require("electron");
     var ses = remote.session.defaultSession; //Gets the default session
     //ses.clearCache();
     ses.flushStorageData();
@@ -148,7 +150,7 @@ function serviceWhatsAppInit(serviceName, serviceUrl)
 
     // re-set the src for the webview
     //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+    document.getElementById( "webview_whatsapp" ).loadURL(serviceUrl);
 
      // register
     serviceWhatsAppRegister();

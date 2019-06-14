@@ -3,12 +3,14 @@
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function serviceSlackAddEventListener()
+function serviceSlackAddEventListener(serviceId)
 {
     console.log("serviceSlackAddEventListener ::: Start");
 
+    console.log("serviceSlackAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("SlackWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
     // run it periodically
     //
@@ -78,7 +80,7 @@ function serviceSlackAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Slack", event.channel);
+        updateServiceBadge(serviceId, event.channel);
     });
 
     console.log("serviceSlackAddEventListener ::: End");

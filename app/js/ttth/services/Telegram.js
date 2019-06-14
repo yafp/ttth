@@ -3,12 +3,14 @@
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function serviceTelegramAddEventListener()
+function serviceTelegramAddEventListener(serviceId)
 {
     console.log("serviceTelegramAddEventListener ::: Start");
 
+    console.log("serviceTelegramAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("TelegramWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
     // run it periodically
     //
@@ -82,7 +84,7 @@ function serviceTelegramAddEventListener()
         // update the badge
         if(event.channel != null)
         {
-            updateServiceBadge("Telegram", event.channel);
+            updateServiceBadge(serviceId, event.channel);
         }
     });
 

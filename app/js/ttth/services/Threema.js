@@ -3,12 +3,14 @@
 * @summary Adds several event listener to Threema WebView
 * @description Adds several event listener to Threema WebView
 */
-function serviceThreemaAddEventListener()
+function serviceThreemaAddEventListener(serviceId)
 {
     console.log("serviceThreemaAddEventListener ::: Start");
 
+    console.log("serviceThreemaAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("ThreemaWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
 
     // run it periodically
@@ -70,7 +72,7 @@ function serviceThreemaAddEventListener()
         //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Threema", event.channel);
+        updateServiceBadge(serviceId, event.channel);
     });
 
     console.log("serviceThreemaAddEventListener ::: End");
@@ -92,4 +94,3 @@ function serviceThreemaInit(serviceName, serviceUrl)
 
     console.log("serviceThreemaInit ::: End");
 }
-

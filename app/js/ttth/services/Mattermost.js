@@ -3,12 +3,15 @@
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function serviceMattermostAddEventListener()
+function serviceMattermostAddEventListener(serviceId)
 {
     console.log("serviceMattermostAddEventListener ::: Start");
 
+    console.log("serviceMattermostAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
+
     // get webview
-    var webview = document.getElementById("MattermostWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
     // run it periodically
     //
@@ -82,9 +85,9 @@ function serviceMattermostAddEventListener()
         // update the badge
         if(event.channel != null)
         {
-            updateServiceBadge("Mattermost", event.channel);
+            updateServiceBadge(serviceId, event.channel);
         }
-        
+
     });
 
     console.log("serviceMattermostAddEventListener ::: End");

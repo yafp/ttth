@@ -3,12 +3,14 @@
 * @summary Adds several event listener to Xing WebView
 * @description Adds several event listener to Xing WebView
 */
-function serviceXingAddEventListener()
+function serviceXingAddEventListener(serviceId)
 {
     console.log("serviceXingAddEventListener ::: Start");
 
+    console.log("serviceXingAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("XingWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
 
     // run it periodically
@@ -66,11 +68,11 @@ function serviceXingAddEventListener()
     webview.addEventListener("ipc-message",function(event)
     {
         console.log("serviceXingAddEventListener ::: IPC message:");
-        console.log(event);
-        console.info(event.channel);
+        //console.log(event);
+        //console.info(event.channel);
 
         // update the badge
-        updateServiceBadge("Xing", event.channel);
+        updateServiceBadge(serviceId, event.channel);
     });
 
     console.log("serviceXingAddEventListener ::: End");

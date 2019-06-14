@@ -3,12 +3,14 @@
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
 */
-function serviceGoogleMailAddEventListener()
+function serviceGoogleMailAddEventListener(serviceId)
 {
     console.log("serviceGoogleMailAddEventListener ::: Start");
 
+    console.log("serviceGoogleMailAddEventListener ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
     // get webview
-    var webview = document.getElementById("GoogleMailWebview");
+    var webview = document.getElementById("webview_" + serviceId);
 
 
     // run it periodically
@@ -85,7 +87,7 @@ function serviceGoogleMailAddEventListener()
         console.log("serviceGoogleMailAddEventListener ::: IPC message:");
 
         // update the badge
-        updateServiceBadge("GoogleMail", event.channel);
+        updateServiceBadge(serviceId, event.channel);
     });
 
     console.log("serviceGoogleMailAddEventListener ::: End");
