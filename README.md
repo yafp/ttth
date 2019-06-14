@@ -49,23 +49,16 @@ It is:
 * Google Contacts
 * Google Drive
 * Google Keep
-* Google Mail <sub><sup>(1)<sub><sup>
-* Google Messages <sub><sup>(1, 2)<sub><sup>
+* Google Mail
+* Google Messages
 * Google Photos
-* Mattermost <sub><sup>(1)<sub><sup>
-* Slack <sub><sup>(1, 2)<sub><sup>
-* Telegram <sub><sup>(1)<sub><sup>
-* Threema <sub><sup>(1, 2)<sub><sup>
+* Mattermost
+* Slack
+* Telegram
+* Threema
 * Twitter
-* WhatsApp <sub><sup>(1)<sub><sup>
-* Xing <sub><sup>(2)<sub><sup>
-
-
-<sub><sup>
-**Legend:**  
-1 = featuring basic unread messages badge;  
-2 = experimental
-</sup></sub>
+* WhatsApp
+* Xing
 
 
 ## changelog
@@ -114,13 +107,13 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ## keyboard-shortcuts
 
-| Function                        | Linux                           | macOS                           | Windows   |
-| ------------------------------- | ------------------------------- | ------------------------------- | ----------
-| Homepage                        | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>        |
-| Report issue                    | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>        |
-| Toggle menubar                  | <kbd>F10</kbd>                  | -                               | <kbd>F10</kbd>            |
-| Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>       |
-| Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>       |
+| Function                        | Linux                           | macOS                           | Windows                         |
+| ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
+| Homepage                        | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   |
+| Report issue                    | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   |
+| Toggle menubar                  | <kbd>F10</kbd>                  | -                               | <kbd>F10</kbd>                  |
+| Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
+| Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
 | Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
 | Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>  | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
 | Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>  | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
