@@ -9,6 +9,7 @@
     "settingsSectionAboutButtonGitHub": "GitHub",
     "settingsSectionAboutButtonIssues": "Issues",
     "settingsSectionAboutButtonConsole": "Console",
-    "settingsSectionServices": "Services",
+    "settingsSectionServicesAdd": "Add service",
+    "settingsSectionServicesConfigured": "Configured services",
     "settingsSectionStartup": "Options"
 }
