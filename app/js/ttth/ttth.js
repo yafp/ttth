@@ -1,4 +1,34 @@
 /**
+* @name readLocalStorage
+* @summary Read from local storage
+* @description Reads a value stored in local storage (for a given key)
+* @param key - Name of local storage key
+* @return value - The value of the supplied key
+*/
+function readLocalStorage(key)
+{
+    var value = localStorage.getItem(key);
+    //console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    return(value);
+}
+
+
+/**
+* @name writeLocalStorage
+* @summary Write to local storage
+* @description Writes a value for a given key to local storage
+* @param key - Name of local storage key
+* @param value - New value
+*/
+function writeLocalStorage(key, value)
+{
+    //console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    localStorage.setItem(key, value);
+}
+
+
+
+/**
 * @name updateWindowTitle
 * @summary Triggers an update title function in main.js
 * @description Triggers an update title function in main.js. This is needed to update the app window title to display the current / frontmost service.
@@ -138,6 +168,7 @@ function updateTrayIconStatus()
     var overallUnreadMessages = 0;
     var curServiceUnreadMessageCount = 0;
     var serviceName = "";
+    var currentTabId;
 
     // loop over all tabs - count unread messages
     $("#myTabs li a").each(function()
@@ -207,35 +238,6 @@ function updateServiceBadge(serviceId, count)
 
     // Update tray icon status if needed
     updateTrayIconStatus();
-}
-
-
-/**
-* @name readLocalStorage
-* @summary Read from local storage
-* @description Reads a value stored in local storage (for a given key)
-* @param key - Name of local storage key
-* @return value - The value of the supplied key
-*/
-function readLocalStorage(key)
-{
-    var value = localStorage.getItem(key);
-    //console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
-    return(value);
-}
-
-
-/**
-* @name writeLocalStorage
-* @summary Write to local storage
-* @description Writes a value for a given key to local storage
-* @param key - Name of local storage key
-* @param value - New value
-*/
-function writeLocalStorage(key, value)
-{
-    //console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
-    localStorage.setItem(key, value);
 }
 
 
@@ -972,7 +974,7 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             $("#bt_" + configuredUserServiceConfigName).removeClass();
             $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-secondary btn-sm");
             // update button title
-            $("#bt_" + configuredUserServiceConfigName).prop('title', 'disabled');
+            $("#bt_" + configuredUserServiceConfigName).prop("title", "disabled");
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
             $("#statusIconService_" + configuredUserServiceConfigName).addClass("fas fa-toggle-off");
@@ -994,7 +996,7 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             $("#bt_" + configuredUserServiceConfigName).removeClass();
             $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-success btn-sm");
             // update button title
-            $("#bt_" + configuredUserServiceConfigName).prop('title', 'enabled');
+            $("#bt_" + configuredUserServiceConfigName).prop("title", "enabled");
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
             $("#statusIconService_" + configuredUserServiceConfigName).addClass("fas fa-toggle-on");
@@ -1393,7 +1395,7 @@ function initAvailableServicesSelection()
             dropdown.append($('<option></option>').attr('value', entry.id).text(entry.nameLong));
 
             counterSupportedServices = counterSupportedServices +1;
-        })
+        });
 
         console.log("initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _" + counterSupportedServices + "_ service types.");
 
