@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- CSS -->
+
     <!-- ttth -->
     <link href="css/ttth/ttth.css" rel="stylesheet">
 
@@ -39,7 +40,6 @@
 
     <!-- ttth: general -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
-    <script type="text/javascript" src="js/ttth/serviceList.js" async></script>
     <!-- ttth: service specific scripts -->
     <script type="text/javascript" src="js/ttth/services/Freenode.js" async></script>
     <script type="text/javascript" src="js/ttth/services/GitHub.js" async></script>
@@ -57,553 +57,186 @@
     <script type="text/javascript" src="js/ttth/services/Twitter.js" async></script>
     <script type="text/javascript" src="js/ttth/services/WhatsApp.js" async></script>
     <script type="text/javascript" src="js/ttth/services/Xing.js" async></script>
-
 </head>
 
 <body>
 
+    <!-- navigation -->
     <nav class="tabs">
         <!-- tabBar -->
         <div id="tabBar" >
             <!-- Tab Names -->
             <ul class="nav nav-tabs" id="myTabs" role="tablist">
-                <!-- Services -->
-
-
-                <!-- Tab: Freenode -->
-                <li class="nav-item small" id="menu_Freenode">
-                    <a class="nav-link my-ui-text" id="target_Freenode" href="#Freenode" role="tab" data-toggle="tab">
-                        <i class="fas fa-terminal"></i> Freenode <span id="badge_Freenode" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Freenode -->
-
-
-                <!-- Tab: GitHub -->
-                <li class="nav-item small" id="menu_GitHub">
-                    <a class="nav-link my-ui-text" id="target_GitHub" href="#GitHub" role="tab" data-toggle="tab">
-                        <i class="fab fa-github"></i> GitHub <span id="badge_GitHub" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /GitHub -->
-
-
-                <!-- Tab: Google Calendar -->
-                <li class="nav-item small" id="menu_GoogleCalendar">
-                    <a class="nav-link my-ui-text" id="target_GoogleCalendar" href="#GoogleCalendar" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Calendar <span id="badge_GoogleCalendar" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Calendar -->
-
-
-                <!-- Tab: Google Contacts -->
-                <li class="nav-item small" id="menu_GoogleContacts">
-                    <a class="nav-link my-ui-text" id="target_GoogleContacts" href="#GoogleContacts" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Contacts <span id="badge_GoogleContacts" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Contacts -->
-
-
-                 <!-- Tab: Google Drive -->
-                <li class="nav-item small" id="menu_GoogleDrive">
-                    <a class="nav-link my-ui-text" id="target_GoogleDrive" href="#GoogleDrive" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Drive <span id="badge_GoogleDrive" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Drive -->
-
-
-                <!-- Tab: Google Keep -->
-                <li class="nav-item small" id="menu_GoogleKeep">
-                    <a class="nav-link my-ui-text" id="target_GoogleKeep" href="#GoogleKeep" role="tab" data-toggle="tab">
-                    </i> <i class="fab fa-google"></i> Keep <span id="badge_GoogleKeep" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Keep -->
-
-
-                <!-- Tab:  Google Mail -->
-                 <li class="nav-item small" id="menu_GoogleMail">
-                    <a class="nav-link my-ui-text" id="target_GoogleMail" href="#GoogleMail" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Mail <span id="badge_GoogleMail" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Mail -->
-
-
-                <!-- Tab:  Google Messages -->
-                 <li class="nav-item small" id="menu_GoogleMessages">
-                    <a class="nav-link my-ui-text" id="target_GoogleMessages" href="#GoogleMessages" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Messages <span id="badge_GoogleMessages" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Messages -->
-
-
-                <!-- Tab:  Google Photos -->
-                 <li class="nav-item small" id="menu_GooglePhotos">
-                    <a class="nav-link my-ui-text" id="target_GooglePhotos" href="#GooglePhotos" role="tab" data-toggle="tab">
-                        <i class="fab fa-google"></i> Photos <span id="badge_GooglePhotos" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Google Photos -->
-
-
-                <!-- Tab:  Mattermost -->
-                <li class="nav-item small" id="menu_Mattermost">
-                    <a class="nav-link my-ui-text" id="target_Mattermost" href="#Mattermost" role="tab" data-toggle="tab">
-                        <i class="fas fa-comment"></i> Mattermost <span id="badge_Mattermost" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Mattermost-->
-
-
-                <!-- Tab:  Slack -->
-                <li class="nav-item small" id="menu_Slack">
-                    <a class="nav-link my-ui-text" id="target_Slack" href="#Slack" role="tab" data-toggle="tab">
-                        <i class="fab fa-slack"></i> Slack <span id="badge_Slack" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Slack -->
-
-
-                <!-- Tab:  Telegram -->
-                <li class="nav-item small" id="menu_Telegram">
-                    <a class="nav-link my-ui-text" id="target_Telegram" href="#Telegram" role="tab" data-toggle="tab">
-                        <i class="fab fa-telegram-plane"></i> Telegram <span id="badge_Telegram" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Telegram -->
-
-
-                <!-- Tab: Threema -->
-                <li class="nav-item small" id="menu_Threema">
-                    <a class="nav-link my-ui-text" id="target_Threema" href="#Threema" role="tab" data-toggle="tab">
-                        <i class="fas fa-comment-dots"></i> Threema <span id="badge_Threema" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Threema -->
-
-
-                <!-- Tab: Twitter -->
-                <li class="nav-item small" id="menu_Twitter">
-                    <a class="nav-link my-ui-text" id="target_Twitter" href="#Twitter" role="tab" data-toggle="tab">
-                        <i class="fab fa-twitter"></i> Twitter <span id="badge_Twitter" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Twitter -->
-
-
-                <!-- Tab: WhatsApp-->
-                <li class="nav-item small" id="menu_WhatsApp">
-                    <a class="nav-link my-ui-text" id="target_WhatsApp" href="#WhatsApp" role="tab" data-toggle="tab">
-                        <i class="fab fa-whatsapp"></i> WhatsApp <span id="badge_WhatsApp" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /WhatsApp-->
-
-
-                <!-- Tab: Xing-->
-                <li class="nav-item small" id="menu_Xing">
-                    <a class="nav-link my-ui-text" id="target_Xing" href="#Xing" role="tab" data-toggle="tab">
-                        <i class="fab fa-xing"></i> Xing <span id="badge_Xing" class="badge badge-success"></span>
-                    </a>
-                </li>
-                <!-- /Xing->
-
-
-                <!-- Tab: Settings -->
-                <li class="nav-item small ml-auto" id="menu_Settings"> <!-- ml-auto -->
+                <li class="nav-item small" id="menu_Settings">
                     <a class="nav-link my-ui-text active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
-                        <i class="fas fa-cog"></i> <span i18n-text=""><!-- Settings --></span>
+                        <i class="fas fa-cog"></i> <span i18n-text=""></span>
                     </a>
                 </li>
-                <!-- /Settings -->
-
             </ul>
             <!-- /Tab Names -->
-
         </div>
         <!-- /tabBar -->
     </nav>
+    <!-- /navigation -->
 
 
     <!-- container -->
-    <div class="container-fluid h-100 d-flex flex-column">
-
-         <!-- The Modal - used as error dialog. Is hidden out of the box-->
-         <!--
-        <div class="modal" id="myModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h4 class="modal-title modalSubject"></h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="modalMessage"></div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        -->
-        <!-- /Modal Error Dialog -->
-
+    <div class="container-fluid h-100 d-flex flex-column fuya">
 
         <!-- Tab Content -->
         <div class="row flex-fill">
 
             <!-- Tab panes -->
-            <div class="tab-content container-fluid">
-
-                <!-- TabContent: Freenode -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Freenode">
-                    <webview
-                        id="FreenodeWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Freenode -->
-
-
-                <!-- TabContent: GitHub -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GitHub">
-                    <webview
-                        id="GitHubWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /GitHub -->
-
-
-                <!-- TabContent: Google Calendar -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleCalendar">
-                    <webview
-                        id="GoogleCalendarWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Google Calendar -->
-
-
-                <!-- TabContent: Google Contacts -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleContacts">
-                    <webview
-                        id="GoogleContactsWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- Tab: Google Contacts -->
-
-
-                <!-- TabContent: Google Drive -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleDrive">
-                    <webview
-                        id="GoogleDriveWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- Tab: Google Drive -->
-
-
-                <!-- TabContent: Google Keep -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleKeep">
-                    <webview
-                        id="GoogleKeepWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Google Keep -->
-
-
-                <!-- TabContent: Google Mail -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleMail">
-                    <webview
-                        id="GoogleMailWebview"
-                        class="inner"
-                        preload="./js/ttth/services/GoogleMail_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Google Mail -->
-
-
-                <!-- TabContent: Google Messages -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GoogleMessages">
-                    <webview
-                        id="GoogleMessagesWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Google Messages -->
-
-
-                <!-- TabContent: Google Photos -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="GooglePhotos">
-                    <webview
-                        id="GooglePhotosWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Google Photos -->
-
-
-                <!-- TabContent: Mattermost -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Mattermost">
-                    <webview
-                        id="MattermostWebview"
-                        class="inner"
-                        preload="./js/ttth/services/Mattermost_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Mattermost -->
-
-
-                <!-- TabContent: Slack -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Slack">
-                    <webview
-                        id="SlackWebview"
-                        class="inner"
-                        preload="./js/ttth/services/Slack_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Slack -->
-
-
-                <!-- TabContent: Telegram -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Telegram">
-                    <webview
-                        id="TelegramWebview"
-                        name="TelegramWebview"
-                        class="inner"
-                        preload="./js/ttth/services/Telegram_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Telegram -->
-
-
-                <!-- TabContent: Threema -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Threema">
-                    <webview
-                        id="ThreemaWebview"
-                        class="inner"
-                        preload="./js/ttth/services/Threema_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Threema-->
-
-
-                <!-- TabContent: Twitter -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Twitter">
-                    <webview
-                        id="TwitterWebview"
-                        class="inner"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Twitter-->
-
-
-                <!-- TabContent: WhatsApp -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="WhatsApp">
-                    <webview
-                        id="WhatsAppWebview"
-                        name="WhatsAppWebview"
-                        class="inner"
-                        preload="./js/ttth/services/WhatsApp_inject.js"
-                        userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /WhatsApp-->
-
-
-                <!-- TabContent: Xing -->
-                <div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id="Xing">
-                    <webview
-                        id="XingWebview"
-                        name="XingWebview"
-                        class="inner"
-                        preload="./js/ttth/services/Xing_inject.js"
-                        src="">
-                    </webview>
-                </div>
-                <!-- /Xing-->
+            <div id="tabPanes" class="tab-content container-fluid ">
 
 
                 <!-- TabContent: Settings -->
                 <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="Settings">
 
-                    <!-- About -->
-                    <h3 class="my-ui-text" i18n-text="settingsSectionAbout"><!-- About --></h3>
-                    <!-- About: Description -->
-                    <div>
-                        <span class="my-ui-text small" i18n-text="settingsSectionAboutDescription" id="settingsAppDescription"><!-- Description --></span>
-                    </div>
+                    <div id="allSettings">
 
-                    <!-- List of buttons with links -->
-                    <div class="my-ui-text">
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
-                        <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
-                        <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="settingsSectionAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
-                    </div>
-                    <!-- /About -->
+                        <!-- About -->
+                        <h3 class="my-ui-text" i18n-text="settingsSectionAbout"><!-- About --></h3>
+                        <!-- About: Description -->
+                        <div>
+                            <span class="my-ui-text small" i18n-text="settingsSectionAboutDescription" id="settingsAppDescription"><!-- Description --></span>
+                        </div>
+
+                        <!-- List of buttons with links -->
+                        <div class="my-ui-text">
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
+                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
+                            <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="settingsSectionAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
+                        </div>
+                        <!-- /About -->
 
 
-                    <!-- Services -->
-                    <h3 class="my-ui-text" i18n-text="settingsSectionServices"><!-- Services --></h3>
+                        <!-- new Service Section -->
+                        <h3 class="my-ui-text" i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
+                        <div id="settingsServicesAdd">
+                            <div class="input-group mb-3">
+                                <select id="select_availableServices"  class="custom-select" name="select_availableServices">
+                                    <option value="" disabled selected>Please choose</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <button id="bt_addNewService" type="button" class="btn btn-secondary btn-sm" onClick="settingsUserAddNewService();">Add</button>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div id="settingsAvailableServices">
-                        <!-- dynamic service listing via initSettingsPage() && js/ttth/services.js -->
+                        <h3 class="my-ui-text" i18n-text="settingsSectionServicesConfigured"><!-- Configured services --></h3>
+                        <div id="settingsServicesConfigured">
+                            <!-- load dynamic from json file in user data -->
+                        </div>
+                        <!-- /Service Section -->
 
-                        <!-- Example Service: Github -->
-                        <!--
+
+
+
+                        <!-- Startup Options-->
+                        <h3 class="my-ui-text" i18n-text="settingsSectionStartup"><!-- Startup options --></h3>
+
+                        <!-- Setting: DefaultView-->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <input type="checkbox" id="GitHub" name="GitHub" onClick="toggleCheckbox('GitHub');">
+                                    <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="GitHub" disabled>
+                            <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default view on startup (fallback: Settings)" disabled>
 
-                             <div class="input-group-prepend">
-                                <button type="button" class="btn btn-danger btn-sm" id="bt_GitHub" title="disabled" disabled></button>
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <select id="selectDefaultView" name="selectDefaultView">
+                                        <option value="dummy" disabled selected>Please choose</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="Set default view" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="Reset default view" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
-                        -->
-                        <!-- /Service: GitHub -->
+                        <!-- /Setting: DefaultView -->
+
+
+                        <!-- Setting: Autostart -->
+                        <div class="input-group input-group-sm mb-1">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for following text input" onClick="settingToggleAutostart();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login" i18n-text="settingsSectionStartupInfo" disabled>
+                        </div>
+                        <!-- /Setting: Autostart-->
+
+
+                        <!-- Setting: AutostartMinimized -->
+                        <div class="input-group input-group-sm mb-1">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="settingToggleAutostartMinimized();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized on login" disabled>
+                        </div>
+                        <!-- /Setting: AutostartMinimized  -->
+
+
+                        <!-- Setting: HideMenubarOnStartup -->
+                        <div class="input-group input-group-sm mb-1" id="settingsSectionStartupHideMenubar">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar as default" disabled>
+                        </div>
+                        <!-- /Setting: HideMenubarOnStartup  -->
+
+
+                        <!-- Setting: overwrite hover-color -->
+                        <div class="input-group input-group-sm mb-1">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingUserColor" aria-label="Checkbox for following text input" onClick="settingToggleUserColor();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Color Style" disabled>
+
+                           <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <select id="selectUserColor" name="selectUserColor">
+                                        <option value="default.css" selected>Please choose</option>
+                                        <option value="default.css">Default</option>
+                                        <option value="aquamarine.css">aquamarine</option>
+                                        <option value="darkgray.css">darkgray</option>
+                                        <option value="darkorange.css">darkorange</option>
+                                        <option value="lightcoral.css">lightcoral</option>
+                                        <option value="moccasin.css">moccasin</option>
+                                        <option value="skyblue.css">skyblue</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-success btn-sm" id="bt_updateUserColor" title="Set user color" onClick="settingUserColorUpdate();"><i class="fas fa-save"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm" id="bt_resetUserColor" title="Reset user color" onClick="settingUserColorReset();"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <!-- /Setting: overwrite hover-color -->
+
                     </div>
-                    <!-- /Services -->
-
-
-
-                    <!-- Startup Options-->
-                    <h3 class="my-ui-text" i18n-text="settingsSectionStartup"><!-- Startup options --></h3>
-
-                    <!-- Setting: DefaultView-->
-                    <div class="input-group input-group-sm mb-1">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
-                            </div>
-                        </div>
-                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default view on startup (fallback: Settings)" disabled>
-
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <select id="selectDefaultView" name="selectDefaultView">
-                                    <option value="dummy" disabled selected>Please choose</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group-prepend">
-                            <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="Set default view" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
-                            <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="Reset default view" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                    <!-- /Setting: DefaultView -->
-
-
-                    <!-- Setting: Autostart -->
-                    <div class="input-group input-group-sm mb-1">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for following text input" onClick="settingToggleAutostart();">
-                            </div>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login" i18n-text="settingsSectionStartupInfo" disabled>
-                    </div>
-                    <!-- /Setting: Autostart-->
-
-
-
-                    <!-- Setting: AutostartMinimized -->
-                    <div class="input-group input-group-sm mb-1">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="settingToggleAutostartMinimized();">
-                            </div>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized on login" disabled>
-                    </div>
-                    <!-- /Setting: AutostartMinimized  -->
-
-
-                    <!-- Setting: HideMenubarOnStartup -->
-                    <div class="input-group input-group-sm mb-1" id="settingsSectionStartupHideMenubar">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
-                            </div>
-                        </div>
-                        <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar as default" disabled>
-                    </div>
-                    <!-- /Setting: HideMenubarOnStartup  -->
-
-
-                    <!-- Setting: overwrite hover-color -->
-                    <div class="input-group input-group-sm mb-1">
-                        <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <input type="checkbox" id="checkboxSettingUserColor" aria-label="Checkbox for following text input" onClick="settingToggleUserColor();">
-                            </div>
-                        </div>
-                        <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Color Style" disabled>
-
-                       <div class="input-group-prepend">
-                            <div class="input-group-text">
-                                <select id="selectUserColor" name="selectUserColor">
-                                    <option value="default.css" selected>Please choose</option>
-                                    <option value="default.css">Default</option>
-                                    <option value="aquamarine.css">aquamarine</option>
-                                    <option value="darkgray.css">darkgray</option>
-                                    <option value="darkorange.css">darkorange</option>
-                                    <option value="lightcoral.css">lightcoral</option>
-                                    <option value="moccasin.css">moccasin</option>
-                                    <option value="skyblue.css">skyblue</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="input-group-prepend">
-                            <button type="button" class="btn btn-success btn-sm" id="bt_updateUserColor" title="Set user color" onClick="settingUserColorUpdate();"><i class="fas fa-save"></i></button>
-                            <button type="button" class="btn btn-danger btn-sm" id="bt_resetUserColor" title="Reset user color" onClick="settingUserColorReset();"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
-                    <!-- /Setting: overwrite hover-color -->
-
-
                 </div>
                 <!-- /Tab: Settings -->
-
             </div>
             <!-- /Tab panes -->
-
         </div>
         <!-- /Tab Content -->
 
@@ -615,14 +248,11 @@
         <!-- update information -->
 
 
-
-
         <!-- operating systems information -->
         <div class="alert alert-success" role="alert" id="operatingSystemInformation">
              <i class="fas fa-spinner fa-spin"></i> checking support for used operating system ...
         </div>
         <!-- operating systems information -->
-
 
     </div>
     <!-- container -->
@@ -644,29 +274,8 @@ $( document ).ready(function()
     // start splash
     loading = $(document.body).modalLoading(100, '<img src="img/splash/icon_splash.png">');
 
-    updateWindowTitle("");
-
-    // Click handler for navigation/tabs
-    $('#myTabs a').click(function (link)
-    {
-        var target = link.currentTarget.innerText;
-
-        console.log("ready ::: Switching to tab: " + target);
-
-        // Update window title
-        updateWindowTitle(target);
-
-        // do page-specific things
-        if(target === "Photos")
-        {
-            console.log("index.html ::: Ugly hack to fix load issues for Service GooglePhotos");
-            serviceGooglePhotosInit("GooglePhotos", "https://photos.google.com/");
-        }
-
-    })
-
-    // init menu / navigation
-    initNavigationTabs();
+    // load the configured services
+    loadEnabledUserServices();
 
     // check operating system
     checkSupportedOperatingSystem();
@@ -683,9 +292,6 @@ $( document ).ready(function()
     // Translate using i18next
     localizeUserInterface();
 
-    // FIXME:
-    serviceWhatsAppRegister();
-
     // fade in the UI (1 sec animation)
     $('body').fadeIn(1000);
 
@@ -694,6 +300,29 @@ $( document ).ready(function()
     {
         loading.remove();
     }, 500);
+
+    updateWindowTitle("");
+
+    // Click handler for navigation/tabs
+    //
+    // FIXME - this currently only works for static tab (settings) - since #47
+    $('#myTabs a').click(function (link)
+    {
+        var target = link.currentTarget.innerText;
+
+        console.error("ready ::: Switching to tab: " + target);
+
+        // Update window title
+        updateWindowTitle(target);
+
+        // do page-specific things
+        if(target === "Photos")
+        {
+            console.log("index.html ::: Ugly hack to fix load issues for Service GooglePhotos");
+            serviceGooglePhotosInit("GooglePhotos", "https://photos.google.com/");
+        }
+    })
+
 
 });
 </script>
