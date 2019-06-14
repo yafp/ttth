@@ -1173,7 +1173,7 @@ function loadConfiguredUserServices()
 /**
 * @name settingsUserAddNewService
 * @summary user wants to configure a new service
-* @description
+* @description user wants to configure a new service
 */
 function settingsUserAddNewService()
 {
@@ -1283,7 +1283,7 @@ function settingsUserAddNewService()
 /**
 * @name createServiceFile
 * @summary creates the .json file for a new user configured service
-* @description
+* @description creates the .json file for a new user configured service
 * @param serviceType
 * @param serviceName
 * @param serviceIcon
@@ -1361,8 +1361,8 @@ function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, se
 
 /**
 * @name initAvailableServicesSelection
-* @summary
-* @description
+* @summary fills the select item in settings-page (which features all supported services)
+* @description fills the select item in settings-page (which features all supported services)
 */
 function initAvailableServicesSelection()
 {
