@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/Xing.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Twitter_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/Xing.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Twitter_inject.js</h1>
 
     
 
@@ -26,114 +26,39 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceXingAddEventListener
-* @summary Adds several event listener to Xing WebView
-* @description Adds several event listener to Xing WebView
-*/
-function serviceXingAddEventListener()
-{
-    console.log("serviceXingAddEventListener ::: Start");
-
-    // get webview
-    var webview = document.getElementById("XingWebview");
-
-
-    // run it periodically
-    //
-    //  5.000 =  5 sec
-    // 15.000 = 15 sec
-    var intervalID = setInterval(function()
-    {
-        webview.send("request");
-    }, 30000);
-
-
-    // WebView Event: did-start-loading
-    //
-    webview.addEventListener("did-start-loading", function()
-    {
-        console.log("serviceXingAddEventListener ::: did-start-loading.");
-
-        // Triggering search for unread messages
-        webview.send("request");
-    });
-
-
-    // WebView Event: dom-ready
-    //
-    webview.addEventListener("dom-ready", function()
-    {
-        console.log("serviceXingAddEventListener ::: DOM-Ready");
-
-        // Triggering search for unread messages
-        webview.send("request");
-    });
-
-
-    // WebView Event: did-frame-finish-load
-    //
-    webview.addEventListener("did-frame-finish-load", function()
-    {
-        console.log("serviceXingAddEventListener ::: did-frame-finish-load.");
-    });
-
-
-    // WebView Event: did-stop-loading
-    //
-    webview.addEventListener("did-stop-loading", function()
-    {
-        console.log("serviceXingAddEventListener ::: did-stop-loading");
-
-        // Triggering search for unread messages
-        webview.send("request");
-    });
-
-
-    // WebView Event:  ipc-message
-    webview.addEventListener("ipc-message",function(event)
-    {
-        console.log("serviceXingAddEventListener ::: IPC message:");
-        console.log(event);
-        console.info(event.channel);
-
-        // update the badge
-        updateServiceBadge("Xing", event.channel);
-    });
-
-    console.log("serviceXingAddEventListener ::: End");
-}
-
+            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
+const {ipcRenderer} = require("electron");
 
 
 /**
-* @name serviceXingInit
-* @summary Initializes the Xing Service
-* @description Initializes the Xing Service
+* @name serviceTwitterGetUnreadMessageCount
+* @summary Gets the amount of unread DMs of the service Twitter
+* @description Gets the amount of unread DMs of the service Twitter
 */
-function serviceXingInit(serviceName, serviceUrl)
+function serviceTwitterGetUnreadMessageCount()
 {
-    console.log("serviceXingInit ::: Start");
+    const getMessages = function getMessages()
+    {
+        let count = 0;
+        const elem = document.querySelector('a[href="/messages"] div div');
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
+        if (elem) {
+          count = parseInt(elem.innerText, 10);
+        }
 
-    console.log("serviceXingInit ::: End");
+        ipcRenderer.sendToHost(count);
+    };
+
+    console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + unreadCount);
 }
 
 
 
-// untested
-function serviceXingUnload()
+// Do something according to a request of your mainview
+ipcRenderer.on("request", function()
 {
-    var webview = document.getElementById("XingWebview");
-
-    // remove all event listeners by cloning?
-    var newWebView = webView.cloneNode(true);
-
-    //webview.removeEventListener('dom-ready', loadPage);
-}
+    ipcRenderer.sendToHost(serviceTwitterGetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>
