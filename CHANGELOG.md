@@ -3,6 +3,16 @@
 # ttth
 ## changelog
 
+### ttth 1.4.0 (2019xxyy) - CURRENT DEV
+####  ```Added```
+* Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
+* Services: Allow multiple instances of some services (example: Slack/Mattermost). See [#52](https://github.com/yafp/ttth/issues/52)
+
+#### ```Changed```
+* UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
+* Services: Redesign of services-definitions and user configured services. See [#47](https://github.com/yafp/ttth/issues/47)
+
+
 ### ttth 1.3.0 (20190603)
 ####  ```Added```
 * Services: Added new service 'Xing'. See [#26](https://github.com/yafp/ttth/issues/26)

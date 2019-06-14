@@ -114,22 +114,22 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ## keyboard-shortcuts
 
-| Function                        | Linux     | macOS     | Windows   |
-| ------------------------------- | --------- | --------- | ----------
-| Homepage                        | F1        | F1        | F1        |
-| Report issue                    | F2        | F2        | F2        |
-| Toggle menubar                  | F10       | -         | F10       |
-| Toggle Fullscreen mode          | F11       | F11       | F11       |
-| Toggle developer console        | F12       | F12       | F12       |
-| Show Settings                   | CTRL + ,  | CMD + ,   | CTRL + ,  |
-| Jump to next service            | CTRL + 🡆 | CMD + 🡆  | CTRL + 🡆  |
-| Jump to previous service        | CTRL + 🡄 | CMD + 🡄  | CTRL + 🡄  |
-| Reload current service          | CTRL + S  | CMD + S   | CTRL + S  |
-| Quit/exit the application       | CTRL + Q  | CMD + Q   | CTRL + Q  |
-| Reload the application          | CTRL + R  | CMD + R   | CTRL + R  |
-| Minimize window                 | CTRL + M  | CMD + M   | CTRL + M  |
-| Maximize window                 | CTRL + K  | CMD + K   | CTRL + K  |
-| Hide window                     | CTRL + H  | CMD + H   | CTRL + H  |
+| Function                        | Linux                           | macOS                           | Windows   |
+| ------------------------------- | ------------------------------- | ------------------------------- | ----------
+| Homepage                        | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>        |
+| Report issue                    | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>        |
+| Toggle menubar                  | <kbd>F10</kbd>                  | -                               | <kbd>F10</kbd>            |
+| Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>       |
+| Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>       |
+| Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
+| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>  | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
+| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>  | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
+| Reload current service          | <kbd>CTRL</kbd> + <kbd>S</kbd>  | <kbd>CMD</kbd> + <kbd>S</kbd>   | <kbd>CTRL</kbd> + <kbd>S</kbd>  |
+| Quit/exit the application       | <kbd>CTRL</kbd> + <kbd>Q</kbd>  | <kbd>CMD</kbd> + <kbd>Q</kbd>   | <kbd>CTRL</kbd> + <kbd>Q</kbd>  |
+| Reload the application          | <kbd>CTRL</kbd> + <kbd>R</kbd>  | <kbd>CMD</kbd> + <kbd>R</kbd>   | <kbd>CTRL</kbd> + <kbd>R</kbd>  |
+| Minimize window                 | <kbd>CTRL</kbd> + <kbd>M</kbd>  | <kbd>CMD</kbd> + <kbd>M</kbd>   | <kbd>CTRL</kbd> + <kbd>M</kbd>  |
+| Maximize window                 | <kbd>CTRL</kbd> + <kbd>K</kbd>  | <kbd>CMD</kbd> + <kbd>K</kbd>   | <kbd>CTRL</kbd> + <kbd>K</kbd>  |
+| Hide window                     | <kbd>CTRL</kbd> + <kbd>H</kbd>  | <kbd>CMD</kbd> + <kbd>H</kbd>   | <kbd>CTRL</kbd> + <kbd>H</kbd>  |
 
 
 ## faq
