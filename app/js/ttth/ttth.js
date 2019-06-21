@@ -85,8 +85,8 @@ function showNoty(type, message)
     new Noty({
         type: type,
         timeout: 3000,
-        theme: 'bootstrap-v4',
-        layout: 'bottom',
+        theme: "bootstrap-v4",
+        layout: "bottom",
         text: message,
     }).show();
 }
