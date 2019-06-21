@@ -1,5 +1,27 @@
 [
     {
+        "id": "discord",
+        "name": "Discord",
+        "nameLong": "Discord",
+        "icon": "fab fa-discord",
+        "description": "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.",
+        "notes": "",
+        "url": "https://discordapp.com/login",
+        "multiple": false,
+        "injectCode": ""
+    },
+    {
+        "id": "dropbox",
+        "name": "Dropbox",
+        "nameLong": "Dropbox",
+        "icon": "fab fa-dropbox",
+        "description": "Dropbox is a file hosting service operated by the American company Dropbox, Inc.",
+        "notes": "",
+        "url": "https://www.dropbox.com/h",
+        "multiple": false,
+        "injectCode": ""
+    },
+    {
         "id": "freenode",
         "name": "Freenode",
         "nameLong": "Freenode Web IRC",
@@ -7,7 +29,6 @@
         "description": "WebIRC Service for Freenode",
         "notes": "",
         "url": "https://webchat.freenode.net/",
-        "category": "irc",
         "multiple": false,
         "injectCode": ""
     },
@@ -19,7 +40,6 @@
         "description": "",
         "notes": "",
         "url": "https://github.com/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -31,7 +51,6 @@
         "description": "",
         "notes": "",
         "url": "https://calendar.google.com/calendar/r",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -43,7 +62,6 @@
         "description": "",
         "notes": "",
         "url": "https://contacts.google.com/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -55,7 +73,6 @@
         "description": "",
         "notes": "",
         "url": "https://drive.google.com/drive/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -67,7 +84,6 @@
         "description": "",
         "notes": "",
         "url": "https://keep.google.com/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -79,7 +95,6 @@
         "description": "",
         "notes": "",
         "url": "https://mail.google.com/mail/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -91,7 +106,6 @@
         "description": "",
         "notes": "",
         "url": "https://messages.google.com/web",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -103,7 +117,6 @@
         "description": "",
         "notes": "",
         "url": "https://photos.google.com/",
-        "category": "",
         "multiple": false,
         "injectCode": ""
     },
@@ -115,9 +128,19 @@
         "description": "Mattermost is a flexible, open source messaging platform that meets even the most demanding privacy and security standards",
         "notes": "",
         "url": "",
-        "category": "messaging",
         "multiple": true,
         "injectCode": "./js/ttth/services/Mattermost_inject.js"
+    },
+    {
+        "id": "nextcloud",
+        "name": "Nextcloud",
+        "nameLong": "Nextcloud",
+        "icon": "fas fa-cloud",
+        "description": "",
+        "notes": "",
+        "url": "",
+        "multiple": false,
+        "injectCode": ""
     },
     {
         "id": "slack",
@@ -127,7 +150,6 @@
         "description": "",
         "notes": "User has to define his workspace-name for each session",
         "url": "https://___.slack.com",
-        "category": "messaging",
         "multiple": true,
         "injectCode": ""
     },
@@ -139,7 +161,6 @@
         "description": "",
         "notes": "",
         "url": "https://web.telegram.org/",
-        "category": "messaging",
         "multiple": false,
         "injectCode": ""
     },
@@ -151,7 +172,6 @@
         "description": "",
         "notes": "",
         "url": "https://web.threema.ch/",
-        "category": "messaging",
         "multiple": false,
         "injectCode": ""
     },
@@ -163,7 +183,6 @@
         "description": "",
         "notes": "",
         "url": "https://mobile.twitter.com/",
-        "category": "messaging",
         "multiple": false,
         "injectCode": ""
     },
@@ -175,7 +194,6 @@
         "description": "With WhatsApp, you'll get fast, simple, secure messaging and calling for free*, available on phones all over the world.",
         "notes": "",
         "url": "https://web.whatsapp.com/",
-        "category": "messaging",
         "multiple": false,
         "injectCode": "./js/ttth/services/WhatsApp_inject.js"
     },
@@ -184,10 +202,9 @@
         "name": "Xing",
         "nameLong": "Xing",
         "icon": "fab fa-xing",
-        "description": "",
+        "description": "Career-oriented social networking",
         "notes": "",
         "url": "https://www.xing.com/messages/conversations",
-        "category": "messaging",
         "multiple": false,
         "injectCode": ""
     },
@@ -199,7 +216,6 @@
         "description": "A random url",
         "notes": "",
         "url": "",
-        "category": "",
         "multiple": true,
         "injectCode": ""
     }
