@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ttth</title>
+
+    <!-- ttth -->
+    <link href="css/ttth/ttth.css" rel="stylesheet">
+
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <link href="js/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <!-- JAVASCRIPT -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- jquery -->
+    <!-- 3.3.1 -->
+    <script type="text/javascript" src="js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <script type="text/javascript" src="js/bootstrap/4.3.1/js/bootstrap.min.js" async></script>
+
+    <!-- fontawesome -->
+    <!-- 5.8.1 -->
+    <script type="text/javascript" src="js/fontawesome-free-web/5.8.1/js/all.min.js" async></script>
+
+    <!-- ttth: general -->
+    <script type="text/javascript" src="js/ttth/ttth.js" async></script>
+</head>
+<body>
+    <div class="container">
+        <h3>Configure single service</h3>
+
+        <form>
+            <!-- Service id -->
+            <div class="form-group">
+                <label for="input_serviceId">ID</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceId" aria-describedby="emailHelp" placeholder="Service ID" disabled>
+            </div>
+
+            <!-- Service type -->
+            <div class="form-group" hidden>
+                <label for="input_serviceType">Type</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceType" aria-describedby="emailHelp" placeholder="Service Type" disabled>
+            </div>
+
+            <!-- Service name -->
+            <div class="form-group">
+                <label for="input_serviceName">Name</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceName" aria-describedby="emailHelp" placeholder="Service name">
+                <small id="emailHelp" class="form-text text-muted">Name is used for the service tab.</small>
+            </div>
+
+            <!-- service icon -->
+            <div class="form-group">
+                <label for="input_serviceIcon">Icon</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceIcon" placeholder="FontAwesome icon code">
+                <small id="emailHelp" class="form-text text-muted">FontAwesome icon name. Example: fab fa-dropbox.</small>
+            </div>
+
+            <!-- Service url -->
+            <div class="form-group">
+                <label for="input_serviceUrl">URL</label>
+                <input type="url" class="form-control form-control-sm" id="input_serviceUrl" aria-describedby="emailHelp" placeholder="Service URL">
+                <small id="emailHelp" class="form-text text-muted">The actual url for the service tab.</small>
+            </div>
+
+            <!-- Hidden: Service inject code -->
+            <div class="form-group" hidden>
+                <label for="input_serviceInjectCode">Inject code</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceInjectCode" aria-describedby="emailHelp" placeholder="Service Inject Code">
+            </div>
+
+            <!-- Hidden: Service enable status -->
+            <div class="form-group" hidden>
+                <label for="input_serviceEnableStatus">Enable status</label>
+                <input type="boolean" class="form-control form-control-sm" id="input_serviceEnableStatus" aria-describedby="emailHelp" placeholder="Service enable status">
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary" onClick="updateSingleServiceConfiguration();">Submit</button>
+
+            <!-- Cancel button -->
+            <button type="submit" class="btn btn-danger" onClick="closeSingleServiceConfiguratationWindow();">Cancel</button>
+        </form>
+    </div>
+</body>
+</html>
