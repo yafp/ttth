@@ -1,3 +1,97 @@
+function closeSingleServiceConfiguratationWindow()
+{
+    // hide the window
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("closeConfigureSingleServiceWindow");
+}
+
+
+// Storing the data from secondWindow
+function updateSingleServiceConfiguration()
+{
+    const storage = require('electron-json-storage');
+
+    // get values from secondWindow
+    var serviceId = $("#input_serviceId").val();
+    var serviceType = $("#input_serviceType").val(); // hidden
+    var serviceName = $("#input_serviceName").val();
+    var serviceIcon = $("#input_serviceIcon").val();
+    var serviceUrl = $("#input_serviceUrl").val();
+    var serviceInjectCode = $("#input_serviceInjectCode").val(); //hidden
+    var serviceEnableStatus = $("#input_serviceEnableStatus").val(); //hidden
+    if (serviceEnableStatus === "true")
+    {
+        serviceEnableStatus = true;
+    }
+    else {
+        serviceEnableStatus = false;
+    }
+
+    // update the config of the configured service (status)
+    storage.set(serviceId, {
+        "type": serviceType,
+        "name": serviceName,
+        "icon": serviceIcon,
+        "url": serviceUrl,
+        "injectCode": serviceInjectCode,
+        serviceEnableStatus: serviceEnableStatus
+    }, function(error)
+    {
+        if (error) throw error;
+
+    });
+
+    console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
+
+    closeSingleServiceConfiguratationWindow();
+}
+
+
+// Open secondWindow
+function configureSingleUserService(serviceId)
+{
+    console.log("configureSingleUserService ::: Trying to open service configure window for service: _" + serviceId + "_.");
+
+    //showNoty("success", "Configuring the service: " + serviceId);
+
+    // should open a popup kind window
+    //
+    // configure the following values:
+    // - name
+    // - nameLong
+    // - url
+    // - icon
+
+
+    // communication between windows:
+    // https://medium.com/@kahlil/how-to-communicate-between-two-electron-windows-166fdbcdc469
+
+    // send ipc to show second window
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("showConfigureSingleServiceWindow", serviceId);
+}
+
+
+
+/**
+* @name showNoty
+* @summary Shows a noty notification
+* @description Creates a notification using the noty framework
+* @param type - Options: alert, success, warning, error, info/information
+* @param message - notification text
+*/
+function showNoty(type, message)
+{
+    new Noty({
+        type: type,
+        timeout: 3000,
+        theme: 'bootstrap-v4',
+        layout: 'bottom',
+        text: message,
+    }).show();
+}
+
+
 /**
 * @name readLocalStorage
 * @summary Read from local storage
@@ -395,7 +489,7 @@ function settingDefaultViewUpdate()
     writeLocalStorage("settingDefaultView", newDefaultView);
 
     // send notification
-    sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
+    //sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 }
 
 
@@ -415,7 +509,7 @@ function settingDefaultViewReset()
     console.log("settingDefaultViewReset ::: Did reset the default view");
 
     // send notification
-    sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
+    //sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
 }
 
 
@@ -644,6 +738,9 @@ function validateConfiguredDefaultView()
 
             // Update select
             $("#selectDefaultView").val(curDefaultView);
+
+            // load the default view
+            loadDefaultView();
         }
         else
         {
@@ -708,6 +805,12 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
+        case "discord":
+            break;
+
+        case "dropbox":
+            break;
+
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceFreenodeAddEventListener(serviceId);
@@ -744,6 +847,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceMattermostAddEventListener(serviceId);
+            break;
+
+        case "nextcloud":
             break;
 
          case "slack":
@@ -825,9 +931,16 @@ function initSettingsPage()
     var curSettingUserColor;
     var curSettingUserColorCode;
 
+    // load all supported services to checklist
+    initAvailableServicesSelection();
+
+    // load all user enabled services
+    loadConfiguredUserServices();
+
+
     // Setting: DefaultView - now validate the optional configured default view
     //
-    validateConfiguredDefaultView();
+    //validateConfiguredDefaultView();
 
     // Setting: Autostart
     //
@@ -918,15 +1031,6 @@ function initSettingsPage()
 
         settingActivateUserColorCss("default.css");
     }
-
-    // 1.4.0
-    initAvailableServicesSelection();
-
-    // 1.4.0
-    loadConfiguredUserServices();
-
-    // 1.4.0
-    setAccesskeysForEnabledServices();
 }
 
 
@@ -1004,8 +1108,11 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             // set serviceEnableStatus variable
             serviceEnableStatus = true;
 
-            // add ta for this enabled service
+            // add tab for this enabled service
             addServiceTab(configuredUserServiceConfigName, type, name, icon, url, injectCode);
+
+            // add service to selectDefaultView
+            $("#selectDefaultView").append(new Option(name, configuredUserServiceConfigName));
 
             console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
         }
@@ -1062,6 +1169,10 @@ function loadEnabledUserServices()
                 {
                     console.log("loadEnabledUserServices ::: Trying to add the enabled service: _" + key + "_.");
                     addServiceTab(key, data[key]["type"], data[key]["name"], data[key]["icon"], data[key]["url"], data[key]["injectCode"]);
+
+                    // add service to selectDefaultView
+                    //$("#selectDefaultView").append(new Option(data[key]["name"], key));
+
                 }
                 else
                 {
@@ -1071,6 +1182,8 @@ function loadEnabledUserServices()
         }
         console.log("loadEnabledUserServices ::: Finished current service: " + data);
     });
+
+    //showNoty("success", "Finished loading all enabled user services.")
 }
 
 
@@ -1111,6 +1224,26 @@ function loadConfiguredUserServices()
     // empty the div
     $( "#settingsServicesConfigured" ).empty();
 
+
+
+
+
+    // reset the select for defaultview
+    // baustelle
+    //let dropdown = $('#selectDefaultView');
+    // Empty the select
+    //dropdown.empty();
+
+    // Add a disabled dummy/default entry
+    //dropdown.append('<option selected="true" disabled>Please choose</option>');
+
+
+
+
+
+
+
+
     // read all user service files
     storage.getAll(function(error, data)
     {
@@ -1140,12 +1273,12 @@ function loadConfiguredUserServices()
                     {
                         //$( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id="checkbox_'+ key + '" name=' + key + ' checked onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" disabled><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 else // ...even - add to existing row - in col 2
@@ -1155,12 +1288,12 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 serviceCount = serviceCount +1;
@@ -1268,7 +1401,6 @@ function settingsUserAddNewService()
 
                     }
                 }
-
             })
         });
     }
@@ -1439,6 +1571,9 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     console.log("addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
 
+    // add service to select for DefaultView
+    $("#selectDefaultView").append(new Option(serviceName, serviceId));
+
     loadServiceSpecificCode(serviceId, serviceType);
 }
 
@@ -1459,6 +1594,9 @@ function removeServiceTab(tabId)
     // remove tabcontent from tab pane
     $('#'+tabId).remove();
 
+    // remove service from select for DefaultView
+    $("#selectDefaultView option[value=" + tabId + "]").remove();
+
     console.log("removeServiceTab ::: Finished removing the tab: _" + tabId + "_.");
 }
 
@@ -1469,7 +1607,6 @@ function removeServiceTab(tabId)
 * @summary Assigns accesskeys for all service tabs
 * @description Assigns accesskeys for all service tabs
 */
-// FIXME: gets executed to early - new tabs arents added at this point
 function setAccesskeysForEnabledServices()
 {
     console.log("setAccesskeysForEnabledServices ::: Starting to define accesskeys for enabled services");
@@ -1479,15 +1616,25 @@ function setAccesskeysForEnabledServices()
     // get list of all visible service-tabs
     $("#myTabs li a").each(function()
     {
-        tabCounter = tabCounter +1;
         currentTabId = $(this).attr("id");
 
         if(currentTabId !== "target_Settings")
         {
+            tabCounter = tabCounter +1;
+
             console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
             $("#" + currentTabId).attr("accesskey", tabCounter);
         }
+        else {
+            console.log("setAccesskeysForEnabledServices ::: Ignoring settings tab.");
+        }
     });
+
+    // show notification
+    if(tabCounter > 0) // if at least 1 accesskey was set
+    {
+        showNoty("success", "Updating accesskeys for enabled service tabs.")
+    }
 
     console.log("setAccesskeysForEnabledServices ::: Finished assigning accesskeys for enabled services & related tabs");
 }
@@ -1566,7 +1713,6 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
-
 
     const storage = require('electron-json-storage');
 
@@ -1703,4 +1849,40 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 
     // jump to previous tab
     switchToService(serviceName);
+});
+
+
+
+
+// Call from main.js ::: serviceToConfigure (in secondWindow)
+//
+require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
+{
+    console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
+
+    const storage = require('electron-json-storage');
+
+    console.log("serviceToConfigure ::: Loading current values to UI");
+
+    storage.get(serviceId, function(error, data) {
+        if (error) throw error;
+
+        type = data.type;
+        name = data.name;
+        icon = data.icon;
+        url =  data.url;
+        injectCode = data.injectCode;
+        status = data.serviceEnableStatus;
+
+
+        // update UI of second window
+        $("#input_serviceId").val(serviceId);
+        $("#input_serviceType").val(type);
+        $("#input_serviceName").val(name);
+        $("#input_serviceIcon").val(icon);
+        $("#input_serviceUrl").val(url);
+        $("#input_serviceInjectCode").val(injectCode);
+        $("#input_serviceEnableStatus").val(status);
+
+    });
 });

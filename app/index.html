@@ -16,6 +16,11 @@
     <!-- 4.3.1 -->
     <link href="js/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- noty -->
+    <!-- 3.2.0-beta -->
+    <link href="js/noty/3.2.0-beta/noty.css" rel="stylesheet">
+    <link href="js/noty/3.2.0-beta/themes/bootstrap-v4.css" rel="stylesheet">
+
     <!-- JAVASCRIPT -->
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
@@ -30,6 +35,10 @@
     <!-- fontawesome -->
     <!-- 5.8.1 -->
     <script type="text/javascript" src="js/fontawesome-free-web/5.8.1/js/all.min.js" async></script>
+
+    <!-- noty -->
+    <!-- 3.2.0-beta -->
+    <script type="text/javascript" src="js/noty/3.2.0-beta/noty.min.js" async></script>
 
     <!-- semver -->
     <!-- 2.0.0 -->
@@ -123,7 +132,7 @@
                                     <option value="" disabled selected>Please choose</option>
                                 </select>
                                 <div class="input-group-append">
-                                    <button id="bt_addNewService" type="button" class="btn btn-secondary btn-sm" onClick="settingsUserAddNewService();">Add</button>
+                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();">Add</button>
                                 </div>
                             </div>
                         </div>
@@ -287,7 +296,7 @@ $( document ).ready(function()
     initSettingsPage();
 
     // Load default view
-    loadDefaultView();
+    //loadDefaultView();
 
     // Translate using i18next
     localizeUserInterface();
@@ -302,6 +311,27 @@ $( document ).ready(function()
     }, 500);
 
     updateWindowTitle("");
+
+
+
+
+
+    setTimeout(function()
+    {
+        $(document).trigger('afterready');
+    }, 1000);
+
+
+});
+
+
+$(document).bind('afterready', function()
+{
+    // call your code here that you want to run after all $(document).ready() calls have run
+    setAccesskeysForEnabledServices();
+
+    // validate default view
+    validateConfiguredDefaultView();
 
     // Click handler for navigation/tabs
     //
@@ -325,4 +355,6 @@ $( document ).ready(function()
 
 
 });
+
+
 </script>

@@ -557,6 +557,9 @@ function createWindow ()
         // store it to file in user data
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
+
+        // close secondWindow
+        secondWindow.close();
     });
 
 
@@ -570,6 +573,7 @@ function createWindow ()
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+
     });
 
 
@@ -612,6 +616,95 @@ function createWindow ()
         // update title
         mainWindow.setTitle(windowTitle);
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // FIXME: start to implement a second window to allow configuring a single service
+    //
+    //secondWindow = new BrowserWindow({ width: 800, height: 600 });
+    secondWindow = new BrowserWindow({
+        title: "${productName}",
+        frame: false, // false results in a borderless window
+        show: false, // hide as default
+        resizable: false,
+        width: 600,
+        height: 700,
+        minWidth: 600,
+        minHeight: 700,
+        backgroundColor: "#ffffff",
+        icon: path.join(__dirname, "app/img/icon/icon.png"),
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+
+    // load html form to the window
+    secondWindow.loadFile("app/config.html");
+
+    // hide menubar
+    secondWindow.setMenuBarVisibility(false);
+
+
+    // Emitted when the window gets a close event.(close VS closed)
+    //
+    secondWindow.on("close", function (event)
+    {
+        console.log("main.js ::: Event: secondWindow close");
+
+        // prevent the closing of the window
+        //event.preventDefault();
+
+        // just hide it - so it can re-opened
+        secondWindow.hide();
+    });
+
+
+    // Emitted when the window is shown
+    //
+    secondWindow.on("show", function (event)
+    {
+        console.log("main.js ::: Event: secondWindow show");
+        // load service data?
+    });
+
+
+
+    // Call from renderer: show configure single service window
+    //
+    ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
+
+        // show second window
+        secondWindow.show();
+
+        secondWindow.webContents.send('serviceToConfigure', arg);
+    });
+
+    // Call from renderer: hide configure single service window
+    //
+    ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
+
+        // hide second window
+        secondWindow.hide();
+    });
+
+
+
+
+
+
+
+
 
 }
 
