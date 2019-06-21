@@ -7,6 +7,10 @@
 ####  ```Added```
 * Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
 * Services: Allow multiple instances of some services (example: Slack/Mattermost). See [#52](https://github.com/yafp/ttth/issues/52)
+* Services: Added Dropbox as new service. See [#55](https://github.com/yafp/ttth/issues/55)
+* Services: Added Discord as new service. See [#59](https://github.com/yafp/ttth/issues/59)
+* Services: Added Nextcloud as new service. See [#57](https://github.com/yafp/ttth/issues/57)
+* UI: Added in-app notifications (using Noty). See [#58](https://github.com/yafp/ttth/issues/58)
 
 #### ```Changed```
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)

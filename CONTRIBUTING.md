@@ -15,7 +15,7 @@ email, or any other method with the owners of this repository before making a ch
 * Clone the repository: ```git clone https://github.com/yafp/ttth```
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
-* Run logre: ```npm start```
+* Run ttth: ```npm start```
 
 #### Install electron
 * Navigate to repository
@@ -32,11 +32,7 @@ email, or any other method with the owners of this repository before making a ch
 #### debug logging
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
-* Run logre: ```npm run start-debug```
-
-#### using devtron
-* Open Developer Tools
-* Enter: ```require('devtron').install()```
+* Run ttth: ```npm run start-debug```
 
 
 #### run test
@@ -47,11 +43,7 @@ email, or any other method with the owners of this repository before making a ch
 ### Adding functions
 
 #### adding a new service
-* Edit ```app/js/ttth/services.js``` and add the name and url of the new service to the related arrays.
-* Edit ```app/index.html``` and add the new service as
-  * ```nav-item```
-  * ```tab-pane```
-
+* Edit ```app/js/ttth/services.json``` and add the new service
 
 
 ### Preparing builds

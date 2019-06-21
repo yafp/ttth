@@ -43,6 +43,8 @@ It is:
 
 
 ## services
+* Discord
+* Dropbox
 * Freenode
 * GitHub
 * Google Calendar
@@ -53,6 +55,7 @@ It is:
 * Google Messages
 * Google Photos
 * Mattermost
+* Nextcloud
 * Slack
 * Telegram
 * Threema
@@ -115,8 +118,8 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 | Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
 | Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
 | Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
-| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>  | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
-| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>  | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
+| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  | <kbd>CMD</kbd> + <kbd>🡆</kbd>   | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
+| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  | <kbd>CMD</kbd> + <kbd>🡄</kbd>   | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
 | Reload current service          | <kbd>CTRL</kbd> + <kbd>S</kbd>  | <kbd>CMD</kbd> + <kbd>S</kbd>   | <kbd>CTRL</kbd> + <kbd>S</kbd>  |
 | Quit/exit the application       | <kbd>CTRL</kbd> + <kbd>Q</kbd>  | <kbd>CMD</kbd> + <kbd>Q</kbd>   | <kbd>CTRL</kbd> + <kbd>Q</kbd>  |
 | Reload the application          | <kbd>CTRL</kbd> + <kbd>R</kbd>  | <kbd>CMD</kbd> + <kbd>R</kbd>   | <kbd>CTRL</kbd> + <kbd>R</kbd>  |
@@ -146,10 +149,10 @@ Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\Curre
 ## known-issues
 ### general
 #### Function: Hide
-Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (ALT-TAB) to unhide it won't work so far.
+Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (<kbd>ALT</kbd>+<kbd>TAB</kbd>) to unhide it won't work so far.
 ### macOS
 #### Function Toggle Fullscreen
-F11 should toggle the fullscreen-mode, but macOS seems to use F11 system-wide for "Show Desktop".
+<kbd>F11</kbd> should toggle the fullscreen-mode, but macOS seems to use <kbd>F11</kbd> system-wide for "Show Desktop".
 As a result toggle fullscreen-mode on macOS only works by manually selecting it via the menu.
 
 
