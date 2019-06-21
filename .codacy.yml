@@ -4,6 +4,7 @@ exclude_paths:
   - 'app/js/fontawesome-free-web/**/*'
   - 'app/js/jquery/**/*'
   - 'app/js/jquery.modalLoading/*'
+  - 'app/js/noty/**/*'
   - 'app/js/semver/**/*'
   - 'docs/jsdocs/**/*'
   - '.github/**'
