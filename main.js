@@ -22,6 +22,7 @@ let mainWindow;
 let secondWindow;
 
 
+
 /**
 * @name createMenu
 * @summary Creates the menu
@@ -635,6 +636,8 @@ function createWindow ()
     //
     //secondWindow = new BrowserWindow({ width: 800, height: 600 });
     secondWindow = new BrowserWindow({
+        parent: mainWindow,
+        modal: true,
         title: "${productName}",
         frame: false, // false results in a borderless window
         show: false, // hide as default
@@ -652,6 +655,8 @@ function createWindow ()
 
     // load html form to the window
     secondWindow.loadFile("app/config.html");
+
+    secondWindow.setAlwaysOnTop(true, "floating");
 
     // hide menubar
     secondWindow.setMenuBarVisibility(false);
@@ -684,7 +689,6 @@ function createWindow ()
     // Call from renderer: show configure single service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
-
         // show second window
         secondWindow.show();
 

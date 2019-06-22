@@ -1,0 +1,35 @@
+/* ########################################################################## */
+/* COLOR VARIABLES */
+/* ########################################################################## */
+:root {
+    --color-main: white;
+    --color-menuBackground: #333;
+    --color-menuBackgroundHover: #111;
+    --color-menuForeground: white;
+    --color-menuForegroundHover: limegreen;
+}
+
+
+/* ########################################################################## */
+/* HTML/BODY/CONTAINER */
+/* ########################################################################## */
+html,body {
+    background-color: var(--color-main);
+
+    padding-right: 0; /*15px in bootstrap.css*/
+    padding-left: 0;  /*idem*/
+
+    margin: 0px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+
+
+/* ########################################################################## */
+/* UI TEXT - MAKE THEM NOT SELECTABLE */
+/* ########################################################################## */
+.my-ui-text {
+    -webkit-user-select:none;
+    -moz-user-select: none;
+}
