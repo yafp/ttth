@@ -24,9 +24,9 @@ describe("Application Window", function ()
     this.timeout(20000);
 
 
-    after(function () 
+    after(function ()
     {
-        if (this.app && this.app.isRunning()) 
+        if (this.app && this.app.isRunning())
         {
           return this.app.stop();
         }
@@ -63,7 +63,7 @@ describe("Application Window", function ()
 
     afterEach(function ()
     {
-        if (this.app && this.app.isRunning()) 
+        if (this.app && this.app.isRunning())
         {
             return this.app.stop();
         }
@@ -82,9 +82,9 @@ describe("Application Window", function ()
 
     // TEST: Check the window title
     //
-    it("Check window title", function () 
+    it("Check window title", function ()
     {
-        return this.app.client.browserWindow.getTitle().then(function(title) 
+        return this.app.client.browserWindow.getTitle().then(function(title)
         {
             expect(title).to.contain("ttth");
             return Promise.resolve();
@@ -93,14 +93,16 @@ describe("Application Window", function ()
 
 
     // TEST:
-    it("Fetch content of settings tab", function () 
+    /*
+    it("Fetch content of settings tab", function ()
     {
-        return this.app.client.getText("#target_Settings").then(function (tabText) 
+        return this.app.client.getText("#target_Settings").then(function (tabText)
         {
             expect(tabText).to.equal('');
             //console.log('The settings tab text is: _' + tabText + '_.')
         });
     })
+    */
 
 
 });
