@@ -1,12 +1,21 @@
+/**
+* @name closeSingleServiceConfiguratationWindow
+* @summary Triggers a function in main.js to close the single-service-configuration popup window
+* @description Triggers a function in main.js to close the single-service-configuration popup window
+*/
 function closeSingleServiceConfiguratationWindow()
 {
-    // hide the window
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("closeConfigureSingleServiceWindow");
 }
 
 
 // Storing the data from secondWindow
+/**
+* @name updateSingleServiceConfiguration
+* @summary Fetches the input values from the single-service-configuration popup window and updates the related service config
+* @description Fetches the input values from the single-service-configuration popup window and updates the related service config
+*/
 function updateSingleServiceConfiguration()
 {
     const storage = require('electron-json-storage');
@@ -38,7 +47,6 @@ function updateSingleServiceConfiguration()
     }, function(error)
     {
         if (error) throw error;
-
     });
 
     console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
@@ -47,30 +55,20 @@ function updateSingleServiceConfiguration()
 }
 
 
-// Open secondWindow
+/**
+* @name configureSingleUserService
+* @summary Triggers a function in main.js to  open the single-service-configuration popup window
+* @description Triggers a function in main.js to  open the single-service-configuration popup window
+* @param serviceId - id of the service
+*/
 function configureSingleUserService(serviceId)
 {
     console.log("configureSingleUserService ::: Trying to open service configure window for service: _" + serviceId + "_.");
-
-    //showNoty("success", "Configuring the service: " + serviceId);
-
-    // should open a popup kind window
-    //
-    // configure the following values:
-    // - name
-    // - nameLong
-    // - url
-    // - icon
-
-
-    // communication between windows:
-    // https://medium.com/@kahlil/how-to-communicate-between-two-electron-windows-166fdbcdc469
 
     // send ipc to show second window
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("showConfigureSingleServiceWindow", serviceId);
 }
-
 
 
 /**
@@ -80,11 +78,11 @@ function configureSingleUserService(serviceId)
 * @param type - Options: alert, success, warning, error, info/information
 * @param message - notification text
 */
-function showNoty(type, message)
+function showNoty(type, message, timeout = 3000)
 {
     new Noty({
         type: type,
-        timeout: 3000,
+        timeout: timeout,
         theme: "bootstrap-v4",
         layout: "bottom",
         text: message,
@@ -102,7 +100,7 @@ function showNoty(type, message)
 function readLocalStorage(key)
 {
     var value = localStorage.getItem(key);
-    //console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
     return(value);
 }
 
@@ -116,10 +114,9 @@ function readLocalStorage(key)
 */
 function writeLocalStorage(key, value)
 {
-    //console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
 }
-
 
 
 /**
@@ -487,9 +484,6 @@ function settingDefaultViewUpdate()
 
     // Store new default view in local storage
     writeLocalStorage("settingDefaultView", newDefaultView);
-
-    // send notification
-    //sendNotification("Settings", "Default view is now configured to load " + newDefaultView + " on startup.");
 }
 
 
@@ -507,9 +501,6 @@ function settingDefaultViewReset()
     $("#selectDefaultView").prop("selectedIndex",0);
 
     console.log("settingDefaultViewReset ::: Did reset the default view");
-
-    // send notification
-    //sendNotification("Settings", "Default view on startup is now set back to defaults (Settings).");
 }
 
 
@@ -526,8 +517,8 @@ function settingToggleMenubarVisibility()
 
         console.log("settingToggleMenubarVisibility ::: Hide menubar is enabled");
 
-        // send notification
-        sendNotification("Settings", "Hide menubar on startup is now enabled (Settings).");
+        // show noty
+        showNoty("success", "Hide menubar on startup is now enabled (Settings).");
     }
     else
     {
@@ -535,8 +526,8 @@ function settingToggleMenubarVisibility()
 
         console.log("settingToggleMenubarVisibility ::: Hide menubar is disabled");
 
-        // send notification
-        sendNotification("Settings", "Hide menubar on startup is now disabled (Settings).");
+        // show noty
+        showNoty("success", "Hide menubar on startup is now disabled (Settings).");
     }
 }
 
@@ -645,7 +636,7 @@ function searchUpdate(silent = true)
             $("#updateInformation").show();
 
             // send notification
-            sendNotification("Update available", "Version " + remoteAppVersionLatest + " is now available.");
+            //showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available.", 0);
         }
         else
         {
@@ -1182,8 +1173,6 @@ function loadEnabledUserServices()
         }
         console.log("loadEnabledUserServices ::: Finished current service: " + data);
     });
-
-    //showNoty("success", "Finished loading all enabled user services.")
 }
 
 
@@ -1633,7 +1622,7 @@ function setAccesskeysForEnabledServices()
     // show notification
     if(tabCounter > 0) // if at least 1 accesskey was set
     {
-        showNoty("success", "Updating accesskeys for enabled service tabs.")
+        //showNoty("success", "Updating accesskeys for enabled service tabs.")
     }
 
     console.log("setAccesskeysForEnabledServices ::: Finished assigning accesskeys for enabled services & related tabs");
