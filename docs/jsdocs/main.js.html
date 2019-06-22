@@ -47,6 +47,7 @@ var fs = require("fs");
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
+let secondWindow;
 
 
 /**
@@ -75,7 +76,7 @@ function createMenu()
             type: "separator"
         },
         {
-            role: 'quit',
+            role: "quit",
             label: "Exit",
             click() {
                 app.quit();
@@ -147,7 +148,7 @@ function createMenu()
             type: "separator"
         },
         {
-            role: 'reload',
+            role: "reload",
             label: "Reload",
             click() {
                 mainWindow.reload();
@@ -189,7 +190,7 @@ function createMenu()
         label: "Window",
         submenu: [
         {
-            role: 'togglefullscreen',
+            role: "togglefullscreen",
             label: "Toggle Fullscreen",
             click() {
                 if(mainWindow.isFullScreen())
@@ -205,17 +206,17 @@ function createMenu()
             accelerator: "F11" // is most likely predefined on osx - doesnt work
         },
         {
-            role: 'hide',
+            role: "hide",
             label: "Hide",
             click() {
-                mainWindow.hide()
+                mainWindow.hide();
                 //mainWindow.reload();
             },
             accelerator: "CmdOrCtrl+H",
             enabled: true
         },
         {
-            role: 'minimize',
+            role: "minimize",
             label: "Minimize",
             click() {
                 if(mainWindow.isMinimized())
@@ -248,12 +249,12 @@ function createMenu()
 
     // Menu: Help
     {
-        role: 'help',
+        role: "help",
         label: "Help",
         submenu: [
         // About
         {
-            role: 'about',
+            role: "about",
             label: "About",
             click() {
                 openAboutWindow({
@@ -344,7 +345,7 @@ function createMenu()
                 click() {
                     const ses = mainWindow.webContents.session;
                     ses.clearStorageData(() => {
-                        storages: ["localstorage"]
+                        storages: ["localstorage"];
                     });
                     mainWindow.reload();
                 },
@@ -585,6 +586,9 @@ function createWindow ()
         // store it to file in user data
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
+
+        // close secondWindow
+        secondWindow.close();
     });
 
 
@@ -598,6 +602,7 @@ function createWindow ()
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+
     });
 
 
@@ -640,6 +645,95 @@ function createWindow ()
         // update title
         mainWindow.setTitle(windowTitle);
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // FIXME: start to implement a second window to allow configuring a single service
+    //
+    //secondWindow = new BrowserWindow({ width: 800, height: 600 });
+    secondWindow = new BrowserWindow({
+        title: "${productName}",
+        frame: false, // false results in a borderless window
+        show: false, // hide as default
+        resizable: false,
+        width: 600,
+        height: 700,
+        minWidth: 600,
+        minHeight: 700,
+        backgroundColor: "#ffffff",
+        icon: path.join(__dirname, "app/img/icon/icon.png"),
+        webPreferences: {
+            nodeIntegration: true
+        }
+    });
+
+    // load html form to the window
+    secondWindow.loadFile("app/config.html");
+
+    // hide menubar
+    secondWindow.setMenuBarVisibility(false);
+
+
+    // Emitted when the window gets a close event.(close VS closed)
+    //
+    secondWindow.on("close", function (event)
+    {
+        console.log("main.js ::: Event: secondWindow close");
+
+        // prevent the closing of the window
+        //event.preventDefault();
+
+        // just hide it - so it can re-opened
+        secondWindow.hide();
+    });
+
+
+    // Emitted when the window is shown
+    //
+    secondWindow.on("show", function (event)
+    {
+        console.log("main.js ::: Event: secondWindow show");
+        // load service data?
+    });
+
+
+
+    // Call from renderer: show configure single service window
+    //
+    ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
+
+        // show second window
+        secondWindow.show();
+
+        secondWindow.webContents.send("serviceToConfigure", arg);
+    });
+
+    // Call from renderer: hide configure single service window
+    //
+    ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
+
+        // hide second window
+        secondWindow.hide();
+    });
+
+
+
+
+
+
+
+
 
 }
 
@@ -875,13 +969,13 @@ console.timeEnd("init");
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createServiceFile">createServiceFile</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleDriveInit">serviceGoogleDriveInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterAddEventListener">serviceTwitterAddEventListener</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#setAccesskeysForEnabledServices">setAccesskeysForEnabledServices</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleConfiguredUserServiceCheckbox">settingsToggleSingleConfiguredUserServiceCheckbox</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWindowTitle">updateWindowTitle</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createServiceFile">createServiceFile</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceFreenodeAddEventListener">serviceFreenodeAddEventListener</a></li><li><a href="global.html#serviceFreenodeInit">serviceFreenodeInit</a></li><li><a href="global.html#serviceGitHubInit">serviceGitHubInit</a></li><li><a href="global.html#serviceGoogleCalendarInit">serviceGoogleCalendarInit</a></li><li><a href="global.html#serviceGoogleContactsInit">serviceGoogleContactsInit</a></li><li><a href="global.html#serviceGoogleDriveInit">serviceGoogleDriveInit</a></li><li><a href="global.html#serviceGoogleKeepInit">serviceGoogleKeepInit</a></li><li><a href="global.html#serviceGoogleMailAddEventListener">serviceGoogleMailAddEventListener</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailInit">serviceGoogleMailInit</a></li><li><a href="global.html#serviceGoogleMessagesAddEventListener">serviceGoogleMessagesAddEventListener</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesInit">serviceGoogleMessagesInit</a></li><li><a href="global.html#serviceGooglePhotosInit">serviceGooglePhotosInit</a></li><li><a href="global.html#serviceMattermostAddEventListener">serviceMattermostAddEventListener</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackAddEventListener">serviceSlackAddEventListener</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackInit">serviceSlackInit</a></li><li><a href="global.html#serviceTelegramAddEventListener">serviceTelegramAddEventListener</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramInit">serviceTelegramInit</a></li><li><a href="global.html#serviceThreemaAddEventListener">serviceThreemaAddEventListener</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaInit">serviceThreemaInit</a></li><li><a href="global.html#serviceTwitterAddEventListener">serviceTwitterAddEventListener</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterInit">serviceTwitterInit</a></li><li><a href="global.html#serviceWhatsAppAddEventListener">serviceWhatsAppAddEventListener</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingAddEventListener">serviceXingAddEventListener</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#serviceXingInit">serviceXingInit</a></li><li><a href="global.html#setAccesskeysForEnabledServices">setAccesskeysForEnabledServices</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleConfiguredUserServiceCheckbox">settingsToggleSingleConfiguredUserServiceCheckbox</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUserColor">settingToggleUserColor</a></li><li><a href="global.html#settingUserColorReset">settingUserColorReset</a></li><li><a href="global.html#settingUserColorUpdate">settingUserColorUpdate</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWindowTitle">updateWindowTitle</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jun 14 2019 20:45:25 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Jun 22 2019 22:16:47 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
