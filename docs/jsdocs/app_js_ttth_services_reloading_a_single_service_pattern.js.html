@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/Telegram_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/reloading_a_single_service_pattern.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/Telegram_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/reloading_a_single_service_pattern.js</h1>
 
     
 
@@ -26,57 +26,21 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>// Get the ipcRenderer of electron
-const {ipcRenderer} = require("electron");
-
-
-/**
-* @name serviceTelegramGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Telegram
-* @description Gets the amount of unread messages of the service Telegram
+            <pre class="prettyprint source linenums"><code>/**
+* @name serviceMattermostInit
+* @summary Initializes the Mattermost Service
+* @description Initializes the Mattermost Service
 */
-function serviceTelegramGetUnreadMessageCount()
+function serviceMattermostInit(serviceName, serviceUrl)
 {
-    console.log("serviceTelegramGetUnreadMessageCount ::: Start");
+    console.log("serviceMattermostInit ::: Start");
 
-    var count = 0;
-    var intervalID = window.setInterval(myCallback, 50);
-    function myCallback()
-    {
-        var eventToClick = document.getElementsByClassName("im_dialog_badge badge");
-        if (eventToClick.length > 0)
-        {
-            //console.log(eventToClick);
-            for (var i = 0; i &lt; eventToClick.length; i++)
-            {
-                //console.log(eventToClick[i]);
+    // re-set the src for the webview
+    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
+    document.getElementById( serviceName + "Webview" ).loadURL(serviceUrl);
 
-                // Check if we count this element or not
-                if(!eventToClick[i].classList.contains("ng-hide")) // Count it
-                {
-                    count = count +1;
-                    console.log("serviceTelegramGetUnreadMessageCount ::: Found communication with unread messages. Current sum is: _" + count + "_.");
-                    
-                }
-            }
-            clearInterval(intervalID);
-        }
-
-        console.log("serviceTelegramGetUnreadMessageCount ::: Total Telegram chats with unread messages: _" + count + "_." );
-
-        // send back from webview to main
-        ipcRenderer.sendToHost(count);
-    }
+    console.log("serviceMattermostInit ::: End");
 }
-
-
-
-// Do something according to a request of your mainview
-//
-ipcRenderer.on("request", function()
-{
-    ipcRenderer.sendToHost(serviceTelegramGetUnreadMessageCount());
-});
 </code></pre>
         </article>
     </section>
