@@ -31,25 +31,38 @@
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
 </head>
 <body>
-    <div class="container">
-        <h3>Configure single service</h3>
 
+
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <!-- Links -->
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#" disabled><img src="img/icon/icon.png" height="32px"> Configure service</a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /Navbar -->
+
+
+    <div class="container">
         <form>
             <!-- Service id -->
             <div class="form-group">
-                <label for="input_serviceId">ID</label>
+                <label for="input_serviceId">Service ID</label>
                 <input type="text" class="form-control form-control-sm" id="input_serviceId" aria-describedby="emailHelp" placeholder="Service ID" disabled>
             </div>
 
             <!-- Service type -->
             <div class="form-group" hidden>
-                <label for="input_serviceType">Type</label>
+                <label for="input_serviceType">Service type</label>
                 <input type="text" class="form-control form-control-sm" id="input_serviceType" aria-describedby="emailHelp" placeholder="Service Type" disabled>
             </div>
 
             <!-- Service name -->
             <div class="form-group">
-                <label for="input_serviceName">Name</label>
+                <label for="input_serviceName">Service name</label>
                 <input type="text" class="form-control form-control-sm" id="input_serviceName" aria-describedby="emailHelp" placeholder="Service name">
                 <small id="emailHelp" class="form-text text-muted">Name is used for the service tab.</small>
             </div>
@@ -65,7 +78,7 @@
             <div class="form-group">
                 <label for="input_serviceUrl">URL</label>
                 <input type="url" class="form-control form-control-sm" id="input_serviceUrl" aria-describedby="emailHelp" placeholder="Service URL">
-                <small id="emailHelp" class="form-text text-muted">The actual url for the service tab.</small>
+                <small id="emailHelp" class="form-text text-muted">The actual url for the service.</small>
             </div>
 
             <!-- Hidden: Service inject code -->

@@ -1,4 +1,110 @@
 /**
+* @name addEventListenerForSingleService
+* @summary Adds several EventListeners to the webview of the service
+* @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
+*/
+function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false)
+{
+    console.log("addEventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
+    console.log("addEventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+
+    // get webview
+    var webview = document.getElementById("webview_" + serviceId);
+
+    // run it periodically
+    //
+    //  5.000 =  5 sec
+    var intervalID = setInterval(function()
+    {
+        webview.send("request");
+    }, 5000);
+
+
+    // WebView Events for UnreadMessageHandling
+    //
+    if(enableUnreadMessageHandling === true)
+    {
+        // WebView Event: did-start-loading
+        //
+        webview.addEventListener("did-start-loading", function()
+        {
+            console.log("addEventListenerForSingleService ::: did-start-loading.");
+
+            // Triggering search for unread messages
+            webview.send("request");
+        });
+
+
+        // WebView Event: dom-ready
+        //
+        webview.addEventListener("dom-ready", function()
+        {
+            console.log("addEventListenerForSingleService ::: DOM-Ready");
+
+            // Triggering search for unread messages
+            webview.send("request");
+        });
+
+
+        // WebView Event: did-stop-loading
+        //
+        webview.addEventListener("did-stop-loading", function()
+        {
+            console.log("addEventListenerForSingleService ::: did-stop-loading");
+
+            // Debug: Open a separate Console Window for this WebView
+            //webview.openDevTools();
+
+            // Triggering search for unread messages
+            webview.send("request");
+        });
+
+
+        // WebView Event:  ipc-message
+        webview.addEventListener("ipc-message",function(event)
+        {
+            console.log("addEventListenerForSingleService ::: IPC message: _" + event + "_.");
+            //console.log(event);
+            //console.info(event.channel);
+
+            // update the badge
+            if(event.channel != null)
+            {
+                updateServiceBadge(serviceId, event.channel);
+            }
+
+        });
+    }
+
+
+    // WebView Event: new-window / clicking links
+    //
+    if(enableLinkSupport == true)
+    {
+        webview.addEventListener("new-window", function(e)
+        {
+            console.log("addEventListenerForSingleService ::: new-window");
+
+            const BrowserWindow = require("electron");
+            const shell = require("electron").shell;
+            const protocol = require("url").parse(e.url).protocol;
+
+            if (protocol === "http:" || protocol === "https:")
+            {
+                shell.openExternal(e.url);
+            }
+        });
+    }
+
+
+
+
+    console.log("addEventListenerForSingleService ::: End");
+}
+
+
+
+/**
 * @name closeSingleServiceConfiguratationWindow
 * @summary Triggers a function in main.js to close the single-service-configuration popup window
 * @description Triggers a function in main.js to close the single-service-configuration popup window
@@ -160,94 +266,6 @@ function isMac()
     {
         return false;
     }
-}
-
-
-/**
-* @name settingUserColorUpdate
-* @summary Updates the default color
-* @description Updates the default color
-*/
-function settingUserColorUpdate()
-{
-    // get value from select
-    var newUserColor = $( "#selectUserColor" ).val();
-    console.log("settingUserColorUpdate ::: New CSS style is set to: " + newUserColor);
-
-    writeLocalStorage("settingUserColorName", newUserColor);
-
-    // reload page
-    location.reload();
-}
-
-
-/**
-* @name settingUserColorReset
-* @summary Resets back to default color
-* @description Resets back to default color
-*/
-function settingUserColorReset()
-{
-    writeLocalStorage("settingUserColorName", "default.css");
-
-    console.log("settingUserColorReset ::: Resetting user color style back to default");
-
-    $("#selectUserColor").val("default.css");
-
-    // reload page
-    location.reload();
-}
-
-
-/**
-* @name settingToggleUserColor
-* @summary Executed when user color checkbox in settings gets clicked
-* @description Executed when user color checkbox in settings gets clicked
-*/
-function settingToggleUserColor()
-{
-    if($("#checkboxSettingUserColor").prop("checked"))
-    {
-        console.log("settingToggleUserColor ::: User color style is enabled");
-
-        // user has enabled a custom user color
-        var userColor = $( "#selectUserColor" ).val();
-
-        // write general setting
-        writeLocalStorage("settingUserColor", true);
-
-        // write color code
-        writeLocalStorage("settingUserColorName", userColor);
-    }
-    else
-    {
-        console.log("settingToggleUserColor ::: User color style is disabled");
-
-        // user has NOT enabled a custom user color
-        // fallback to default css
-        writeLocalStorage("settingUserColor", false);
-
-        settingUserColorReset();
-    }
-}
-
-
-/**
-* @name settingActivateUserColorCss
-* @summary Activates a css style
-* @description Activates a css style
-* @param cssStyleName - Name of the css file
-*/
-function settingActivateUserColorCss(cssStyleName)
-{
-    console.log("settingActivateUserColorCss ::: Loading css style: " + cssStyleName);
-
-    // load custom css file
-    $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "css/ttth/styles/" + cssStyleName
-    }).appendTo("head");
 }
 
 
@@ -537,7 +555,7 @@ function settingToggleMenubarVisibility()
 /**
 * @name checkSupportedOperatingSystem
 * @summary Checks if the operating system is supported or not
-* @description Checks if the operating system is linux. Everything else is untested so far.
+* @description Checks if the operating system is linux, windows or macOS.
 */
 function checkSupportedOperatingSystem()
 {
@@ -553,24 +571,13 @@ function checkSupportedOperatingSystem()
         case "linux":
         case "darwin":
             console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
-
-            // hide OS information
-            $("#operatingSystemInformation").hide();
-
             break;
 
         default:
             // define message
             supportedOperatingSystemMessage = "Support for " + userPlatform + " is experimental.";
 
-            // update the os-info text
-            $("#operatingSystemInformation").html(supportedOperatingSystemMessage);
-
-            // change class
-            $("#operatingSystemInformation").attr("class", "alert alert-danger");
-
-            // show os information
-            $("#operatingSystemInformation").show();
+            showNoty("warning", supportedOperatingSystemMessage, 0);
 
             console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " - " + supportedOperatingSystemMessage );
     }
@@ -653,7 +660,7 @@ function searchUpdate(silent = true)
             else // when executed manually via menu -> user should see result of this search
             {
                 // update the updater-info text
-                $("#updateInformation").html('You are running the latest version of ttth.  <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+                $("#updateInformation").html('You are running the latest version of ttth. <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
             }
         }
 
@@ -806,7 +813,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceFreenodeAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, false, true);
             break;
 
         case "gitHub":
@@ -826,12 +833,12 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
         case "googleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceGoogleMailAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "googleMessages":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceGoogleMessagesAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "googlePhotos":
@@ -839,7 +846,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
         case "mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceMattermostAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "nextcloud":
@@ -847,33 +854,33 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
          case "slack":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceSlackAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "telegram":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceTelegramAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "threema":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceThreemaAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, false);
             break;
 
         case "twitter":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceTwitterAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, false);
             break;
 
         case "whatsapp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
-            serviceWhatsAppAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, true);
             break;
 
         case "xing":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            serviceXingAddEventListener(serviceId);
+            addEventListenerForSingleService(serviceId, true, false);
             break;
 
         default:
@@ -912,7 +919,6 @@ function initAvailableServicesSelection()
         $.each(data, function (key, entry)
         {
             // add option to select
-            //
             dropdown.append($('<option></option>').attr('value', entry.id).text(entry.nameLong));
 
             counterSupportedServices = counterSupportedServices +1;
@@ -935,26 +941,6 @@ function loadConfiguredUserServices()
 
     // empty the div
     $( "#settingsServicesConfigured" ).empty();
-
-
-
-
-
-    // reset the select for defaultview
-    // baustelle
-    //let dropdown = $('#selectDefaultView');
-    // Empty the select
-    //dropdown.empty();
-
-    // Add a disabled dummy/default entry
-    //dropdown.append('<option selected="true" disabled>Please choose</option>');
-
-
-
-
-
-
-
 
     // read all user service files
     storage.getAll(function(error, data)
@@ -1037,11 +1023,6 @@ function initSettingsPage()
     // load all user enabled services
     loadConfiguredUserServices();
 
-
-    // Setting: DefaultView - now validate the optional configured default view
-    //
-    //validateConfiguredDefaultView();
-
     // Setting: Autostart
     //
     curSettingAutostart = readLocalStorage("settingAutostart");
@@ -1104,32 +1085,6 @@ function initSettingsPage()
             $("#checkboxSettingHideMenubar").prop("checked", false);
             console.log("initSettingsPage ::: Show menubar");
         }
-    }
-
-    // Setting: UserColor
-    //
-    curSettingUserColor = readLocalStorage("settingUserColor");
-    if(curSettingUserColor === "true")
-    {
-        console.log("initSettingsPage ::: Setting UserColor is configured");
-
-        // activate checkbox
-        $("#checkboxSettingUserColor").prop("checked", true);
-
-        // read color code
-        curSettingUserColorCode = readLocalStorage("settingUserColorName");
-
-        // adjust select
-        $("#selectUserColor").val(curSettingUserColorCode);
-
-
-        settingActivateUserColorCss(curSettingUserColorCode);
-    }
-    else
-    {
-        console.log("initSettingsPage ::: Setting UserColor is not configured");
-
-        settingActivateUserColorCss("default.css");
     }
 }
 
@@ -1318,9 +1273,7 @@ function loadEnabledUserServices()
         if (error) throw error;
 
         // show object which contains all config files
-        //console.error(data);
         console.log("loadEnabledUserServices ::: Current service: " + data);
-        //console.error(typeof data);
 
         // loop over upper object
         for (var key in data)
@@ -1329,7 +1282,6 @@ function loadEnabledUserServices()
             {
                 console.log("loadEnabledUserServices ::: " + key);
                 console.log("loadEnabledUserServices ::: " + key + " -> " + data[key]);
-                //console.error(data[key]["type"]);
 
                 if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                 {
@@ -1338,7 +1290,6 @@ function loadEnabledUserServices()
 
                     // add service to selectDefaultView
                     //$("#selectDefaultView").append(new Option(data[key]["name"], key));
-
                 }
                 else
                 {
@@ -1506,8 +1457,6 @@ function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, se
     // generate a random id (used as filename) for the new service:
     var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     var newServiceId = randomString + "_" + serviceType
-
-
 
     const prompt = require("electron-prompt");
 
@@ -1813,8 +1762,6 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 });
 
 
-
-
 // Call from main.js ::: serviceToConfigure (in secondWindow)
 //
 require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
@@ -1834,7 +1781,6 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         url =  data.url;
         injectCode = data.injectCode;
         status = data.serviceEnableStatus;
-
 
         // update UI of second window
         $("#input_serviceId").val(serviceId);

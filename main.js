@@ -632,9 +632,8 @@ function createWindow ()
 
 
 
-    // FIXME: start to implement a second window to allow configuring a single service
+    // a second window to allow configuring a single service
     //
-    //secondWindow = new BrowserWindow({ width: 800, height: 600 });
     secondWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
@@ -643,9 +642,9 @@ function createWindow ()
         show: false, // hide as default
         resizable: false,
         width: 600,
-        height: 700,
+        height: 580,
         minWidth: 600,
-        minHeight: 700,
+        minHeight: 580,
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
@@ -668,9 +667,6 @@ function createWindow ()
     {
         console.log("main.js ::: Event: secondWindow close");
 
-        // prevent the closing of the window
-        //event.preventDefault();
-
         // just hide it - so it can re-opened
         secondWindow.hide();
     });
@@ -686,7 +682,7 @@ function createWindow ()
 
 
 
-    // Call from renderer: show configure single service window
+    // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
         // show second window
@@ -695,21 +691,13 @@ function createWindow ()
         secondWindow.webContents.send("serviceToConfigure", arg);
     });
 
-    // Call from renderer: hide configure single service window
+    // Call from renderer: hide configure-single-service window
     //
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
 
         // hide second window
         secondWindow.hide();
     });
-
-
-
-
-
-
-
-
 
 }
 
@@ -884,7 +872,6 @@ app.on("ready", function ()
     forceSingleAppInstance();
     createWindow();
     createMenu();
-
 });
 
 
