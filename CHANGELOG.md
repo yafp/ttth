@@ -10,11 +10,16 @@
 * Services: Added Dropbox as new service. See [#55](https://github.com/yafp/ttth/issues/55)
 * Services: Added Discord as new service. See [#59](https://github.com/yafp/ttth/issues/59)
 * Services: Added Nextcloud as new service. See [#57](https://github.com/yafp/ttth/issues/57)
+* Services: Added Custom service (user url). See [#64](https://github.com/yafp/ttth/issues/64)
 * UI: Added in-app notifications (using Noty). See [#58](https://github.com/yafp/ttth/issues/58)
 
 #### ```Changed```
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
 * Services: Redesign of services-definitions and user configured services. See [#47](https://github.com/yafp/ttth/issues/47)
+* Services: Generalize the event listener code for services. See [#63](https://github.com/yafp/ttth/issues/63)
+
+#### ```Removed```
+* UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)
 
 
 ### ttth 1.3.0 (20190603)
