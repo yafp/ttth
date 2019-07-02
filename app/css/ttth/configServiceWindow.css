@@ -1,0 +1,11 @@
+/* ########################################################################## */
+/* HTML/BODY/CONTAINER */
+/* ########################################################################## */
+html,body {
+    padding-right: 0; /*15px in bootstrap.css*/
+    padding-left: 0;  /*idem*/
+
+    margin: 0px;
+    margin-left: 0;
+    margin-right: 0;
+}
