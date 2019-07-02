@@ -19,7 +19,7 @@ var fs = require("fs");
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-let secondWindow;
+let configServiceWindow;
 
 
 
@@ -433,7 +433,7 @@ function createWindow ()
     //
     mainWindow.on("ready-to-show", function()
     {
-        console.log("main.js ::: Event: ready-to-show");
+        console.log("main.js ::: mainWindow ::: Event: ready-to-show");
         mainWindow.show();
         mainWindow.focus();
     });
@@ -442,7 +442,7 @@ function createWindow ()
     // When dom is ready
     //
     mainWindow.webContents.once("dom-ready", () => {
-        console.log("main.js ::: Event: dom-ready");
+        console.log("main.js ::: mainWindow ::: Event: dom-ready");
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
@@ -453,7 +453,7 @@ function createWindow ()
     // When page title gets changed
     //
     mainWindow.webContents.once("page-title-updated", () => {
-        console.log("main.js ::: Event: page-title-updated");
+        console.log("main.js ::: mainWindow ::: Event: page-title-updated");
     });
 
 
@@ -461,7 +461,7 @@ function createWindow ()
     //
     mainWindow.on("show", function()
     {
-        console.log("main.js ::: Event: show");
+        console.log("main.js ::: mainWindow ::: Event: show");
     });
 
 
@@ -469,7 +469,7 @@ function createWindow ()
     //
     mainWindow.on("blur", function()
     {
-        console.log("main.js ::: Event: blur");
+        console.log("main.js ::: mainWindow ::: Event: blur");
     });
 
 
@@ -477,7 +477,7 @@ function createWindow ()
     //
     mainWindow.on("focus", function()
     {
-        console.log("main.js ::: Event: focus");
+        console.log("main.js ::: mainWindow ::: Event: focus");
     });
 
 
@@ -485,7 +485,7 @@ function createWindow ()
     //
     mainWindow.on("enter-full-screen", function()
     {
-        console.log("main.js ::: Event: Enter fullscreen");
+        console.log("main.js ::: mainWindow ::: Event: Enter fullscreen");
     });
 
 
@@ -493,7 +493,7 @@ function createWindow ()
     //
     mainWindow.on("leave-full-screen", function()
     {
-        console.log("main.js ::: Event: Leave fullscreen");
+        console.log("main.js ::: mainWindow ::: Event: Leave fullscreen");
     });
 
 
@@ -501,7 +501,7 @@ function createWindow ()
     //
     mainWindow.on("resize", function()
     {
-        console.log("main.js ::: Event: resize");
+        console.log("main.js ::: mainWindow ::: Event: resize");
     });
 
 
@@ -509,7 +509,7 @@ function createWindow ()
     //
     mainWindow.on("hide", function()
     {
-        console.log("main.js ::: Event: hide");
+        console.log("main.js ::: mainWindow ::: Event: hide");
     });
 
 
@@ -517,7 +517,7 @@ function createWindow ()
     //
     mainWindow.on("maximize", function()
     {
-        console.log("main.js ::: Event: maximize");
+        console.log("main.js ::: mainWindow ::: Event: maximize");
     });
 
 
@@ -525,7 +525,7 @@ function createWindow ()
     //
     mainWindow.on("unmaximize", function()
     {
-        console.log("main.js ::: Event: unmaximize");
+        console.log("main.js ::: mainWindow ::: Event: unmaximize");
     });
 
 
@@ -533,7 +533,7 @@ function createWindow ()
     //
     mainWindow.on("minimize", function()
     {
-        console.log("main.js ::: Event: minimize");
+        console.log("main.js ::: mainWindow ::: Event: minimize");
     });
 
 
@@ -541,7 +541,7 @@ function createWindow ()
     //
     mainWindow.on("restore", function()
     {
-        console.log("main.js ::: Event: restore");
+        console.log("main.js ::: mainWindow ::: Event: restore");
     });
 
 
@@ -549,7 +549,7 @@ function createWindow ()
     //
     mainWindow.on("close", function ()
     {
-        console.log("main.js ::: Event: close");
+        console.log("main.js ::: mainWindow ::: Event: close");
 
         // get window position and size:
         var data = {
@@ -560,8 +560,8 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
-        // close secondWindow
-        secondWindow.close();
+        // close configServiceWindow
+        configServiceWindow.close();
     });
 
 
@@ -569,7 +569,7 @@ function createWindow ()
     //
     mainWindow.on("closed", function ()
     {
-        console.log("main.js ::: Event: closed");
+        console.log("main.js ::: mainWindow ::: Event: closed");
 
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
@@ -583,7 +583,7 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        console.log("main.js ::: Event: unresponsive");
+        console.log("main.js ::: mainWindow ::: Event: unresponsive");
     });
 
 
@@ -591,7 +591,7 @@ function createWindow ()
     //
     mainWindow.on("responsive", function ()
     {
-        console.log("main.js ::: Event: responsive");
+        console.log("main.js ::: mainWindow ::: Event: responsive");
     });
 
 
@@ -599,7 +599,7 @@ function createWindow ()
     //
     mainWindow.webContents.on("crashed", function ()
     {
-        console.log("main.js ::: Event: crashed");
+        console.log("main.js ::: mainWindow ::: Event: crashed");
     });
 
 
@@ -634,7 +634,7 @@ function createWindow ()
 
     // a second window to allow configuring a single service
     //
-    secondWindow = new BrowserWindow({
+    configServiceWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
         title: "${productName}",
@@ -653,30 +653,30 @@ function createWindow ()
     });
 
     // load html form to the window
-    secondWindow.loadFile("app/config.html");
+    configServiceWindow.loadFile("app/config.html");
 
-    secondWindow.setAlwaysOnTop(true, "floating");
+    configServiceWindow.setAlwaysOnTop(true, "floating");
 
     // hide menubar
-    secondWindow.setMenuBarVisibility(false);
+    configServiceWindow.setMenuBarVisibility(false);
 
 
     // Emitted when the window gets a close event.(close VS closed)
     //
-    secondWindow.on("close", function (event)
+    configServiceWindow.on("close", function (event)
     {
-        console.log("main.js ::: Event: secondWindow close");
+        console.log("main.js ::: configServiceWindow ::: Event: configServiceWindow close");
 
         // just hide it - so it can re-opened
-        secondWindow.hide();
+        configServiceWindow.hide();
     });
 
 
     // Emitted when the window is shown
     //
-    secondWindow.on("show", function (event)
+    configServiceWindow.on("show", function (event)
     {
-        console.log("main.js ::: Event: secondWindow show");
+        console.log("main.js ::: configServiceWindow ::: Event: configServiceWindow show");
         // load service data?
     });
 
@@ -685,10 +685,11 @@ function createWindow ()
     // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
-        // show second window
-        secondWindow.show();
 
-        secondWindow.webContents.send("serviceToConfigure", arg);
+        // show second window
+        configServiceWindow.show();
+
+        configServiceWindow.webContents.send("serviceToConfigure", arg);
     });
 
     // Call from renderer: hide configure-single-service window
@@ -696,7 +697,7 @@ function createWindow ()
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
 
         // hide second window
-        secondWindow.hide();
+        configServiceWindow.hide();
     });
 
 }

@@ -1,4 +1,86 @@
 /**
+* @name updateTrayIconStatus
+* @summary Updates the tray icon
+* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
+*/
+function updateTrayIconStatus()
+{
+    var overallUnreadMessages = 0;
+    var curServiceUnreadMessageCount = 0;
+    var serviceName = "";
+    var currentTabId;
+
+    // loop over all tabs - count unread messages
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        if(currentTabId !== "target_Settings")
+        {
+            // FIXME
+            currentTabId = currentTabId.replace("target_", "");
+
+            console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
+
+            curServiceUnreadMessageCount = 0; // reset to 0
+            curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
+            curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
+
+            // if the current service has a significant unread message count -> log it and add it to overall counter
+            if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
+            {
+                console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
+
+                // increate the overall counter
+                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+            }
+        }
+        else
+        {
+            console.log("updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
+        }
+    });
+
+    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
+
+    const {ipcRenderer} = require("electron");
+    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
+    {
+        // tray should show the default icon
+        ipcRenderer.send("changeTrayIconToDefault");
+    }
+    else
+    {
+        // tray should show that we got unread messages
+        ipcRenderer.send("changeTrayIconToUnreadMessages");
+    }
+}
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceId - ID of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceId, count)
+{
+    console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
+
+    if( (count === null) || (count === 0) || (count === "null"))
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceId).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+}
+
+
+/**
 * @name addEventListenerForSingleService
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
@@ -79,7 +161,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
 
     // WebView Event: new-window / clicking links
     //
-    if(enableLinkSupport == true)
+    if(enableLinkSupport === true)
     {
         webview.addEventListener("new-window", function(e)
         {
@@ -95,8 +177,6 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
             }
         });
     }
-
-
 
 
     console.log("addEventListenerForSingleService ::: End");
@@ -116,7 +196,7 @@ function closeSingleServiceConfiguratationWindow()
 }
 
 
-// Storing the data from secondWindow
+// Storing the data from configServiceWindow
 /**
 * @name updateSingleServiceConfiguration
 * @summary Fetches the input values from the single-service-configuration popup window and updates the related service config
@@ -126,7 +206,7 @@ function updateSingleServiceConfiguration()
 {
     const storage = require('electron-json-storage');
 
-    // get values from secondWindow
+    // get values from configServiceWindow
     var serviceId = $("#input_serviceId").val();
     var serviceType = $("#input_serviceType").val(); // hidden
     var serviceName = $("#input_serviceName").val();
@@ -186,7 +266,7 @@ function configureSingleUserService(serviceId)
 */
 function showNoty(type, message, timeout = 3000)
 {
-    const Noty = require('noty');
+    //const Noty = require('noty');
 
     new Noty({
         type: type,
@@ -268,88 +348,6 @@ function isMac()
     }
 }
 
-
-/**
-* @name updateTrayIconStatus
-* @summary Updates the tray icon
-* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
-*/
-function updateTrayIconStatus()
-{
-    var overallUnreadMessages = 0;
-    var curServiceUnreadMessageCount = 0;
-    var serviceName = "";
-    var currentTabId;
-
-    // loop over all tabs - count unread messages
-    $("#myTabs li a").each(function()
-    {
-        currentTabId = $(this).attr("id");
-
-        if(currentTabId !== "target_Settings")
-        {
-            // FIXME
-            currentTabId = currentTabId.replace("target_", "");
-
-            console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
-
-            curServiceUnreadMessageCount = 0; // reset to 0
-            curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
-            curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
-
-            // if the current service has a significant unread message count -> log it and add it to overall counter
-            if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
-            {
-                console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
-
-                // increate the overall counter
-                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
-            }
-        }
-        else
-        {
-            console.log("updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
-        }
-    });
-
-    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
-
-    const {ipcRenderer} = require("electron");
-    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
-    {
-        // tray should show the default icon
-        ipcRenderer.send("changeTrayIconToDefault");
-    }
-    else
-    {
-        // tray should show that we got unread messages
-        ipcRenderer.send("changeTrayIconToUnreadMessages");
-    }
-}
-
-
-/**
-* @name updateServiceBadge
-* @summary Updates the badge of a single service
-* @description gets the name of a service and its current unread message count. Updates the badge of the related service
-* @param serviceId - ID of the service
-* @param count - Amount of unread messages
-*/
-function updateServiceBadge(serviceId, count)
-{
-    console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
-
-    if( (count === null) || (count === 0) || (count === "null"))
-    {
-        count = "";
-    }
-
-    // update the badge
-    $( "#badge_" + serviceId).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-}
 
 
 /**
@@ -676,6 +674,8 @@ function searchUpdate(silent = true)
         console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
 
         $("#updateInformation").hide();
+
+        showNoty("error", "Checking " + url + " for available releases failed. Got network issues?");
     })
 
     .always(function()
@@ -901,7 +901,7 @@ function initAvailableServicesSelection()
     var counterSupportedServices = 0;
 
     // get reference to select which contains all supported service type definitions
-    let dropdown = $('#select_availableServices');
+    let dropdown = $("#select_availableServices");
 
     // Empty the select
     dropdown.empty();
@@ -919,7 +919,7 @@ function initAvailableServicesSelection()
         $.each(data, function (key, entry)
         {
             // add option to select
-            dropdown.append($('<option></option>').attr('value', entry.id).text(entry.nameLong));
+            dropdown.append($("<option></option>").attr("value", entry.id).text(entry.nameLong));
 
             counterSupportedServices = counterSupportedServices +1;
         });
@@ -1100,10 +1100,10 @@ function removeServiceTab(tabId)
     console.log("removeServiceTab ::: Starting to remove the tab: _" + tabId + "_.");
 
     // remove item from menu
-    $('#menu_'+tabId).remove();
+    $("#menu_" + tabId).remove();
 
     // remove tabcontent from tab pane
-    $('#'+tabId).remove();
+    $("#" + tabId).remove();
 
     // remove service from select for DefaultView
     $("#selectDefaultView option[value=" + tabId + "]").remove();
@@ -1165,8 +1165,8 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
 {
     console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     var serviceEnableStatus;
@@ -1336,15 +1336,15 @@ function settingsUserAddNewService()
 {
     console.log("settingsUserAddNewService ::: Starting to add a new user configured service.");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     var serviceAllowsMultipleInstances;
 
     // get selected option from #select_availableServices
     var userSelectedService = $( "#select_availableServices" ).val();
-    console.log(userSelectedService);
+    console.log("settingsUserAddNewService ::: Selected service type is: _" + userSelectedService + "_.");
 
     if( userSelectedService !== null )
     {
@@ -1394,14 +1394,14 @@ function settingsUserAddNewService()
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
-                                        const { dialog } = require('electron').remote;
+                                        const { dialog } = require("electron").remote;
 
                                         const options = {
-                                            type: 'warning',
-                                            buttons: ['OK'],
+                                            type: "warning",
+                                            buttons: ["OK"],
                                             icon: __dirname + "/img/icon/icon.png",
                                             defaultId: 0,
-                                            title: 'Adding a service failed',
+                                            title: "Adding a service failed",
                                             message: "There is already a configured service of the type " + userSelectedService + ".",
                                             //detail: 'It does not really matter',
                                             //checkboxLabel: 'Remember my answer',
@@ -1429,6 +1429,7 @@ function settingsUserAddNewService()
     else
     {
         console.warn("settingsUserAddNewService ::: No service type selected. Unable to add a new service.");
+        showNoty("error", "No service type selected. Unable to add a new service.");
     }
 }
 
@@ -1450,8 +1451,8 @@ function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, se
 {
     console.log("createServiceFile ::: Starting to create a new .json file for a user configured service");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     // generate a random id (used as filename) for the new service:
@@ -1762,15 +1763,14 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 });
 
 
-// Call from main.js ::: serviceToConfigure (in secondWindow)
+// Call from main.js ::: serviceToConfigure (in configServiceWindow)
 //
 require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
 {
-    console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
-
     const storage = require('electron-json-storage');
 
-    console.log("serviceToConfigure ::: Loading current values to UI");
+    console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
+    console.log("serviceToConfigure ::: Loading current values from service config");
 
     storage.get(serviceId, function(error, data) {
         if (error) throw error;
@@ -1790,6 +1790,11 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         $("#input_serviceUrl").val(url);
         $("#input_serviceInjectCode").val(injectCode);
         $("#input_serviceEnableStatus").val(status);
+
+        // hide Add-new-service button
+        $("bt_addNewService").hide();
+
+        console.log("serviceToConfigure ::: Loaded current values for this service to UI");
 
     });
 });
