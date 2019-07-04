@@ -17,6 +17,9 @@
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
 * Services: Redesign of services-definitions and user configured services. See [#47](https://github.com/yafp/ttth/issues/47)
 * Services: Generalize the event listener code for services. See [#63](https://github.com/yafp/ttth/issues/63)
+* Dependencies
+  * Updated electron from 4.2.0 to 4.2.6. [#66](https://github.com/yafp/ttth/issues/66)
+  * Updated electron-builder from 20.40.2 to 20.44.4. [#67](https://github.com/yafp/ttth/issues/67)
 
 #### ```Removed```
 * UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)

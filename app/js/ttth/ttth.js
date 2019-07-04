@@ -178,10 +178,8 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         });
     }
 
-
     console.log("addEventListenerForSingleService ::: End");
 }
-
 
 
 /**
@@ -196,6 +194,17 @@ function closeSingleServiceConfiguratationWindow()
 }
 
 
+/**
+* @name createSingleServiceConfiguration
+* @summary Fetches the input values from the single-service-configuration popup window and creates a related service config
+* @description Fetches the input values from the single-service-configuration popup window and creates a related service config
+*/
+function createSingleServiceConfiguration()
+{
+    alert("dummy")
+}
+
+
 // Storing the data from configServiceWindow
 /**
 * @name updateSingleServiceConfiguration
@@ -204,7 +213,7 @@ function closeSingleServiceConfiguratationWindow()
 */
 function updateSingleServiceConfiguration()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     // get values from configServiceWindow
     var serviceId = $("#input_serviceId").val();
@@ -266,7 +275,7 @@ function configureSingleUserService(serviceId)
 */
 function showNoty(type, message, timeout = 3000)
 {
-    //const Noty = require('noty');
+    //const Noty = require("noty");
 
     new Noty({
         type: type,
@@ -805,30 +814,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
-        case "discord":
-            break;
-
-        case "dropbox":
-            break;
-
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             addEventListenerForSingleService(serviceId, false, true);
-            break;
-
-        case "gitHub":
-            break;
-
-        case "googleCalendar":
-            break;
-
-        case "googleContacts":
-            break;
-
-        case "googleDrive":
-            break;
-
-        case "googleKeep":
             break;
 
         case "googleMail":
@@ -841,15 +829,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
             addEventListenerForSingleService(serviceId, true, true);
             break;
 
-        case "googlePhotos":
-            break;
-
         case "mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             addEventListenerForSingleService(serviceId, true, true);
-            break;
-
-        case "nextcloud":
             break;
 
          case "slack":
@@ -908,7 +890,7 @@ function initAvailableServicesSelection()
 
     // Add a disabled dummy/default entry
     dropdown.append('<option selected="true" disabled>Choose a service</option>');
-    dropdown.prop('selectedIndex', 0);
+    dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
     const url = __dirname + "/js/ttth/services.json";
@@ -937,7 +919,7 @@ function initAvailableServicesSelection()
 */
 function loadConfiguredUserServices()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     // empty the div
     $( "#settingsServicesConfigured" ).empty();
@@ -1143,7 +1125,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     console.log("addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
-    $( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="inner" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
+    $( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
     console.log("addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     console.log("addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
@@ -1263,7 +1245,7 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
 */
 function loadEnabledUserServices()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     console.log("loadEnabledUserServices ::: Starting to fetch all user configured service files");
 
@@ -1315,7 +1297,7 @@ function deleteConfiguredService(serviceId)
     removeServiceTab(serviceId);
 
     // delete config
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
     storage.remove(serviceId, function(error) {
       if (error) throw error;
     });
@@ -1418,7 +1400,7 @@ function settingsUserAddNewService()
                                 }
                             }
 
-                            createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode)
+                            createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
                         });
 
                     }
@@ -1457,7 +1439,7 @@ function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, se
 
     // generate a random id (used as filename) for the new service:
     var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var newServiceId = randomString + "_" + serviceType
+    var newServiceId = randomString + "_" + serviceType;
 
     const prompt = require("electron-prompt");
 
@@ -1561,7 +1543,7 @@ function localizeUserInterface()
     var userLang = navigator.language || navigator.userLanguage;
 
     // for development screenshot - overwrite the language to EN if the project is not packaged
-    const isDev = require('electron-is-dev');
+    const isDev = require("electron-is-dev");
     if (isDev)
     {
         userLang = "en";
@@ -1625,7 +1607,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     storage.get(tabValue, function(error, data) {
         if (error) throw error;
@@ -1767,7 +1749,7 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 //
 require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
     console.log("serviceToConfigure ::: Loading current values from service config");
