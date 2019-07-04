@@ -27,6 +27,88 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+* @name updateTrayIconStatus
+* @summary Updates the tray icon
+* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
+*/
+function updateTrayIconStatus()
+{
+    var overallUnreadMessages = 0;
+    var curServiceUnreadMessageCount = 0;
+    var serviceName = "";
+    var currentTabId;
+
+    // loop over all tabs - count unread messages
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        if(currentTabId !== "target_Settings")
+        {
+            // FIXME
+            currentTabId = currentTabId.replace("target_", "");
+
+            console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
+
+            curServiceUnreadMessageCount = 0; // reset to 0
+            curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
+            curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
+
+            // if the current service has a significant unread message count -> log it and add it to overall counter
+            if( (curServiceUnreadMessageCount !== 0) &amp;&amp; (curServiceUnreadMessageCount !== "") &amp;&amp; (curServiceUnreadMessageCount !== null) )
+            {
+                console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
+
+                // increate the overall counter
+                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
+            }
+        }
+        else
+        {
+            console.log("updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
+        }
+    });
+
+    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
+
+    const {ipcRenderer} = require("electron");
+    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
+    {
+        // tray should show the default icon
+        ipcRenderer.send("changeTrayIconToDefault");
+    }
+    else
+    {
+        // tray should show that we got unread messages
+        ipcRenderer.send("changeTrayIconToUnreadMessages");
+    }
+}
+
+/**
+* @name updateServiceBadge
+* @summary Updates the badge of a single service
+* @description gets the name of a service and its current unread message count. Updates the badge of the related service
+* @param serviceId - ID of the service
+* @param count - Amount of unread messages
+*/
+function updateServiceBadge(serviceId, count)
+{
+    console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
+
+    if( (count === null) || (count === 0) || (count === "null"))
+    {
+        count = "";
+    }
+
+    // update the badge
+    $( "#badge_" + serviceId).html( count );
+
+    // Update tray icon status if needed
+    updateTrayIconStatus();
+}
+
+
+/**
 * @name addEventListenerForSingleService
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
@@ -107,7 +189,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
 
     // WebView Event: new-window / clicking links
     //
-    if(enableLinkSupport == true)
+    if(enableLinkSupport === true)
     {
         webview.addEventListener("new-window", function(e)
         {
@@ -124,12 +206,8 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         });
     }
 
-
-
-
     console.log("addEventListenerForSingleService ::: End");
 }
-
 
 
 /**
@@ -144,7 +222,18 @@ function closeSingleServiceConfiguratationWindow()
 }
 
 
-// Storing the data from secondWindow
+/**
+* @name createSingleServiceConfiguration
+* @summary Fetches the input values from the single-service-configuration popup window and creates a related service config
+* @description Fetches the input values from the single-service-configuration popup window and creates a related service config
+*/
+function createSingleServiceConfiguration()
+{
+    alert("dummy")
+}
+
+
+// Storing the data from configServiceWindow
 /**
 * @name updateSingleServiceConfiguration
 * @summary Fetches the input values from the single-service-configuration popup window and updates the related service config
@@ -152,9 +241,9 @@ function closeSingleServiceConfiguratationWindow()
 */
 function updateSingleServiceConfiguration()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
-    // get values from secondWindow
+    // get values from configServiceWindow
     var serviceId = $("#input_serviceId").val();
     var serviceType = $("#input_serviceType").val(); // hidden
     var serviceName = $("#input_serviceName").val();
@@ -214,7 +303,7 @@ function configureSingleUserService(serviceId)
 */
 function showNoty(type, message, timeout = 3000)
 {
-    const Noty = require('noty');
+    //const Noty = require("noty");
 
     new Noty({
         type: type,
@@ -296,88 +385,6 @@ function isMac()
     }
 }
 
-
-/**
-* @name updateTrayIconStatus
-* @summary Updates the tray icon
-* @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
-*/
-function updateTrayIconStatus()
-{
-    var overallUnreadMessages = 0;
-    var curServiceUnreadMessageCount = 0;
-    var serviceName = "";
-    var currentTabId;
-
-    // loop over all tabs - count unread messages
-    $("#myTabs li a").each(function()
-    {
-        currentTabId = $(this).attr("id");
-
-        if(currentTabId !== "target_Settings")
-        {
-            // FIXME
-            currentTabId = currentTabId.replace("target_", "");
-
-            console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
-
-            curServiceUnreadMessageCount = 0; // reset to 0
-            curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
-            curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
-
-            // if the current service has a significant unread message count -> log it and add it to overall counter
-            if( (curServiceUnreadMessageCount !== 0) &amp;&amp; (curServiceUnreadMessageCount !== "") &amp;&amp; (curServiceUnreadMessageCount !== null) )
-            {
-                console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
-
-                // increate the overall counter
-                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
-            }
-        }
-        else
-        {
-            console.log("updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
-        }
-    });
-
-    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
-
-    const {ipcRenderer} = require("electron");
-    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
-    {
-        // tray should show the default icon
-        ipcRenderer.send("changeTrayIconToDefault");
-    }
-    else
-    {
-        // tray should show that we got unread messages
-        ipcRenderer.send("changeTrayIconToUnreadMessages");
-    }
-}
-
-
-/**
-* @name updateServiceBadge
-* @summary Updates the badge of a single service
-* @description gets the name of a service and its current unread message count. Updates the badge of the related service
-* @param serviceId - ID of the service
-* @param count - Amount of unread messages
-*/
-function updateServiceBadge(serviceId, count)
-{
-    console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
-
-    if( (count === null) || (count === 0) || (count === "null"))
-    {
-        count = "";
-    }
-
-    // update the badge
-    $( "#badge_" + serviceId).html( count );
-
-    // Update tray icon status if needed
-    updateTrayIconStatus();
-}
 
 
 /**
@@ -704,6 +711,8 @@ function searchUpdate(silent = true)
         console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
 
         $("#updateInformation").hide();
+
+        showNoty("error", "Checking " + url + " for available releases failed. Got network issues?");
     })
 
     .always(function()
@@ -833,30 +842,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
-        case "discord":
-            break;
-
-        case "dropbox":
-            break;
-
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             addEventListenerForSingleService(serviceId, false, true);
-            break;
-
-        case "gitHub":
-            break;
-
-        case "googleCalendar":
-            break;
-
-        case "googleContacts":
-            break;
-
-        case "googleDrive":
-            break;
-
-        case "googleKeep":
             break;
 
         case "googleMail":
@@ -869,15 +857,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
             addEventListenerForSingleService(serviceId, true, true);
             break;
 
-        case "googlePhotos":
-            break;
-
         case "mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             addEventListenerForSingleService(serviceId, true, true);
-            break;
-
-        case "nextcloud":
             break;
 
          case "slack":
@@ -929,14 +911,14 @@ function initAvailableServicesSelection()
     var counterSupportedServices = 0;
 
     // get reference to select which contains all supported service type definitions
-    let dropdown = $('#select_availableServices');
+    let dropdown = $("#select_availableServices");
 
     // Empty the select
     dropdown.empty();
 
     // Add a disabled dummy/default entry
     dropdown.append('&lt;option selected="true" disabled>Choose a service&lt;/option>');
-    dropdown.prop('selectedIndex', 0);
+    dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
     const url = __dirname + "/js/ttth/services.json";
@@ -947,7 +929,7 @@ function initAvailableServicesSelection()
         $.each(data, function (key, entry)
         {
             // add option to select
-            dropdown.append($('&lt;option>&lt;/option>').attr('value', entry.id).text(entry.nameLong));
+            dropdown.append($("&lt;option>&lt;/option>").attr("value", entry.id).text(entry.nameLong));
 
             counterSupportedServices = counterSupportedServices +1;
         });
@@ -965,7 +947,7 @@ function initAvailableServicesSelection()
 */
 function loadConfiguredUserServices()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     // empty the div
     $( "#settingsServicesConfigured" ).empty();
@@ -1128,10 +1110,10 @@ function removeServiceTab(tabId)
     console.log("removeServiceTab ::: Starting to remove the tab: _" + tabId + "_.");
 
     // remove item from menu
-    $('#menu_'+tabId).remove();
+    $("#menu_" + tabId).remove();
 
     // remove tabcontent from tab pane
-    $('#'+tabId).remove();
+    $("#" + tabId).remove();
 
     // remove service from select for DefaultView
     $("#selectDefaultView option[value=" + tabId + "]").remove();
@@ -1171,7 +1153,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     console.log("addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
-    $( "#"+ serviceId ).append( '&lt;webview id=webview_' + serviceId + ' class="inner" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36">&lt;/webview>' );
+    $( "#"+ serviceId ).append( '&lt;webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36">&lt;/webview>' );
     console.log("addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     console.log("addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
@@ -1193,8 +1175,8 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
 {
     console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     var serviceEnableStatus;
@@ -1291,7 +1273,7 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
 */
 function loadEnabledUserServices()
 {
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     console.log("loadEnabledUserServices ::: Starting to fetch all user configured service files");
 
@@ -1343,7 +1325,7 @@ function deleteConfiguredService(serviceId)
     removeServiceTab(serviceId);
 
     // delete config
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
     storage.remove(serviceId, function(error) {
       if (error) throw error;
     });
@@ -1364,15 +1346,15 @@ function settingsUserAddNewService()
 {
     console.log("settingsUserAddNewService ::: Starting to add a new user configured service.");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     var serviceAllowsMultipleInstances;
 
     // get selected option from #select_availableServices
     var userSelectedService = $( "#select_availableServices" ).val();
-    console.log(userSelectedService);
+    console.log("settingsUserAddNewService ::: Selected service type is: _" + userSelectedService + "_.");
 
     if( userSelectedService !== null )
     {
@@ -1422,14 +1404,14 @@ function settingsUserAddNewService()
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
-                                        const { dialog } = require('electron').remote;
+                                        const { dialog } = require("electron").remote;
 
                                         const options = {
-                                            type: 'warning',
-                                            buttons: ['OK'],
+                                            type: "warning",
+                                            buttons: ["OK"],
                                             icon: __dirname + "/img/icon/icon.png",
                                             defaultId: 0,
-                                            title: 'Adding a service failed',
+                                            title: "Adding a service failed",
                                             message: "There is already a configured service of the type " + userSelectedService + ".",
                                             //detail: 'It does not really matter',
                                             //checkboxLabel: 'Remember my answer',
@@ -1446,7 +1428,7 @@ function settingsUserAddNewService()
                                 }
                             }
 
-                            createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode)
+                            createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
                         });
 
                     }
@@ -1457,6 +1439,7 @@ function settingsUserAddNewService()
     else
     {
         console.warn("settingsUserAddNewService ::: No service type selected. Unable to add a new service.");
+        showNoty("error", "No service type selected. Unable to add a new service.");
     }
 }
 
@@ -1478,13 +1461,13 @@ function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, se
 {
     console.log("createServiceFile ::: Starting to create a new .json file for a user configured service");
 
-    const os = require('os');
-    const storage = require('electron-json-storage');
+    const os = require("os");
+    const storage = require("electron-json-storage");
     const dataPath = storage.getDataPath();
 
     // generate a random id (used as filename) for the new service:
     var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    var newServiceId = randomString + "_" + serviceType
+    var newServiceId = randomString + "_" + serviceType;
 
     const prompt = require("electron-prompt");
 
@@ -1588,7 +1571,7 @@ function localizeUserInterface()
     var userLang = navigator.language || navigator.userLanguage;
 
     // for development screenshot - overwrite the language to EN if the project is not packaged
-    const isDev = require('electron-is-dev');
+    const isDev = require("electron-is-dev");
     if (isDev)
     {
         userLang = "en";
@@ -1652,7 +1635,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    const storage = require('electron-json-storage');
+    const storage = require("electron-json-storage");
 
     storage.get(tabValue, function(error, data) {
         if (error) throw error;
@@ -1662,6 +1645,9 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
         //console.log(data);
         document.getElementById( "webview_" + tabValue ).loadURL(url);
+
+        // TODO
+        // inject code
     });
 });
 
@@ -1790,15 +1776,14 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 });
 
 
-// Call from main.js ::: serviceToConfigure (in secondWindow)
+// Call from main.js ::: serviceToConfigure (in configServiceWindow)
 //
 require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
 {
+    const storage = require("electron-json-storage");
+
     console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
-
-    const storage = require('electron-json-storage');
-
-    console.log("serviceToConfigure ::: Loading current values to UI");
+    console.log("serviceToConfigure ::: Loading current values from service config");
 
     storage.get(serviceId, function(error, data) {
         if (error) throw error;
@@ -1819,6 +1804,11 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         $("#input_serviceInjectCode").val(injectCode);
         $("#input_serviceEnableStatus").val(status);
 
+        // hide Add-new-service button
+        $("bt_addNewService").hide();
+
+        console.log("serviceToConfigure ::: Loaded current values for this service to UI");
+
     });
 });
 </code></pre>
@@ -1831,13 +1821,13 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addEventListenerForSingleService">addEventListenerForSingleService</a></li><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createServiceFile">createServiceFile</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#setAccesskeysForEnabledServices">setAccesskeysForEnabledServices</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleConfiguredUserServiceCheckbox">settingsToggleSingleConfiguredUserServiceCheckbox</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWindowTitle">updateWindowTitle</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addEventListenerForSingleService">addEventListenerForSingleService</a></li><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createServiceFile">createServiceFile</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#hideUpdateInformation">hideUpdateInformation</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#setAccesskeysForEnabledServices">setAccesskeysForEnabledServices</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsToggleSingleConfiguredUserServiceCheckbox">settingsToggleSingleConfiguredUserServiceCheckbox</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleAutostartMinimized">settingToggleAutostartMinimized</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWindowTitle">updateWindowTitle</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jun 24 2019 12:40:13 GMT+0200 (Mitteleuropäische Sommerzeit)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 04 2019 20:56:24 GMT+0200 (Mitteleuropäische Sommerzeit)
 </footer>
 
 <script> prettyPrint(); </script>
