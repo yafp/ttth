@@ -5,9 +5,11 @@ html,body {
     /* height:100%; */
     height: calc(100% - 15px);
 
+    /* ugly - see #60 */
+    width: calc(100% - 8px);
 
     background-color: var(--color-main);
-    background-color: yellow;
+    background-color: var(--color-menuForegroundHover);
 
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
@@ -111,29 +113,38 @@ ul{
 
 .fuya
 {
+    /* handling left and right border */
     padding-left: 0px !important;
     padding-right: 0px !important;
-}
-
-
-.inner{
-    height: 100%;
-    min-height: 100%;
-
 }
 
 .flex-fill {
     flex:1 1 auto;
 }
 
+
+.inner{
+    /*
+    height: 100%;
+    min-height: 100%;
+    */
+}
+
+
 .resizer{
     background-color: var(--color-main);
 
+    /* height */
     height: 100%;
     min-height: 100%;
+
+    /* width */
+    /*
     width: 100% !important;
     min-width: 100% !important;
+    */
 
+    /* padding */
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
