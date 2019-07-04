@@ -14,14 +14,15 @@ function serviceTwitterGetUnreadMessageCount()
         let count = 0;
         const elem = document.querySelector('a[href="/messages"] div div');
 
-        if (elem) {
+        if (elem)
+        {
           count = parseInt(elem.innerText, 10);
         }
 
         ipcRenderer.sendToHost(count);
     };
 
-    console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + unreadCount);
+    console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
 }
 
 

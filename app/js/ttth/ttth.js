@@ -201,7 +201,7 @@ function closeSingleServiceConfiguratationWindow()
 */
 function createSingleServiceConfiguration()
 {
-    alert("dummy")
+    alert("dummy");
 }
 
 
@@ -1617,6 +1617,9 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
         //console.log(data);
         document.getElementById( "webview_" + tabValue ).loadURL(url);
+
+        // TODO
+        // inject code
     });
 });
 

@@ -17,7 +17,7 @@ function serviceWhatsAppGetUnreadMessageCount()
 
     // try to count unread messages
     //const elements = document.querySelectorAll(".CxUIE, .unread");
-    const elements = document.querySelectorAll('.P6z4j, .unread');
+    const elements = document.querySelectorAll(".P6z4j, .unread");
     console.log(elements);
 
     let count = 0;
