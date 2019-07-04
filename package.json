@@ -164,8 +164,8 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "electron": "^4.2.0",
-        "electron-builder": "^20.40.2",
+        "electron": "^4.2.6",
+        "electron-builder": "^20.44.4",
         "electron-packager": "^13.1.1",
         "eslint": "^5.16.0",
         "eslint-config-strongloop": "^2.1.0",
