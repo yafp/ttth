@@ -89,7 +89,7 @@ describe("Application Window", function ()
             expect(title).to.contain("ttth");
             return Promise.resolve();
         });
-    })
+    });
 
 
     // TEST:
