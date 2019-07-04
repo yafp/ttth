@@ -24,6 +24,9 @@
 #### ```Removed```
 * UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)
 
+#### ```Fixed```
+* Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
+
 
 ### ttth 1.3.0 (20190603)
 ####  ```Added```
