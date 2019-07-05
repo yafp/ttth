@@ -77,7 +77,7 @@ describe("Application Window", function ()
     {
         // at least 1 window should be counted
         return this.app.client.getWindowCount().should.not.equal(0);
-    })
+    });
 
 
     // TEST: Check the window title

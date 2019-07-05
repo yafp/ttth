@@ -889,7 +889,7 @@ function initAvailableServicesSelection()
     dropdown.empty();
 
     // Add a disabled dummy/default entry
-    dropdown.append('<option selected="true" disabled>Choose a service</option>');
+    dropdown.append("<option selected='true' disabled>Choose a service</option>");
     dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
@@ -1348,7 +1348,7 @@ function settingsUserAddNewService()
                         console.log("settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
                         serviceAllowsMultipleInstances = true;
 
-                        createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode)
+                        createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
                     }
                     else // single instance service
                     {
@@ -1505,6 +1505,7 @@ function setAccesskeysForEnabledServices()
     console.log("setAccesskeysForEnabledServices ::: Starting to define accesskeys for enabled services");
 
     var tabCounter = 0;
+    var currentTabId;
 
     // get list of all visible service-tabs
     $("#myTabs li a").each(function()
@@ -1518,7 +1519,8 @@ function setAccesskeysForEnabledServices()
             console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
             $("#" + currentTabId).attr("accesskey", tabCounter);
         }
-        else {
+        else
+        {
             console.log("setAccesskeysForEnabledServices ::: Ignoring settings tab.");
         }
     });
@@ -1760,12 +1762,12 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
     storage.get(serviceId, function(error, data) {
         if (error) throw error;
 
-        type = data.type;
-        name = data.name;
-        icon = data.icon;
-        url =  data.url;
-        injectCode = data.injectCode;
-        status = data.serviceEnableStatus;
+        var type = data.type;
+        var name = data.name;
+        var icon = data.icon;
+        var url =  data.url;
+        var injectCode = data.injectCode;
+        var status = data.serviceEnableStatus;
 
         // update UI of second window
         $("#input_serviceId").val(serviceId);

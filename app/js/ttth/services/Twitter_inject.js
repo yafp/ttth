@@ -20,9 +20,9 @@ function serviceTwitterGetUnreadMessageCount()
         }
 
         ipcRenderer.sendToHost(count);
-    };
 
-    console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
+        console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
+    };
 }
 
 
