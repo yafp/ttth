@@ -67,7 +67,7 @@ describe("Application Window", function ()
         {
             return this.app.stop();
         }
-    })
+    });
 
 
 
