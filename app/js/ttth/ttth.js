@@ -1,4 +1,16 @@
 /**
+* @name showUserServicesConfigFolder
+* @summary Opens the folder in filesystem which contains the service configurations of the current user
+* @description Triggers a method in main.js which then opens the folder which contains all service configurations of the current user.
+*/
+function showUserServicesConfigFolder()
+{
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("openUserServicesConfigFolder");
+}
+
+
+/**
 * @name updateTrayIconStatus
 * @summary Updates the tray icon
 * @description Checks the tabs of all services and fetches the content of the related batch. Based on the overall unread message account it triggers the update of the tray icon
@@ -17,7 +29,6 @@ function updateTrayIconStatus()
 
         if(currentTabId !== "target_Settings")
         {
-            // FIXME
             currentTabId = currentTabId.replace("target_", "");
 
             console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
@@ -98,6 +109,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
     //  5.000 =  5 sec
     var intervalID = setInterval(function()
     {
+        console.log("EventListener of: " + serviceId);
         webview.send("request");
     }, 5000);
 
@@ -201,7 +213,41 @@ function closeSingleServiceConfiguratationWindow()
 */
 function createSingleServiceConfiguration()
 {
-    alert("dummy");
+    const storage = require("electron-json-storage");
+
+    // get values from configServiceWindow
+    var serviceId = $("#input_serviceId").val();
+    var serviceType = $("#input_serviceType").val(); // hidden
+    var serviceName = $("#input_serviceName").val();
+    var serviceIcon = $("#input_serviceIcon").val();
+    var serviceUrl = $("#input_serviceUrl").val();
+    var serviceInjectCode = $("#input_serviceInjectCode").val(); //hidden
+    var serviceEnableStatus = true;
+
+    // create a new config for the configured service
+    storage.set(serviceId, {
+        "type": serviceType,
+        "name": serviceName,
+        "icon": serviceIcon,
+        "url": serviceUrl,
+        "injectCode": serviceInjectCode,
+        serviceEnableStatus: serviceEnableStatus
+    }, 
+    function(error)
+    {
+        // reload the main window
+        const {ipcRenderer} = require("electron");
+        ipcRenderer.send("reloadMainWindow");
+
+        closeSingleServiceConfiguratationWindow();
+
+        console.log("createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
+
+        showNoty("success", "Successfully created the new service: " + serviceId);
+
+        if (error) throw error;
+    });
+
 }
 
 
@@ -241,12 +287,20 @@ function updateSingleServiceConfiguration()
         serviceEnableStatus: serviceEnableStatus
     }, function(error)
     {
+        // reload the main window
+        const {ipcRenderer} = require("electron");
+        ipcRenderer.send("reloadMainWindow");
+
+        closeSingleServiceConfiguratationWindow();
+
+        console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
+
+        showNoty("success", "Successfully edited the existing service: " + serviceId);
+    
         if (error) throw error;
     });
 
-    console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
-
-    closeSingleServiceConfiguratationWindow();
+    
 }
 
 
@@ -935,6 +989,8 @@ function loadConfiguredUserServices()
 
         var serviceCount = 0;
 
+        console.log("loadConfiguredUserServices ::: Found the following user configs: _" + data + "_.");
+
         // loop over upper object
         for (var key in data)
         {
@@ -951,10 +1007,7 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        //$( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><input type="checkbox" id="checkbox_'+ key + '" name=' + key + ' checked onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" disabled><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
-
                         $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
-
                     }
                     else // show disabled configured service
                     {
@@ -1153,21 +1206,15 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
 
     var serviceEnableStatus;
 
-    var type;
-    var name;
-    var icon;
-    var url;
-    var injectCode;
-
     // get content from service configuration file
     storage.get(configuredUserServiceConfigName, function(error, data) {
         if (error) throw error;
 
-        type = data.type;
-        name = data.name;
-        icon = data.icon;
-        url =  data.url;
-        injectCode = data.injectCode;
+        var type = data.type;
+        var name = data.name;
+        var icon = data.icon;
+        var url =  data.url;
+        var injectCode = data.injectCode;
 
 
         // get status of enable/disable button:
@@ -1180,8 +1227,10 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             // update button type
             $("#bt_" + configuredUserServiceConfigName).removeClass();
             $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-secondary btn-sm");
+
             // update button title
             $("#bt_" + configuredUserServiceConfigName).prop("title", "disabled");
+
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
             $("#statusIconService_" + configuredUserServiceConfigName).addClass("fas fa-toggle-off");
@@ -1202,8 +1251,10 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             // update button type
             $("#bt_" + configuredUserServiceConfigName).removeClass();
             $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-success btn-sm");
+
             // update button title
             $("#bt_" + configuredUserServiceConfigName).prop("title", "enabled");
+
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
             $("#statusIconService_" + configuredUserServiceConfigName).addClass("fas fa-toggle-on");
@@ -1284,6 +1335,26 @@ function loadEnabledUserServices()
 }
 
 
+
+
+
+
+
+
+function recreateNode(el, withChildren) {
+  if (withChildren) {
+    el.parentNode.replaceChild(el.cloneNode(true), el);
+  }
+  else {
+    var newEl = el.cloneNode(false);
+    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
+    el.parentNode.replaceChild(newEl, el);
+  }
+}
+
+
+
+
 /**
 * @name deleteConfiguredService
 * @summary Deletes a single configured user service
@@ -1293,20 +1364,57 @@ function deleteConfiguredService(serviceId)
 {
     console.log("deleteConfiguredService ::: Deleting the user service: _" + serviceId + "_.");
 
-    // remove tab
+
+    // cleanup after deleting the entire service
+    var webview = document.getElementById("webview_" + serviceId);
+
+
+    // delete all Event handlers
+    //
+    $( "#webview_" + serviceId ).unbind("did-start-loading");
+    $( "#webview_" + serviceId ).unbind("dom-ready");
+    $( "#webview_" + serviceId ).unbind("did-stop-loading");
+    $( "#webview_" + serviceId ).unbind("ipc-message");
+    $( "#webview_" + serviceId ).unbind("new-window");
+    console.warn("deleteConfiguredService ::: Deleted all event handlers from webview");
+
+    // Delete the webview of this service
+    $("#webview_" + serviceId).remove();
+    console.warn("deleteConfiguredService ::: Removed the webview itself");
+
+
+    // remove service tab in UI
     removeServiceTab(serviceId);
 
-    // delete config
+
+    // delete json config of this service
+    //
     const storage = require("electron-json-storage");
-    storage.remove(serviceId, function(error) {
-      if (error) throw error;
+    storage.remove(serviceId, function(error)
+    {
+        if (error) throw error;
     });
 
+
     // reload all configured user services to settings page
-    loadConfiguredUserServices();
+    //loadConfiguredUserServices();
 
     console.log("deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
+
+    showNoty("success", "Successfully deleted the service " + serviceId);
+
+
+    // reload the main window
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("reloadMainWindow");
 }
+
+
+
+
+
+
+
 
 
 /**
@@ -1348,7 +1456,17 @@ function settingsUserAddNewService()
                         console.log("settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
                         serviceAllowsMultipleInstances = true;
 
-                        createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
+                        // PRE
+                        //
+                        //createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
+
+
+                        // POST
+                        //
+                        // send ipc to show second window
+                        const {ipcRenderer} = require("electron");
+                        ipcRenderer.send("showConfigureSingleServiceWindowNew", userSelectedService);
+
                     }
                     else // single instance service
                     {
@@ -1400,7 +1518,12 @@ function settingsUserAddNewService()
                                 }
                             }
 
-                            createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
+                            // PRE
+                            //createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
+
+                            // POST
+                            const {ipcRenderer} = require("electron");
+                            ipcRenderer.send("showConfigureSingleServiceWindowNew", userSelectedService);
                         });
 
                     }
@@ -1416,83 +1539,14 @@ function settingsUserAddNewService()
 }
 
 
-
-
-//  generates a local file for each user configured service in the DataDir
-/**
-* @name createServiceFile
-* @summary creates the .json file for a new user configured service
-* @description creates the .json file for a new user configured service
-* @param serviceType
-* @param serviceName
-* @param serviceIcon
-* @param serviceUrl
-* @param serviceInjectCode
-*/
-function createServiceFile(serviceType, serviceName, serviceIcon, serviceUrl, serviceInjectCode)
+function generateNewRandomServiceID(serviceType)
 {
-    console.log("createServiceFile ::: Starting to create a new .json file for a user configured service");
-
-    const os = require("os");
-    const storage = require("electron-json-storage");
-    const dataPath = storage.getDataPath();
-
-    // generate a random id (used as filename) for the new service:
     var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     var newServiceId = randomString + "_" + serviceType;
 
-    const prompt = require("electron-prompt");
-
-    prompt({
-        title: "Service: " + serviceType,
-        label: "Please insert your <b>URL</b>.",
-        value: serviceUrl,
-        useHtmlLabel: true,
-        resizable: false,
-        width: 450,
-        height: 200,
-        inputAttrs: {
-            type: "url",
-            required: true,
-            placeholder: "https://example.com"
-        },
-        icon: __dirname + "/img/icon/icon.png",
-        menuBarVisible: false
-    })
-    .then((r) => {
-        if( (r === null) || (r === "") )
-        {
-            // User cancelled the URL dialog or confirmed empty input.");
-        }
-        else
-        {
-            serviceUrl = r;
-
-            // do everything
-            storage.set( newServiceId,
-            {
-                serviceEnableStatus: true,
-                type: serviceType,
-                name: serviceName,
-                icon: serviceIcon,
-                url: serviceUrl,
-                injectCode: serviceInjectCode
-
-            }, function(error)
-            {
-                if (error) throw error;
-            });
-
-            // FIXME
-            // is broken
-            addServiceTab(newServiceId, serviceType, serviceName, serviceIcon, serviceUrl, serviceInjectCode);
-            loadConfiguredUserServices();
-        }
-    })
-    .catch(console.error);
-
-    console.log("createServiceFile ::: Finished creation of .json file for a user configured service");
+    return newServiceId;
 }
+
 
 
 /**
@@ -1614,10 +1668,10 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     storage.get(tabValue, function(error, data) {
         if (error) throw error;
 
-        url =  data.url;
-        injectCode = data.injectCode;
+        var url =  data.url;
+        var injectCode = data.injectCode;
 
-        //console.log(data);
+        console.log("reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
         document.getElementById( "webview_" + tabValue ).loadURL(url);
 
         // TODO
@@ -1750,6 +1804,45 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 });
 
 
+
+
+// Call from main.js ::: serviceToCreate (in configServiceWindow)
+//
+require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
+{
+    console.log("serviceToCreate ::: Should create a new service of type: _" + serviceId + "_.");
+    console.log("serviceToCreate ::: Loading default values from service definition");
+
+    // generate id for new service
+    var newServiceId = generateNewRandomServiceID(serviceId);
+
+    // read json file
+    const url = __dirname + "/js/ttth/services.json";
+    $.getJSON(url, function (data)
+    {
+        $.each(data, function (key, entry)
+        {
+            if(entry.id === serviceId)
+            {
+                // update UI with default values
+                $("#input_serviceId").val(newServiceId);
+                $("#input_serviceType").val(entry.id);
+                $("#input_serviceName").val(entry.name);
+                $("#input_serviceIcon").val(entry.icon);
+                $("#input_serviceUrl").val(entry.url);
+                $("#input_serviceInjectCode").val(entry.injectCode);
+                $("#input_serviceEnableStatus").val(true);
+
+                // hide save buttons
+                $("#bt_saveExistingService").hide();
+            }
+        });
+    });
+
+
+});
+
+
 // Call from main.js ::: serviceToConfigure (in configServiceWindow)
 //
 require("electron").ipcRenderer.on("serviceToConfigure", function(event, serviceId)
@@ -1759,7 +1852,8 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
     console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
     console.log("serviceToConfigure ::: Loading current values from service config");
 
-    storage.get(serviceId, function(error, data) {
+    storage.get(serviceId, function(error, data) 
+    {
         if (error) throw error;
 
         var type = data.type;
@@ -1779,7 +1873,7 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         $("#input_serviceEnableStatus").val(status);
 
         // hide Add-new-service button
-        $("bt_addNewService").hide();
+        $("#bt_addNewService").hide();
 
         console.log("serviceToConfigure ::: Loaded current values for this service to UI");
 

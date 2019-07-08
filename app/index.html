@@ -127,6 +127,7 @@
                         <div id="settingsServicesConfigured">
                             <!-- load dynamic from json file in user data -->
                         </div>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" onClick="showUserServicesConfigFolder();" i18n-text="settingsSectionServicesShowConfigsFolder"><!-- Configurations --></button>
                         <!-- /Service Section -->
 
 
@@ -283,7 +284,13 @@ $(document).bind('afterready', function()
     {
         var target = link.currentTarget.innerText;
 
-        console.log("ready ::: Switching to tab: " + target);
+        // remove leading space
+        if(target.substr(0,1) == " ") 
+        {
+            target = target.substr(1);
+        }
+
+        console.log("ready ::: Switching to tab: _" + target + "_.");
 
         // Update window title
         updateWindowTitle(target);

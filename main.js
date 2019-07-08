@@ -603,6 +603,23 @@ function createWindow ()
     });
 
 
+    // Call from renderer: Reload mainWindow
+    //
+    ipcMain.on("reloadMainWindow", (event) => {
+        console.log("main.js ::: mainWindow ::: IPC: reloadMainWindow");
+        mainWindow.reload();
+    });
+
+
+    // Call from renderer: Open folder with user configured services
+    //
+    ipcMain.on("openUserServicesConfigFolder", (event) => {
+        console.log("main.js ::: mainWindow ::: IPC: openUserServicesConfigFolder");
+        
+        var customUserDataPath = path.join(defaultUserDataPath, "storage");
+        shell.openItem(customUserDataPath)
+    });
+
 
     // Call from renderer: Update Window Title
     //
@@ -621,19 +638,11 @@ function createWindow ()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-    // a second window to allow configuring a single service
+    // *****************************************************************
+    // modal window
+    // *****************************************************************
     //
+    // modal window to allow creating and configuring a single service
     configServiceWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
@@ -655,7 +664,8 @@ function createWindow ()
     // load html form to the window
     configServiceWindow.loadFile("app/config.html");
 
-    configServiceWindow.setAlwaysOnTop(true, "floating");
+    // make it always on top
+    //configServiceWindow.setAlwaysOnTop(true, "floating");
 
     // hide menubar
     configServiceWindow.setMenuBarVisibility(false);
@@ -677,26 +687,37 @@ function createWindow ()
     configServiceWindow.on("show", function (event)
     {
         console.log("main.js ::: configServiceWindow ::: Event: configServiceWindow show");
-        // load service data?
     });
 
+
+    // Call from renderer: show configure-single-service window for a new service
+    //
+    ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
+        console.log("main.js ::: configServiceWindow ::: On: showConfigureSingleServiceWindowNew");
+
+        // show window
+        configServiceWindow.show();
+        configServiceWindow.webContents.send("serviceToCreate", arg);
+    });
 
 
     // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
+         console.log("main.js ::: configServiceWindow ::: On: showConfigureSingleServiceWindow");
 
-        // show second window
+        // show window
         configServiceWindow.show();
-
         configServiceWindow.webContents.send("serviceToConfigure", arg);
     });
+
 
     // Call from renderer: hide configure-single-service window
     //
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
+        console.log("main.js ::: configServiceWindow ::: On: closeConfigureSingleServiceWindow");
 
-        // hide second window
+        // hide window
         configServiceWindow.hide();
     });
 
@@ -752,41 +773,7 @@ function createTray()
 
         tray.setToolTip("ttth");
         tray.setContextMenu(contextMenu);
-
-        // from rambox
-        switch (process.platform)
-        {
-            case "darwin":
-                break;
-
-            case "linux":
-            case "freebsd":
-                // Double click is not supported and Click its only supported when app indicator is not used.
-                // Read more here (Platform limitations): https://github.com/electron/electron/blob/master/docs/api/tray.md
-                tray.on("click", function() {
-                });
-                break;
-
-            case "win32":
-                tray.on("click", function() {
-                });
-
-                // only: mac & win
-                tray.on("double-click", function() {
-                });
-
-                // only: mac & win
-                tray.on("right-click", function() {
-                });
-
-                break;
-
-            default:
-                break;
-        }
-
     });
-
 
 
     // Call from renderer: Change Tray Icon to UnreadMessages
@@ -794,6 +781,7 @@ function createTray()
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
     });
+
 
     // Call from renderer: Change Tray Icon to Default
     //
