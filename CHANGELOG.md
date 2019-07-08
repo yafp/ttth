@@ -12,6 +12,7 @@
 * Services: Added Nextcloud as new service. See [#57](https://github.com/yafp/ttth/issues/57)
 * Services: Added Custom service (user url). See [#64](https://github.com/yafp/ttth/issues/64)
 * UI: Added in-app notifications (using Noty). See [#58](https://github.com/yafp/ttth/issues/58)
+* UI: Added button to open the folder which contains all user configured service config files.
 
 #### ```Changed```
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
@@ -23,6 +24,8 @@
 
 #### ```Removed```
 * UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)
+* Removed electron-prompt dependency.
+* Removed logo image on bottom of settings tab
 
 #### ```Fixed```
 * Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
