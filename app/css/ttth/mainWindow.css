@@ -6,10 +6,9 @@ html,body {
     height: calc(100% - 15px);
 
     /* ugly - see #60 */
-    width: calc(100% - 8px);
+    /width: calc(100% - 8px);
 
     background-color: var(--color-main);
-    background-color: var(--color-menuForegroundHover);
 
     padding-right: 0; /*15px in bootstrap.css*/
     padding-left: 0;  /*idem*/
@@ -17,6 +16,10 @@ html,body {
     margin: 0px;
     margin-left: 0;
     margin-right: 0;
+
+    /* HACK */
+    /* overflow-x: hidden; */
+    /* overflow-y: hidden; */
 }
 
 /* ########################################################################## */
@@ -29,13 +32,13 @@ html,body {
 
 .nav{
     /* padding-top: 5px; */
-
 }
 
 ul{
     margin-left: 10px;
     margin-right: 10px;
 }
+
 
 .nav-item{
     border: 1px solid white;
@@ -64,10 +67,8 @@ ul{
 
 
 .nav>li>a {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 8px;
-    padding-right: 8px;
+    /*  top/bottom left/right */
+    padding: 5px 10px;
 }
 
 
@@ -80,13 +81,6 @@ ul{
     margin-right: 10px;
 }
 
-.bgimg {
-    background-image: url('../../img/settings/icon_background.png');
-    background-repeat: no-repeat;
-    background-position: center bottom !important; /*Positioning*/
-}
-
-
 
 /* ########################################################################## */
 /* CONTENT */
@@ -94,20 +88,7 @@ ul{
 .container-fluid
 {
     background-color: var(--color-main);
-
-    /*
-    margin-right: auto;
-    margin-left: auto;
-    */
-
     padding-bottom: 0px !important;
-
-
-    /* baustelle */
-    /*
-    padding-left: 7px !important;
-    padding-right: 7px !important;
-    */
 }
 
 
@@ -122,27 +103,12 @@ ul{
     flex:1 1 auto;
 }
 
-
-.inner{
-    /*
-    height: 100%;
-    min-height: 100%;
-    */
-}
-
-
 .resizer{
     background-color: var(--color-main);
 
     /* height */
     height: 100%;
     min-height: 100%;
-
-    /* width */
-    /*
-    width: 100% !important;
-    min-width: 100% !important;
-    */
 
     /* padding */
     padding-left: 0 !important;
