@@ -127,7 +127,7 @@
         "icon": "fas fa-comment",
         "description": "Mattermost is a flexible, open source messaging platform that meets even the most demanding privacy and security standards",
         "notes": "",
-        "url": "",
+        "url": "https://example.com",
         "multiple": true,
         "injectCode": "./js/ttth/services/Mattermost_inject.js"
     },
@@ -138,7 +138,7 @@
         "icon": "fas fa-cloud",
         "description": "",
         "notes": "",
-        "url": "",
+        "url": "https://example.com",
         "multiple": false,
         "injectCode": ""
     },
@@ -149,7 +149,7 @@
         "icon": "fab fa-slack",
         "description": "",
         "notes": "User has to define his workspace-name for each session",
-        "url": "https://___.slack.com",
+        "url": "https://YOURWORKSPACE.slack.com",
         "multiple": true,
         "injectCode": ""
     },
@@ -219,4 +219,4 @@
         "multiple": true,
         "injectCode": ""
     }
-];
+]
