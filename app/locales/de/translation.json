@@ -11,5 +11,6 @@
     "settingsSectionAboutButtonConsole": "Entwickler Konsole",
     "settingsSectionServicesAdd": "Dienst hinzufügen",
     "settingsSectionServicesConfigured": "Konfigurierte Dienste",
-    "settingsSectionStartup": "Optionen"
+    "settingsSectionStartup": "Optionen",
+    "settingsSectionServicesShowConfigsFolder": "Zeige Konfigurationen"
 }

@@ -11,5 +11,6 @@
     "settingsSectionAboutButtonConsole": "Console",
     "settingsSectionServicesAdd": "Add service",
     "settingsSectionServicesConfigured": "Configured services",
-    "settingsSectionStartup": "Options"
+    "settingsSectionStartup": "Options",
+    "settingsSectionServicesShowConfigsFolder": "Show configurations"
 }
