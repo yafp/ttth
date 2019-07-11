@@ -729,12 +729,14 @@ function searchUpdate(silent = true)
         });
 
         // remote version
+        //
         var remoteAppVersionLatest = versions[0].name;
         //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
 
         // local version
+        //
         var localAppVersion = require("electron").remote.app.getVersion();
-        //localAppVersion = "1.0.0";
+        //localAppVersion = "1.0.0"; // to simulate
 
         console.log("searchUpdate ::: Local version: " + localAppVersion);
         console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
@@ -888,55 +890,35 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
+        // false / true
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
 
+        // true / true
         case "googleMail":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, true);
-            break;
-
         case "googleMessages":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, true);
-            break;
-
         case "mattermost":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, true);
-            break;
-
-         case "slack":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, true);
-            break;
-
+        case "slack":
         case "telegram":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, true);
             break;
 
+        // true / false
         case "threema":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, false);
-            break;
-
         case "twitter":
+        case "xing":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, false);
             break;
 
+        // special
         case "whatsapp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
             eventListenerForSingleService(serviceId, true, true);
-            break;
-
-        case "xing":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, false);
             break;
 
         default:
@@ -1016,14 +998,13 @@ function loadConfiguredUserServices()
         {
             if (data.hasOwnProperty(key))
             {
-                //console.log("loadConfiguredUserServices ::: " + key);
                 console.log("loadConfiguredUserServices ::: " + key + " -> " + data[key]);
 
                 // show 2 services per row
                 if (serviceCount%2 === 0) // Odd
                 {
                     // create a new row
-                    $( "#settingsServicesConfigured" ).append('<div class="row ttthServiceRow" id="conf_' + serviceCount + '"></div>');
+                    $( "#settingsServicesConfigured" ).append("<div class='row ttthServiceRow' id='conf_" + serviceCount + "'></div>");
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
@@ -1193,7 +1174,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     console.log("addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
     // add the tab itself to #tabPanes
-    $( "#tabPanes" ).append( '<div role="tabpanel" class="tab-pane fade flex-fill resizer container-fluid" id=' + serviceId + '></div>' );
+    $( "#tabPanes" ).append( "<div role='tabpanel' class='tab-pane fade flex-fill resizer container-fluid' id=" + serviceId + "></div>" );
     console.log("addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
@@ -1578,16 +1559,16 @@ function setAccesskeysForEnabledServices()
         else
         {
             tabCounter = tabCounter +1;
-            console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
-            $("#" + currentTabId).attr("accesskey", tabCounter);
 
+            // accesskeys
+            //
+            //console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
+            //$("#" + currentTabId).attr("accesskey", tabCounter);
 
-            // TODO:
-            // define a globalShortcut
+            // globalShortcut
+            //
             const {ipcRenderer} = require("electron");
             ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
-
-            //globalShortcut.register("CommandOrControll+9", switchToService(currentTabId));
         }
     });
 
