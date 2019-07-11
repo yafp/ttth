@@ -1,85 +1,76 @@
 /* ########################################################################## */
 /* HTML/BODY/CONTAINER */
 /* ########################################################################## */
-html,body {
-    /* height:100%; */
+html,body 
+{
+    /* height:100%;  */
     height: calc(100% - 15px);
 
-    /* ugly - see #60 */
-    /width: calc(100% - 8px);
+    /* width */
+    width: 100%;
 
-    background-color: var(--color-main);
+    /* padding */
+    padding-right: 0;
+    padding-left: 0;
 
-    padding-right: 0; /*15px in bootstrap.css*/
-    padding-left: 0;  /*idem*/
-
-    margin: 0px;
+    /* margin */
     margin-left: 0;
     margin-right: 0;
 
-    /* HACK */
-    /* overflow-x: hidden; */
-    /* overflow-y: hidden; */
+    /* color */
+    background-color: var(--color-main);
 }
+
 
 /* ########################################################################## */
 /* MENU / NAVIGATION */
 /* ########################################################################## */
-#tabBar{
-    background-color: var(--color-menuBackground);
+#tabBar
+{
+    /* height */
     height: 30px; /* default: 40px */
+
+    /* color */
+    background-color: var(--color-menuBackground);
 }
 
-.nav{
-    /* padding-top: 5px; */
-}
 
-ul{
+ul
+{
     margin-left: 10px;
     margin-right: 10px;
 }
 
-
-.nav-item{
+.nav-item
+{
+    /* border */
     border: 1px solid white;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+
+    /* margin */
     margin-left: 0px;
     margin-right: 3px;
 }
 
-.nav-item a {
-
-}
-
-
-.nav-link{
+.nav-link
+{
+    /* color */
     color: var(--color-menuForeground);
 }
 
-.nav-link:hover{
+.nav-link:hover
+{
+    /* color */
     color: var(--color-menuForegroundHover);
 }
 
-.nav-tabs {
-    /* margin-bottom: 0; */
+.nav>li>a 
+{
+    /* padding */
+    padding: 5px 10px; /*  top/bottom left/right */
 }
 
-
-.nav>li>a {
-    /*  top/bottom left/right */
-    padding: 5px 10px;
-}
-
-
-
-/* ########################################################################## */
-/* SETTINGS
-/* ########################################################################## */
-#allSettings{
-    margin-left: 10px;
-    margin-right: 10px;
-}
 
 
 /* ########################################################################## */
@@ -87,35 +78,62 @@ ul{
 /* ########################################################################## */
 .container-fluid
 {
-    background-color: var(--color-main);
+    /* padding */
     padding-bottom: 0px !important;
-}
+    padding-right: 0px !important;
 
+    /* color */
+    background-color: var(--color-main);
+}
 
 .fuya
 {
-    /* handling left and right border */
+    /* padding */
     padding-left: 0px !important;
-    padding-right: 0px !important;
+    /* padding-right: 0px !important; */
 }
 
-.flex-fill {
+.flex-fill 
+{
     flex:1 1 auto;
 }
 
-.resizer{
-    background-color: var(--color-main);
-
+.resizer
+{
     /* height */
     height: 100%;
     min-height: 100%;
 
     /* padding */
     padding-left: 0 !important;
-    padding-right: 0 !important;
+    /* padding-right: 0 !important; */
 }
 
-h3{
+.row
+{
+    /* ugly - attempt to fight with grid.scss  - see #60*/ 
+    margin-left: -15px !important;
+    margin-right:  0px !important;
+}
+
+
+
+/* ########################################################################## */
+/* SETTINGS
+/* ########################################################################## */
+.ttthServiceRow
+{
+    margin-right:  0px !important; 
+}
+
+#allSettings
+{
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+h3
+{
     padding-top: 15px;
     border-bottom: 2px solid var(--color-menuForegroundHover);
     font-size: 20px !important;
