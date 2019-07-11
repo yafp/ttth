@@ -1,4 +1,3 @@
-// Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
 
@@ -26,8 +25,6 @@ function serviceTwitterGetUnreadMessageCount()
 }
 
 
-
-// Do something according to a request of your mainview
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceTwitterGetUnreadMessageCount());

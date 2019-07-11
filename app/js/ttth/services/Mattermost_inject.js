@@ -1,4 +1,3 @@
-// Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
 /**
@@ -35,7 +34,6 @@ function serviceMattermostGetUnreadMessageCount()
 }
 
 
-// Do something according to a request of your mainview
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceMattermostGetUnreadMessageCount());

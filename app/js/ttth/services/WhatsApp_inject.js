@@ -1,8 +1,3 @@
-// source
-// https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
-
-
-// Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
 
@@ -15,15 +10,20 @@ function serviceWhatsAppGetUnreadMessageCount()
 {
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
 
+
     // try to count unread messages
-    //const elements = document.querySelectorAll(".CxUIE, .unread");
-    const elements = document.querySelectorAll(".P6z4j, .unread");
+    //
+    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
+    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
+    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
+    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
     console.log(elements);
 
     let count = 0;
     for (let i = 0; i < elements.length; i++)
     {
-        if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
+        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
+        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
         {
             count += 1;
             console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
@@ -42,8 +42,6 @@ function serviceWhatsAppGetUnreadMessageCount()
 
 
 
-// Do something according to a request of your mainview
-//
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());

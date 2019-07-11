@@ -1,4 +1,3 @@
-// Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
 
@@ -43,8 +42,6 @@ function serviceTelegramGetUnreadMessageCount()
 
 
 
-// Do something according to a request of your mainview
-//
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceTelegramGetUnreadMessageCount());

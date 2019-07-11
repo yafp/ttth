@@ -1,4 +1,3 @@
-// Get the ipcRenderer of electron
 const {ipcRenderer} = require("electron");
 
 
@@ -20,8 +19,6 @@ function serviceGoogleMessagesGetUnreadMessageCount()
 }
 
 
-
-// Do something according to a request of your mainview
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceGoogleMessagesGetUnreadMessageCount());
