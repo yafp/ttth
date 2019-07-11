@@ -246,7 +246,7 @@ function closeSingleServiceConfiguratationWindow()
 function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
 {
     console.log("validateConfigSingleServiceForm ::: Starting to validate the form.");
-    s
+
     if ((serviceName === "") || (serviceIcon === "") || (serviceUrl === ""))
     {
         console.warn("validateConfigSingleServiceForm ::: Form is not valid.");
@@ -291,7 +291,7 @@ function createSingleServiceConfiguration()
             "url": serviceUrl,
             "injectCode": serviceInjectCode,
             serviceEnableStatus: serviceEnableStatus
-        }, 
+        },
         function(error)
         {
             // reload the main window
@@ -333,7 +333,7 @@ function updateSingleServiceConfiguration()
     {
         serviceEnableStatus = true;
     }
-    else 
+    else
     {
         serviceEnableStatus = false;
     }
@@ -360,7 +360,7 @@ function updateSingleServiceConfiguration()
             console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
 
             showNoty("success", "Successfully edited the existing service: " + serviceId);
-        
+
             if (error) throw error;
         });
     }
@@ -1265,7 +1265,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             //  show noty
             showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
         }
-        else 
+        else
         {
             // is disabled - so enable it
 
@@ -1679,7 +1679,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     // get configured target url & inject code from config
     const storage = require("electron-json-storage");
 
-    storage.get(tabValue, function(error, data) 
+    storage.get(tabValue, function(error, data)
     {
         if (error) throw error;
 
@@ -1864,7 +1864,7 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
     console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
     console.log("serviceToConfigure ::: Loading current values from service config");
 
-    storage.get(serviceId, function(error, data) 
+    storage.get(serviceId, function(error, data)
     {
         if (error) throw error;
 
@@ -1887,7 +1887,7 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         // hide Add-new-service button
         $("#bt_addNewService").hide();
 
-        // show the edit service  button 
+        // show the edit service  button
         $("#bt_saveExistingService").show();
 
         console.log("serviceToConfigure ::: Loaded current values for this service to UI");

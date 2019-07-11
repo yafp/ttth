@@ -16,8 +16,8 @@ var AutoLaunch = require("auto-launch"); // for autostart
 var path = require("path");
 var fs = require("fs");
 
-// Keep a global reference of the window objects, 
-// if you don't, the window will mbe closed automatically 
+// Keep a global reference of the window objects,
+// if you don't, the window will mbe closed automatically
 // when the JavaScript object is garbage collected.
 let mainWindow;
 let configServiceWindow;
@@ -616,7 +616,7 @@ function createWindow ()
     //
     ipcMain.on("openUserServicesConfigFolder", (event) => {
         console.log("main.js ::: mainWindow ::: IPC: openUserServicesConfigFolder");
-        
+
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         shell.openItem(customUserDataPath)
     });
@@ -912,7 +912,7 @@ process.on("uncaughtException", (err, origin) => {
 
 
 
-ipcMain.on("createNewGlobalShortcut", function(arg1, arg2, arg3) 
+ipcMain.on("createNewGlobalShortcut", function(arg1, arg2, arg3)
 {
     console.log("main.js ::: createNewGlobalShortcut ::: Creating a new shortcut: _" + arg2 + "_ for the tab: _" + arg3 + "_.");
     //console.log("Keycombo: " + arg2);
@@ -924,7 +924,7 @@ ipcMain.on("createNewGlobalShortcut", function(arg1, arg2, arg3)
 
         // activate the related tab:
         mainWindow.webContents.send("switchToTab", arg3);
-    })
+    });
 });
 
 
