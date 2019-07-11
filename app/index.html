@@ -82,11 +82,10 @@
         <div class="row flex-fill">
 
             <!-- Tab panes -->
-            <div id="tabPanes" class="tab-content container-fluid ">
-
+            <div id="tabPanes" class="tab-content container-fluid">
 
                 <!-- TabContent: Settings -->
-                <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid bgimg" id="Settings">
+                <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid" id="Settings">
 
                     <div id="allSettings">
 
@@ -110,26 +109,30 @@
                         <!-- /About -->
 
 
-                        <!-- new Service Section -->
+                        <!-- Service Section -->
+                        <!-- Adding services -->
                         <h3 class="my-ui-text" i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
                         <div id="settingsServicesAdd">
                             <div class="input-group mb-3">
-                                <select id="select_availableServices"  class="custom-select" name="select_availableServices">
+                                <select id="select_availableServices"  class="custom-select" name="select_availableServices"  aria-label="Dropdown element to select a service type for service creation">
                                     <option value="" disabled selected>Please choose</option>
                                 </select>
                                 <div class="input-group-append">
-                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();">Add</button>
+                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" aria-label="Button to add a new service"><!-- Add --></button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Configure services -->
                         <h3 class="my-ui-text" i18n-text="settingsSectionServicesConfigured"><!-- Configured services --></h3>
                         <div id="settingsServicesConfigured">
                             <!-- load dynamic from json file in user data -->
                         </div>
-                        <button type="button" class="btn btn-outline-secondary btn-sm" onClick="showUserServicesConfigFolder();" i18n-text="settingsSectionServicesShowConfigsFolder"><!-- Configurations --></button>
+    
+                        <div class="text-right">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserServicesConfigFolder();" i18n-text="settingsSectionServicesShowConfigsFolder" aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations --></button>
+                        </div>
                         <!-- /Service Section -->
-
 
 
 
@@ -140,19 +143,17 @@
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <input type="checkbox" aria-label="Checkbox for following text input" checked disabled>
+                                    <input type="checkbox" aria-label="Disabled checkbox for the selectDefaultView option" checked disabled>
                                 </div>
                             </div>
-                            <input type="text" class="form-control my-ui-text" aria-label="Text input with checkbox" value="Default view on startup (fallback: Settings)" disabled>
-
+                            <input type="text" class="form-control my-ui-text" aria-label="Disabled text input which describes the selectDefaultView option" value="Default view (on load)" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <select id="selectDefaultView" name="selectDefaultView">
-                                        <option value="dummy" disabled selected>Please choose</option>
+                                        <option value="" disabled selected>Please choose</option>
                                     </select>
                                 </div>
                             </div>
-
                             <div class="input-group-prepend">
                                 <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="Set default view" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
                                 <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="Reset default view" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
@@ -162,37 +163,34 @@
 
 
                         <!-- Setting: Autostart -->
+                        <!-- General autostart -->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for following text input" onClick="settingToggleAutostart();">
+                                    <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for option Autostart" onClick="settingToggleAutostart();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start on login" i18n-text="settingsSectionStartupInfo" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="Autostart (on login)" i18n-text="settingsSectionStartupInfo" disabled>
                         </div>
-                        <!-- /Setting: Autostart-->
-
-
-                        <!-- Setting: AutostartMinimized -->
+                        <!-- AutostartMinimized -->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for following text input" onClick="settingToggleAutostartMinimized();">
+                                    <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for option minimized autostart" onClick="settingToggleAutostartMinimized();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Start minimized on login" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the minimized autostart option" value="Minimized autostart (on login)" disabled>
                         </div>
-                        <!-- /Setting: AutostartMinimized  -->
-
+                        <!-- /Setting: Autostart  -->
 
                         <!-- Setting: HideMenubarOnStartup -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionStartupHideMenubar">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for following text input" onClick="settingToggleMenubarVisibility();">
+                                    <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for the hide menubar on startup otion" onClick="settingToggleMenubarVisibility();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Text input with checkbox" value="Hide menubar as default" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="Hide menubar (on start)" disabled>
                         </div>
                         <!-- /Setting: HideMenubarOnStartup  -->
 
@@ -203,13 +201,6 @@
             <!-- /Tab panes -->
         </div>
         <!-- /Tab Content -->
-
-
-        <!-- update information -->
-        <div class="alert alert-success" role="alert" id="updateInformation">
-            <i class="fas fa-spinner fa-spin"></i> checking for updates ...
-        </div>
-        <!-- update information -->
 
     </div>
     <!-- container -->
@@ -279,7 +270,6 @@ $(document).bind('afterready', function()
 
     // Click handler for navigation/tabs
     //
-    // FIXME - this currently only works for static tab (settings) - since #47
     $('#myTabs a').click(function (link)
     {
         var target = link.currentTarget.innerText;
@@ -296,11 +286,12 @@ $(document).bind('afterready', function()
         updateWindowTitle(target);
 
         // do page-specific things
+        /*
         if(target === "Photos")
         {
-            console.log("index.html ::: Ugly hack to fix load issues for Service GooglePhotos");
-            serviceGooglePhotosInit("GooglePhotos", "https://photos.google.com/");
+            // needs a reload to display the webview properly
         }
+        */
     })
 
 });

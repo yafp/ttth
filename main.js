@@ -5,19 +5,20 @@ console.time("init");
 // -----------------------------------------------------------------------------
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
-const {app, BrowserWindow, Menu, Tray, ipcMain, electron } = require("electron");
-//const nodeConsole = require("console"); // for writing to terminal
-const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
-const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
+const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
 const shell = require("electron").shell;
 const openAboutWindow = require("about-window").default;
+
+const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
+const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
 
 var AutoLaunch = require("auto-launch"); // for autostart
 var path = require("path");
 var fs = require("fs");
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+// Keep a global reference of the window objects, 
+// if you don't, the window will mbe closed automatically 
+// when the JavaScript object is garbage collected.
 let mainWindow;
 let configServiceWindow;
 
@@ -907,6 +908,25 @@ process.on("uncaughtException", (err, origin) => {
     `Exception origin: ${origin}`
   );
 });
+
+
+
+
+ipcMain.on("createNewGlobalShortcut", function(arg1, arg2, arg3) 
+{
+    console.log("main.js ::: createNewGlobalShortcut ::: Creating a new shortcut: _" + arg2 + "_ for the tab: _" + arg3 + "_.");
+    //console.log("Keycombo: " + arg2);
+    //console.log("Target: " + arg3);
+    //console.log("++++++++++++++++++++++++");
+
+    const ret = globalShortcut.register(arg2, () => {
+        console.log("main.js ::: Shortcut " + arg2 + " was pressed");
+
+        // activate the related tab:
+        mainWindow.webContents.send("switchToTab", arg3);
+    })
+});
+
 
 
 // Measuring startup

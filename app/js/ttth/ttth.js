@@ -1,12 +1,36 @@
 /**
-* @name showUserServicesConfigFolder
+* @name showNoty
+* @summary Shows a noty notification
+* @description Creates a notification using the noty framework
+* @param type - Options: alert, success, warning, error, info/information
+* @param message - notification text
+* @param timeout - Timevalue, defines how long the message should be displayed. Use 0 for no-timeout
+*/
+function showNoty(type, message, timeout = 3000)
+{
+    //const Noty = require("noty");
+
+    new Noty({
+        type: type,
+        timeout: timeout,
+        theme: "bootstrap-v4",
+        layout: "bottom",
+        text: message,
+    }).show();
+}
+
+
+/**
+* @name openUserServicesConfigFolder
 * @summary Opens the folder in filesystem which contains the service configurations of the current user
 * @description Triggers a method in main.js which then opens the folder which contains all service configurations of the current user.
 */
-function showUserServicesConfigFolder()
+function openUserServicesConfigFolder()
 {
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("openUserServicesConfigFolder");
+
+    console.log("openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.");
 }
 
 
@@ -69,7 +93,7 @@ function updateTrayIconStatus()
 
 /**
 * @name updateServiceBadge
-* @summary Updates the badge of a single service
+* @summary Updates the badge in a tab of a single service
 * @description gets the name of a service and its current unread message count. Updates the badge of the related service
 * @param serviceId - ID of the service
 * @param count - Amount of unread messages
@@ -78,6 +102,7 @@ function updateServiceBadge(serviceId, count)
 {
     console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
 
+    // if count is < 1 - badge should show nothing
     if( (count === null) || (count === 0) || (count === "null"))
     {
         count = "";
@@ -92,14 +117,17 @@ function updateServiceBadge(serviceId, count)
 
 
 /**
-* @name addEventListenerForSingleService
+* @name eventListenerForSingleService
 * @summary Adds several EventListeners to the webview of the service
 * @description Defines several EventListeners to the webview of the service and starts a periodic request to check for unread messages
+* @param serviceId - the ID of the service
+* @param enableUnreadMessageHandling - boolean - if unread message handler should be created
+* @param enableLinkSupport - boolean - if link handler should be created
 */
-function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false)
+function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false)
 {
-    console.log("addEventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
-    console.log("addEventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+    console.log("eventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
+    console.log("eventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
 
     // get webview
     var webview = document.getElementById("webview_" + serviceId);
@@ -109,7 +137,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
     //  5.000 =  5 sec
     var intervalID = setInterval(function()
     {
-        console.log("EventListener of: " + serviceId);
+        //console.log("EventListener of: " + serviceId);
         webview.send("request");
     }, 5000);
 
@@ -122,7 +150,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         //
         webview.addEventListener("did-start-loading", function()
         {
-            console.log("addEventListenerForSingleService ::: did-start-loading.");
+            console.log("eventListenerForSingleService ::: did-start-loading.");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -133,7 +161,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         //
         webview.addEventListener("dom-ready", function()
         {
-            console.log("addEventListenerForSingleService ::: DOM-Ready");
+            console.log("eventListenerForSingleService ::: DOM-Ready");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -144,7 +172,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         //
         webview.addEventListener("did-stop-loading", function()
         {
-            console.log("addEventListenerForSingleService ::: did-stop-loading");
+            console.log("eventListenerForSingleService ::: did-stop-loading");
 
             // Debug: Open a separate Console Window for this WebView
             //webview.openDevTools();
@@ -157,7 +185,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         // WebView Event:  ipc-message
         webview.addEventListener("ipc-message",function(event)
         {
-            console.log("addEventListenerForSingleService ::: IPC message: _" + event + "_.");
+            console.log("eventListenerForSingleService ::: IPC message: _" + event + "_.");
             //console.log(event);
             //console.info(event.channel);
 
@@ -177,7 +205,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
     {
         webview.addEventListener("new-window", function(e)
         {
-            console.log("addEventListenerForSingleService ::: new-window");
+            console.log("eventListenerForSingleService ::: new-window");
 
             const BrowserWindow = require("electron");
             const shell = require("electron").shell;
@@ -190,7 +218,7 @@ function addEventListenerForSingleService(serviceId, enableUnreadMessageHandling
         });
     }
 
-    console.log("addEventListenerForSingleService ::: End");
+    console.log("eventListenerForSingleService ::: End");
 }
 
 
@@ -207,12 +235,40 @@ function closeSingleServiceConfiguratationWindow()
 
 
 /**
+* @name validateConfigSingleServiceForm
+* @summary Validate the required input values from the config-single-service form
+* @description Validate the required input values from the config-single-service form
+* @param serviceName - The display name of the service
+* @param serviceIcon - The icon for this service
+* @param serviceUrl - The url of this service
+* @return true or false - depending on the actual form validation
+*/
+function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
+{
+    console.log("validateConfigSingleServiceForm ::: Starting to validate the form.");
+    s
+    if ((serviceName === "") || (serviceIcon === "") || (serviceUrl === ""))
+    {
+        console.warn("validateConfigSingleServiceForm ::: Form is not valid.");
+        return false;
+    }
+    else
+    {
+        console.log("validateConfigSingleServiceForm ::: Form is valid.");
+        return true;
+    }
+}
+
+
+/**
 * @name createSingleServiceConfiguration
 * @summary Fetches the input values from the single-service-configuration popup window and creates a related service config
 * @description Fetches the input values from the single-service-configuration popup window and creates a related service config
 */
 function createSingleServiceConfiguration()
 {
+    console.log("updateSingleServiceConfiguration ::: Starting to create  a new service config");
+
     const storage = require("electron-json-storage");
 
     // get values from configServiceWindow
@@ -224,34 +280,36 @@ function createSingleServiceConfiguration()
     var serviceInjectCode = $("#input_serviceInjectCode").val(); //hidden
     var serviceEnableStatus = true;
 
-    // create a new config for the configured service
-    storage.set(serviceId, {
-        "type": serviceType,
-        "name": serviceName,
-        "icon": serviceIcon,
-        "url": serviceUrl,
-        "injectCode": serviceInjectCode,
-        serviceEnableStatus: serviceEnableStatus
-    }, 
-    function(error)
+    var isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl);
+    if (isFormValid === true)
     {
-        // reload the main window
-        const {ipcRenderer} = require("electron");
-        ipcRenderer.send("reloadMainWindow");
+        // create a new config for the configured service
+        storage.set(serviceId, {
+            "type": serviceType,
+            "name": serviceName,
+            "icon": serviceIcon,
+            "url": serviceUrl,
+            "injectCode": serviceInjectCode,
+            serviceEnableStatus: serviceEnableStatus
+        }, 
+        function(error)
+        {
+            // reload the main window
+            const {ipcRenderer} = require("electron");
+            ipcRenderer.send("reloadMainWindow");
 
-        closeSingleServiceConfiguratationWindow();
+            closeSingleServiceConfiguratationWindow();
 
-        console.log("createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
+            console.log("createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
 
-        showNoty("success", "Successfully created the new service: " + serviceId);
+            showNoty("success", "Successfully created the new service: " + serviceId);
 
-        if (error) throw error;
-    });
-
+            if (error) throw error;
+        });
+    }
 }
 
 
-// Storing the data from configServiceWindow
 /**
 * @name updateSingleServiceConfiguration
 * @summary Fetches the input values from the single-service-configuration popup window and updates the related service config
@@ -259,6 +317,8 @@ function createSingleServiceConfiguration()
 */
 function updateSingleServiceConfiguration()
 {
+    console.log("updateSingleServiceConfiguration ::: Starting to update an existing service config");
+
     const storage = require("electron-json-storage");
 
     // get values from configServiceWindow
@@ -273,34 +333,37 @@ function updateSingleServiceConfiguration()
     {
         serviceEnableStatus = true;
     }
-    else {
+    else 
+    {
         serviceEnableStatus = false;
     }
 
-    // update the config of the configured service (status)
-    storage.set(serviceId, {
-        "type": serviceType,
-        "name": serviceName,
-        "icon": serviceIcon,
-        "url": serviceUrl,
-        "injectCode": serviceInjectCode,
-        serviceEnableStatus: serviceEnableStatus
-    }, function(error)
+    var isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl);
+    if (isFormValid === true)
     {
-        // reload the main window
-        const {ipcRenderer} = require("electron");
-        ipcRenderer.send("reloadMainWindow");
+        // update the config of the configured service (status)
+        storage.set(serviceId, {
+            "type": serviceType,
+            "name": serviceName,
+            "icon": serviceIcon,
+            "url": serviceUrl,
+            "injectCode": serviceInjectCode,
+            serviceEnableStatus: serviceEnableStatus
+        }, function(error)
+        {
+            // reload the main window
+            const {ipcRenderer} = require("electron");
+            ipcRenderer.send("reloadMainWindow");
 
-        closeSingleServiceConfiguratationWindow();
+            closeSingleServiceConfiguratationWindow();
 
-        console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
+            console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
 
-        showNoty("success", "Successfully edited the existing service: " + serviceId);
-    
-        if (error) throw error;
-    });
-
-    
+            showNoty("success", "Successfully edited the existing service: " + serviceId);
+        
+            if (error) throw error;
+        });
+    }
 }
 
 
@@ -317,27 +380,6 @@ function configureSingleUserService(serviceId)
     // send ipc to show second window
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("showConfigureSingleServiceWindow", serviceId);
-}
-
-
-/**
-* @name showNoty
-* @summary Shows a noty notification
-* @description Creates a notification using the noty framework
-* @param type - Options: alert, success, warning, error, info/information
-* @param message - notification text
-*/
-function showNoty(type, message, timeout = 3000)
-{
-    //const Noty = require("noty");
-
-    new Noty({
-        type: type,
-        timeout: timeout,
-        theme: "bootstrap-v4",
-        layout: "bottom",
-        text: message,
-    }).show();
 }
 
 
@@ -403,14 +445,15 @@ function isMac()
     console.log("isMac ::: Detected operating system type is: " + os.type());
     if(os.type() === "Darwin")
     {
+        console.log("isMac ::: Smelling apples");
         return true;
     }
     else
     {
+        console.log("isMac ::: This is no mac");
         return false;
     }
 }
-
 
 
 /**
@@ -431,7 +474,7 @@ function openDevTools()
 * @summary Send a notification
 * @description Creates a desktop notification
 * @param title- Title string for the notification
-* @return message - Message string for the notification
+* @param message - Message string for the notification
 */
 function sendNotification(title, message)
 {
@@ -441,12 +484,6 @@ function sendNotification(title, message)
         body: message,
         icon: "img/notification/icon_notification.png"
     });
-
-    /*
-    myNotification.onclick = () => {
-        console.log("Notification clicked")
-    }
-    */
 }
 
 
@@ -565,6 +602,9 @@ function settingDefaultViewUpdate()
 
     // Store new default view in local storage
     writeLocalStorage("settingDefaultView", newDefaultView);
+
+    // show noty
+    showNoty("success", "Set default view to " + newDefaultView);
 }
 
 
@@ -582,6 +622,9 @@ function settingDefaultViewReset()
     $("#selectDefaultView").prop("selectedIndex",0);
 
     console.log("settingDefaultViewReset ::: Did reset the default view");
+
+    // show noty
+    showNoty("success", "Resetted default view.");
 }
 
 
@@ -616,7 +659,7 @@ function settingToggleMenubarVisibility()
 /**
 * @name checkSupportedOperatingSystem
 * @summary Checks if the operating system is supported or not
-* @description Checks if the operating system is linux, windows or macOS.
+* @description Checks if the operating system is linux, windows or macOS. Those are supported - others are currently not.
 */
 function checkSupportedOperatingSystem()
 {
@@ -636,11 +679,11 @@ function checkSupportedOperatingSystem()
 
         default:
             // define message
-            supportedOperatingSystemMessage = "Support for " + userPlatform + " is experimental.";
+            supportedOperatingSystemMessage = userPlatform + " is currently not supported. Please contact devs.";
 
             showNoty("warning", supportedOperatingSystemMessage, 0);
 
-            console.error("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " - " + supportedOperatingSystemMessage );
+            console.error("checkSupportedOperatingSystem ::: " + supportedOperatingSystemMessage );
     }
 }
 
@@ -691,6 +734,7 @@ function searchUpdate(silent = true)
 
         // local version
         var localAppVersion = require("electron").remote.app.getVersion();
+        //localAppVersion = "1.0.0";
 
         console.log("searchUpdate ::: Local version: " + localAppVersion);
         console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
@@ -699,14 +743,8 @@ function searchUpdate(silent = true)
         {
             console.warn("searchUpdate ::: Found update, notify user");
 
-            // update the updater-info text
-            $("#updateInformation").html('ttth ' + remoteAppVersionLatest + ' is now available. See <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/blob/master/CHANGELOG.md")\'>Changelog</a> for details. Download is available <a href="#" onClick=\'openURL("https://github.com/yafp/ttth/releases")\'>here</a>. <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
-
-            // show update information
-            $("#updateInformation").show();
-
             // send notification
-            //showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available.", 0);
+            showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
         }
         else
         {
@@ -714,14 +752,12 @@ function searchUpdate(silent = true)
 
             if(silent === true) // default case -> when executed on load
             {
-                // hide update information
-                $("#updateInformation").hide();
+                // Nothing to do here
 
             }
             else // when executed manually via menu -> user should see result of this search
             {
-                // update the updater-info text
-                $("#updateInformation").html('You are running the latest version of ttth. <button type="button" class="close" onClick="hideUpdateInformation();" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+                showNoty("success", "No updates available");
             }
         }
 
@@ -736,8 +772,6 @@ function searchUpdate(silent = true)
     {
         console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
 
-        $("#updateInformation").hide();
-
         showNoty("error", "Checking " + url + " for available releases failed. Got network issues?");
     })
 
@@ -745,20 +779,6 @@ function searchUpdate(silent = true)
     {
         console.log("searchUpdate ::: Finished checking " + url + " for available releases");
     });
-}
-
-
-/**
-* @name hideUpdateInformation
-* @summary Hides the update information
-* @description Hides the info div which shows hint regarding available update, link to changelog and link to release/download
-*/
-function hideUpdateInformation()
-{
-    console.log("hideUpdateInformation ::: Hiding update information div");
-
-    // hide update information
-    $("#updateInformation").hide();
 }
 
 
@@ -870,53 +890,53 @@ function loadServiceSpecificCode(serviceId, serviceName)
     {
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, false, true);
+            eventListenerForSingleService(serviceId, false, true);
             break;
 
         case "googleMail":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
         case "googleMessages":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
         case "mattermost":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
          case "slack":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
         case "telegram":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
         case "threema":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, false);
+            eventListenerForSingleService(serviceId, true, false);
             break;
 
         case "twitter":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, false);
+            eventListenerForSingleService(serviceId, true, false);
             break;
 
         case "whatsapp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
-            addEventListenerForSingleService(serviceId, true, true);
+            eventListenerForSingleService(serviceId, true, true);
             break;
 
         case "xing":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            addEventListenerForSingleService(serviceId, true, false);
+            eventListenerForSingleService(serviceId, true, false);
             break;
 
         default:
@@ -928,7 +948,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
 /**
 * @name initAvailableServicesSelection
 * @summary fills the select item in settings-page (which features all supported services)
-* @description fills the select item in settings-page (which features all supported services)
+* @description fills the select item in settings-page (which features all supported services). Source is services.json
 */
 function initAvailableServicesSelection()
 {
@@ -969,7 +989,7 @@ function initAvailableServicesSelection()
 /**
 * @name loadConfiguredUserServices
 * @summary updates the settings view which shows all configured user services.
-* @description removes all configured user services from settings view, reads all configured user services and re-adds
+* @description removes all configured user services from settings view, reads all configured user services and re-adds them to the settings ui under 'Configured services'
 */
 function loadConfiguredUserServices()
 {
@@ -1003,15 +1023,15 @@ function loadConfiguredUserServices()
                 if (serviceCount%2 === 0) // Odd
                 {
                     // create a new row
-                    $( "#settingsServicesConfigured" ).append('<div class="row" id="conf_' + serviceCount + '"></div>');
+                    $( "#settingsServicesConfigured" ).append('<div class="row ttthServiceRow" id="conf_' + serviceCount + '"></div>');
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 else // ...even - add to existing row - in col 2
@@ -1021,12 +1041,12 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleSingleConfiguredUserServiceCheckbox(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 serviceCount = serviceCount +1;
@@ -1052,10 +1072,10 @@ function initSettingsPage()
     var curSettingUserColor;
     var curSettingUserColorCode;
 
-    // load all supported services to checklist
+    // load all supported services to checklist (used for adding new services)
     initAvailableServicesSelection();
 
-    // load all user enabled services
+    // show all user configured services
     loadConfiguredUserServices();
 
     // Setting: Autostart
@@ -1072,7 +1092,6 @@ function initSettingsPage()
     {
         console.log("initSettingsPage ::: Setting Autostart is not configured");
     }
-
 
     // Setting: AutostartMinimized
     //
@@ -1191,14 +1210,14 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
 
 /**
-* @name settingsToggleSingleConfiguredUserServiceCheckbox
+* @name settingsToggleEnableStatusOfSingleUserService
 * @summary Enables or disabled the status of a single user configured service
 * @description User can enable or disable his configured services in settings page.
 * @param configuredUserServiceConfigName - Name of the config file of the selected service
 */
-function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserServiceConfigName)
+function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConfigName)
 {
-    console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
+    console.log("settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
 
     const os = require("os");
     const storage = require("electron-json-storage");
@@ -1241,9 +1260,13 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             // remove service tab
             removeServiceTab(configuredUserServiceConfigName);
 
-            console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
+            console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
+
+            //  show noty
+            showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
         }
-        else {
+        else 
+        {
             // is disabled - so enable it
 
             // Status Button
@@ -1268,7 +1291,10 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
             // add service to selectDefaultView
             $("#selectDefaultView").append(new Option(name, configuredUserServiceConfigName));
 
-            console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
+            console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
+
+            //  show noty
+            showNoty("success", "Enabled the service " + configuredUserServiceConfigName);
         }
 
         // update the config of the configured service (status)
@@ -1285,14 +1311,14 @@ function settingsToggleSingleConfiguredUserServiceCheckbox(configuredUserService
         });
     });
 
-    console.log("settingsToggleSingleConfiguredUserServiceCheckbox ::: Service _" + configuredUserServiceConfigName + "_ config file is now updated (status)");
+    console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ config file is now updated (status)");
 }
 
 
 /**
 * @name loadEnabledUserServices
-* @summary Reads all user configured service files and adds the enabled ones
-* @description Reads all user configured service files and adds the enabled ones
+* @summary Reads all user configured service files and adds the enabled tabs
+* @description Reads all user configured service files and adds the enabled tabs
 */
 function loadEnabledUserServices()
 {
@@ -1335,39 +1361,18 @@ function loadEnabledUserServices()
 }
 
 
-
-
-
-
-
-
-function recreateNode(el, withChildren) {
-  if (withChildren) {
-    el.parentNode.replaceChild(el.cloneNode(true), el);
-  }
-  else {
-    var newEl = el.cloneNode(false);
-    while (el.hasChildNodes()) newEl.appendChild(el.firstChild);
-    el.parentNode.replaceChild(newEl, el);
-  }
-}
-
-
-
-
 /**
 * @name deleteConfiguredService
 * @summary Deletes a single configured user service
 * @description Removes the tab, deletes the service user config, reloads the settings view which shows all user configured services.
+* @param serviceId - the service id
 */
 function deleteConfiguredService(serviceId)
 {
     console.log("deleteConfiguredService ::: Deleting the user service: _" + serviceId + "_.");
 
-
     // cleanup after deleting the entire service
     var webview = document.getElementById("webview_" + serviceId);
-
 
     // delete all Event handlers
     //
@@ -1382,10 +1387,8 @@ function deleteConfiguredService(serviceId)
     $("#webview_" + serviceId).remove();
     console.warn("deleteConfiguredService ::: Removed the webview itself");
 
-
     // remove service tab in UI
     removeServiceTab(serviceId);
-
 
     // delete json config of this service
     //
@@ -1395,7 +1398,6 @@ function deleteConfiguredService(serviceId)
         if (error) throw error;
     });
 
-
     // reload all configured user services to settings page
     //loadConfiguredUserServices();
 
@@ -1403,18 +1405,10 @@ function deleteConfiguredService(serviceId)
 
     showNoty("success", "Successfully deleted the service " + serviceId);
 
-
     // reload the main window
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("reloadMainWindow");
 }
-
-
-
-
-
-
-
 
 
 /**
@@ -1456,13 +1450,6 @@ function settingsUserAddNewService()
                         console.log("settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
                         serviceAllowsMultipleInstances = true;
 
-                        // PRE
-                        //
-                        //createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
-
-
-                        // POST
-                        //
                         // send ipc to show second window
                         const {ipcRenderer} = require("electron");
                         ipcRenderer.send("showConfigureSingleServiceWindowNew", userSelectedService);
@@ -1494,6 +1481,7 @@ function settingsUserAddNewService()
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
+                                        /*
                                         const { dialog } = require("electron").remote;
 
                                         const options = {
@@ -1512,16 +1500,14 @@ function settingsUserAddNewService()
                                             console.log(response);
                                             console.log(checkboxChecked);
                                         });
+                                        */
+                                        showNoty("error", "There is already a configured service of the type " + userSelectedService + ".", 0);
 
                                         return;
                                     }
                                 }
                             }
 
-                            // PRE
-                            //createServiceFile(userSelectedService, entry.name, entry.icon, entry.url, entry.injectCode);
-
-                            // POST
                             const {ipcRenderer} = require("electron");
                             ipcRenderer.send("showConfigureSingleServiceWindowNew", userSelectedService);
                         });
@@ -1539,14 +1525,33 @@ function settingsUserAddNewService()
 }
 
 
+/**
+* @name generateNewRandomServiceID
+* @summary Generates a random string and adds the serviceType
+* @description Generates a random string and adds the serviceType
+* @param serviceType - The type/class of the service
+* @return newServiceId - Random string + serviceType
+*/
 function generateNewRandomServiceID(serviceType)
 {
-    var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    //var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+
+    var length = 24;
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var randomString = "";
+
+    // create random string
+    for (var i = 0; i < length; i++)
+    {
+        randomString += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
     var newServiceId = randomString + "_" + serviceType;
+
+    console.log("generateNewRandomServiceID ::: Generated a new service ID: _" + newServiceId + "_.");
 
     return newServiceId;
 }
-
 
 
 /**
@@ -1566,16 +1571,23 @@ function setAccesskeysForEnabledServices()
     {
         currentTabId = $(this).attr("id");
 
-        if(currentTabId !== "target_Settings")
+        if(currentTabId === "target_Settings")
         {
-            tabCounter = tabCounter +1;
-
-            console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
-            $("#" + currentTabId).attr("accesskey", tabCounter);
+           console.log("setAccesskeysForEnabledServices ::: Ignoring settings tab.");
         }
         else
         {
-            console.log("setAccesskeysForEnabledServices ::: Ignoring settings tab.");
+            tabCounter = tabCounter +1;
+            console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
+            $("#" + currentTabId).attr("accesskey", tabCounter);
+
+
+            // TODO:
+            // define a globalShortcut
+            const {ipcRenderer} = require("electron");
+            ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
+
+            //globalShortcut.register("CommandOrControll+9", switchToService(currentTabId));
         }
     });
 
@@ -1663,9 +1675,12 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
 
+
+    // get configured target url & inject code from config
     const storage = require("electron-json-storage");
 
-    storage.get(tabValue, function(error, data) {
+    storage.get(tabValue, function(error, data) 
+    {
         if (error) throw error;
 
         var url =  data.url;
@@ -1694,9 +1709,6 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 {
     console.log("startSearchUpdates ::: Show update information div");
-
-    // show update information
-    $("#updateInformation").show();
 
     searchUpdate(false);
 });
@@ -1805,7 +1817,6 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 
 
 
-
 // Call from main.js ::: serviceToCreate (in configServiceWindow)
 //
 require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
@@ -1835,11 +1846,12 @@ require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
 
                 // hide save buttons
                 $("#bt_saveExistingService").hide();
+
+                // show the add-new-service button
+                $("#bt_addNewService").show();
             }
         });
     });
-
-
 });
 
 
@@ -1875,7 +1887,22 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         // hide Add-new-service button
         $("#bt_addNewService").hide();
 
+        // show the edit service  button 
+        $("#bt_saveExistingService").show();
+
         console.log("serviceToConfigure ::: Loaded current values for this service to UI");
 
     });
+});
+
+
+
+
+
+// Call from main.js ::: switchToTab
+//
+require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
+{
+    console.log("switchToTab ::: Switching to tab: " + targetTab);
+    $("#" + targetTab).trigger("click");
 });
