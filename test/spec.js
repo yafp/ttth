@@ -58,7 +58,7 @@ describe("Application Window", function ()
             args: [path.join(__dirname, "..")]
         })
         return this.app.start();
-    })
+    });
 
 
     afterEach(function ()
@@ -101,7 +101,7 @@ describe("Application Window", function ()
             expect(tabText).to.equal('');
             //console.log('The settings tab text is: _' + tabText + '_.')
         });
-    })
+    });
     */
 
 
