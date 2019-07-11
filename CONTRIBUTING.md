@@ -86,8 +86,8 @@ email, or any other method with the owners of this repository before making a ch
 ### CI
 The project repository is using:
 
-* Travis CI (for Linux and macOS)
-* AppVeyor (for Windows)
+* [Travis CI](https://travis-ci.org/) (for Linux and macOS)
+* [AppVeyor](https://ci.appveyor.com/project/yafp/ttth) (for Windows)
 
 for Continuos Integration aspects.
 
@@ -103,13 +103,8 @@ for Continuos Integration aspects.
   * Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f
   * Linux building configuration: https://www.electron.build/configuration/linux
   * Building for Windows on Linux: https://blog.aaronlenoir.com/2017/03/03/building-electron-apps-for-windows-on-debian/
+* Download Stats
   * GitHub Release Stats: https://www.somsubhra.com/github-release-stats/?username=yafp&repository=ttth
 * Misc
-  * App icons: https://www.christianengvall.se/electron-app-icons/
-  * https://blog.dcpos.ch/how-to-make-your-electron-app-sexy
-  * Store user data: https://medium.com/cameron-nokes/how-to-store-user-data-in-electron-3ba6bf66bc1e
-  * Send and retrieve informations from webview: https://ourcodeworld.com/articles/read/201/how-to-send-retrieve-information-and-manipulate-the-dom-from-a-webview-with-electron-framework
-  * Other electron apps: https://github.com/hokein/electron-sample-apps
-  * Localization: https://www.christianengvall.se/electron-localization/
   * Keyboard Shortcuts: https://electronjs.org/docs/api/accelerator
   * package.json validator: http://package-json-validator.com/

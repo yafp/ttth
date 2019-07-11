@@ -3,7 +3,8 @@
 # ttth
 ## changelog
 
-### ttth 1.4.0 (2019xxyy) - CURRENT DEV
+
+### ttth 1.4.0 (20190712)
 ####  ```Added```
 * Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
 * Services: Allow multiple instances of some services (example: Slack/Mattermost). See [#52](https://github.com/yafp/ttth/issues/52)
@@ -11,8 +12,10 @@
 * Services: Added Discord as new service. See [#59](https://github.com/yafp/ttth/issues/59)
 * Services: Added Nextcloud as new service. See [#57](https://github.com/yafp/ttth/issues/57)
 * Services: Added Custom service (user url). See [#64](https://github.com/yafp/ttth/issues/64)
+* Services: Added accesskeys for each service tab. See [#50](https://github.com/yafp/ttth/issues/50)
+* Services: Added global shortcuts for each service tab. See [#71](https://github.com/yafp/ttth/issues/71)
 * UI: Added in-app notifications (using Noty). See [#58](https://github.com/yafp/ttth/issues/58)
-* UI: Added button to open the folder which contains all user configured service config files.
+* UI: Added button to open the folder which contains all user configured service config files. See [#70](https://github.com/yafp/ttth/issues/70)
 
 #### ```Changed```
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
@@ -24,11 +27,12 @@
 
 #### ```Removed```
 * UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)
-* Removed electron-prompt dependency.
-* Removed logo image on bottom of settings tab
+* Removed electron-prompt dependency. See [#69](https://github.com/yafp/ttth/issues/69)
+* Removed logo image on bottom of settings tab. See [#68](https://github.com/yafp/ttth/issues/68)
 
 #### ```Fixed```
 * Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
+* UI: Fix horizontal scrollbar css bug. See [#60](https://github.com/yafp/ttth/issues/60)
 
 
 ### ttth 1.3.0 (20190603)
