@@ -10,7 +10,8 @@
     "settingsSectionAboutButtonIssues": "Probleme",
     "settingsSectionAboutButtonConsole": "Entwickler Konsole",
     "settingsSectionServicesAdd": "Dienst hinzufügen",
+    "settingsSectionServicesButtonAdd": "Hinzufügen",
     "settingsSectionServicesConfigured": "Konfigurierte Dienste",
     "settingsSectionStartup": "Optionen",
-    "settingsSectionServicesShowConfigsFolder": "Zeige Konfigurationen"
+    "settingsSectionServicesShowConfigsFolder": "Zeige Konfigurationsdateien"
 }

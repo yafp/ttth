@@ -10,7 +10,8 @@
     "settingsSectionAboutButtonIssues": "Issues",
     "settingsSectionAboutButtonConsole": "Console",
     "settingsSectionServicesAdd": "Add service",
+    "settingsSectionServicesButtonAdd": "Add",
     "settingsSectionServicesConfigured": "Configured services",
     "settingsSectionStartup": "Options",
-    "settingsSectionServicesShowConfigsFolder": "Show configurations"
+    "settingsSectionServicesShowConfigsFolder": "Show config files"
 }
