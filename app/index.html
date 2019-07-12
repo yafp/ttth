@@ -190,7 +190,7 @@
                                     <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for the hide menubar on startup otion" onClick="settingToggleMenubarVisibility();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="Hide menubar (on start)" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="Hide menubar (on load)" disabled>
                         </div>
                         <!-- /Setting: HideMenubarOnStartup  -->
 
@@ -234,9 +234,6 @@ $( document ).ready(function()
     // init the settings tab
     initSettingsPage();
 
-    // Load default view
-    //loadDefaultView();
-
     // Translate using i18next
     localizeUserInterface();
 
@@ -263,7 +260,7 @@ $( document ).ready(function()
 $(document).bind('afterready', function()
 {
     // call your code here that you want to run after all $(document).ready() calls have run
-    setAccesskeysForEnabledServices();
+    updateGlobalServicesShortcuts();
 
     // validate default view
     validateConfiguredDefaultView();
@@ -295,6 +292,5 @@ $(document).bind('afterready', function()
     })
 
 });
-
 
 </script>

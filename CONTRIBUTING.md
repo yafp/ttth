@@ -17,27 +17,15 @@ email, or any other method with the owners of this repository before making a ch
 * Install dependencies: ```npm install```
 * Run ttth: ```npm start```
 
-#### Install electron
-* Navigate to repository
-* Execute: ```npm install --save-dev electron```
-
-#### Install electron packager
-* Navigate to repository
-* Execute: ```npm install electron-packager --save-dev```
-
-#### Add electron-builder to devDependencies
-* Navigate to repository
-* Execute: ```npm install electron-builder --save-dev```
-
 #### debug logging
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
 * Run ttth: ```npm run start-debug```
 
-
 #### run test
 * Go into the repository: ```cd ttth```
 * Execute: ```npm test```
+
 
 
 ### Adding functions
@@ -46,17 +34,14 @@ email, or any other method with the owners of this repository before making a ch
 * Edit ```app/js/ttth/services.json``` and add the new service
 
 
-### Preparing builds
+### Building
 
 #### Generate jsdoc files
 * Navigate to repository
 * Execute: ```jsdoc --configure jsdoc.json --readme README.md```
 
 
-
-### Creating builds
-
-#### pack (using electron-packager)
+#### Packaging (using electron-packager)
 * Navigate to repository
 
 ##### linux
@@ -70,20 +55,45 @@ email, or any other method with the owners of this repository before making a ch
 * Execute: ```npm run package-win-64```
 
 
-#### build
+#### Building
 * Navigate to repository
 
-##### Linux
+##### linux
 * Execute: ```npm run build-linux```
 
 ##### mac
 * Execute: ```npm run build-mac```
 
-##### Windows
+##### windows
 * Execute: ```npm run build-win```
 
 
-### CI
+
+### Misc
+#### Install electron
+* Navigate to repository
+* Execute: ```npm install --save-dev electron```
+
+#### Install electron packager
+* Navigate to repository
+* Execute: ```npm install electron-packager --save-dev```
+
+#### Add electron-builder to devDependencies
+* Navigate to repository
+* Execute: ```npm install electron-builder --save-dev```
+
+#### check for outdated npm packages
+* npm outdated
+
+#### npm update packages
+* npm update
+
+#### npm update single package
+* npm install PACKAGENAME --save
+
+
+
+## CI
 The project repository is using:
 
 * [Travis CI](https://travis-ci.org/) (for Linux and macOS)
@@ -108,3 +118,4 @@ for Continuos Integration aspects.
 * Misc
   * Keyboard Shortcuts: https://electronjs.org/docs/api/accelerator
   * package.json validator: http://package-json-validator.com/
+  * Handling npm packages https://bytearcher.com/articles/using-npm-update-and-npm-outdated-to-update-dependencies/

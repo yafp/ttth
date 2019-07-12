@@ -23,6 +23,9 @@ let mainWindow;
 let configServiceWindow;
 
 
+let willQuitApp; // used for saving mainWindow / index.html
+
+
 
 /**
 * @name createMenu
@@ -552,17 +555,42 @@ function createWindow ()
     {
         console.log("main.js ::: mainWindow ::: Event: close");
 
+        // close configServiceWindow
+        configServiceWindow.close();
+
+        // Saving window position and size
+        //
         // get window position and size:
         var data = {
             bounds: mainWindow.getBounds()
         };
-
         // store it to file in user data
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
-        // close configServiceWindow
-        configServiceWindow.close();
+
+
+        // TODO
+        //
+        // add with 1.5.0
+        //
+        /*
+        saveState()
+
+        if (willQuitApp || process.platform !== 'darwin') 
+        {
+            // the user tried to quit the app
+            mainWindow = null
+        } 
+        else 
+        {
+            //the user only tried to close the window
+            e.preventDefault()
+            mainWindow.hide()
+        }
+        */
+        // End TODO
+
     });
 
 
@@ -618,7 +646,7 @@ function createWindow ()
         console.log("main.js ::: mainWindow ::: IPC: openUserServicesConfigFolder");
 
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
-        shell.openItem(customUserDataPath)
+        shell.openItem(customUserDataPath);
     });
 
 
@@ -637,6 +665,38 @@ function createWindow ()
         mainWindow.setTitle(windowTitle);
     });
 
+
+    // Call from renderer ::: deleteAllGlobalServicesShortcut
+    //
+    ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
+    {
+        console.log("main.js ::: deleteAllGlobalServicesShortcut ::: Delete all existing global shortcuts for services, before re-creating them.");
+
+        // doesnt work - whyever
+        //globalShortcut.unregisterAll();
+
+        // delete all global shortcuts
+        for (i = 1; i <= numberOfEnabledServices;  i++) 
+        {
+            globalShortcut.unregister("CmdOrCtrl+" + i);
+            console.log("main.js ::: deleteAllGlobalServicesShortcut ::: Deleting the global shortcut: CmdOrCtrl+" + i);
+        } 
+    });
+
+
+    // Call from renderer ::: createNewGlobalShortcut
+    //
+    ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
+    {
+        console.log("main.js ::: createNewGlobalShortcut ::: Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
+
+        const ret = globalShortcut.register(shortcut, () => {
+            console.log("main.js ::: Shortcut " + shortcut + " was pressed");
+
+            // activate the related tab:
+            mainWindow.webContents.send("switchToTab", targetTab);
+        });
+    });
 
 
     // *****************************************************************
@@ -847,6 +907,43 @@ function forceSingleAppInstance()
 }
 
 
+
+// TODO:
+// add with 1.5.0
+// via: https://vincelwt.github.io/optimize-electron-startup-time/index.html
+const saveState = () => {
+
+    // regex .replace is for escaping fucking windows paths
+    let writePath = path.join(app.getPath("userData"), "ttth_"+app.getVersion()+"_index.html").replace(/\\/g, "\\\\") 
+
+    console.log("main.js ::: saveState ::: Trying to save the window to: _" + writePath + "_ for faster startup times");
+    
+    mainWindow.webContents.executeJavaScript(`
+        
+        // This part depends on your app
+        // In my case, I reset some elements to their original page before saving the page
+
+        // Reset ui elements
+        //getById('playerBufferBar').style.transform = getById('playerProgressBar').style.transform = 'translateX(0%)'
+        
+        //addClass('playpauseIcon', 'icon-play')
+        //removeClass('playpauseIcon', 'icon-pause')
+        //removeClass(".playingIcon", "blink")
+        //addClass('refreshStatus', 'hide')
+
+        // Here we write the DOM to the 'userData' folder
+        // so we can use this for the next startup
+
+        fs.writeFileSync("${writePath}",  '<!DOCTYPE html>'+document.documentElement.outerHTML)
+
+        // Save settings
+        store.set('settings', settings)
+    `)
+}
+
+
+
+
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -864,6 +961,40 @@ app.on("ready", function ()
     createMenu();
 });
 
+
+// TODO:
+// add with 1.5.0
+app.on("before-quit", function ()
+{
+    console.log("main.js ::: app ::: before-quit");
+
+    willQuitApp = true
+    //saveState()
+});
+
+
+app.on("will-quit", function ()
+{
+    console.log("main.js ::: app ::: will-quit");
+});
+
+
+app.on("quit", function ()
+{
+    console.log("main.js ::: app ::: quit");
+});
+
+
+app.on("browser-window-blur", function ()
+{
+    console.log("main.js ::: app ::: browser-window-blur");
+});
+
+
+app.on("browser-window-focus", function ()
+{
+    console.log("main.js ::: app ::: browser-window-focus");
+});
 
 
 // Quit when all windows are closed.
@@ -901,6 +1032,12 @@ app.on("activate", function ()
 createTray();
 
 
+
+
+
+
+
+
 process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
     process.stderr.fd,
@@ -912,22 +1049,11 @@ process.on("uncaughtException", (err, origin) => {
 
 
 
-ipcMain.on("createNewGlobalShortcut", function(arg1, arg2, arg3)
-{
-    console.log("main.js ::: createNewGlobalShortcut ::: Creating a new shortcut: _" + arg2 + "_ for the tab: _" + arg3 + "_.");
-    //console.log("Keycombo: " + arg2);
-    //console.log("Target: " + arg3);
-    //console.log("++++++++++++++++++++++++");
 
-    const ret = globalShortcut.register(arg2, () => {
-        console.log("main.js ::: Shortcut " + arg2 + " was pressed");
-
-        // activate the related tab:
-        mainWindow.webContents.send("switchToTab", arg3);
-    });
-});
 
 
 
 // Measuring startup
 console.timeEnd("init");
+
+

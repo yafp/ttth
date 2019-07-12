@@ -304,7 +304,10 @@ function createSingleServiceConfiguration()
 
             showNoty("success", "Successfully created the new service: " + serviceId);
 
-            if (error) throw error;
+            if (error)
+            {
+                throw error;
+            }
         });
     }
 }
@@ -361,7 +364,10 @@ function updateSingleServiceConfiguration()
 
             showNoty("success", "Successfully edited the existing service: " + serviceId);
 
-            if (error) throw error;
+            if (error)
+            {
+                throw error;
+            }
         });
     }
 }
@@ -890,13 +896,21 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
-        // false / true
+        // NO unread-message-handling but link-handler
         case "freenode":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
 
-        // true / true
+        // Unread-message-handler but NO link handler
+        case "threema":
+        case "twitter":
+        case "xing":
+            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            eventListenerForSingleService(serviceId, true, false);
+            break;
+
+        // Unread-message-handler and link-handler
         case "googleMail":
         case "googleMessages":
         case "mattermost":
@@ -906,15 +920,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
             eventListenerForSingleService(serviceId, true, true);
             break;
 
-        // true / false
-        case "threema":
-        case "twitter":
-        case "xing":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
-            eventListenerForSingleService(serviceId, true, false);
-            break;
-
-        // special
+        // Specialcase: WhatsApp
         case "whatsapp":
             console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
@@ -983,7 +989,10 @@ function loadConfiguredUserServices()
     // read all user service files
     storage.getAll(function(error, data)
     {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
 
         // show object which contains all config files
         //console.error(data);
@@ -1208,7 +1217,10 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
 
     // get content from service configuration file
     storage.get(configuredUserServiceConfigName, function(error, data) {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
 
         var type = data.type;
         var name = data.name;
@@ -1288,7 +1300,13 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             serviceEnableStatus: serviceEnableStatus
         }, function(error)
         {
-            if (error) throw error;
+            if (error)
+            {
+                throw error;
+            }
+
+            // must re-set the globalShortcuts for all existing services / tabs - see #74
+            //updateGlobalServicesShortcuts();
         });
     });
 
@@ -1310,7 +1328,10 @@ function loadEnabledUserServices()
     // loop over all json files - add tab for the enabled ones
     storage.getAll(function(error, data)
     {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
 
         // show object which contains all config files
         console.log("loadEnabledUserServices ::: Current service: " + data);
@@ -1376,7 +1397,10 @@ function deleteConfiguredService(serviceId)
     const storage = require("electron-json-storage");
     storage.remove(serviceId, function(error)
     {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
     });
 
     // reload all configured user services to settings page
@@ -1445,7 +1469,10 @@ function settingsUserAddNewService()
                         // check which configs already exist
                         storage.getAll(function(error, data)
                         {
-                            if (error) throw error;
+                            if (error)
+                            {
+                                throw error;
+                            }
 
                             // show object which contains all config files
                             console.log(data);
@@ -1536,38 +1563,48 @@ function generateNewRandomServiceID(serviceType)
 
 
 /**
-* @name setAccesskeysForEnabledServices
-* @summary Assigns accesskeys for all service tabs
-* @description Assigns accesskeys for all service tabs
+* @name updateGlobalServicesShortcuts
+* @summary Assigns global shortcuts for all service tabs
+* @description Assigns global shortcuts for all service tabs
 */
-function setAccesskeysForEnabledServices()
+function updateGlobalServicesShortcuts()
 {
-    console.log("setAccesskeysForEnabledServices ::: Starting to define accesskeys for enabled services");
+    const {ipcRenderer} = require("electron");
+
+    console.log("updateGlobalServicesShortcuts ::: Starting ...");
 
     var tabCounter = 0;
     var currentTabId;
 
-    // get list of all visible service-tabs
+
+    // Ensure to remove all possible shortcuts before re-creating them. See #74
+    //
+    // count enabled services:
+    var numberOfEnabledServices = $("#myTabs li").length
+    ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+
+
+    // Create new global shortcutd
     $("#myTabs li a").each(function()
     {
         currentTabId = $(this).attr("id");
 
         if(currentTabId === "target_Settings")
         {
-           console.log("setAccesskeysForEnabledServices ::: Ignoring settings tab.");
+           console.log("updateGlobalServicesShortcuts ::: Ignoring settings tab.");
         }
         else
         {
             tabCounter = tabCounter +1;
 
+            // FIXME - no longer needed - should be removed in 1.5.0
             // accesskeys
             //
-            //console.log("setAccesskeysForEnabledServices ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
+            //console.log("updateGlobalServicesShortcuts ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
             //$("#" + currentTabId).attr("accesskey", tabCounter);
 
             // globalShortcut
             //
-            const {ipcRenderer} = require("electron");
             ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
         }
     });
@@ -1578,7 +1615,7 @@ function setAccesskeysForEnabledServices()
         //showNoty("success", "Updating accesskeys for enabled service tabs.")
     }
 
-    console.log("setAccesskeysForEnabledServices ::: Finished assigning accesskeys for enabled services & related tabs");
+    console.log("updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
 }
 
 
@@ -1631,16 +1668,21 @@ function localizeUserInterface()
 
     $(function()
     {
+        // text
         $("[i18n-text]").each(function()
         {
             var node = $(this), key = node.attr("i18n-text");
             node.text(i18next.t(key));
         });
+
+        // title attribute
         $("[i18n-title]").each(function()
         {
             var node = $(this), key = node.attr("i18n-title");
             node.attr("title", i18next.t(key));
         });
+
+        
     });
 }
 
@@ -1662,7 +1704,10 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     storage.get(tabValue, function(error, data)
     {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
 
         var url =  data.url;
         var injectCode = data.injectCode;
@@ -1847,7 +1892,10 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
 
     storage.get(serviceId, function(error, data)
     {
-        if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
 
         var type = data.type;
         var name = data.name;
