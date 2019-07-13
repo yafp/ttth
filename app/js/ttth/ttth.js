@@ -9,7 +9,6 @@
 function showNoty(type, message, timeout = 3000)
 {
     //const Noty = require("noty");
-
     new Noty({
         type: type,
         timeout: timeout,
@@ -194,7 +193,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
             {
                 updateServiceBadge(serviceId, event.channel);
             }
-
         });
     }
 
@@ -1580,7 +1578,7 @@ function updateGlobalServicesShortcuts()
     // Ensure to remove all possible shortcuts before re-creating them. See #74
     //
     // count enabled services:
-    var numberOfEnabledServices = $("#myTabs li").length
+    var numberOfEnabledServices = $("#myTabs li").length;
     ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
 
 
@@ -1596,12 +1594,6 @@ function updateGlobalServicesShortcuts()
         else
         {
             tabCounter = tabCounter +1;
-
-            // FIXME - no longer needed - should be removed in 1.5.0
-            // accesskeys
-            //
-            //console.log("updateGlobalServicesShortcuts ::: Set accesskey for tab: _" + currentTabId + "_ to: _" + tabCounter + "_.");
-            //$("#" + currentTabId).attr("accesskey", tabCounter);
 
             // globalShortcut
             //
@@ -1639,7 +1631,6 @@ function localizeUserInterface()
 
     var i18next = require("i18next");
     var Backend = require("i18next-sync-fs-backend");
-    //var LanguageDetector = require("i18next-electron-language-detector");
 
     i18next
     .use(Backend)
@@ -1682,7 +1673,7 @@ function localizeUserInterface()
             node.attr("title", i18next.t(key));
         });
 
-        
+
     });
 }
 
@@ -1920,12 +1911,8 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         $("#bt_saveExistingService").show();
 
         console.log("serviceToConfigure ::: Loaded current values for this service to UI");
-
     });
 });
-
-
-
 
 
 // Call from main.js ::: switchToTab

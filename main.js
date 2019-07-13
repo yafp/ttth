@@ -577,12 +577,12 @@ function createWindow ()
         /*
         saveState()
 
-        if (willQuitApp || process.platform !== 'darwin') 
+        if (willQuitApp || process.platform !== 'darwin')
         {
             // the user tried to quit the app
             mainWindow = null
-        } 
-        else 
+        }
+        else
         {
             //the user only tried to close the window
             e.preventDefault()
@@ -676,11 +676,12 @@ function createWindow ()
         //globalShortcut.unregisterAll();
 
         // delete all global shortcuts
-        for (i = 1; i <= numberOfEnabledServices;  i++) 
+        var i;
+        for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
             console.log("main.js ::: deleteAllGlobalServicesShortcut ::: Deleting the global shortcut: CmdOrCtrl+" + i);
-        } 
+        }
     });
 
 
@@ -914,18 +915,18 @@ function forceSingleAppInstance()
 const saveState = () => {
 
     // regex .replace is for escaping fucking windows paths
-    let writePath = path.join(app.getPath("userData"), "ttth_"+app.getVersion()+"_index.html").replace(/\\/g, "\\\\") 
+    let writePath = path.join(app.getPath("userData"), "ttth_"+app.getVersion()+"_index.html").replace(/\\/g, "\\\\");
 
     console.log("main.js ::: saveState ::: Trying to save the window to: _" + writePath + "_ for faster startup times");
-    
+
     mainWindow.webContents.executeJavaScript(`
-        
+
         // This part depends on your app
         // In my case, I reset some elements to their original page before saving the page
 
         // Reset ui elements
         //getById('playerBufferBar').style.transform = getById('playerProgressBar').style.transform = 'translateX(0%)'
-        
+
         //addClass('playpauseIcon', 'icon-play')
         //removeClass('playpauseIcon', 'icon-pause')
         //removeClass(".playingIcon", "blink")
@@ -938,8 +939,8 @@ const saveState = () => {
 
         // Save settings
         store.set('settings', settings)
-    `)
-}
+    `);
+};
 
 
 
@@ -968,7 +969,7 @@ app.on("before-quit", function ()
 {
     console.log("main.js ::: app ::: before-quit");
 
-    willQuitApp = true
+    willQuitApp = true;
     //saveState()
 });
 
@@ -1055,5 +1056,3 @@ process.on("uncaughtException", (err, origin) => {
 
 // Measuring startup
 console.timeEnd("init");
-
-
