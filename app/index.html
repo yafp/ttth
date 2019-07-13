@@ -62,7 +62,7 @@
         <div id="tabBar" >
             <!-- Tab Names -->
             <ul class="nav nav-tabs" id="myTabs" role="tablist">
-                <li class="nav-item small" id="menu_Settings">
+                <li class="nav-item small" id="menu_Settings" i18n-title="settings">
                     <a class="nav-link my-ui-text active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
                         <i class="fas fa-cog"></i> <span i18n-text=""></span>
                     </a>
@@ -114,11 +114,11 @@
                         <h3 class="my-ui-text" i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
                         <div id="settingsServicesAdd">
                             <div class="input-group mb-3">
-                                <select id="select_availableServices"  class="custom-select" name="select_availableServices"  aria-label="Dropdown element to select a service type for service creation">
+                                <select id="select_availableServices"  class="custom-select" name="select_availableServices" title="" i18n-title="settingsSectionServicesAddSelectService" aria-label="Dropdown element to select a service type for service creation">
                                     <option value="" disabled selected>Please choose</option>
                                 </select>
                                 <div class="input-group-append">
-                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" aria-label="Button to add a new service"><!-- Add --></button>
+                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" i18n-title="settingsSectionServicesButtonAddTitle" aria-label="Button to add a new service"><!-- Add --></button>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
                         <div id="settingsServicesConfigured">
                             <!-- load dynamic from json file in user data -->
                         </div>
-    
+
                         <div class="text-right">
                             <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserServicesConfigFolder();" i18n-text="settingsSectionServicesShowConfigsFolder" aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations --></button>
                         </div>
@@ -137,7 +137,7 @@
 
 
                         <!-- Startup Options-->
-                        <h3 class="my-ui-text" i18n-text="settingsSectionStartup"><!-- Startup options --></h3>
+                        <h3 class="my-ui-text" i18n-text="settingsSectionOptions"><!-- Startup options --></h3>
 
                         <!-- Setting: DefaultView-->
                         <div class="input-group input-group-sm mb-1">
@@ -155,8 +155,8 @@
                                 </div>
                             </div>
                             <div class="input-group-prepend">
-                                <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="Set default view" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
-                                <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="Reset default view" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
+                                <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="" i18n-title="settingsSectionOptionsDefaultViewSet" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="" i18n-title="settingsSectionOptionsDefaultViewReset" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                         <!-- /Setting: DefaultView -->
@@ -272,7 +272,7 @@ $(document).bind('afterready', function()
         var target = link.currentTarget.innerText;
 
         // remove leading space
-        if(target.substr(0,1) == " ") 
+        if(target.substr(0,1) == " ")
         {
             target = target.substr(1);
         }
