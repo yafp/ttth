@@ -4,6 +4,14 @@
 ## changelog
 
 
+### ttth 1.5.0 (2019xxyy)
+####  ```Changed```
+* UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
+
+#### ```Fixed```
+* Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
+
+
 ### ttth 1.4.0 (20190712)
 ####  ```Added```
 * Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
