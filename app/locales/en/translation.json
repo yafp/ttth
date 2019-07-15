@@ -2,6 +2,7 @@
     "settings": "Settings",
     "settingsSectionAbout": "About",
     "settingsSectionAboutDescription": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
+    "settingsSectionAboutButtonShowMore": "Show more",
     "settingsSectionAboutButtonReadme": "Readme",
     "settingsSectionAboutButtonReleases": "Releases",
     "settingsSectionAboutButtonChangelog": "Changelog",
