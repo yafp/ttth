@@ -19,6 +19,121 @@ function showNoty(type, message, timeout = 3000)
 }
 
 
+
+// 
+
+
+
+/**
+* @name writeLog
+* @summary Writes a log message from renderer to log file and to cli and replaces the classic console-command which writes to dev-console.
+* @description Writes a log message from renderer to log file and to cli
+* @param logType - The type of log message. Supported are: error, warn. info. verbose. debug.  silly
+* @param logMessage - The actual log message
+*/
+function writeLog(logType, logMessage)
+{
+    const log = require('electron-log'); // for logging to file
+
+    switch (logType) 
+    {
+        case 'error' :
+            log.error(logMessage); // write to file & cli
+            console.error(logMessage); // write to dev console
+            break;
+
+        case 'warn' :
+            log.warn(logMessage);
+            console.warn(logMessage);
+            break;
+
+        case 'info' :
+            log.info(logMessage);
+            console.log(logMessage);
+            break;
+
+        case 'verbose' :
+            log.verbose(logMessage);
+            break;
+
+        case 'debug' :
+            log.debug(logMessage);
+            console.debug(logMessage);
+            break;
+
+        case 'silly' :
+            log.silly(logMessage);
+            break;
+
+      default:
+         log.info(logMessage);
+         console.log(logMessage);
+   }
+}
+
+
+/**
+* @name showNotyAutostartMinimizedConfirm
+* @summary Shows a dialog while configuring the autostart.
+* @description Asks the user if the autostart should be minimized or not
+*/
+function showNotyAutostartMinimizedConfirm()
+{
+    var AutoLaunch = require("auto-launch");
+
+    var n = new Noty(
+    {
+        theme: "bootstrap-v4",
+        layout: "bottom",
+        text: 'Should autostart enable the minimize mode?',
+        buttons: [
+            Noty.button('Yes', 'btn btn-success', function ()
+            {
+                // enable start minimized
+                var ttthAutoLauncher = new AutoLaunch({
+                    name: "ttth",
+                    isHidden: true,
+                    useLaunchAgent: true,
+                });
+
+                ttthAutoLauncher.enable();
+                writeLocalStorage("settingAutostart", true);
+                n.close();
+            },
+            {
+                id: 'button1', 'data-status': 'ok'
+            }),
+
+            Noty.button('No', 'btn btn-error', function ()
+            {
+                var ttthAutoLauncher = new AutoLaunch({
+                    name: "ttth",
+                    isHidden: false,
+                    useLaunchAgent: true,
+                });
+
+                ttthAutoLauncher.enable();
+                writeLocalStorage("settingAutostart", true);
+                n.close();
+            })
+        ]
+    });
+
+    n.show();
+}
+
+
+/**
+* @name settingsAboutShowMore
+* @summary Makes several buttons visible in the about section of the settings tab
+* @description USed to keep the settings ui clean on-load, button show-more hides itself after being pressed and loads several other buttons
+*/
+function settingsAboutShowMore()
+{
+    $("#bt_aboutShowMore").hide();
+}
+
+
 /**
 * @name openUserServicesConfigFolder
 * @summary Opens the folder in filesystem which contains the service configurations of the current user
@@ -29,7 +144,7 @@ function openUserServicesConfigFolder()
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("openUserServicesConfigFolder");
 
-    console.log("openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.");
+    writeLog("info", "openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.");
 }
 
 
@@ -54,7 +169,8 @@ function updateTrayIconStatus()
         {
             currentTabId = currentTabId.replace("target_", "");
 
-            console.log("updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
+            writeLog("info", "updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
+
 
             curServiceUnreadMessageCount = 0; // reset to 0
             curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
@@ -63,7 +179,7 @@ function updateTrayIconStatus()
             // if the current service has a significant unread message count -> log it and add it to overall counter
             if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
             {
-                console.log("updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
+                writeLog("info", "updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
 
                 // increate the overall counter
                 overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
@@ -71,11 +187,11 @@ function updateTrayIconStatus()
         }
         else
         {
-            console.log("updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
+            writeLog("info", "updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
         }
     });
 
-    console.log("updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
+    writeLog("info", "updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
 
     const {ipcRenderer} = require("electron");
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
@@ -99,7 +215,7 @@ function updateTrayIconStatus()
 */
 function updateServiceBadge(serviceId, count)
 {
-    console.log("updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
+    writeLog("info", "updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
 
     // if count is < 1 - badge should show nothing
     if( (count === null) || (count === 0) || (count === "null"))
@@ -125,8 +241,8 @@ function updateServiceBadge(serviceId, count)
 */
 function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false)
 {
-    console.log("eventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
-    console.log("eventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
+    writeLog("info", "eventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
+    writeLog("info", "eventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
 
     // get webview
     var webview = document.getElementById("webview_" + serviceId);
@@ -136,7 +252,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //  5.000 =  5 sec
     var intervalID = setInterval(function()
     {
-        //console.log("EventListener of: " + serviceId);
+        //writeLog("info", "EventListener of: " + serviceId);
         webview.send("request");
     }, 5000);
 
@@ -149,7 +265,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("did-start-loading", function()
         {
-            console.log("eventListenerForSingleService ::: did-start-loading.");
+            writeLog("info", "eventListenerForSingleService ::: did-start-loading.");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -160,7 +276,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("dom-ready", function()
         {
-            console.log("eventListenerForSingleService ::: DOM-Ready");
+            writeLog("info", "eventListenerForSingleService ::: DOM-Ready");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -171,7 +287,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("did-stop-loading", function()
         {
-            console.log("eventListenerForSingleService ::: did-stop-loading");
+            writeLog("info", "eventListenerForSingleService ::: did-stop-loading");
 
             // Debug: Open a separate Console Window for this WebView
             //webview.openDevTools();
@@ -184,8 +300,8 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         // WebView Event:  ipc-message
         webview.addEventListener("ipc-message",function(event)
         {
-            console.log("eventListenerForSingleService ::: IPC message: _" + event + "_.");
-            //console.log(event);
+            writeLog("info", "eventListenerForSingleService ::: IPC message: _" + event + "_.");
+            //writeLog("info", event);
             //console.info(event.channel);
 
             // update the badge
@@ -203,7 +319,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     {
         webview.addEventListener("new-window", function(e)
         {
-            console.log("eventListenerForSingleService ::: new-window");
+            writeLog("info", "eventListenerForSingleService ::: new-window");
 
             const BrowserWindow = require("electron");
             const shell = require("electron").shell;
@@ -216,7 +332,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         });
     }
 
-    console.log("eventListenerForSingleService ::: End");
+    writeLog("info", "eventListenerForSingleService ::: End");
 }
 
 
@@ -243,16 +359,16 @@ function closeSingleServiceConfiguratationWindow()
 */
 function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
 {
-    console.log("validateConfigSingleServiceForm ::: Starting to validate the form.");
+    writeLog("info", "validateConfigSingleServiceForm ::: Starting to validate the form.");
 
     if ((serviceName === "") || (serviceIcon === "") || (serviceUrl === ""))
     {
-        console.warn("validateConfigSingleServiceForm ::: Form is not valid.");
+        writeLog("warn", "validateConfigSingleServiceForm ::: Form is not valid.");
         return false;
     }
     else
     {
-        console.log("validateConfigSingleServiceForm ::: Form is valid.");
+        writeLog("info", "validateConfigSingleServiceForm ::: Form is valid.");
         return true;
     }
 }
@@ -265,7 +381,7 @@ function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
 */
 function createSingleServiceConfiguration()
 {
-    console.log("updateSingleServiceConfiguration ::: Starting to create  a new service config");
+    writeLog("info", "updateSingleServiceConfiguration ::: Starting to create  a new service config");
 
     const storage = require("electron-json-storage");
 
@@ -298,7 +414,7 @@ function createSingleServiceConfiguration()
 
             closeSingleServiceConfiguratationWindow();
 
-            console.log("createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
+            writeLog("info", "createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
 
             showNoty("success", "Successfully created the new service: " + serviceId);
 
@@ -318,7 +434,7 @@ function createSingleServiceConfiguration()
 */
 function updateSingleServiceConfiguration()
 {
-    console.log("updateSingleServiceConfiguration ::: Starting to update an existing service config");
+    writeLog("info", "updateSingleServiceConfiguration ::: Starting to update an existing service config");
 
     const storage = require("electron-json-storage");
 
@@ -358,7 +474,7 @@ function updateSingleServiceConfiguration()
 
             closeSingleServiceConfiguratationWindow();
 
-            console.log("updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
+            writeLog("info", "updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
 
             showNoty("success", "Successfully edited the existing service: " + serviceId);
 
@@ -379,7 +495,7 @@ function updateSingleServiceConfiguration()
 */
 function configureSingleUserService(serviceId)
 {
-    console.log("configureSingleUserService ::: Trying to open service configure window for service: _" + serviceId + "_.");
+    writeLog("info", "configureSingleUserService ::: Trying to open service configure window for service: _" + serviceId + "_.");
 
     // send ipc to show second window
     const {ipcRenderer} = require("electron");
@@ -397,7 +513,7 @@ function configureSingleUserService(serviceId)
 function readLocalStorage(key)
 {
     var value = localStorage.getItem(key);
-    console.log("readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
     return(value);
 }
 
@@ -411,7 +527,7 @@ function readLocalStorage(key)
 */
 function writeLocalStorage(key, value)
 {
-    console.log("writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
 }
 
@@ -424,7 +540,7 @@ function writeLocalStorage(key, value)
 */
 function updateWindowTitle(tabName)
 {
-    console.log("updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
+    writeLog("info", "updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
 
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("updateWindowTitle", tabName);
@@ -446,15 +562,15 @@ function isMac()
     // - Darwin
     // - Linux
     // - Windows_NT
-    console.log("isMac ::: Detected operating system type is: " + os.type());
+    writeLog("info", "isMac ::: Detected operating system type is: " + os.type());
     if(os.type() === "Darwin")
     {
-        console.log("isMac ::: Smelling apples");
+        writeLog("info", "isMac ::: Smelling apples");
         return true;
     }
     else
     {
-        console.log("isMac ::: This is no mac");
+        writeLog("info", "isMac ::: This is no mac");
         return false;
     }
 }
@@ -467,7 +583,7 @@ function isMac()
 */
 function openDevTools()
 {
-    console.log("openDevTools ::: Opening Developer Console");
+    writeLog("info", "openDevTools ::: Opening Developer Console");
     const remote = require("electron").remote;
     remote.getCurrentWindow().toggleDevTools();
 }
@@ -482,7 +598,7 @@ function openDevTools()
 */
 function sendNotification(title, message)
 {
-    console.log("sendNotification ::: Sending a notification with the title _" + title + "_ and the message: _" + message + "_.");
+    writeLog("info", "sendNotification ::: Sending a notification with the title _" + title + "_ and the message: _" + message + "_.");
 
     let myNotification = new Notification(title, {
         body: message,
@@ -509,24 +625,17 @@ function settingToggleAutostart()
     // Handle depending on the checkbox state
     if($("#checkboxSettingAutostart").prop("checked"))
     {
-        ttthAutoLauncher.enable();
-
-        writeLocalStorage("settingAutostart", true);
-
-        console.log("settingToggleAutostart ::: Finished enabling Autostart");
+        showNotyAutostartMinimizedConfirm();
     }
     else
     {
         ttthAutoLauncher.disable();
 
         writeLocalStorage("settingAutostart", false);
-        writeLocalStorage("settingAutostartMinimized", false);
 
-        // adjust UI:
-        // make sure check checkfor for AutostartStartMinimized is unchecked as well
-        $("#checkboxSettingAutostartMinimized").prop("checked", false);
+        writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
 
-        console.log("settingToggleAutostart ::: Finished disabling Autostart");
+        showNoty("success", "Disabled the autostart");
     }
 
     ttthAutoLauncher.isEnabled()
@@ -543,57 +652,6 @@ function settingToggleAutostart()
 
 
 /**
-* @name settingToggleAutostartMinimized
-* @summary Enables or disables the autostart minimized
-* @description Enables or disables the autostart minimized
-*/
-function settingToggleAutostartMinimized()
-{
-    // auto-launch - via: https://www.npmjs.com/package/auto-launch
-    var AutoLaunch = require("auto-launch");
-
-    if($("#checkboxSettingAutostartMinimized").prop("checked"))
-    {
-        // enable start minimized
-        var ttthAutoLauncher = new AutoLaunch({
-        name: "ttth",
-        isHidden: true,
-        useLaunchAgent: true,
-        });
-
-        // Write AutoStart & AutostartMinimized to local storage
-        writeLocalStorage("settingAutostart", true);
-        writeLocalStorage("settingAutostartMinimized", true);
-
-        // adjust UI
-        //
-        // make sure general Autostart is checked as well
-        $("#checkboxSettingAutostart").attr("checked", true);
-
-        ttthAutoLauncher.enable();
-
-        console.log("settingToggleAutostartMinimized ::: Finished enabling minimized Autostart");
-    }
-    else
-    {
-        // disable start minimized
-        var ttthAutoLauncher = new AutoLaunch({
-        name: "ttth",
-        isHidden: false,
-        useLaunchAgent: true,
-        });
-
-        // Write AutostartMinimized to local storage
-        writeLocalStorage("settingAutostartMinimized", false);
-
-        ttthAutoLauncher.enable();
-
-        console.log("settingToggleAutostartMinimized ::: Finished disabling minimized Autostart");
-    }
-}
-
-
-/**
 * @name settingDefaultViewUpdate
 * @summary Stores a new default view to local storage
 * @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
@@ -602,7 +660,7 @@ function settingDefaultViewUpdate()
 {
     // get currently selected value from select
     var newDefaultView = $( "#selectDefaultView" ).val();
-    console.log("settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
+    writeLog("info", "settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
 
     // Store new default view in local storage
     writeLocalStorage("settingDefaultView", newDefaultView);
@@ -625,7 +683,7 @@ function settingDefaultViewReset()
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
 
-    console.log("settingDefaultViewReset ::: Did reset the default view");
+    writeLog("info", "settingDefaultViewReset ::: Did reset the default view");
 
     // show noty
     showNoty("success", "Resetted default view.");
@@ -643,19 +701,19 @@ function settingToggleMenubarVisibility()
     {
         writeLocalStorage("settingHideMenubar", true);
 
-        console.log("settingToggleMenubarVisibility ::: Hide menubar is enabled");
+        writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is enabled");
 
         // show noty
-        showNoty("success", "Hide menubar on startup is now enabled (Settings).");
+        showNoty("success", "Hide menubar on startup is now enabled.");
     }
     else
     {
         writeLocalStorage("settingHideMenubar", false);
 
-        console.log("settingToggleMenubarVisibility ::: Hide menubar is disabled");
+        writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is disabled");
 
         // show noty
-        showNoty("success", "Hide menubar on startup is now disabled (Settings).");
+        showNoty("success", "Hide menubar on startup is now disabled.");
     }
 }
 
@@ -670,7 +728,7 @@ function checkSupportedOperatingSystem()
     var supportedOperatingSystemMessage = "";
     var userPlatform = process.platform;
 
-    console.log("checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
+    writeLog("info", "checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
     switch(userPlatform)
     {
@@ -678,7 +736,7 @@ function checkSupportedOperatingSystem()
         case "windows":
         case "linux":
         case "darwin":
-            console.log("checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
+            writeLog("info", "checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
             break;
 
         default:
@@ -687,7 +745,7 @@ function checkSupportedOperatingSystem()
 
             showNoty("warning", supportedOperatingSystemMessage, 0);
 
-            console.error("checkSupportedOperatingSystem ::: " + supportedOperatingSystemMessage );
+            writeLog("error", "checkSupportedOperatingSystem ::: " + supportedOperatingSystemMessage );
     }
 }
 
@@ -700,7 +758,7 @@ function checkSupportedOperatingSystem()
 */
 function switchToService(serviceName)
 {
-    console.log("switchToService ::: Switching to tab: " + serviceName);
+    writeLog("info", "switchToService ::: Switching to tab: " + serviceName);
 
     // activate the related tab
     $("#target_" + serviceName).trigger("click");
@@ -720,7 +778,7 @@ function searchUpdate(silent = true)
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
-    console.log("searchUpdate ::: Start checking " + url + " for available releases");
+    writeLog("info", "searchUpdate ::: Start checking " + url + " for available releases");
 
     var updateStatus = $.get( url, function( data )
     {
@@ -742,19 +800,19 @@ function searchUpdate(silent = true)
         var localAppVersion = require("electron").remote.app.getVersion();
         //localAppVersion = "1.0.0"; // to simulate
 
-        console.log("searchUpdate ::: Local version: " + localAppVersion);
-        console.log("searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
+        writeLog("info", "searchUpdate ::: Local version: " + localAppVersion);
+        writeLog("info", "searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
 
         if( localAppVersion < remoteAppVersionLatest )
         {
-            console.warn("searchUpdate ::: Found update, notify user");
+            writeLog("warn", "searchUpdate ::: Found update, notify user");
 
             // send notification
             showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
         }
         else
         {
-            console.log("searchUpdate ::: No newer version found.");
+            writeLog("info", "searchUpdate ::: No newer version found.");
 
             if(silent === true) // default case -> when executed on load
             {
@@ -767,23 +825,23 @@ function searchUpdate(silent = true)
             }
         }
 
-        console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+        writeLog("info", "searchUpdate ::: Successfully checked " + url + " for available releases");
     })
     .done(function()
     {
-        //console.log("searchUpdate ::: Successfully checked " + url + " for available releases");
+        //writeLog("info", "searchUpdate ::: Successfully checked " + url + " for available releases");
     })
 
     .fail(function()
     {
-        console.error("searchUpdate ::: Checking " + url + " for available releases failed.");
+        writeLog("error", "searchUpdate ::: Checking " + url + " for available releases failed.");
 
         showNoty("error", "Checking " + url + " for available releases failed. Got network issues?");
     })
 
     .always(function()
     {
-        console.log("searchUpdate ::: Finished checking " + url + " for available releases");
+        writeLog("info", "searchUpdate ::: Finished checking " + url + " for available releases");
     });
 }
 
@@ -800,11 +858,11 @@ function loadDefaultView()
 
     if(curDefaultView === null) // no default view configured
     {
-        console.log("loadDefaultView ::: No default configured");
+        writeLog("info", "loadDefaultView ::: No default configured");
     }
     else
     {
-        console.log("loadDefaultView ::: Found configured default view: " + curDefaultView);
+        writeLog("info", "loadDefaultView ::: Found configured default view: " + curDefaultView);
         switchToService(curDefaultView);
     }
 }
@@ -822,14 +880,14 @@ function validateConfiguredDefaultView()
 
     if(curDefaultView === null) // no default view configured
     {
-        console.log("validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
+        writeLog("info", "validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
     }
     else
     {
-        console.log("validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
+        writeLog("info", "validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
 
         // check if the configured service is enabled or not
-        console.log("validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
+        writeLog("info", "validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
 
         var exists = false;
 
@@ -845,7 +903,7 @@ function validateConfiguredDefaultView()
 
         if(exists)
         {
-            console.log("validateConfiguredDefaultView ::: Configured default view is valid");
+            writeLog("info", "validateConfiguredDefaultView ::: Configured default view is valid");
 
             // Update select
             $("#selectDefaultView").val(curDefaultView);
@@ -855,7 +913,7 @@ function validateConfiguredDefaultView()
         }
         else
         {
-            console.log("validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+            writeLog("info", "validateConfiguredDefaultView ::: Fallback to default (setting-view)");
 
             // reset the selection of the select item
             $("#selectDefaultView").prop("selectedIndex",0);
@@ -876,7 +934,7 @@ function validateConfiguredDefaultView()
 function openURL(url)
 {
     const {shell} = require("electron");
-    console.log("openURL ::: Trying to open the url: " + url);
+    writeLog("info", "openURL ::: Trying to open the url: " + url);
     shell.openExternal(url);
 }
 
@@ -890,13 +948,13 @@ function openURL(url)
 */
 function loadServiceSpecificCode(serviceId, serviceName)
 {
-    console.log("loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName + " with the id: _" + serviceId + "_.");
+    writeLog("info", "loadServiceSpecificCode ::: Checking for service-specific code for the service: " + serviceName + " with the id: _" + serviceId + "_.");
 
     switch (serviceName)
     {
         // NO unread-message-handling but link-handler
         case "freenode":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
 
@@ -904,7 +962,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "threema":
         case "twitter":
         case "xing":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, false);
             break;
 
@@ -914,19 +972,19 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "mattermost":
         case "slack":
         case "telegram":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, true);
             break;
 
         // Specialcase: WhatsApp
         case "whatsapp":
-            console.log("loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             serviceWhatsAppRegister();
             eventListenerForSingleService(serviceId, true, true);
             break;
 
         default:
-            console.log("loadServiceSpecificCode ::: Nothing to do here");
+            writeLog("info", "loadServiceSpecificCode ::: Nothing to do here");
     }
 }
 
@@ -938,7 +996,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
 */
 function initAvailableServicesSelection()
 {
-    console.log("initAvailableServicesSelection ::: Reload settings select with all supported service definitions");
+    writeLog("info", "initAvailableServicesSelection ::: Reload settings select with all supported service definitions");
 
     var counterSupportedServices = 0;
 
@@ -966,7 +1024,7 @@ function initAvailableServicesSelection()
             counterSupportedServices = counterSupportedServices +1;
         });
 
-        console.log("initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _" + counterSupportedServices + "_ service types.");
+        writeLog("info", "initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _" + counterSupportedServices + "_ service types.");
 
     });
 }
@@ -993,19 +1051,19 @@ function loadConfiguredUserServices()
         }
 
         // show object which contains all config files
-        //console.error(data);
-        //console.error(typeof data);
+        //writeLog("error", (data);
+        //writeLog("error", (typeof data);
 
         var serviceCount = 0;
 
-        console.log("loadConfiguredUserServices ::: Found the following user configs: _" + data + "_.");
+        writeLog("info", "loadConfiguredUserServices ::: Found the following user configs: _" + data + "_.");
 
         // loop over upper object
         for (var key in data)
         {
             if (data.hasOwnProperty(key))
             {
-                console.log("loadConfiguredUserServices ::: " + key + " -> " + data[key]);
+                writeLog("info", "loadConfiguredUserServices ::: " + key + " -> " + data[key]);
 
                 // show 2 services per row
                 if (serviceCount%2 === 0) // Odd
@@ -1042,7 +1100,7 @@ function loadConfiguredUserServices()
         }
     });
 
-    console.log("loadConfiguredUserServices ::: Finished loading all configured user services to settings page");
+    writeLog("info", "loadConfiguredUserServices ::: Finished loading all configured user services to settings page");
 }
 
 
@@ -1055,10 +1113,7 @@ function loadConfiguredUserServices()
 function initSettingsPage()
 {
     var curSettingAutostart;
-    var curSettingAutostartMinimized;
     var curSettingHideMenubar;
-    var curSettingUserColor;
-    var curSettingUserColorCode;
 
     // load all supported services to checklist (used for adding new services)
     initAvailableServicesSelection();
@@ -1071,30 +1126,14 @@ function initSettingsPage()
     curSettingAutostart = readLocalStorage("settingAutostart");
     if(curSettingAutostart === "true")
     {
-        console.log("initSettingsPage ::: Setting Autostart is configured");
+        writeLog("info", "initSettingsPage ::: Setting Autostart is configured");
 
         // activate checkbox
         $("#checkboxSettingAutostart").prop("checked", true);
     }
     else
     {
-        console.log("initSettingsPage ::: Setting Autostart is not configured");
-    }
-
-    // Setting: AutostartMinimized
-    //
-    curSettingAutostartMinimized = readLocalStorage("settingAutostartMinimized");
-    if(curSettingAutostartMinimized === "true")
-    {
-        console.log("initSettingsPage ::: Setting AutostartMinimized is configured");
-
-        // activate checkbox
-        $("#checkboxSettingAutostart").prop("checked", true);
-        $("#checkboxSettingAutostartMinimized").prop("checked", true);
-    }
-    else
-    {
-        console.log("initSettingsPage ::: Setting AutostartMinimized is not configured");
+        writeLog("info", "initSettingsPage ::: Setting Autostart is not configured");
     }
 
 
@@ -1116,7 +1155,7 @@ function initSettingsPage()
         if(curSettingHideMenubar === "true")
         {
             // hide menubar
-            console.log("initSettingsPage ::: Hide menubar");
+            writeLog("info", "initSettingsPage ::: Hide menubar");
             $("#checkboxSettingHideMenubar").prop("checked", true);
             ipcRenderer.send("hideMenubar");
         }
@@ -1125,7 +1164,7 @@ function initSettingsPage()
             // show menubar
             ipcRenderer.send("showMenubar");
             $("#checkboxSettingHideMenubar").prop("checked", false);
-            console.log("initSettingsPage ::: Show menubar");
+            writeLog("info", "initSettingsPage ::: Show menubar");
         }
     }
 }
@@ -1139,7 +1178,7 @@ function initSettingsPage()
 */
 function removeServiceTab(tabId)
 {
-    console.log("removeServiceTab ::: Starting to remove the tab: _" + tabId + "_.");
+    writeLog("info", "removeServiceTab ::: Starting to remove the tab: _" + tabId + "_.");
 
     // remove item from menu
     $("#menu_" + tabId).remove();
@@ -1150,7 +1189,7 @@ function removeServiceTab(tabId)
     // remove service from select for DefaultView
     $("#selectDefaultView option[value=" + tabId + "]").remove();
 
-    console.log("removeServiceTab ::: Finished removing the tab: _" + tabId + "_.");
+    writeLog("info", "removeServiceTab ::: Finished removing the tab: _" + tabId + "_.");
 }
 
 
@@ -1167,7 +1206,7 @@ function removeServiceTab(tabId)
 */
 function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, serviceUrl, serviceInjectCode)
 {
-    console.log("addServiceTab ::: Starting to add the tab: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab ::: Starting to add the tab: _" + serviceId + "_.");
 
     // get amount of tabs
     var existingTabs = $("#myTabs li").length;
@@ -1178,17 +1217,17 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // add new list item to unordner list (tabs/menu)
     //
     $('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link my-ui-text" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
-    console.log("addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
     // add the tab itself to #tabPanes
     $( "#tabPanes" ).append( "<div role='tabpanel' class='tab-pane fade flex-fill resizer container-fluid' id=" + serviceId + "></div>" );
-    console.log("addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
     $( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
-    console.log("addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
-    console.log("addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
 
     // add service to select for DefaultView
     $("#selectDefaultView").append(new Option(serviceName, serviceId));
@@ -1205,7 +1244,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 */
 function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConfigName)
 {
-    console.log("settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
+    writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
 
     const os = require("os");
     const storage = require("electron-json-storage");
@@ -1251,7 +1290,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             // remove service tab
             removeServiceTab(configuredUserServiceConfigName);
 
-            console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
+            writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
 
             //  show noty
             showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
@@ -1282,7 +1321,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             // add service to selectDefaultView
             $("#selectDefaultView").append(new Option(name, configuredUserServiceConfigName));
 
-            console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
+            writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
 
             //  show noty
             showNoty("success", "Enabled the service " + configuredUserServiceConfigName);
@@ -1308,20 +1347,23 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
         });
     });
 
-    console.log("settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ config file is now updated (status)");
+    writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ config file is now updated (status)");
 }
+
+
+
 
 
 /**
 * @name loadEnabledUserServices
-* @summary Reads all user configured service files and adds the enabled tabs
-* @description Reads all user configured service files and adds the enabled tabs
+* @summary Reads all user configured service files and adds the enabled services as tabs
+* @description Reads all user configured service files and adds the enabled services as tabs
 */
 function loadEnabledUserServices()
 {
     const storage = require("electron-json-storage");
 
-    console.log("loadEnabledUserServices ::: Starting to fetch all user configured service files");
+    writeLog("info", "loadEnabledUserServices ::: Starting to fetch all user configured service files");
 
     // loop over all json files - add tab for the enabled ones
     storage.getAll(function(error, data)
@@ -1332,19 +1374,25 @@ function loadEnabledUserServices()
         }
 
         // show object which contains all config files
-        console.log("loadEnabledUserServices ::: Current service: " + data);
+        writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+
+
+        // TODO
+        // - should sort the object before using it
+        //
+
 
         // loop over upper object
         for (var key in data)
         {
             if (data.hasOwnProperty(key))
             {
-                console.log("loadEnabledUserServices ::: " + key);
-                console.log("loadEnabledUserServices ::: " + key + " -> " + data[key]);
+                writeLog("info", "loadEnabledUserServices ::: " + key);
+                writeLog("info", "loadEnabledUserServices ::: " + key + " -> " + data[key]);
 
                 if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                 {
-                    console.log("loadEnabledUserServices ::: Trying to add the enabled service: _" + key + "_.");
+                    writeLog("info", "loadEnabledUserServices ::: Trying to add the enabled service: _" + key + "_.");
                     addServiceTab(key, data[key]["type"], data[key]["name"], data[key]["icon"], data[key]["url"], data[key]["injectCode"]);
 
                     // add service to selectDefaultView
@@ -1352,11 +1400,11 @@ function loadEnabledUserServices()
                 }
                 else
                 {
-                    console.log("loadEnabledUserServices ::: Skipped service: _" + key + "_, as it not enabled.");
+                    writeLog("info", "loadEnabledUserServices ::: Skipped service: _" + key + "_, as it not enabled.");
                 }
             }
         }
-        console.log("loadEnabledUserServices ::: Finished current service: " + data);
+        writeLog("info", "loadEnabledUserServices ::: Finished current service: " + data);
     });
 }
 
@@ -1369,7 +1417,7 @@ function loadEnabledUserServices()
 */
 function deleteConfiguredService(serviceId)
 {
-    console.log("deleteConfiguredService ::: Deleting the user service: _" + serviceId + "_.");
+    writeLog("info", "deleteConfiguredService ::: Deleting the user service: _" + serviceId + "_.");
 
     // cleanup after deleting the entire service
     var webview = document.getElementById("webview_" + serviceId);
@@ -1381,11 +1429,11 @@ function deleteConfiguredService(serviceId)
     $( "#webview_" + serviceId ).unbind("did-stop-loading");
     $( "#webview_" + serviceId ).unbind("ipc-message");
     $( "#webview_" + serviceId ).unbind("new-window");
-    console.warn("deleteConfiguredService ::: Deleted all event handlers from webview");
+    writeLog("warn", "deleteConfiguredService ::: Deleted all event handlers from webview");
 
     // Delete the webview of this service
     $("#webview_" + serviceId).remove();
-    console.warn("deleteConfiguredService ::: Removed the webview itself");
+    writeLog("warn", "deleteConfiguredService ::: Removed the webview itself");
 
     // remove service tab in UI
     removeServiceTab(serviceId);
@@ -1404,7 +1452,7 @@ function deleteConfiguredService(serviceId)
     // reload all configured user services to settings page
     //loadConfiguredUserServices();
 
-    console.log("deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
+    writeLog("info", "deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
 
     showNoty("success", "Successfully deleted the service " + serviceId);
 
@@ -1421,7 +1469,7 @@ function deleteConfiguredService(serviceId)
 */
 function settingsUserAddNewService()
 {
-    console.log("settingsUserAddNewService ::: Starting to add a new user configured service.");
+    writeLog("info", "settingsUserAddNewService ::: Starting to add a new user configured service.");
 
     const os = require("os");
     const storage = require("electron-json-storage");
@@ -1431,14 +1479,14 @@ function settingsUserAddNewService()
 
     // get selected option from #select_availableServices
     var userSelectedService = $( "#select_availableServices" ).val();
-    console.log("settingsUserAddNewService ::: Selected service type is: _" + userSelectedService + "_.");
+    writeLog("info", "settingsUserAddNewService ::: Selected service type is: _" + userSelectedService + "_.");
 
     if( userSelectedService !== null )
     {
-        console.log("settingsUserAddNewService ::: Should add a new service of type: _" + userSelectedService + "_.");
+        writeLog("info", "settingsUserAddNewService ::: Should add a new service of type: _" + userSelectedService + "_.");
 
         // check if this service allows multiple instances
-        console.log("settingsUserAddNewService ::: Checking if the service: _" + userSelectedService + "_ allows multiple instances");
+        writeLog("info", "settingsUserAddNewService ::: Checking if the service: _" + userSelectedService + "_ allows multiple instances");
         // Parse service template
         const url = __dirname + "/js/ttth/services.json";
         $.getJSON(url, function (data)
@@ -1450,7 +1498,7 @@ function settingsUserAddNewService()
                     // check if it allows multiple instances
                     if(entry.multiple === true)
                     {
-                        console.log("settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
+                        writeLog("info", "settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
                         serviceAllowsMultipleInstances = true;
 
                         // send ipc to show second window
@@ -1460,8 +1508,8 @@ function settingsUserAddNewService()
                     }
                     else // single instance service
                     {
-                        console.warn("settingsUserAddNewService ::: Service: _" + userSelectedService + "_ does NOT allows multiple instances");
-                        console.log("settingsUserAddNewService ::: Check if there already exists an instance of the service type: _" + userSelectedService + "_.");
+                        writeLog("warn", "settingsUserAddNewService ::: Service: _" + userSelectedService + "_ does NOT allows multiple instances");
+                        writeLog("info", "settingsUserAddNewService ::: Check if there already exists an instance of the service type: _" + userSelectedService + "_.");
 
                         // check if there is already a configured service of that type.
                         // check which configs already exist
@@ -1473,17 +1521,17 @@ function settingsUserAddNewService()
                             }
 
                             // show object which contains all config files
-                            console.log(data);
-                            //console.error(typeof data);
+                            writeLog("info", data);
+                            //writeLog("error", (typeof data);
 
                             for (var key in data)
                             {
                                 if (data.hasOwnProperty(key))
                                 {
-                                    //console.log(key + " -> " + data[key]);
-                                    //console.warn(data[key]);
+                                    //writeLog("info", key + " -> " + data[key]);
+                                    //writeLog("warn", data[key]);
 
-                                    console.log(data[key]["type"]);
+                                    writeLog("info", data[key]["type"]);
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
@@ -1503,8 +1551,8 @@ function settingsUserAddNewService()
                                         };
 
                                         dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-                                            console.log(response);
-                                            console.log(checkboxChecked);
+                                            writeLog("info", response);
+                                            writeLog("info", checkboxChecked);
                                         });
                                         */
                                         showNoty("error", "There is already a configured service of the type " + userSelectedService + ".", 0);
@@ -1525,7 +1573,7 @@ function settingsUserAddNewService()
     }
     else
     {
-        console.warn("settingsUserAddNewService ::: No service type selected. Unable to add a new service.");
+        writeLog("warn", "settingsUserAddNewService ::: No service type selected. Unable to add a new service.");
         showNoty("error", "No service type selected. Unable to add a new service.");
     }
 }
@@ -1554,7 +1602,7 @@ function generateNewRandomServiceID(serviceType)
 
     var newServiceId = randomString + "_" + serviceType;
 
-    console.log("generateNewRandomServiceID ::: Generated a new service ID: _" + newServiceId + "_.");
+    writeLog("info", "generateNewRandomServiceID ::: Generated a new service ID: _" + newServiceId + "_.");
 
     return newServiceId;
 }
@@ -1569,7 +1617,7 @@ function updateGlobalServicesShortcuts()
 {
     const {ipcRenderer} = require("electron");
 
-    console.log("updateGlobalServicesShortcuts ::: Starting ...");
+    writeLog("info", "updateGlobalServicesShortcuts ::: Starting ...");
 
     var tabCounter = 0;
     var currentTabId;
@@ -1589,7 +1637,7 @@ function updateGlobalServicesShortcuts()
 
         if(currentTabId === "target_Settings")
         {
-           console.log("updateGlobalServicesShortcuts ::: Ignoring settings tab.");
+           writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab.");
         }
         else
         {
@@ -1607,7 +1655,7 @@ function updateGlobalServicesShortcuts()
         //showNoty("success", "Updating accesskeys for enabled service tabs.")
     }
 
-    console.log("updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
+    writeLog("info", "updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
 }
 
 
@@ -1627,7 +1675,7 @@ function localizeUserInterface()
         userLang = "en";
     }
 
-    console.log("localizeUserInterface ::: Detected user language: " + userLang);
+    writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
 
     var i18next = require("i18next");
     var Backend = require("i18next-sync-fs-backend");
@@ -1682,12 +1730,12 @@ function localizeUserInterface()
 //
 require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
 {
-    //console.log(message);  // Prints "whoooooooh!"
+    //writeLog("info", message);  // Prints "whoooooooh!"
 
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
-    console.log("reloadCurrentService ::: Current active tab is: " + tabValue);
+    writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
 
 
     // get configured target url & inject code from config
@@ -1703,7 +1751,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
         var url =  data.url;
         var injectCode = data.injectCode;
 
-        console.log("reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
+        writeLog("info", "reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
         document.getElementById( "webview_" + tabValue ).loadURL(url);
 
         // TODO
@@ -1716,7 +1764,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 //
 require("electron").ipcRenderer.on("showSettings", function(event)
 {
-    console.log("showSettings ::: Switching to Settings tab");
+    writeLog("info", "showSettings ::: Switching to Settings tab");
     switchToService("Settings");
 });
 
@@ -1725,7 +1773,7 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 //
 require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 {
-    console.log("startSearchUpdates ::: Show update information div");
+    writeLog("info", "startSearchUpdates ::: Show update information div");
 
     searchUpdate(false);
 });
@@ -1744,7 +1792,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
     // get current selected / active tab
     currentActiveTabId = $(".nav-item .active").attr("id");
     currentActiveTabId = currentActiveTabId.replace("target_", "");
-    console.log("nextTab ::: Active tab is: " + currentActiveTabId);
+    writeLog("info", "nextTab ::: Active tab is: " + currentActiveTabId);
 
     // get list of all visible service-tabs
     $("#myTabs li a").each(function()
@@ -1775,7 +1823,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
         serviceName = enabledTabsArray[0];
     }
 
-    console.log("nextTab ::: Should switch to: " + serviceName + " now.");
+    writeLog("info", "nextTab ::: Should switch to: " + serviceName + " now.");
 
     // jump to next tab
     switchToService(serviceName);
@@ -1795,7 +1843,7 @@ require("electron").ipcRenderer.on("previousTab", function(event)
     // get current selected / active tab
     currentActiveTabId = $(".nav-item .active").attr("id");
     currentActiveTabId = currentActiveTabId.replace("target_", "");
-    console.log("previous ::: Active tab is: " + currentActiveTabId);
+    writeLog("info", "previous ::: Active tab is: " + currentActiveTabId);
 
     // get list of all visible service-tabs
     $("#myTabs li a").each(function()
@@ -1826,7 +1874,7 @@ require("electron").ipcRenderer.on("previousTab", function(event)
         serviceName = enabledTabsArray[enabledTabsArray.length -1];
     }
 
-    console.log("previousTab ::: Should switch to: " + serviceName + " now.");
+    writeLog("info", "previousTab ::: Should switch to: " + serviceName + " now.");
 
     // jump to previous tab
     switchToService(serviceName);
@@ -1838,8 +1886,8 @@ require("electron").ipcRenderer.on("previousTab", function(event)
 //
 require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
 {
-    console.log("serviceToCreate ::: Should create a new service of type: _" + serviceId + "_.");
-    console.log("serviceToCreate ::: Loading default values from service definition");
+    writeLog("info", "serviceToCreate ::: Should create a new service of type: _" + serviceId + "_.");
+    writeLog("info", "serviceToCreate ::: Loading default values from service definition");
 
     // generate id for new service
     var newServiceId = generateNewRandomServiceID(serviceId);
@@ -1878,8 +1926,8 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
 {
     const storage = require("electron-json-storage");
 
-    console.log("serviceToConfigure ::: Should configure the service: " + serviceId);
-    console.log("serviceToConfigure ::: Loading current values from service config");
+    writeLog("info", "serviceToConfigure ::: Should configure the service: " + serviceId);
+    writeLog("info", "serviceToConfigure ::: Loading current values from service config");
 
     storage.get(serviceId, function(error, data)
     {
@@ -1910,7 +1958,7 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         // show the edit service  button
         $("#bt_saveExistingService").show();
 
-        console.log("serviceToConfigure ::: Loaded current values for this service to UI");
+        writeLog("info", "serviceToConfigure ::: Loaded current values for this service to UI");
     });
 });
 
@@ -1919,6 +1967,6 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
 //
 require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 {
-    console.log("switchToTab ::: Switching to tab: " + targetTab);
+    writeLog("info", "switchToTab ::: Switching to tab: " + targetTab);
     $("#" + targetTab).trigger("click");
 });

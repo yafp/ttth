@@ -1,13 +1,15 @@
 // Measuring startup
-console.time("init");
+//
+//console.time("init");
 
 
 // -----------------------------------------------------------------------------
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
+const log = require('electron-log'); // for logging to file
 const shell = require("electron").shell;
-const openAboutWindow = require("about-window").default;
+const openAboutWindow = require("about-window").default; // for about-window
 
 const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
@@ -334,23 +336,27 @@ function createMenu()
     }
     ]);
 
+    // Logging to file
+    log.info("Finished creating menues");
+
     // use the menu
     Menu.setApplicationMenu(menu);
-
-    // hide menubar on launch
-    //mainWindow.setMenuBarVisibility(false);
 
 
     // Hide Menubar
     //
     ipcMain.on("hideMenubar", function() {
         mainWindow.setMenuBarVisibility(false);
+        // Logging to file
+        log.info("Hiding menubar (ipcMain)");
     });
 
     // Show Menubar
     //
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
+        // Logging to file
+        log.info("Un-hiding menubar (ipcMain");
     });
 
 
@@ -363,6 +369,9 @@ function createMenu()
         Menu.getApplicationMenu().items; // all the items
         var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
+
+        // Logging to file
+        log.info("Disabling toggle-menubar menu element on osx");
     }
 }
 
@@ -412,7 +421,8 @@ function createWindow ()
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            webviewTag: true, // # see #37
         }
     });
 
@@ -437,27 +447,31 @@ function createWindow ()
     //
     mainWindow.on("ready-to-show", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: ready-to-show");
         mainWindow.show();
         mainWindow.focus();
+
+        // Logging to file
+        log.info("mainWindow is now ready, shown and on focus (event: ready-to-show");
     });
 
 
     // When dom is ready
     //
     mainWindow.webContents.once("dom-ready", () => {
-        console.log("main.js ::: mainWindow ::: Event: dom-ready");
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
         mainWindow.setTitle(windowTitle);
+
+        // Logging to file
+        log.info("DOM is now ready (event: dom-ready)");
     });
 
 
     // When page title gets changed
     //
     mainWindow.webContents.once("page-title-updated", () => {
-        console.log("main.js ::: mainWindow ::: Event: page-title-updated");
+        log.info("mainWindow got new title (event: page-title-updated");
     });
 
 
@@ -465,7 +479,8 @@ function createWindow ()
     //
     mainWindow.on("show", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: show");
+        // Logging to file
+        log.info("mainWindow is visible (event: show)");
     });
 
 
@@ -473,7 +488,8 @@ function createWindow ()
     //
     mainWindow.on("blur", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: blur");
+        // Logging to file
+        log.info("mainWindow lost focus (event: blur)");
     });
 
 
@@ -481,7 +497,8 @@ function createWindow ()
     //
     mainWindow.on("focus", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: focus");
+        // Logging to file
+        log.info("mainWindow got focus (event: focus)");
     });
 
 
@@ -489,7 +506,8 @@ function createWindow ()
     //
     mainWindow.on("enter-full-screen", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: Enter fullscreen");
+        // Logging to file
+        log.info("mainWindow is now in fullscreen (event: enter-full-screen)");
     });
 
 
@@ -497,7 +515,8 @@ function createWindow ()
     //
     mainWindow.on("leave-full-screen", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: Leave fullscreen");
+        // Logging to file
+        log.info("mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
 
@@ -505,55 +524,67 @@ function createWindow ()
     //
     mainWindow.on("resize", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: resize");
+        // Logging to file
+        log.info("mainWindow got resized (event: resize)");
     });
 
+    // when the app gets moved
+    //
+    mainWindow.on("move", function()
+    {
+        // Logging to file
+        log.info("mainWindow got moved (event: move)");
+    });
 
     // when the app gets hidden
     //
     mainWindow.on("hide", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: hide");
+        // Logging to file
+        log.info("mainWindow is hidden (event: hide)");
     });
-
 
     // when the app gets maximized
     //
     mainWindow.on("maximize", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: maximize");
+        // Logging to file
+        log.info("mainWindow maximized (event: maximized)");
     });
-
 
     // when the app gets unmaximized
     //
     mainWindow.on("unmaximize", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: unmaximize");
+        // Logging to file
+        log.info("mainWindow unmaximized (event: unmaximized)");
     });
-
 
     // when the app gets minimized
     //
     mainWindow.on("minimize", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: minimize");
+        // Logging to file
+        log.info("mainWindow is minimized (event: minimize)");
     });
-
 
     // when the app gets restored from minimized mode
     //
     mainWindow.on("restore", function()
     {
-        console.log("main.js ::: mainWindow ::: Event: restore");
+        log.info("mainWindow was restored (event: restore)");
     });
 
+    mainWindow.on("app-command", function()
+    {
+        log.info("mainWindow got app-command (event: app-command)");
+    });
 
     // Emitted before the window is closed.
     //
     mainWindow.on("close", function ()
     {
-        console.log("main.js ::: mainWindow ::: Event: close");
+        log.info("mainWindow will close (event: close)");
 
         // close configServiceWindow
         configServiceWindow.close();
@@ -568,6 +599,8 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
+        // Logging to file
+        log.info("mainWindow stored window -position and -size (event: close)");
 
 
         // TODO
@@ -598,12 +631,13 @@ function createWindow ()
     //
     mainWindow.on("closed", function ()
     {
-        console.log("main.js ::: mainWindow ::: Event: closed");
-
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
+
+        // Logging to file
+        log.info("mainWindow is closed (event: closed)");
 
     });
 
@@ -612,7 +646,7 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        console.log("main.js ::: mainWindow ::: Event: unresponsive");
+        log.error("mainWindow is unresponsive (event: unresponsive)");
     });
 
 
@@ -620,7 +654,7 @@ function createWindow ()
     //
     mainWindow.on("responsive", function ()
     {
-        console.log("main.js ::: mainWindow ::: Event: responsive");
+        log.info("mainWindow is responsive (event: responsive)");
     });
 
 
@@ -628,25 +662,29 @@ function createWindow ()
     //
     mainWindow.webContents.on("crashed", function ()
     {
-        console.log("main.js ::: mainWindow ::: Event: crashed");
+        // Logging to file
+        log.info("mainWindow crashed (event: crashed)");
     });
 
 
     // Call from renderer: Reload mainWindow
     //
     ipcMain.on("reloadMainWindow", (event) => {
-        console.log("main.js ::: mainWindow ::: IPC: reloadMainWindow");
         mainWindow.reload();
+
+        // Logging to file
+        log.info("mainWindow reloaded (ipcMain)");
     });
 
 
     // Call from renderer: Open folder with user configured services
     //
     ipcMain.on("openUserServicesConfigFolder", (event) => {
-        console.log("main.js ::: mainWindow ::: IPC: openUserServicesConfigFolder");
-
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         shell.openItem(customUserDataPath);
+
+        // Logging to file
+        log.info("Opening the folder which contains all user-configured services (ipcMain)");
     });
 
 
@@ -670,8 +708,6 @@ function createWindow ()
     //
     ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
     {
-        console.log("main.js ::: deleteAllGlobalServicesShortcut ::: Delete all existing global shortcuts for services, before re-creating them.");
-
         // doesnt work - whyever
         //globalShortcut.unregisterAll();
 
@@ -680,8 +716,11 @@ function createWindow ()
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            console.log("main.js ::: deleteAllGlobalServicesShortcut ::: Deleting the global shortcut: CmdOrCtrl+" + i);
+            log.info("Deleting the global shortcut: CmdOrCtrl+" + i);
         }
+
+        // Logging to file
+        log.info("Deleted global shortcuts (ipcMain)");
     });
 
 
@@ -689,10 +728,10 @@ function createWindow ()
     //
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        console.log("main.js ::: createNewGlobalShortcut ::: Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
+        log.info("Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
-            console.log("main.js ::: Shortcut " + shortcut + " was pressed");
+            log.info("Shortcut: _" + shortcut + "_ was pressed.");
 
             // activate the related tab:
             mainWindow.webContents.send("switchToTab", targetTab);
@@ -719,7 +758,8 @@ function createWindow ()
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            webviewTag: true, // see #37
         }
     });
 
@@ -737,7 +777,7 @@ function createWindow ()
     //
     configServiceWindow.on("close", function (event)
     {
-        console.log("main.js ::: configServiceWindow ::: Event: configServiceWindow close");
+        log.info("configServiceWindow will close, but we hide it (event: close)");
 
         // just hide it - so it can re-opened
         configServiceWindow.hide();
@@ -748,14 +788,15 @@ function createWindow ()
     //
     configServiceWindow.on("show", function (event)
     {
-        console.log("main.js ::: configServiceWindow ::: Event: configServiceWindow show");
+        // Logging to file
+        log.info("configServiceWindow is now shown (event: show)");
     });
 
 
     // Call from renderer: show configure-single-service window for a new service
     //
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
-        console.log("main.js ::: configServiceWindow ::: On: showConfigureSingleServiceWindowNew");
+        log.info("configServiceWindow preparing for new service creation. (ipcMain)");
 
         // show window
         configServiceWindow.show();
@@ -766,7 +807,7 @@ function createWindow ()
     // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
-         console.log("main.js ::: configServiceWindow ::: On: showConfigureSingleServiceWindow");
+        log.info("configServiceWindow preparing for service editing (ipcMain)");
 
         // show window
         configServiceWindow.show();
@@ -777,10 +818,11 @@ function createWindow ()
     // Call from renderer: hide configure-single-service window
     //
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
-        console.log("main.js ::: configServiceWindow ::: On: closeConfigureSingleServiceWindow");
-
         // hide window
         configServiceWindow.hide();
+
+        // Logging to file
+        log.info("configServiceWindow is now hidden (ipcMain)");
     });
 
 }
@@ -836,6 +878,9 @@ function createTray()
         tray.setToolTip("ttth");
         tray.setContextMenu(contextMenu);
     });
+
+    // Logging to file
+    log.info("Finished creating tray");
 
 
     // Call from renderer: Change Tray Icon to UnreadMessages
@@ -917,7 +962,8 @@ const saveState = () => {
     // regex .replace is for escaping fucking windows paths
     let writePath = path.join(app.getPath("userData"), "ttth_"+app.getVersion()+"_index.html").replace(/\\/g, "\\\\");
 
-    console.log("main.js ::: saveState ::: Trying to save the window to: _" + writePath + "_ for faster startup times");
+    //console.log("main.js ::: saveState ::: Trying to save the window to: _" + writePath + "_ for faster startup times");
+
 
     mainWindow.webContents.executeJavaScript(`
 
@@ -967,34 +1013,69 @@ app.on("ready", function ()
 // add with 1.5.0
 app.on("before-quit", function ()
 {
-    console.log("main.js ::: app ::: before-quit");
+    log.info("app is preparing to quit (event: before-quit)");
 
     willQuitApp = true;
     //saveState()
 });
 
-
 app.on("will-quit", function ()
 {
-    console.log("main.js ::: app ::: will-quit");
+    log.info("app will quit (event: will-quit)");
 });
-
 
 app.on("quit", function ()
 {
-    console.log("main.js ::: app ::: quit");
+    // Logging to file
+    log.info("Got quit event (event: quit)");
 });
-
 
 app.on("browser-window-blur", function ()
 {
-    console.log("main.js ::: app ::: browser-window-blur");
+    // Logging to file
+    log.info("app lost focus (event: browser-window-blur)");
 });
-
 
 app.on("browser-window-focus", function ()
 {
-    console.log("main.js ::: app ::: browser-window-focus");
+    // Logging to file
+    log.info("app got focus (event: browser-window-focus)");
+});
+
+app.on("certificate-error", function ()
+{
+    // Logging to file
+    log.info("app failed to verify a cert (event: certificate-error)");
+});
+
+app.on("remote-require", function ()
+{
+    // Logging to file
+    log.info("app called .require() in the renderer process (event: remote-require)");
+});
+
+app.on("remote-get-global", function ()
+{
+    // Logging to file
+    log.info("app called .getGlobal() in the renderer process (event: remote-get-global)");
+});
+
+app.on("remote-get-builtin", function ()
+{
+    // Logging to file
+    log.info("app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
+});
+
+app.on("remote-get-current-window", function ()
+{
+    // Logging to file
+    log.info("app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
+});
+
+app.on("remote-get-current-web-contents", function ()
+{
+    // Logging to file
+    log.info("app called .getCurrentWebContents() in the renderer process (event: remote-get-current-web-contents)");
 });
 
 
@@ -1033,12 +1114,6 @@ app.on("activate", function ()
 createTray();
 
 
-
-
-
-
-
-
 process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
     process.stderr.fd,
@@ -1048,11 +1123,6 @@ process.on("uncaughtException", (err, origin) => {
 });
 
 
-
-
-
-
-
-
 // Measuring startup
-console.timeEnd("init");
+//
+//console.timeEnd("init");

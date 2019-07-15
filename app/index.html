@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- CSS -->
-
     <!-- ttth -->
     <link href="css/ttth/general.css" rel="stylesheet">
     <link href="css/ttth/mainWindow.css" rel="stylesheet">
@@ -87,35 +86,39 @@
                 <!-- TabContent: Settings -->
                 <div role="tabpanel" class="tab-pane active flex-fill resizer container-fluid" id="Settings">
 
-                    <div id="allSettings">
+                    <div id="allSettings" class="my-ui-text">
 
                         <!-- About -->
-                        <h3 class="my-ui-text" i18n-text="settingsSectionAbout"><!-- About --></h3>
+                        <h3 i18n-text="settingsSectionAbout"><!-- About --></h3>
+
                         <!-- About: Description -->
                         <div>
-                            <span class="my-ui-text small" i18n-text="settingsSectionAboutDescription" id="settingsAppDescription"><!-- Description --></span>
+                            <span class="small" i18n-text="settingsSectionAboutDescription" id="settingsAppDescription"><!-- Description --></span>
+                            <button type="button" id="bt_aboutShowMore" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#demo" onClick="settingsAboutShowMore();" i18n-text="settingsSectionAboutButtonShowMore"><!-- show more --></button><br>
                         </div>
 
-                        <!-- List of buttons with links -->
-                        <div class="my-ui-text">
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
-                            <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
-                            <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="settingsSectionAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
+                        <div id="demo" class="collapse">
+                            <!-- List of buttons with links -->
+                            <div>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/CHANGELOG.md"><!-- Changelog --></a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
+                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="settingsSectionAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
+                                <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="settingsSectionAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
+                            </div>
                         </div>
                         <!-- /About -->
 
 
                         <!-- Service Section -->
                         <!-- Adding services -->
-                        <h3 class="my-ui-text" i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
+                        <h3 i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
                         <div id="settingsServicesAdd">
                             <div class="input-group mb-3">
                                 <select id="select_availableServices"  class="custom-select" name="select_availableServices" title="" i18n-title="settingsSectionServicesAddSelectService" aria-label="Dropdown element to select a service type for service creation">
-                                    <option value="" disabled selected>Please choose</option>
+                                    <option value="" disabled selected>Dummy</option>
                                 </select>
                                 <div class="input-group-append">
                                     <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" i18n-title="settingsSectionServicesButtonAddTitle" aria-label="Button to add a new service"><!-- Add --></button>
@@ -124,12 +127,12 @@
                         </div>
 
                         <!-- Configure services -->
-                        <h3 class="my-ui-text" i18n-text="settingsSectionServicesConfigured"><!-- Configured services --></h3>
+                        <h3 i18n-text="settingsSectionServicesConfigured"><!-- Configured services --></h3>
                         <div id="settingsServicesConfigured">
                             <!-- load dynamic from json file in user data -->
                         </div>
 
-                        <div class="text-right">
+                        <div class="text-left">
                             <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserServicesConfigFolder();" i18n-text="settingsSectionServicesShowConfigsFolder" aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations --></button>
                         </div>
                         <!-- /Service Section -->
@@ -137,7 +140,7 @@
 
 
                         <!-- Startup Options-->
-                        <h3 class="my-ui-text" i18n-text="settingsSectionOptions"><!-- Startup options --></h3>
+                        <h3 i18n-text="settingsSectionOptions"><!-- Startup options --></h3>
 
                         <!-- Setting: DefaultView-->
                         <div class="input-group input-group-sm mb-1">
@@ -146,7 +149,7 @@
                                     <input type="checkbox" aria-label="Disabled checkbox for the selectDefaultView option" checked disabled>
                                 </div>
                             </div>
-                            <input type="text" class="form-control my-ui-text" aria-label="Disabled text input which describes the selectDefaultView option" value="Default view (on load)" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="Set default view (on load)" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <select id="selectDefaultView" name="selectDefaultView">
@@ -163,24 +166,15 @@
 
 
                         <!-- Setting: Autostart -->
-                        <!-- General autostart -->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for option Autostart" onClick="settingToggleAutostart();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="Autostart (on login)" i18n-text="settingsSectionStartupInfo" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="Enable autostart (on login)" i18n-text="settingsSectionStartupInfo" disabled>
                         </div>
-                        <!-- AutostartMinimized -->
-                        <div class="input-group input-group-sm mb-1">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingAutostartMinimized" aria-label="Checkbox for option minimized autostart" onClick="settingToggleAutostartMinimized();">
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the minimized autostart option" value="Minimized autostart (on login)" disabled>
-                        </div>
+
                         <!-- /Setting: Autostart  -->
 
                         <!-- Setting: HideMenubarOnStartup -->
