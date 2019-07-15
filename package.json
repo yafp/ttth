@@ -166,7 +166,7 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "electron": "^4.2.6",
+        "electron": "^5.0.6",
         "electron-builder": "^20.44.4",
         "electron-packager": "^13.1.1",
         "eslint": "^5.16.0",
@@ -180,6 +180,7 @@
         "electron-i18n": "^1.1523.0",
         "electron-is-dev": "^1.1.0",
         "electron-json-storage": "^4.1.6",
+        "electron-log": "^3.0.6",
         "i18next": "^15.1.3",
         "i18next-sync-fs-backend": "^1.1.1",
         "lodash": "^4.17.14"
