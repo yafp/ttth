@@ -83,13 +83,16 @@ email, or any other method with the owners of this repository before making a ch
 * Execute: ```npm install electron-builder --save-dev```
 
 #### check for outdated npm packages
-* npm outdated
+* ```npm outdated```
 
 #### npm update packages
-* npm update
+* ```npm update```
 
 #### npm update single package
-* npm install PACKAGENAME --save
+* ```npm install PACKAGENAME --save```
+
+#### npm: install single package in specific version
+* ```npm install PACKAGENAME@1.2.3```
 
 
 

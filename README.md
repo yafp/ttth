@@ -118,8 +118,12 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 | Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
 | Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
 | Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
-| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  | <kbd>CMD</kbd> + <kbd>🡆</kbd>   | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
-| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  | <kbd>CMD</kbd> + <kbd>🡄</kbd>   | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
+| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>   | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
+| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>   | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
+| Jump to service tab 1           | <kbd>CTRL</kbd> + <kbd>1</kbd>  | <kbd>CMD</kbd> + <kbd>1</kbd>   | <kbd>CTRL</kbd> + <kbd>1</kbd>  |
+| Jump to service tab 2           | <kbd>CTRL</kbd> + <kbd>2</kbd>  | <kbd>CMD</kbd> + <kbd>2</kbd>   | <kbd>CTRL</kbd> + <kbd>2</kbd>  |
+| Jump to service tab 3           | <kbd>CTRL</kbd> + <kbd>3</kbd>  | <kbd>CMD</kbd> + <kbd>3</kbd>   | <kbd>CTRL</kbd> + <kbd>3</kbd>  |
+| Jump to service tab ...         | <kbd>CTRL</kbd> + <kbd>...</kbd>  | <kbd>CMD</kbd> + <kbd>...</kbd>   | <kbd>CTRL</kbd> + <kbd>...</kbd>  |
 | Reload current service          | <kbd>CTRL</kbd> + <kbd>S</kbd>  | <kbd>CMD</kbd> + <kbd>S</kbd>   | <kbd>CTRL</kbd> + <kbd>S</kbd>  |
 | Quit/exit the application       | <kbd>CTRL</kbd> + <kbd>Q</kbd>  | <kbd>CMD</kbd> + <kbd>Q</kbd>   | <kbd>CTRL</kbd> + <kbd>Q</kbd>  |
 | Reload the application          | <kbd>CTRL</kbd> + <kbd>R</kbd>  | <kbd>CMD</kbd> + <kbd>R</kbd>   | <kbd>CTRL</kbd> + <kbd>R</kbd>  |
@@ -129,6 +133,7 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 
 ## faq
+
 ### Where is the user data stored?
 #### Linux
 Please check ```~/.config/ttth/```
@@ -136,6 +141,14 @@ Please check ```~/.config/ttth/```
 Please check ```~/Library/Application Support/ttth/```
 #### Windows
 Please check ```%APPDATA%\ttth```
+
+### Where is the ttth log file
+#### linux
+Please check ```~/.config/ttth/log.log```
+#### macOS
+Please check ```~/Library/Logs/ttth/log.log```
+#### Windows
+Please check ```%USERPROFILE%\AppData\Roaming\ttth\log.log```
 
 ### How is the autostart information stored?
 #### Linux

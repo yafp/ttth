@@ -5,11 +5,17 @@
 
 
 ### ttth 1.5.0 (2019xxyy)
+#### ```Added```
+* Logging - Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
+
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
+* Settings: Options - simplify autostart setup. See [#72](https://github.com/yafp/ttth/issues/72)
+* Update electron to v5.x. See [#37](https://github.com/yafp/ttth/issues/37)
 
 #### ```Fixed```
 * Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
+* UI: No single element on settings tab is now selectable anymore using CTRL + a.
 
 
 ### ttth 1.4.0 (20190712)
