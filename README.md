@@ -54,7 +54,9 @@ It is:
 * Google Mail
 * Google Messages
 * Google Photos
+* LinkedIn
 * Mattermost
+* Messenger
 * Nextcloud
 * Slack
 * Telegram

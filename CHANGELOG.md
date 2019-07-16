@@ -7,15 +7,25 @@
 ### ttth 1.5.0 (2019xxyy)
 #### ```Added```
 * Logging - Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
+* Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
+* Services: Added basic support for linkedin. See [#79](https://github.com/yafp/ttth/issues/79)
+* Services: Added basic support for Facebook Messenger. See [#80](https://github.com/yafp/ttth/issues/80)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
 * Settings: Options - simplify autostart setup. See [#72](https://github.com/yafp/ttth/issues/72)
-* Update electron to v5.x. See [#37](https://github.com/yafp/ttth/issues/37)
+* Dependencies
+  * Updated electron from 4.2.6 to 5.0.6. See [#37](https://github.com/yafp/ttth/issues/37)
+  * Updated electron-packager from 13.1.1 to 14.0.1. See [#81](https://github.com/yafp/ttth/issues/81)
 
 #### ```Fixed```
 * Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
+* Fixed an error in calculation of the next tab position while adding new service tabs. See [#77](https://github.com/yafp/ttth/issues/77)
 * UI: No single element on settings tab is now selectable anymore using CTRL + a.
+
+
+
+
 
 
 ### ttth 1.4.0 (20190712)
