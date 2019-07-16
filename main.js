@@ -7,26 +7,103 @@
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
-const log = require('electron-log'); // for logging to file
-const shell = require("electron").shell;
-const openAboutWindow = require("about-window").default; // for about-window
+const log = require("electron-log"); // for: logging to file
+const shell = require("electron").shell; // for: opening external urls in default browser
+const openAboutWindow = require("about-window").default; // for: about-window
 
-const defaultUserDataPath = app.getPath("userData"); // for storing window position and size
-const gotTheLock = app.requestSingleInstanceLock(); // for single-instance handling
+const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
+const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 
 var AutoLaunch = require("auto-launch"); // for autostart
 var path = require("path");
 var fs = require("fs");
 
 // Keep a global reference of the window objects,
-// if you don't, the window will mbe closed automatically
+// if you don't, the window will be closed automatically
 // when the JavaScript object is garbage collected.
 let mainWindow;
 let configServiceWindow;
 
-
 let willQuitApp; // used for saving mainWindow / index.html
 
+
+let verbose
+verbose = false;
+
+
+
+
+/**
+* @name checkArguments
+* @summary Parses the supplied parameters
+* @description Parses the supplied parameters
+*/
+function checkArguments()
+{
+    // using https://www.npmjs.com/package/minimist could improve handling
+
+    //log.info(process.argv);
+
+    // ignore the first 2 arguments
+    //log.info(process.argv.slice(2));
+
+    for (var key in process.argv) 
+    {
+        if (process.argv.hasOwnProperty(key)) 
+        {
+            //console.log(key + " -> " + process.argv[key]);
+
+            switch (process.argv[key]) 
+            {
+                case "verbose":
+                    verbose = true;
+                    break;
+
+
+                /*
+                case "v":
+                case "version":
+                    log.info("Version: " + app.getVersion());
+
+                    break;
+                */
+
+                default:
+                    // nothing to do here
+                    break;
+            }
+        }
+    }
+}
+
+
+function writeLog(logType, logMessage)
+{
+    if(verbose === true)
+    {
+        logMessage = "[M] " + logMessage;
+
+        switch (logType)
+        {
+            case "info":
+                log.info(logMessage)
+                break;
+
+            case "warn":
+                log.warn(logMessage)
+                break;
+
+            case "error":
+                log.error(logMessage)
+                break;
+
+            default:
+                log.info(logMessage)
+        }
+
+        //log.info(logMessage);
+    }
+}
 
 
 /**
@@ -336,8 +413,18 @@ function createMenu()
     }
     ]);
 
+
+
+
+
     // Logging to file
-    log.info("Finished creating menues");
+    writeLog("info", "Finished creating menues")
+
+
+
+
+
+
 
     // use the menu
     Menu.setApplicationMenu(menu);
@@ -348,7 +435,7 @@ function createMenu()
     ipcMain.on("hideMenubar", function() {
         mainWindow.setMenuBarVisibility(false);
         // Logging to file
-        log.info("Hiding menubar (ipcMain)");
+        writeLog("info", "Hiding menubar (ipcMain)");
     });
 
     // Show Menubar
@@ -356,7 +443,7 @@ function createMenu()
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
         // Logging to file
-        log.info("Un-hiding menubar (ipcMain");
+        writeLog("info", "Un-hiding menubar (ipcMain");
     });
 
 
@@ -371,7 +458,7 @@ function createMenu()
         item.enabled = false;
 
         // Logging to file
-        log.info("Disabling toggle-menubar menu element on osx");
+        writeLog("info", "Disabling toggle-menubar menu element on osx");
     }
 }
 
@@ -451,7 +538,7 @@ function createWindow ()
         mainWindow.focus();
 
         // Logging to file
-        log.info("mainWindow is now ready, shown and on focus (event: ready-to-show");
+        writeLog("info", "mainWindow is now ready, shown and on focus (event: ready-to-show");
     });
 
 
@@ -464,14 +551,14 @@ function createWindow ()
         mainWindow.setTitle(windowTitle);
 
         // Logging to file
-        log.info("DOM is now ready (event: dom-ready)");
+        writeLog("info", "DOM is now ready (event: dom-ready)");
     });
 
 
     // When page title gets changed
     //
     mainWindow.webContents.once("page-title-updated", () => {
-        log.info("mainWindow got new title (event: page-title-updated");
+        writeLog("info", "mainWindow got new title (event: page-title-updated");
     });
 
 
@@ -480,7 +567,7 @@ function createWindow ()
     mainWindow.on("show", function()
     {
         // Logging to file
-        log.info("mainWindow is visible (event: show)");
+        writeLog("info", "mainWindow is visible (event: show)");
     });
 
 
@@ -489,7 +576,7 @@ function createWindow ()
     mainWindow.on("blur", function()
     {
         // Logging to file
-        log.info("mainWindow lost focus (event: blur)");
+        writeLog("info", "mainWindow lost focus (event: blur)");
     });
 
 
@@ -498,7 +585,7 @@ function createWindow ()
     mainWindow.on("focus", function()
     {
         // Logging to file
-        log.info("mainWindow got focus (event: focus)");
+        writeLog("info", "mainWindow got focus (event: focus)");
     });
 
 
@@ -507,7 +594,7 @@ function createWindow ()
     mainWindow.on("enter-full-screen", function()
     {
         // Logging to file
-        log.info("mainWindow is now in fullscreen (event: enter-full-screen)");
+        writeLog("info", "mainWindow is now in fullscreen (event: enter-full-screen)");
     });
 
 
@@ -516,7 +603,7 @@ function createWindow ()
     mainWindow.on("leave-full-screen", function()
     {
         // Logging to file
-        log.info("mainWindow leaved fullscreen (event: leave-full-screen)");
+        writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
 
@@ -525,7 +612,7 @@ function createWindow ()
     mainWindow.on("resize", function()
     {
         // Logging to file
-        log.info("mainWindow got resized (event: resize)");
+        writeLog("info", "mainWindow got resized (event: resize)");
     });
 
     // when the app gets moved
@@ -533,7 +620,7 @@ function createWindow ()
     mainWindow.on("move", function()
     {
         // Logging to file
-        log.info("mainWindow got moved (event: move)");
+        writeLog("info", "mainWindow got moved (event: move)");
     });
 
     // when the app gets hidden
@@ -541,7 +628,7 @@ function createWindow ()
     mainWindow.on("hide", function()
     {
         // Logging to file
-        log.info("mainWindow is hidden (event: hide)");
+        writeLog("info", "mainWindow is hidden (event: hide)");
     });
 
     // when the app gets maximized
@@ -549,7 +636,7 @@ function createWindow ()
     mainWindow.on("maximize", function()
     {
         // Logging to file
-        log.info("mainWindow maximized (event: maximized)");
+        writeLog("info", "mainWindow maximized (event: maximized)");
     });
 
     // when the app gets unmaximized
@@ -557,7 +644,7 @@ function createWindow ()
     mainWindow.on("unmaximize", function()
     {
         // Logging to file
-        log.info("mainWindow unmaximized (event: unmaximized)");
+        writeLog("info", "mainWindow unmaximized (event: unmaximized)");
     });
 
     // when the app gets minimized
@@ -565,26 +652,26 @@ function createWindow ()
     mainWindow.on("minimize", function()
     {
         // Logging to file
-        log.info("mainWindow is minimized (event: minimize)");
+        writeLog("info", "mainWindow is minimized (event: minimize)");
     });
 
     // when the app gets restored from minimized mode
     //
     mainWindow.on("restore", function()
     {
-        log.info("mainWindow was restored (event: restore)");
+        writeLog("info", "mainWindow was restored (event: restore)");
     });
 
     mainWindow.on("app-command", function()
     {
-        log.info("mainWindow got app-command (event: app-command)");
+        writeLog("info", "mainWindow got app-command (event: app-command)");
     });
 
     // Emitted before the window is closed.
     //
     mainWindow.on("close", function ()
     {
-        log.info("mainWindow will close (event: close)");
+        writeLog("info", "mainWindow will close (event: close)");
 
         // close configServiceWindow
         configServiceWindow.close();
@@ -600,7 +687,7 @@ function createWindow ()
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
         // Logging to file
-        log.info("mainWindow stored window -position and -size (event: close)");
+        writeLog("info", "mainWindow stored window -position and -size (event: close)");
 
 
         // TODO
@@ -637,7 +724,7 @@ function createWindow ()
         mainWindow = null;
 
         // Logging to file
-        log.info("mainWindow is closed (event: closed)");
+        writeLog("info", "mainWindow is closed (event: closed)");
 
     });
 
@@ -646,7 +733,7 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        log.error("mainWindow is unresponsive (event: unresponsive)");
+        writeLog("error", "mainWindow is unresponsive (event: unresponsive)");
     });
 
 
@@ -654,7 +741,7 @@ function createWindow ()
     //
     mainWindow.on("responsive", function ()
     {
-        log.info("mainWindow is responsive (event: responsive)");
+        writeLog("info", "mainWindow is responsive (event: responsive)");
     });
 
 
@@ -663,7 +750,7 @@ function createWindow ()
     mainWindow.webContents.on("crashed", function ()
     {
         // Logging to file
-        log.info("mainWindow crashed (event: crashed)");
+        writeLog("info", "mainWindow crashed (event: crashed)");
     });
 
 
@@ -673,7 +760,7 @@ function createWindow ()
         mainWindow.reload();
 
         // Logging to file
-        log.info("mainWindow reloaded (ipcMain)");
+        writeLog("info", "mainWindow reloaded (ipcMain)");
     });
 
 
@@ -684,13 +771,13 @@ function createWindow ()
         shell.openItem(customUserDataPath);
 
         // Logging to file
-        log.info("Opening the folder which contains all user-configured services (ipcMain)");
+        writeLog("info", "Opening the folder which contains all user-configured services (ipcMain)");
     });
 
 
     // Call from renderer: Update Window Title
     //
-    ipcMain.on("updateWindowTitle", (event, arg) => {
+    ipcMain.on("updateMainWindowTitle", (event, arg) => {
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
@@ -701,6 +788,8 @@ function createWindow ()
 
         // update title
         mainWindow.setTitle(windowTitle);
+
+        writeLog("info", "Updated title of mainWindow to _" + windowTitle + "_ (ipcMain)");
     });
 
 
@@ -716,11 +805,11 @@ function createWindow ()
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            log.info("Deleting the global shortcut: CmdOrCtrl+" + i);
+            writeLog("info", "Deleting the global shortcut: CmdOrCtrl+" + i);
         }
 
         // Logging to file
-        log.info("Deleted global shortcuts (ipcMain)");
+        writeLog("info", "Deleted global shortcuts (ipcMain)");
     });
 
 
@@ -728,10 +817,10 @@ function createWindow ()
     //
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        log.info("Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
+        writeLog("info", "Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
-            log.info("Shortcut: _" + shortcut + "_ was pressed.");
+            writeLog("info", "Shortcut: _" + shortcut + "_ was pressed.");
 
             // activate the related tab:
             mainWindow.webContents.send("switchToTab", targetTab);
@@ -777,7 +866,7 @@ function createWindow ()
     //
     configServiceWindow.on("close", function (event)
     {
-        log.info("configServiceWindow will close, but we hide it (event: close)");
+        writeLog("info", "configServiceWindow will close, but we hide it (event: close)");
 
         // just hide it - so it can re-opened
         configServiceWindow.hide();
@@ -789,14 +878,14 @@ function createWindow ()
     configServiceWindow.on("show", function (event)
     {
         // Logging to file
-        log.info("configServiceWindow is now shown (event: show)");
+        writeLog("info", "configServiceWindow is now shown (event: show)");
     });
 
 
     // Call from renderer: show configure-single-service window for a new service
     //
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
-        log.info("configServiceWindow preparing for new service creation. (ipcMain)");
+        writeLog("info", "configServiceWindow preparing for new service creation. (ipcMain)");
 
         // show window
         configServiceWindow.show();
@@ -807,7 +896,7 @@ function createWindow ()
     // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
-        log.info("configServiceWindow preparing for service editing (ipcMain)");
+        writeLog("info", "configServiceWindow preparing for service editing (ipcMain)");
 
         // show window
         configServiceWindow.show();
@@ -822,7 +911,7 @@ function createWindow ()
         configServiceWindow.hide();
 
         // Logging to file
-        log.info("configServiceWindow is now hidden (ipcMain)");
+        writeLog("info", "configServiceWindow is now hidden (ipcMain)");
     });
 
 }
@@ -880,7 +969,7 @@ function createTray()
     });
 
     // Logging to file
-    log.info("Finished creating tray");
+    writeLog("info", "Finished creating tray");
 
 
     // Call from renderer: Change Tray Icon to UnreadMessages
@@ -1004,8 +1093,10 @@ const saveState = () => {
 app.on("ready", function ()
 {
     forceSingleAppInstance();
+    checkArguments();
     createWindow();
     createMenu();
+
 });
 
 
@@ -1013,7 +1104,7 @@ app.on("ready", function ()
 // add with 1.5.0
 app.on("before-quit", function ()
 {
-    log.info("app is preparing to quit (event: before-quit)");
+    writeLog("info", "app is preparing to quit (event: before-quit)");
 
     willQuitApp = true;
     //saveState()
@@ -1021,61 +1112,61 @@ app.on("before-quit", function ()
 
 app.on("will-quit", function ()
 {
-    log.info("app will quit (event: will-quit)");
+    writeLog("info", "app will quit (event: will-quit)");
 });
 
 app.on("quit", function ()
 {
     // Logging to file
-    log.info("Got quit event (event: quit)");
+    writeLog("info", "Got quit event (event: quit)");
 });
 
 app.on("browser-window-blur", function ()
 {
     // Logging to file
-    log.info("app lost focus (event: browser-window-blur)");
+    writeLog("info", "app lost focus (event: browser-window-blur)");
 });
 
 app.on("browser-window-focus", function ()
 {
     // Logging to file
-    log.info("app got focus (event: browser-window-focus)");
+    writeLog("info", "app got focus (event: browser-window-focus)");
 });
 
 app.on("certificate-error", function ()
 {
     // Logging to file
-    log.info("app failed to verify a cert (event: certificate-error)");
+    writeLog("info", "app failed to verify a cert (event: certificate-error)");
 });
 
 app.on("remote-require", function ()
 {
     // Logging to file
-    log.info("app called .require() in the renderer process (event: remote-require)");
+    writeLog("info", "app called .require() in the renderer process (event: remote-require)");
 });
 
 app.on("remote-get-global", function ()
 {
     // Logging to file
-    log.info("app called .getGlobal() in the renderer process (event: remote-get-global)");
+    writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
 });
 
 app.on("remote-get-builtin", function ()
 {
     // Logging to file
-    log.info("app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
+    writeLog("info", "app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
 });
 
 app.on("remote-get-current-window", function ()
 {
     // Logging to file
-    log.info("app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
+    writeLog("info", "app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
 });
 
 app.on("remote-get-current-web-contents", function ()
 {
     // Logging to file
-    log.info("app called .getCurrentWebContents() in the renderer process (event: remote-get-current-web-contents)");
+    writeLog("info", "app called .getCurrentWebContents() in the renderer process (event: remote-get-current-web-contents)");
 });
 
 
