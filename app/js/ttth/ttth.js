@@ -19,11 +19,6 @@ function showNoty(type, message, timeout = 3000)
 }
 
 
-
-// 
-
-
-
 /**
 * @name writeLog
 * @summary Writes a log message from renderer to log file and to cli and replaces the classic console-command which writes to dev-console.
@@ -33,43 +28,102 @@ function showNoty(type, message, timeout = 3000)
 */
 function writeLog(logType, logMessage)
 {
-    const log = require('electron-log'); // for logging to file
+    const log = require("electron-log"); // for logging to file
+
+    //const remote = require("electron").remote;
+    //console.error(require('electron').remote.getGlobal('sharedObject').verbose);
+
+    logMessage = "[R] " + logMessage;
+
 
     switch (logType) 
     {
-        case 'error' :
-            log.error(logMessage); // write to file & cli
+        case "error" :
+            //log.error(logMessage); // write to file & cli
             console.error(logMessage); // write to dev console
             break;
 
-        case 'warn' :
-            log.warn(logMessage);
+        case "warn" :
+            //log.warn(logMessage);
             console.warn(logMessage);
             break;
 
-        case 'info' :
-            log.info(logMessage);
+        case "info" :
+            //log.info(logMessage);
             console.log(logMessage);
             break;
 
-        case 'verbose' :
-            log.verbose(logMessage);
+        case "verbose" :
+            //log.verbose(logMessage);
             break;
 
-        case 'debug' :
-            log.debug(logMessage);
+        case "debug" :
+            //log.debug(logMessage);
             console.debug(logMessage);
             break;
 
-        case 'silly' :
-            log.silly(logMessage);
+        case "silly" :
+            //log.silly(logMessage);
             break;
 
       default:
-         log.info(logMessage);
+         //log.info(logMessage);
          console.log(logMessage);
    }
 }
+
+
+/**
+* @name readLocalStorage
+* @summary Read from local storage
+* @description Reads a value stored in local storage (for a given key)
+* @param key - Name of local storage key
+* @return value - The value of the supplied key
+*/
+function readLocalStorage(key)
+{
+    var value = localStorage.getItem(key);
+    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    return(value);
+}
+
+
+/**
+* @name writeLocalStorage
+* @summary Write to local storage
+* @description Writes a value for a given key to local storage
+* @param key - Name of local storage key
+* @param value - New value
+*/
+function writeLocalStorage(key, value)
+{
+    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    localStorage.setItem(key, value);
+}
+
+
+// TODO
+function settingsSelectServiceToAddChanged()
+{
+    var currentSelectedServiceTemplate = $("#select_availableServices").val();
+    
+    if(currentSelectedServiceTemplate !== "")
+    {
+        // enable the add button
+        $("#bt_addNewService").prop('disabled', false);
+
+        // change button type to success
+    }
+    else
+    {
+        // disable the add button
+        $("#bt_addNewService").prop('disabled', true);
+
+        // change button type to secondary
+        
+    }
+}
+
 
 
 /**
@@ -85,9 +139,9 @@ function showNotyAutostartMinimizedConfirm()
     {
         theme: "bootstrap-v4",
         layout: "bottom",
-        text: 'Should autostart enable the minimize mode?',
+        text: "Should autostart enable the minimize mode?",
         buttons: [
-            Noty.button('Yes', 'btn btn-success', function ()
+            Noty.button("Yes", "btn btn-success", function ()
             {
                 // enable start minimized
                 var ttthAutoLauncher = new AutoLaunch({
@@ -101,10 +155,10 @@ function showNotyAutostartMinimizedConfirm()
                 n.close();
             },
             {
-                id: 'button1', 'data-status': 'ok'
+                id: "button1", "data-status": "ok"
             }),
 
-            Noty.button('No', 'btn btn-error', function ()
+            Noty.button("No", "btn btn-secondary", function ()
             {
                 var ttthAutoLauncher = new AutoLaunch({
                     name: "ttth",
@@ -504,46 +558,17 @@ function configureSingleUserService(serviceId)
 
 
 /**
-* @name readLocalStorage
-* @summary Read from local storage
-* @description Reads a value stored in local storage (for a given key)
-* @param key - Name of local storage key
-* @return value - The value of the supplied key
-*/
-function readLocalStorage(key)
-{
-    var value = localStorage.getItem(key);
-    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
-    return(value);
-}
-
-
-/**
-* @name writeLocalStorage
-* @summary Write to local storage
-* @description Writes a value for a given key to local storage
-* @param key - Name of local storage key
-* @param value - New value
-*/
-function writeLocalStorage(key, value)
-{
-    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
-    localStorage.setItem(key, value);
-}
-
-
-/**
-* @name updateWindowTitle
+* @name updateMainWindowTitle
 * @summary Triggers an update title function in main.js
 * @description Triggers an update title function in main.js. This is needed to update the app window title to display the current / frontmost service.
 * @param TabName - Name of the current tab
 */
-function updateWindowTitle(tabName)
+function updateMainWindowTitle(tabName)
 {
-    writeLog("info", "updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
+    writeLog("info", "updateMainWindowTitle ::: Sending _" + tabName + "_ to main.js");
 
     const {ipcRenderer} = require("electron");
-    ipcRenderer.send("updateWindowTitle", tabName);
+    ipcRenderer.send("updateMainWindowTitle", tabName);
 }
 
 
@@ -952,8 +977,13 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
+        // NO unread message handler and NO Link handler
+        //
+
         // NO unread-message-handling but link-handler
         case "freenode":
+        case "linkedIn":
+        case "messenger":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
@@ -1004,10 +1034,12 @@ function initAvailableServicesSelection()
     let dropdown = $("#select_availableServices");
 
     // Empty the select
-    dropdown.empty();
+    //dropdown.empty();
 
     // Add a disabled dummy/default entry
-    dropdown.append("<option selected='true' disabled>Choose a service</option>");
+    //dropdown.append("<option selected='true' disabled>Choose a service</option>");
+
+    // select the first entry
     dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
@@ -1021,6 +1053,7 @@ function initAvailableServicesSelection()
             // add option to select
             dropdown.append($("<option></option>").attr("value", entry.id).text(entry.nameLong));
 
+            // count services
             counterSupportedServices = counterSupportedServices +1;
         });
 
@@ -1212,7 +1245,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     var existingTabs = $("#myTabs li").length;
 
     // calculate new tab position
-    var newTabPosition = existingTabs -2;
+    var newTabPosition = existingTabs -1;
 
     // add new list item to unordner list (tabs/menu)
     //
@@ -1352,8 +1385,6 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
 
 
 
-
-
 /**
 * @name loadEnabledUserServices
 * @summary Reads all user configured service files and adds the enabled services as tabs
@@ -1374,12 +1405,13 @@ function loadEnabledUserServices()
         }
 
         // show object which contains all config files
-        writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        //writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        //console.error(data);
 
 
         // TODO
         // - should sort the object before using it
-        //
+        // - currently the services are sorted by its generated IDs
 
 
         // loop over upper object
@@ -1394,9 +1426,6 @@ function loadEnabledUserServices()
                 {
                     writeLog("info", "loadEnabledUserServices ::: Trying to add the enabled service: _" + key + "_.");
                     addServiceTab(key, data[key]["type"], data[key]["name"], data[key]["icon"], data[key]["url"], data[key]["injectCode"]);
-
-                    // add service to selectDefaultView
-                    //$("#selectDefaultView").append(new Option(data[key]["name"], key));
                 }
                 else
                 {
@@ -1672,7 +1701,7 @@ function localizeUserInterface()
     const isDev = require("electron-is-dev");
     if (isDev)
     {
-        userLang = "en";
+        //userLang = "en";
     }
 
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
@@ -1714,13 +1743,26 @@ function localizeUserInterface()
             node.text(i18next.t(key));
         });
 
-        // title attribute
+        // attribute: title
         $("[i18n-title]").each(function()
         {
             var node = $(this), key = node.attr("i18n-title");
             node.attr("title", i18next.t(key));
         });
 
+        // attribute: placeholder 
+        $("[i18n-placeholder]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-placeholder");
+            node.attr("placeholder", i18next.t(key));
+        });
+
+        // attribute: value
+        $("[i18n-value]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-value");
+            node.attr("value", i18next.t(key));
+        });
 
     });
 }
