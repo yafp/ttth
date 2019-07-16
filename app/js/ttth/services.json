@@ -110,6 +110,16 @@
         "injectCode": ""
     },
     {
+        "id": "linkedIn",
+        "name": "LinkedIn",
+        "nameLong": "LinkedIn",
+        "icon": "fab fa-linkedin",
+        "description": "Manage your professional identity. Build and engage with your professional network. Access knowledge, insights and opportunities.",
+        "url": "https://linkedin.com/",
+        "multiple": false,
+        "injectCode": ""
+    },
+    {
         "id": "mattermost",
         "name": "Mattermost",
         "nameLong": "Mattermost",
@@ -118,6 +128,16 @@
         "url": "https://example.com",
         "multiple": true,
         "injectCode": "./js/ttth/services/Mattermost_inject.js"
+    },
+    {
+        "id": "messenger",
+        "name": "Messenger",
+        "nameLong": "Facebook Messenger",
+        "icon": "fas fa-messenger",
+        "description": "",
+        "url": "https://www.messenger.com/login/",
+        "multiple": true,
+        "injectCode": ""
     },
     {
         "id": "nextcloud",
