@@ -47,11 +47,6 @@ function showNoty(type, message, timeout = 3000)
 }
 
 
-
-// 
-
-
-
 /**
 * @name writeLog
 * @summary Writes a log message from renderer to log file and to cli and replaces the classic console-command which writes to dev-console.
@@ -61,42 +56,77 @@ function showNoty(type, message, timeout = 3000)
 */
 function writeLog(logType, logMessage)
 {
-    const log = require('electron-log'); // for logging to file
+    const log = require("electron-log"); // for logging to file
+
+    //const remote = require("electron").remote;
+    //console.error(require('electron').remote.getGlobal('sharedObject').verbose);
+
+    logMessage = "[R] " + logMessage;
+
 
     switch (logType) 
     {
-        case 'error' :
-            log.error(logMessage); // write to file &amp; cli
+        case "error" :
+            //log.error(logMessage); // write to file &amp; cli
             console.error(logMessage); // write to dev console
             break;
 
-        case 'warn' :
-            log.warn(logMessage);
+        case "warn" :
+            //log.warn(logMessage);
             console.warn(logMessage);
             break;
 
-        case 'info' :
-            log.info(logMessage);
+        case "info" :
+            //log.info(logMessage);
             console.log(logMessage);
             break;
 
-        case 'verbose' :
-            log.verbose(logMessage);
+        case "verbose" :
+            //log.verbose(logMessage);
             break;
 
-        case 'debug' :
-            log.debug(logMessage);
+        case "debug" :
+            //log.debug(logMessage);
             console.debug(logMessage);
             break;
 
-        case 'silly' :
-            log.silly(logMessage);
+        case "silly" :
+            //log.silly(logMessage);
             break;
 
       default:
-         log.info(logMessage);
+         //log.info(logMessage);
          console.log(logMessage);
    }
+}
+
+
+/**
+* @name readLocalStorage
+* @summary Read from local storage
+* @description Reads a value stored in local storage (for a given key)
+* @param key - Name of local storage key
+* @return value - The value of the supplied key
+*/
+function readLocalStorage(key)
+{
+    var value = localStorage.getItem(key);
+    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
+    return(value);
+}
+
+
+/**
+* @name writeLocalStorage
+* @summary Write to local storage
+* @description Writes a value for a given key to local storage
+* @param key - Name of local storage key
+* @param value - New value
+*/
+function writeLocalStorage(key, value)
+{
+    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
+    localStorage.setItem(key, value);
 }
 
 
@@ -113,9 +143,9 @@ function showNotyAutostartMinimizedConfirm()
     {
         theme: "bootstrap-v4",
         layout: "bottom",
-        text: 'Should autostart enable the minimize mode?',
+        text: "Should autostart enable the minimize mode?",
         buttons: [
-            Noty.button('Yes', 'btn btn-success', function ()
+            Noty.button("Yes", "btn btn-success", function ()
             {
                 // enable start minimized
                 var ttthAutoLauncher = new AutoLaunch({
@@ -129,10 +159,10 @@ function showNotyAutostartMinimizedConfirm()
                 n.close();
             },
             {
-                id: 'button1', 'data-status': 'ok'
+                id: "button1", "data-status": "ok"
             }),
 
-            Noty.button('No', 'btn btn-error', function ()
+            Noty.button("No", "btn btn-secondary", function ()
             {
                 var ttthAutoLauncher = new AutoLaunch({
                     name: "ttth",
@@ -532,46 +562,17 @@ function configureSingleUserService(serviceId)
 
 
 /**
-* @name readLocalStorage
-* @summary Read from local storage
-* @description Reads a value stored in local storage (for a given key)
-* @param key - Name of local storage key
-* @return value - The value of the supplied key
-*/
-function readLocalStorage(key)
-{
-    var value = localStorage.getItem(key);
-    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
-    return(value);
-}
-
-
-/**
-* @name writeLocalStorage
-* @summary Write to local storage
-* @description Writes a value for a given key to local storage
-* @param key - Name of local storage key
-* @param value - New value
-*/
-function writeLocalStorage(key, value)
-{
-    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
-    localStorage.setItem(key, value);
-}
-
-
-/**
-* @name updateWindowTitle
+* @name updateMainWindowTitle
 * @summary Triggers an update title function in main.js
 * @description Triggers an update title function in main.js. This is needed to update the app window title to display the current / frontmost service.
 * @param TabName - Name of the current tab
 */
-function updateWindowTitle(tabName)
+function updateMainWindowTitle(tabName)
 {
-    writeLog("info", "updateWindowTitle ::: Sending _" + tabName + "_ to main.js");
+    writeLog("info", "updateMainWindowTitle ::: Sending _" + tabName + "_ to main.js");
 
     const {ipcRenderer} = require("electron");
-    ipcRenderer.send("updateWindowTitle", tabName);
+    ipcRenderer.send("updateMainWindowTitle", tabName);
 }
 
 
@@ -1032,10 +1033,10 @@ function initAvailableServicesSelection()
     let dropdown = $("#select_availableServices");
 
     // Empty the select
-    dropdown.empty();
+    //dropdown.empty();
 
     // Add a disabled dummy/default entry
-    dropdown.append("&lt;option selected='true' disabled>Choose a service&lt;/option>");
+    //dropdown.append("&lt;option selected='true' disabled>Choose a service&lt;/option>");
     dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
@@ -1240,7 +1241,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     var existingTabs = $("#myTabs li").length;
 
     // calculate new tab position
-    var newTabPosition = existingTabs -2;
+    var newTabPosition = existingTabs -1;
 
     // add new list item to unordner list (tabs/menu)
     //
@@ -1380,8 +1381,6 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
 
 
 
-
-
 /**
 * @name loadEnabledUserServices
 * @summary Reads all user configured service files and adds the enabled services as tabs
@@ -1402,12 +1401,13 @@ function loadEnabledUserServices()
         }
 
         // show object which contains all config files
-        writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        //writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        //console.error(data);
 
 
         // TODO
         // - should sort the object before using it
-        //
+        // - currently the services are sorted by its generated IDs
 
 
         // loop over upper object
@@ -1422,9 +1422,6 @@ function loadEnabledUserServices()
                 {
                     writeLog("info", "loadEnabledUserServices ::: Trying to add the enabled service: _" + key + "_.");
                     addServiceTab(key, data[key]["type"], data[key]["name"], data[key]["icon"], data[key]["url"], data[key]["injectCode"]);
-
-                    // add service to selectDefaultView
-                    //$("#selectDefaultView").append(new Option(data[key]["name"], key));
                 }
                 else
                 {
@@ -1700,7 +1697,7 @@ function localizeUserInterface()
     const isDev = require("electron-is-dev");
     if (isDev)
     {
-        userLang = "en";
+        //userLang = "en";
     }
 
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
@@ -1742,13 +1739,26 @@ function localizeUserInterface()
             node.text(i18next.t(key));
         });
 
-        // title attribute
+        // attribute: title
         $("[i18n-title]").each(function()
         {
             var node = $(this), key = node.attr("i18n-title");
             node.attr("title", i18next.t(key));
         });
 
+        // attribute: placeholder 
+        $("[i18n-placeholder]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-placeholder");
+            node.attr("placeholder", i18next.t(key));
+        });
+
+        // attribute: value
+        $("[i18n-value]").each(function()
+        {
+            var node = $(this), key = node.attr("i18n-value");
+            node.attr("value", i18next.t(key));
+        });
 
     });
 }
@@ -2008,13 +2018,13 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#updateWindowTitle">updateWindowTitle</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Jul 15 2019 15:06:00 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 16 2019 13:53:21 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
