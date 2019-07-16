@@ -143,6 +143,12 @@
                     ]
                 },
                 {
+                    "target": "rpm",
+                    "arch": [
+                        "x64"
+                    ]
+                },
+                {
                     "target": "zip",
                     "arch": [
                         "x64"
@@ -168,7 +174,7 @@
         "chai-as-promised": "^7.1.1",
         "electron": "^5.0.6",
         "electron-builder": "^20.44.4",
-        "electron-packager": "^13.1.1",
+        "electron-packager": "^14.0.1",
         "eslint": "^5.16.0",
         "eslint-config-strongloop": "^2.1.0",
         "mocha": "^6.1.4",
@@ -177,7 +183,7 @@
     "dependencies": {
         "about-window": "^1.13.0",
         "auto-launch": "^5.0.5",
-        "electron-i18n": "^1.1523.0",
+        "electron-i18n": "^1.1538.0",
         "electron-is-dev": "^1.1.0",
         "electron-json-storage": "^4.1.6",
         "electron-log": "^3.0.6",
