@@ -36,7 +36,7 @@ function writeLog(logType, logMessage)
     logMessage = "[R] " + logMessage;
 
 
-    switch (logType) 
+    switch (logType)
     {
         case "error" :
             //log.error(logMessage); // write to file & cli
@@ -106,21 +106,21 @@ function writeLocalStorage(key, value)
 function settingsSelectServiceToAddChanged()
 {
     var currentSelectedServiceTemplate = $("#select_availableServices").val();
-    
+
     if(currentSelectedServiceTemplate !== "")
     {
         // enable the add button
-        $("#bt_addNewService").prop('disabled', false);
+        $("#bt_addNewService").prop("disabled", false);
 
         // change button type to success
     }
     else
     {
         // disable the add button
-        $("#bt_addNewService").prop('disabled', true);
+        $("#bt_addNewService").prop("disabled", true);
 
         // change button type to secondary
-        
+
     }
 }
 
@@ -1750,7 +1750,7 @@ function localizeUserInterface()
             node.attr("title", i18next.t(key));
         });
 
-        // attribute: placeholder 
+        // attribute: placeholder
         $("[i18n-placeholder]").each(function()
         {
             var node = $(this), key = node.attr("i18n-placeholder");

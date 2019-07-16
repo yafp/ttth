@@ -27,7 +27,7 @@ let configServiceWindow;
 let willQuitApp; // used for saving mainWindow / index.html
 
 
-let verbose
+let verbose;
 verbose = false;
 
 
@@ -47,13 +47,13 @@ function checkArguments()
     // ignore the first 2 arguments
     //log.info(process.argv.slice(2));
 
-    for (var key in process.argv) 
+    for (var key in process.argv)
     {
-        if (process.argv.hasOwnProperty(key)) 
+        if (process.argv.hasOwnProperty(key))
         {
             //console.log(key + " -> " + process.argv[key]);
 
-            switch (process.argv[key]) 
+            switch (process.argv[key])
             {
                 case "verbose":
                     verbose = true;
@@ -86,19 +86,19 @@ function writeLog(logType, logMessage)
         switch (logType)
         {
             case "info":
-                log.info(logMessage)
+                log.info(logMessage);
                 break;
 
             case "warn":
-                log.warn(logMessage)
+                log.warn(logMessage);
                 break;
 
             case "error":
-                log.error(logMessage)
+                log.error(logMessage);
                 break;
 
             default:
-                log.info(logMessage)
+                log.info(logMessage);
         }
 
         //log.info(logMessage);
@@ -414,13 +414,8 @@ function createMenu()
     ]);
 
 
-
-
-
     // Logging to file
-    writeLog("info", "Finished creating menues")
-
-
+    writeLog("info", "Finished creating menues");
 
 
 
