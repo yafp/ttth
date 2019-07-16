@@ -117,11 +117,11 @@
                         <h3 i18n-text="settingsSectionServicesAdd"><!-- Add service --></h3>
                         <div id="settingsServicesAdd">
                             <div class="input-group mb-3">
-                                <select id="select_availableServices"  class="custom-select" name="select_availableServices" title="" i18n-title="settingsSectionServicesAddSelectService" aria-label="Dropdown element to select a service type for service creation">
-                                    <option value="" disabled selected>Dummy</option>
+                                <select id="select_availableServices"  class="custom-select" name="select_availableServices" title="" i18n-title="settingsSectionServicesAddSelectService" aria-label="Dropdown element to select a service type for service creation" onChange="settingsSelectServiceToAddChanged();">
+                                    <option value="" disabled selected name="select_availableServices" i18n-text="settingsSectionServicesAddSelectService"><!-- i18n --></option>
                                 </select>
                                 <div class="input-group-append">
-                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" i18n-title="settingsSectionServicesButtonAddTitle" aria-label="Button to add a new service"><!-- Add --></button>
+                                    <button id="bt_addNewService" type="button" class="btn btn-success btn-sm" onClick="settingsUserAddNewService();" i18n-text="settingsSectionServicesButtonAdd" i18n-title="settingsSectionServicesButtonAddTitle" aria-label="Button to add a new service" disabled><!-- Add --></button>
                                 </div>
                             </div>
                         </div>
@@ -149,11 +149,11 @@
                                     <input type="checkbox" aria-label="Disabled checkbox for the selectDefaultView option" checked disabled>
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="Set default view (on load)" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="settingsSectionOptionsDefaultViewDesc" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <select id="selectDefaultView" name="selectDefaultView">
-                                        <option value="" disabled selected>Please choose</option>
+                                        <option value="" disabled selected i18n-text="settingsSectionOptionsDefaultViewSelect"><!-- i18n --></option>
                                     </select>
                                 </div>
                             </div>
@@ -172,9 +172,8 @@
                                     <input type="checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for option Autostart" onClick="settingToggleAutostart();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="Enable autostart (on login)" i18n-text="settingsSectionStartupInfo" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="" i18n-value="settingsSectionOptionsAutostartDesc" disabled>
                         </div>
-
                         <!-- /Setting: Autostart  -->
 
                         <!-- Setting: HideMenubarOnStartup -->
@@ -184,7 +183,7 @@
                                     <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for the hide menubar on startup otion" onClick="settingToggleMenubarVisibility();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="Hide menubar (on load)" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="settingsSectionOptionsHideMenubarDesc" disabled>
                         </div>
                         <!-- /Setting: HideMenubarOnStartup  -->
 
@@ -216,7 +215,7 @@ $( document ).ready(function()
     // start splash
     loading = $(document.body).modalLoading(100, '<img src="img/splash/icon_splash.png">');
 
-    // load the configured services
+    // load the configured user services
     loadEnabledUserServices();
 
     // check operating system
@@ -240,7 +239,7 @@ $( document ).ready(function()
         loading.remove();
     }, 500);
 
-    updateWindowTitle("");
+    updateMainWindowTitle("");
 
     // execute some things later ...
     setTimeout(function()
@@ -253,7 +252,7 @@ $( document ).ready(function()
 
 $(document).bind('afterready', function()
 {
-    // call your code here that you want to run after all $(document).ready() calls have run
+    // call code here that you want to run after all $(document).ready() calls have run
     updateGlobalServicesShortcuts();
 
     // validate default view
@@ -274,7 +273,7 @@ $(document).bind('afterready', function()
         console.log("ready ::: Switching to tab: _" + target + "_.");
 
         // Update window title
-        updateWindowTitle(target);
+        updateMainWindowTitle(target);
 
         // do page-specific things
         /*
