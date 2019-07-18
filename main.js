@@ -22,9 +22,8 @@ var fs = require("fs");
 // if you don't, the window will be closed automatically
 // when the JavaScript object is garbage collected.
 let mainWindow;
-let configServiceWindow;
+let configWindow;
 
-let willQuitApp; // used for saving mainWindow / index.html
 
 
 let verbose;
@@ -46,6 +45,7 @@ function checkArguments()
 
     // ignore the first 2 arguments
     //log.info(process.argv.slice(2));
+    process.argv = process.argv.slice(2)
 
     for (var key in process.argv)
     {
@@ -56,6 +56,7 @@ function checkArguments()
             switch (process.argv[key])
             {
                 case "verbose":
+                    log.info("Enabling verbose mode");
                     verbose = true;
                     break;
 
@@ -70,6 +71,7 @@ function checkArguments()
 
                 default:
                     // nothing to do here
+                    log.warn("Ignoring unsupported parameter: " + process.argv[key]);
                     break;
             }
         }
@@ -77,32 +79,47 @@ function checkArguments()
 }
 
 
+/**
+* @name writeLog
+* @summary Writes to log file (and if verbose parameter is given as well to console)
+* @description Writes to log file (and if verbose parameter is given as well to console)
+*/
 function writeLog(logType, logMessage)
 {
-    if(verbose === true)
+
+    // logging to file
+    //
+    log.transports.file.level = true;
+
+    // logging to console (default)
+    //
+    log.transports.console.level = false;
+    if(verbose === true) // enable output if verbose parameter is given
     {
-        logMessage = "[M] " + logMessage;
-
-        switch (logType)
-        {
-            case "info":
-                log.info(logMessage);
-                break;
-
-            case "warn":
-                log.warn(logMessage);
-                break;
-
-            case "error":
-                log.error(logMessage);
-                break;
-
-            default:
-                log.info(logMessage);
-        }
-
-        //log.info(logMessage);
+        log.transports.console.level = true;
     }
+    
+    // add prefix for all logs from [M]ain
+    logMessage = "[M] " + logMessage;
+
+    switch (logType)
+    {
+        case "info":
+            log.info(logMessage);
+            break;
+
+        case "warn":
+            log.warn(logMessage);
+            break;
+
+        case "error":
+            log.error(logMessage);
+            break;
+
+        default:
+            log.info(logMessage);
+    }
+
 }
 
 
@@ -465,6 +482,7 @@ function createMenu()
 */
 function createWindow ()
 {
+
     // Check last window position and size from user data
     var windowWidth;
     var windowHeight;
@@ -472,7 +490,7 @@ function createWindow ()
     var windowPositionY;
 
     // Read a local config file
-    var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
+    var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
     var data;
     try {
         data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
@@ -519,14 +537,13 @@ function createWindow ()
     // set the user agent
     //changeUserAgent();
 
-    // and load the index.html of the app.
-    mainWindow.loadFile("app/index.html");
+    // and load the html of the app.
+    mainWindow.loadFile("app/mainWindow.html");
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 
     // show the formerly hidden main window as it is fully ready now
-    //
     mainWindow.on("ready-to-show", function()
     {
         mainWindow.show();
@@ -668,8 +685,8 @@ function createWindow ()
     {
         writeLog("info", "mainWindow will close (event: close)");
 
-        // close configServiceWindow
-        configServiceWindow.close();
+        // close configWindow
+        configWindow.close();
 
         // Saving window position and size
         //
@@ -678,33 +695,11 @@ function createWindow ()
             bounds: mainWindow.getBounds()
         };
         // store it to file in user data
-        var customUserDataPath = path.join(defaultUserDataPath, "ttthUserData.json");
+        var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
         // Logging to file
         writeLog("info", "mainWindow stored window -position and -size (event: close)");
-
-
-        // TODO
-        //
-        // add with 1.5.0
-        //
-        /*
-        saveState()
-
-        if (willQuitApp || process.platform !== 'darwin')
-        {
-            // the user tried to quit the app
-            mainWindow = null
-        }
-        else
-        {
-            //the user only tried to close the window
-            e.preventDefault()
-            mainWindow.hide()
-        }
-        */
-        // End TODO
 
     });
 
@@ -720,7 +715,6 @@ function createWindow ()
 
         // Logging to file
         writeLog("info", "mainWindow is closed (event: closed)");
-
     });
 
 
@@ -828,7 +822,7 @@ function createWindow ()
     // *****************************************************************
     //
     // modal window to allow creating and configuring a single service
-    configServiceWindow = new BrowserWindow({
+    configWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
         title: "${productName}",
@@ -848,54 +842,63 @@ function createWindow ()
     });
 
     // load html form to the window
-    configServiceWindow.loadFile("app/config.html");
+    configWindow.loadFile("app/configWindow.html");
 
     // make it always on top
-    //configServiceWindow.setAlwaysOnTop(true, "floating");
+    //configWindow.setAlwaysOnTop(true, "floating");
 
     // hide menubar
-    configServiceWindow.setMenuBarVisibility(false);
+    configWindow.setMenuBarVisibility(false);
 
 
     // Emitted when the window gets a close event.(close VS closed)
     //
-    configServiceWindow.on("close", function (event)
+    configWindow.on("close", function (event)
     {
-        writeLog("info", "configServiceWindow will close, but we hide it (event: close)");
+        writeLog("info", "configWindow will close, but we hide it (event: close)");
 
         // just hide it - so it can re-opened
-        configServiceWindow.hide();
+        configWindow.hide();
+    });
+
+
+    // Emitted when the window ...
+    //
+    configWindow.on("ready-to-show", function (event)
+    {
+        // Logging to file
+        writeLog("info", "configWindow is now ready to show (event: ready-to-show)");
     });
 
 
     // Emitted when the window is shown
     //
-    configServiceWindow.on("show", function (event)
+    configWindow.on("show", function (event)
     {
         // Logging to file
-        writeLog("info", "configServiceWindow is now shown (event: show)");
+        writeLog("info", "configWindow is now shown (event: show)");
     });
 
 
     // Call from renderer: show configure-single-service window for a new service
     //
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
-        writeLog("info", "configServiceWindow preparing for new service creation. (ipcMain)");
+        writeLog("info", "configWindow preparing for new service creation. (ipcMain)");
 
         // show window
-        configServiceWindow.show();
-        configServiceWindow.webContents.send("serviceToCreate", arg);
+        configWindow.show();
+        configWindow.webContents.send("serviceToCreate", arg);
     });
 
 
     // Call from renderer: show configure-single-service window
     //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
-        writeLog("info", "configServiceWindow preparing for service editing (ipcMain)");
+        writeLog("info", "configWindow preparing for service editing (ipcMain)");
 
         // show window
-        configServiceWindow.show();
-        configServiceWindow.webContents.send("serviceToConfigure", arg);
+        configWindow.show();
+        configWindow.webContents.send("serviceToConfigure", arg);
     });
 
 
@@ -903,10 +906,11 @@ function createWindow ()
     //
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
         // hide window
-        configServiceWindow.hide();
+        configWindow.hide();
 
         // Logging to file
-        writeLog("info", "configServiceWindow is now hidden (ipcMain)");
+        writeLog("info", "configWindow is now hidden (ipcMain)");
+
     });
 
 }
@@ -920,59 +924,54 @@ function createWindow ()
 function createTray()
 {
     let tray = null;
-    app.on("ready", () => {
 
-        tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
+    tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
 
-        const contextMenu = Menu.buildFromTemplate([
-            {
-                // Window focus
-                id: "show",
-                label: "Show Window",
-                click: function () {
-                    // focus the main window
-                    if (mainWindow.isMinimized())
-                    {
-                        mainWindow.restore();
-                    }
-                    else
-                    {
-                        // was maybe: hidden via hide()
-                        mainWindow.show();
-                    }
-                    mainWindow.focus();
-                },
-                enabled: true
-            },
-            {
-                type: "separator",
-                enabled: false
-            },
-            {
-                // Quit
-                id: "exit",
-                label: "Exit",
-                enabled: true,
-                click: function () {
-                    app.quit();
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            // Window focus
+            id: "show",
+            label: "Show Window",
+            click: function () {
+                // focus the main window
+                if (mainWindow.isMinimized())
+                {
+                    mainWindow.restore();
                 }
+                else
+                {
+                    // was maybe: hidden via hide()
+                    mainWindow.show();
+                }
+                mainWindow.focus();
+            },
+            enabled: true
+        },
+        {
+            type: "separator",
+            enabled: false
+        },
+        {
+            // Quit
+            id: "exit",
+            label: "Exit",
+            enabled: true,
+            click: function () {
+                app.quit();
             }
-        ]);
+        }
+    ]);
 
-        tray.setToolTip("ttth");
-        tray.setContextMenu(contextMenu);
-    });
+    tray.setToolTip("ttth");
+    tray.setContextMenu(contextMenu);
 
-    // Logging to file
     writeLog("info", "Finished creating tray");
-
 
     // Call from renderer: Change Tray Icon to UnreadMessages
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
     });
-
 
     // Call from renderer: Change Tray Icon to Default
     //
@@ -984,8 +983,8 @@ function createTray()
 
 /**
 * @name changeUserAgent
-* @summary Can owerwrite the user agent
-* @description Can owerwrite the user agent
+* @summary Owerwrites the user agent
+* @description Can owerwrite the user agent with a hard-coded new user string
 */
 function changeUserAgent()
 {
@@ -1038,39 +1037,6 @@ function forceSingleAppInstance()
 
 
 
-// TODO:
-// add with 1.5.0
-// via: https://vincelwt.github.io/optimize-electron-startup-time/index.html
-const saveState = () => {
-
-    // regex .replace is for escaping fucking windows paths
-    let writePath = path.join(app.getPath("userData"), "ttth_"+app.getVersion()+"_index.html").replace(/\\/g, "\\\\");
-
-    //console.log("main.js ::: saveState ::: Trying to save the window to: _" + writePath + "_ for faster startup times");
-
-
-    mainWindow.webContents.executeJavaScript(`
-
-        // This part depends on your app
-        // In my case, I reset some elements to their original page before saving the page
-
-        // Reset ui elements
-        //getById('playerBufferBar').style.transform = getById('playerProgressBar').style.transform = 'translateX(0%)'
-
-        //addClass('playpauseIcon', 'icon-play')
-        //removeClass('playpauseIcon', 'icon-pause')
-        //removeClass(".playingIcon", "blink")
-        //addClass('refreshStatus', 'hide')
-
-        // Here we write the DOM to the 'userData' folder
-        // so we can use this for the next startup
-
-        fs.writeFileSync("${writePath}",  '<!DOCTYPE html>'+document.documentElement.outerHTML)
-
-        // Save settings
-        store.set('settings', settings)
-    `);
-};
 
 
 
@@ -1091,76 +1057,73 @@ app.on("ready", function ()
     checkArguments();
     createWindow();
     createMenu();
-
+    createTray();
 });
 
 
-// TODO:
-// add with 1.5.0
+// Emitted before the application starts closing its windows. 
 app.on("before-quit", function ()
 {
     writeLog("info", "app is preparing to quit (event: before-quit)");
-
-    willQuitApp = true;
-    //saveState()
 });
 
+// Emitted when all windows have been closed and the application will quit. 
 app.on("will-quit", function ()
 {
     writeLog("info", "app will quit (event: will-quit)");
 });
 
+// Emitted when the application is quitting.
 app.on("quit", function ()
 {
-    // Logging to file
     writeLog("info", "Got quit event (event: quit)");
 });
 
+// Emitted when a browserWindow gets blurred. (loosing focus)
 app.on("browser-window-blur", function ()
 {
-    // Logging to file
     writeLog("info", "app lost focus (event: browser-window-blur)");
 });
 
+// Emitted when a browserWindow gets focused.
 app.on("browser-window-focus", function ()
 {
-    // Logging to file
     writeLog("info", "app got focus (event: browser-window-focus)");
 });
 
+// Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior with event.preventDefault() and call callback(true).
 app.on("certificate-error", function ()
 {
-    // Logging to file
     writeLog("info", "app failed to verify a cert (event: certificate-error)");
 });
 
+// Emitted when remote.require() is called in the renderer process of webContents. 
 app.on("remote-require", function ()
 {
-    // Logging to file
     writeLog("info", "app called .require() in the renderer process (event: remote-require)");
 });
 
+// Emitted when remote.getGlobal() is called in the renderer process of webContents. 
 app.on("remote-get-global", function ()
 {
-    // Logging to file
     writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
 });
 
+// Emitted when remote.getBuiltin() is called in the renderer process of webContents.
 app.on("remote-get-builtin", function ()
 {
-    // Logging to file
     writeLog("info", "app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
 });
 
+// Emitted when remote.getCurrentWindow() is called in the renderer process of webContents.
 app.on("remote-get-current-window", function ()
 {
-    // Logging to file
     writeLog("info", "app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
 });
 
+// Emitted when remote.getCurrentWebContents() is called in the renderer process of webContents
 app.on("remote-get-current-web-contents", function ()
 {
-    // Logging to file
     writeLog("info", "app called .getCurrentWebContents() in the renderer process (event: remote-get-current-web-contents)");
 });
 
@@ -1192,12 +1155,10 @@ app.on("activate", function ()
         forceSingleAppInstance();
         createWindow();
         createMenu();
+        createTray();
     }
 });
 
-
-// create the tray
-createTray();
 
 
 process.on("uncaughtException", (err, origin) => {
