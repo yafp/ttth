@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ttth</title>
+
+    <!-- CSS -->
+    <!-- ttth -->
+    <link href="css/ttth/general.css" rel="stylesheet">
+    <link href="css/ttth/configWindow.css" rel="stylesheet">
+    
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <link href="js/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- JAVASCRIPT -->
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+
+    <!-- jquery -->
+    <!-- 3.3.1 -->
+    <script type="text/javascript" src="js/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+
+    <!-- bootstrap -->
+    <!-- 4.3.1 -->
+    <script type="text/javascript" src="js/bootstrap/4.3.1/js/bootstrap.min.js" async></script>
+
+    <!-- fontawesome -->
+    <!-- 5.8.1 -->
+    <script type="text/javascript" src="js/fontawesome-free-web/5.8.1/js/all.min.js" async></script>
+
+    <!-- ttth: general -->
+    <script type="text/javascript" src="js/ttth/ttth.js" async></script>
+</head>
+<body>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark my-ui-text">
+        <!-- Links -->
+        <ul class="navbar-nav">
+            <img src="img/icon/icon.png" height="32px">
+            <li class="nav-item">
+                <a class="nav-link" href="#" disabled i18n-text="cw_windowName" float="right"><!-- Configure single service --></a>
+            </li>
+        </ul>
+    </nav>
+    <!-- /Navbar -->
+
+    <div class="container">
+        <form name="configSingleServiceForm" method="post" class="my-ui-text">
+            <!-- Service id -->
+            <div class="form-group row">
+                <label for="input_serviceId" class="col-form-label col-form-label-sm" i18n-text="cw_labelId"><!-- ID --></label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceId" aria-describedby="emailHelp" placeholder="Service ID" disabled>
+            </div>
+
+            <!-- Service type -->
+            <div class="form-group row" hidden>
+                <label for="input_serviceType" class="col-form-label col-form-label-sm">Service type</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceType" aria-describedby="emailHelp" placeholder="Service Type" disabled>
+            </div>
+
+            <!-- Service name -->
+            <div class="form-group row">
+                <label for="input_serviceName" class="col-form-label col-form-label-sm" i18n-text="cw_labelName"><!-- Name --></label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceName" aria-describedby="emailHelp" placeholder="Service name" required>
+                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelNameHelp"><!-- The name is used for the service tab.--></small>
+            </div>
+
+            <!-- service icon -->
+            <div class="form-group row">
+                <label for="input_serviceIcon" class="col-form-label col-form-label-sm" i18n-text="cw_labelIcon"><!-- Icon --></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div id="previewIcon"></div>
+                    </div>
+                    <input type="text" class="form-control form-control-sm" id="input_serviceIcon" placeholder="fab fa-chrome" onKeyUp="previewIcon();" required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-secondary btn-sm" onclick="openURL('https://fontawesome.com/icons?d=gallery')" i18n-text="cw_buttonShowIcons" formnovalidate><!-- Show icons --></button>
+                    </div>
+                </div>
+                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelIconHelp"><!--The actual url for the service. --></small>
+            </div>
+
+            <!-- Service url -->
+            <div class="form-group row">
+                <label for="input_serviceUrl" class="col-form-label col-form-label-sm" i18n-text="cw_labelUrl">URL</label>
+                <input type="url" class="form-control form-control-sm" id="input_serviceUrl" aria-describedby="emailHelp" placeholder="https://example.com" required>
+                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelUrlHelp"><!--The actual url for the service. --></small>
+            </div>
+
+            <!-- Hidden: Service inject code -->
+            <div class="form-group row" hidden>
+                <label for="input_serviceInjectCode">Inject code</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceInjectCode" aria-describedby="emailHelp" placeholder="Service Inject Code">
+            </div>
+
+            <!-- Hidden: Service enable status -->
+            <div class="form-group row" hidden>
+                <label for="input_serviceEnableStatus">Enable status</label>
+                <input type="boolean" class="form-control form-control-sm" id="input_serviceEnableStatus" aria-describedby="emailHelp" placeholder="Service enable status">
+            </div>
+
+            <!-- buttons -->
+            <div class="form-group row">
+                <div class="col">
+                    <!-- Add button (for creating new services) -->
+                    <button type="submit" class="btn btn-success" id="bt_addNewService" onClick="createSingleServiceConfiguration();" i18n-text="cw_buttonAddService"><!-- Add --></button>
+
+                    <!-- Save button (for existing services) -->
+                    <button type="submit" class="btn btn-dark" id="bt_saveExistingService" name="bt_saveExistingService" onClick="updateSingleServiceConfiguration();" i18n-text="cw_buttonEditService"><!-- Save --></button>
+                </div>
+
+                <div class="col text-right">
+                    <!-- Cancel button -->
+                    <button type="submit" class="btn btn-danger" onClick="closeSingleServiceConfiguratationWindow();" i18n-text="cw_buttonCancel" formnovalidate><!-- Cancel --></button>
+                </div>
+            </div>
+        </div>
+
+        </form>
+        <br>
+    </div>
+</body>
+
+
+<script>
+
+$( document ).ready(function()
+{
+    console.log( "configWindow.html ::: ready!" ); 
+
+    // Translate using i18next
+    localizeUserInterface();
+});
+</script>
