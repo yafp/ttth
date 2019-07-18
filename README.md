@@ -36,7 +36,7 @@
 It is:
 
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
-* available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_16x16.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_16x16.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_16x16.png) windows.
+* available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
 
 ## ui
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
@@ -65,9 +65,11 @@ It is:
 * WhatsApp
 * Xing
 
+You can as well add custom urls to ttth.
+
 
 ## changelog
-Please see the [changlog](CHANGELOG.md) for more details.
+Please see the [changlog](docs/CHANGELOG.md) for more details.
 
 
 ## download
@@ -78,15 +80,25 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 ### linux
 
-#### .deb
-* Download the latest .deb
-* execute: ```sudo dpkg -i /path/to/local/ttth-file.deb```
-
 #### AppImage
 * Download the latest .AppImage
 * Copy the AppImage to the desired location
 * Make it executable: ```chmod +x /path/to/local/ttth-file.AppImage```
 * Execute it
+
+#### .deb
+* Download the latest .deb
+* execute: ```sudo dpkg -i /path/to/local/ttth-file.deb```
+
+#### pacman
+* Download the latest .pacman
+* execute: ```sudo pacman -U /path/to/local/ttth-file.pacman```
+
+#### rpm
+* Download the latest .rpm
+* execute:
+  * ```sudo dnf localinstall /path/to/local/ttth-file.rpm``` or
+  * ```sudo yum localinstall /path/to/local/ttth-file.rpm``` 
 
 #### Snap
 * Download the latest .snap
@@ -135,41 +147,12 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 
 ## faq
-
-### Where is the user data stored?
-#### Linux
-Please check ```~/.config/ttth/```
-#### macOS
-Please check ```~/Library/Application Support/ttth/```
-#### Windows
-Please check ```%APPDATA%\ttth```
-
-### Where is the ttth log file
-#### linux
-Please check ```~/.config/ttth/log.log```
-#### macOS
-Please check ```~/Library/Logs/ttth/log.log```
-#### Windows
-Please check ```%USERPROFILE%\AppData\Roaming\ttth\log.log```
-
-### How is the autostart information stored?
-#### Linux
-Using a .desktop entry in ```~/.config/autostart/```
-#### macOS
-Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
-#### Windows
-Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+Please see the [FAQ](docs/FAQ.md) for more details.
 
 
 ## known-issues
-### general
-#### Function: Hide
-Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (<kbd>ALT</kbd>+<kbd>TAB</kbd>) to unhide it won't work so far.
-### macOS
-#### Function Toggle Fullscreen
-<kbd>F11</kbd> should toggle the fullscreen-mode, but macOS seems to use <kbd>F11</kbd> system-wide for "Show Desktop".
-As a result toggle fullscreen-mode on macOS only works by manually selecting it via the menu.
+Please see the [Known Issues](docs/KNOWN_ISSUES.md) for more details.
 
 
 ## contributing
-Please see the [contributing informations](CONTRIBUTING.md) for more details.
+Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.

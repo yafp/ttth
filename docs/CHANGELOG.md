@@ -6,10 +6,14 @@
 
 ### ttth 1.5.0 (2019xxyy)
 #### ```Added```
-* Logging - Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
-* Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
+* Logging: Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
+* Builds: Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
 * Services: Added basic support for linkedin. See [#79](https://github.com/yafp/ttth/issues/79)
 * Services: Added basic support for Facebook Messenger. See [#80](https://github.com/yafp/ttth/issues/80)
+* UI: Added icon preview to service config-window. See [#85](https://github.com/yafp/ttth/issues/85)
+* UI: Added button with link to FontAwesome icons to config-window. See [#86](https://github.com/yafp/ttth/issues/86)
+* UI: Config window is now localized as well. See [#89](https://github.com/yafp/ttth/issues/89)
+* Added basic support for startup parameters. See [#82](https://github.com/yafp/ttth/issues/82)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
@@ -22,6 +26,7 @@
 * Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
 * Fixed an error in calculation of the next tab position while adding new service tabs. See [#77](https://github.com/yafp/ttth/issues/77)
 * UI: No single element on settings tab is now selectable anymore using CTRL + a.
+* Travis: Building linux builds via travis was broken since rpm support was added ([#78](https://github.com/yafp/ttth/issues/78)). This is now fixed. See [#83](https://github.com/yafp/ttth/issues/83)
 
 
 

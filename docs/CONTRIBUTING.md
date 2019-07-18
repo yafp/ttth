@@ -9,50 +9,54 @@ email, or any other method with the owners of this repository before making a ch
 
 ## howto
 
-### First steps
+### 1. First steps (Getting started as developer)
 
-#### getting started as developer
+#### Clone repo
 * Clone the repository: ```git clone https://github.com/yafp/ttth```
+
+#### Install dependencies
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
+
+#### Run the code
 * Run ttth: ```npm start```
 
-#### debug logging
-* Go into the repository: ```cd ttth```
-* Install dependencies: ```npm install```
+#### Run the code with debug logging
 * Run ttth: ```npm run start-debug```
 
-#### run test
-* Go into the repository: ```cd ttth```
+#### Run some basic test
 * Execute: ```npm test```
 
 
 
-### Adding functions
+
+### 2. Adding functions
 
 #### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
 
 
-### Building
+
+
+### 3. Creating a new build
 
 #### Generate jsdoc files
 * Navigate to repository
 * Execute: ```jsdoc --configure jsdoc.json --readme README.md```
 
 
-#### Packaging (using electron-packager)
+#### Packaging
 * Navigate to repository
 
 ##### linux
-* Execute: ```npm run package-linux-64```
+* Execute: ```npm run pack-linux```
 
 ##### mac
-* Execute: ```npm run package-mac```
+* Execute: ```npm run pack-mac```
 
 ##### windows
-* Execute: ```npm run package-win-32```
-* Execute: ```npm run package-win-64```
+* Execute: ```npm run pack-win```
+
 
 
 #### Building
@@ -69,7 +73,7 @@ email, or any other method with the owners of this repository before making a ch
 
 
 
-### Misc
+### 4. Misc
 #### Install electron
 * Navigate to repository
 * Execute: ```npm install --save-dev electron```
@@ -96,29 +100,10 @@ email, or any other method with the owners of this repository before making a ch
 
 
 
-## CI
+### CI
 The project repository is using:
 
 * [Travis CI](https://travis-ci.org/) (for Linux and macOS)
 * [AppVeyor](https://ci.appveyor.com/project/yafp/ttth) (for Windows)
 
 for Continuos Integration aspects.
-
-
-## links
-### for electron beginners
-* General
-  * Electron documentation: https://electronjs.org/docs
-  * Project boilerplate: https://github.com/szwacz/electron-boilerplate
-  * Example electron project: https://github.com/electron/electron-quick-start
-  * Main vs Renderer Process: https://github.com/electron/electron/blob/master/docs/tutorial/application-architecture.md#main-and-renderer-processes
-* Building
-  * Building: https://medium.com/how-to-electron/a-complete-guide-to-packaging-your-electron-app-1bdc717d739f
-  * Linux building configuration: https://www.electron.build/configuration/linux
-  * Building for Windows on Linux: https://blog.aaronlenoir.com/2017/03/03/building-electron-apps-for-windows-on-debian/
-* Download Stats
-  * GitHub Release Stats: https://www.somsubhra.com/github-release-stats/?username=yafp&repository=ttth
-* Misc
-  * Keyboard Shortcuts: https://electronjs.org/docs/api/accelerator
-  * package.json validator: http://package-json-validator.com/
-  * Handling npm packages https://bytearcher.com/articles/using-npm-update-and-npm-outdated-to-update-dependencies/
