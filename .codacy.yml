@@ -6,6 +6,7 @@ exclude_paths:
   - 'app/js/jquery.modalLoading/*'
   - 'app/js/noty/**/*'
   - 'app/js/semver/**/*'
+  - 'docs/**'
   - 'docs/**/*'
   - 'docs/jsdocs/**/*'
   - '.github/**'
