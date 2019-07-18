@@ -56,46 +56,50 @@ function showNoty(type, message, timeout = 3000)
 */
 function writeLog(logType, logMessage)
 {
-    const log = require("electron-log"); // for logging to file
+    //const logR = require("electron-log"); // for logging to file
 
-    //const remote = require("electron").remote;
-    //console.error(require('electron').remote.getGlobal('sharedObject').verbose);
+    // log to file
+    //logR.transports.file.level = true;
 
+    // log to console
+    //logR.transports.console.level = false; // TODO: should depend on the verbose setting in main.js
+
+
+    // add prefix for all logs from [R]enderer
     logMessage = "[R] " + logMessage;
 
-
-    switch (logType) 
+    switch (logType)
     {
         case "error" :
-            //log.error(logMessage); // write to file &amp; cli
-            console.error(logMessage); // write to dev console
+            //logR.error(logMessage); //  to file
+            console.error(logMessage); // to console
             break;
 
         case "warn" :
-            //log.warn(logMessage);
-            console.warn(logMessage);
+            //logR.warn(logMessage); // to file
+            console.warn(logMessage); // to console
             break;
 
         case "info" :
-            //log.info(logMessage);
-            console.log(logMessage);
+            //logR.info(logMessage); // to file
+            console.log(logMessage); // to console
             break;
 
         case "verbose" :
-            //log.verbose(logMessage);
+            //logR.verbose(logMessage); // to file
             break;
 
         case "debug" :
-            //log.debug(logMessage);
-            console.debug(logMessage);
+            //logR.debug(logMessage); // to file
+            console.debug(logMessage); // to console
             break;
 
         case "silly" :
-            //log.silly(logMessage);
+            //logR.silly(logMessage); // to file
             break;
 
       default:
-         //log.info(logMessage);
+         logR.info(logMessage); // to file
          console.log(logMessage);
    }
 }
@@ -127,6 +131,58 @@ function writeLocalStorage(key, value)
 {
     writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
     localStorage.setItem(key, value);
+}
+
+
+/**
+* @name previewIcon
+* @summary Generates a preview of the icon in the config-window
+* @description Reads the content of the icon field and tries to show/preview the resulting FontAwesome icon
+*/
+function previewIcon()
+{
+    // get content of field
+    var currentIconCode = $("#input_serviceIcon").val();
+
+    // try to load font-awesome icon
+    $("#previewIcon").html("&lt;i class='" + currentIconCode + " fa-lg'>&lt;/i>");
+}
+
+
+/**
+* @name settingsSelectServiceToAddChanged
+* @summary Changes the add-service-template was selected and enables the button
+* @description Changes the add-service-template was selected and enables the button
+*/
+function settingsSelectServiceToAddChanged()
+{
+    var currentSelectedServiceTemplate = $("#select_availableServices").val();
+
+    writeLog("info", "settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _" + currentSelectedServiceTemplate + "_.");
+
+    if(currentSelectedServiceTemplate !== "")
+    {
+        // enable the add button
+        $("#bt_addNewService").prop("disabled", false);
+
+        // change button type to success
+        $("#bt_addNewService").removeClass();
+        $("#bt_addNewService").addClass("btn btn-success btn-sm");
+
+        writeLog("info", "settingsSelectServiceToAddChanged ::: Enabled the add-service button.");
+    }
+    else // this code should never be triggered - might be deleteable.
+    {
+        // disable the add button
+        $("#bt_addNewService").prop("disabled", true);
+
+        // change button type to secondary
+        // change button type to success
+        $("#bt_addNewService").removeClass();
+        $("#bt_addNewService").addClass("btn btn-secondary btn-sm");
+
+        writeLog("info", "settingsSelectServiceToAddChanged ::: Disabled the add-service button.");
+    }
 }
 
 
@@ -229,7 +285,6 @@ function updateTrayIconStatus()
 
             writeLog("info", "updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
 
-
             curServiceUnreadMessageCount = 0; // reset to 0
             curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
             curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
@@ -245,7 +300,7 @@ function updateTrayIconStatus()
         }
         else
         {
-            writeLog("info", "updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
+            //writeLog("info", "updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
         }
     });
 
@@ -358,7 +413,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         // WebView Event:  ipc-message
         webview.addEventListener("ipc-message",function(event)
         {
-            writeLog("info", "eventListenerForSingleService ::: IPC message: _" + event + "_.");
+            writeLog("info", "eventListenerForSingleService ::: ipc-message");
             //writeLog("info", event);
             //console.info(event.channel);
 
@@ -981,8 +1036,13 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
+        // NO unread message handler and NO Link handler
+        //
+
         // NO unread-message-handling but link-handler
         case "freenode":
+        case "linkedIn":
+        case "messenger":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
@@ -1013,7 +1073,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
             break;
 
         default:
-            writeLog("info", "loadServiceSpecificCode ::: Nothing to do here");
+            //writeLog("info", "loadServiceSpecificCode ::: Nothing to do here");
     }
 }
 
@@ -1037,6 +1097,8 @@ function initAvailableServicesSelection()
 
     // Add a disabled dummy/default entry
     //dropdown.append("&lt;option selected='true' disabled>Choose a service&lt;/option>");
+
+    // select the first entry
     dropdown.prop("selectedIndex", 0);
 
     // url to service definitions
@@ -1050,6 +1112,7 @@ function initAvailableServicesSelection()
             // add option to select
             dropdown.append($("&lt;option>&lt;/option>").attr("value", entry.id).text(entry.nameLong));
 
+            // count services
             counterSupportedServices = counterSupportedServices +1;
         });
 
@@ -1102,11 +1165,11 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-on">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+                        $( "#conf_" + serviceCount ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-on">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-off">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+                        $( "#conf_" + serviceCount ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-off">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
                     }
                 }
                 else // ...even - add to existing row - in col 2
@@ -1116,12 +1179,12 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-on">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+                        $( "#conf_" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-on">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-off">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
+                        $( "#conf_" + rowReference  ).append('&lt;div class="col-sm-6">&lt;div class="input-group input-group-sm mb-1">&lt;div class="input-group-prepend">&lt;div class="input-group-text">&lt;i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'">&lt;/i>&lt;/div>&lt;/div>&lt;input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled>&lt;div class="input-group-prepend">&lt;button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')">&lt;i class="fas fa-cog">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');">&lt;i id=statusIconService_'+ key +' class="fas fa-toggle-off">&lt;/i>&lt;/button>&lt;button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');">&lt;i class="fas fa-trash-alt">&lt;/i>&lt;/button>&lt;/div>&lt;/div>&lt;/div>');
                     }
                 }
                 serviceCount = serviceCount +1;
@@ -1245,7 +1308,9 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add new list item to unordner list (tabs/menu)
     //
-    $('#myTabs li:eq(' + newTabPosition + ')').after('&lt;li class="nav-item small" id=menu_'+ serviceId +'>&lt;a class="nav-link my-ui-text" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab">&lt;i class="' + serviceIcon +'">&lt;/i> ' + serviceName + ' &lt;span id=badge_' + serviceId + ' class="badge badge-success">&lt;/span>&lt;/a>&lt;/li>');
+    //$('#myTabs li:eq(' + newTabPosition + ')').after('&lt;li class="nav-item small" id=menu_'+ serviceId +'>&lt;a class="nav-link my-ui-text" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab">&lt;i class="' + serviceIcon +'">&lt;/i> ' + serviceName + ' &lt;span id=badge_' + serviceId + ' class="badge badge-success">&lt;/span>&lt;/a>&lt;/li>');
+    $("#myTabs li:eq(" + newTabPosition + ")").after("&lt;li class='nav-item small' id=menu_"+ serviceId +">&lt;a class='nav-link my-ui-text' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'>&lt;i class='" + serviceIcon +"'>&lt;/i> " + serviceName + " &lt;span id=badge_" + serviceId + " class='badge badge-success'>&lt;/span>&lt;/a>&lt;/li>");
+
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
     // add the tab itself to #tabPanes
@@ -1253,7 +1318,9 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     writeLog("info", "addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
-    $( "#"+ serviceId ).append( '&lt;webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36">&lt;/webview>' );
+    //$( "#"+ serviceId ).append( '&lt;webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36">&lt;/webview>' );
+    $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " class='resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
+
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     writeLog("info", "addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
@@ -1372,7 +1439,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             }
 
             // must re-set the globalShortcuts for all existing services / tabs - see #74
-            //updateGlobalServicesShortcuts();
+            updateGlobalServicesShortcuts();
         });
     });
 
@@ -1474,9 +1541,6 @@ function deleteConfiguredService(serviceId)
         }
     });
 
-    // reload all configured user services to settings page
-    //loadConfiguredUserServices();
-
     writeLog("info", "deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
 
     showNoty("success", "Successfully deleted the service " + serviceId);
@@ -1547,41 +1611,17 @@ function settingsUserAddNewService()
 
                             // show object which contains all config files
                             writeLog("info", data);
-                            //writeLog("error", (typeof data);
 
                             for (var key in data)
                             {
                                 if (data.hasOwnProperty(key))
                                 {
                                     //writeLog("info", key + " -> " + data[key]);
-                                    //writeLog("warn", data[key]);
-
                                     writeLog("info", data[key]["type"]);
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
-                                        /*
-                                        const { dialog } = require("electron").remote;
-
-                                        const options = {
-                                            type: "warning",
-                                            buttons: ["OK"],
-                                            icon: __dirname + "/img/icon/icon.png",
-                                            defaultId: 0,
-                                            title: "Adding a service failed",
-                                            message: "There is already a configured service of the type " + userSelectedService + ".",
-                                            //detail: 'It does not really matter',
-                                            //checkboxLabel: 'Remember my answer',
-                                            //checkboxChecked: true,
-                                        };
-
-                                        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-                                            writeLog("info", response);
-                                            writeLog("info", checkboxChecked);
-                                        });
-                                        */
                                         showNoty("error", "There is already a configured service of the type " + userSelectedService + ".", 0);
-
                                         return;
                                     }
                                 }
@@ -1613,8 +1653,6 @@ function settingsUserAddNewService()
 */
 function generateNewRandomServiceID(serviceType)
 {
-    //var randomString = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-
     var length = 24;
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var randomString = "";
@@ -1647,19 +1685,16 @@ function updateGlobalServicesShortcuts()
     var tabCounter = 0;
     var currentTabId;
 
-
     // Ensure to remove all possible shortcuts before re-creating them. See #74
     //
     // count enabled services:
     var numberOfEnabledServices = $("#myTabs li").length;
     ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
 
-
     // Create new global shortcutd
     $("#myTabs li a").each(function()
     {
         currentTabId = $(this).attr("id");
-
         if(currentTabId === "target_Settings")
         {
            writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab.");
@@ -1669,16 +1704,17 @@ function updateGlobalServicesShortcuts()
             tabCounter = tabCounter +1;
 
             // globalShortcut
-            //
             ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
         }
     });
 
     // show notification
+    /*
     if(tabCounter > 0) // if at least 1 accesskey was set
     {
         //showNoty("success", "Updating accesskeys for enabled service tabs.")
     }
+    */
 
     writeLog("info", "updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
 }
@@ -1697,7 +1733,7 @@ function localizeUserInterface()
     const isDev = require("electron-is-dev");
     if (isDev)
     {
-        //userLang = "en";
+        userLang = "en";
     }
 
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
@@ -1707,7 +1743,6 @@ function localizeUserInterface()
 
     i18next
     .use(Backend)
-    //.use(LanguageDetector)
     .init({
         debug: true,
         whitelist: ["en", "de"],
@@ -1746,7 +1781,7 @@ function localizeUserInterface()
             node.attr("title", i18next.t(key));
         });
 
-        // attribute: placeholder 
+        // attribute: placeholder
         $("[i18n-placeholder]").each(function()
         {
             var node = $(this), key = node.attr("i18n-placeholder");
@@ -1952,6 +1987,11 @@ require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
 
                 // show the add-new-service button
                 $("#bt_addNewService").show();
+
+                // preview the icon
+                previewIcon();
+
+                writeLog("info", "serviceToCreate ::: Loaded default values for this service-type to UI");
             }
         });
     });
@@ -1996,6 +2036,9 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         // show the edit service  button
         $("#bt_saveExistingService").show();
 
+        // preview the icon
+        previewIcon();
+
         writeLog("info", "serviceToConfigure ::: Loaded current values for this service to UI");
     });
 });
@@ -2018,13 +2061,13 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Jul 16 2019 13:53:21 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Jul 18 2019 15:14:07 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
