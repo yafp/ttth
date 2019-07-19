@@ -2,18 +2,18 @@
 /* COLOR VARIABLES */
 /* ########################################################################## */
 :root {
-    --color-main: white;
-    --color-menuBackground: #333;
-    --color-menuBackgroundHover: #111;
+    --color-main: white; /* the main color */
+    --color-menuBackground: #333; /* used as nav background */
+    --color-menuBackgroundHover: #111; /* used as hover background color */
     --color-menuForeground: white;
-    --color-menuForegroundHover: limegreen;
+    --color-menuForegroundHover: limegreen; /* used as highlight color */
 }
 
 
 /* ########################################################################## */
 /* UI TEXT - MAKE THEM NOT SELECTABLE */
 /* ########################################################################## */
-.my-ui-text {
+.ttth_nonSelectableText {
     -webkit-user-select:none;
     -moz-user-select: none;
 }

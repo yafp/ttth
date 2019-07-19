@@ -10,6 +10,7 @@ const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = req
 const log = require("electron-log"); // for: logging to file
 const shell = require("electron").shell; // for: opening external urls in default browser
 const openAboutWindow = require("about-window").default; // for: about-window
+const isOnline = require('is-online'); // for online checks
 
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
@@ -25,11 +26,32 @@ let mainWindow;
 let configWindow;
 
 
-
 let verbose;
 verbose = false;
 
 
+/**
+* @name checkNetworkConnectivity
+* @summary Checks if internet is accessible
+* @description Checks if the internet is accessible, if not triggers an error in the mainWindow
+*/
+function checkNetworkConnectivity()
+{
+    (async () => {
+
+    if(await isOnline() === true)
+    {
+        writeLog("info", "checkNetworkConnectivity ::: got network connectivity");
+    }
+    else
+    {
+        writeLog("error", "checkNetworkConnectivity ::: got NO ACCESS to the internet.");
+
+        // app should show an error
+        mainWindow.webContents.send("showNoConnectivityError");
+    }
+})();
+}
 
 
 /**
@@ -55,7 +77,7 @@ function checkArguments()
 
             switch (process.argv[key])
             {
-                case "verbose":
+                case "debug":
                     log.info("Enabling verbose mode");
                     verbose = true;
                     break;
@@ -435,9 +457,6 @@ function createMenu()
     writeLog("info", "Finished creating menues");
 
 
-
-
-
     // use the menu
     Menu.setApplicationMenu(menu);
 
@@ -459,20 +478,37 @@ function createMenu()
     });
 
 
+
     // Disable some menu-elements - depending on the platform
     //
     var os = require("os");
-    if(os.platform() === "darwin")
+    Menu.getApplicationMenu().items; // all the items
+
+    // macos specific 
+    if(os.platform() === "darwin") 
     {
-        // see #21
-        Menu.getApplicationMenu().items; // all the items
+        // see #21 - disable the menuitem Toggle-menubar
+        //
         var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
 
         // Logging to file
         writeLog("info", "Disabling toggle-menubar menu element on osx");
     }
+
+    // linux  specific 
+    if(os.platform() === "linux") 
+    {
+        // nothing to do so far
+    }
+
+    // windows specific 
+    if(os.platform() === "windows") 
+    {
+        // nothing to do so far
+    }
 }
+
 
 
 /**
@@ -482,7 +518,6 @@ function createMenu()
 */
 function createWindow ()
 {
-
     // Check last window position and size from user data
     var windowWidth;
     var windowHeight;
@@ -492,7 +527,8 @@ function createWindow ()
     // Read a local config file
     var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
     var data;
-    try {
+    try 
+    {
         data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
 
         // size
@@ -550,7 +586,7 @@ function createWindow ()
         mainWindow.focus();
 
         // Logging to file
-        writeLog("info", "mainWindow is now ready, shown and on focus (event: ready-to-show");
+        writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show");
     });
 
 
@@ -562,7 +598,6 @@ function createWindow ()
         let windowTitle = name + " " + version;
         mainWindow.setTitle(windowTitle);
 
-        // Logging to file
         writeLog("info", "DOM is now ready (event: dom-ready)");
     });
 
@@ -578,7 +613,6 @@ function createWindow ()
     //
     mainWindow.on("show", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow is visible (event: show)");
     });
 
@@ -587,7 +621,6 @@ function createWindow ()
     //
     mainWindow.on("blur", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow lost focus (event: blur)");
     });
 
@@ -596,7 +629,6 @@ function createWindow ()
     //
     mainWindow.on("focus", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow got focus (event: focus)");
     });
 
@@ -605,7 +637,6 @@ function createWindow ()
     //
     mainWindow.on("enter-full-screen", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow is now in fullscreen (event: enter-full-screen)");
     });
 
@@ -614,7 +645,6 @@ function createWindow ()
     //
     mainWindow.on("leave-full-screen", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
@@ -623,23 +653,26 @@ function createWindow ()
     //
     mainWindow.on("resize", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow got resized (event: resize)");
     });
 
-    // when the app gets moved
+    // when the mainwindow gets moved
     //
     mainWindow.on("move", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow got moved (event: move)");
+
+        let bounds = mainWindow.getNormalBounds();
+        writeLog("info", "x:" + bounds.x + " y:" + bounds.y + " width:" + bounds.width + " height:" + bounds.height );
+
+        // TODO: move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
+        // Be aware: On macOS the child windows will keep the relative position to parent window when parent window moves, while on Windows and Linux child windows will not move.
     });
 
     // when the app gets hidden
     //
     mainWindow.on("hide", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow is hidden (event: hide)");
     });
 
@@ -647,7 +680,6 @@ function createWindow ()
     //
     mainWindow.on("maximize", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow maximized (event: maximized)");
     });
 
@@ -655,7 +687,6 @@ function createWindow ()
     //
     mainWindow.on("unmaximize", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow unmaximized (event: unmaximized)");
     });
 
@@ -663,7 +694,6 @@ function createWindow ()
     //
     mainWindow.on("minimize", function()
     {
-        // Logging to file
         writeLog("info", "mainWindow is minimized (event: minimize)");
     });
 
@@ -713,7 +743,6 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
 
-        // Logging to file
         writeLog("info", "mainWindow is closed (event: closed)");
     });
 
@@ -738,7 +767,6 @@ function createWindow ()
     //
     mainWindow.webContents.on("crashed", function ()
     {
-        // Logging to file
         writeLog("info", "mainWindow crashed (event: crashed)");
     });
 
@@ -748,7 +776,6 @@ function createWindow ()
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
 
-        // Logging to file
         writeLog("info", "mainWindow reloaded (ipcMain)");
     });
 
@@ -759,7 +786,6 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         shell.openItem(customUserDataPath);
 
-        // Logging to file
         writeLog("info", "Opening the folder which contains all user-configured services (ipcMain)");
     });
 
@@ -797,7 +823,6 @@ function createWindow ()
             writeLog("info", "Deleting the global shortcut: CmdOrCtrl+" + i);
         }
 
-        // Logging to file
         writeLog("info", "Deleted global shortcuts (ipcMain)");
     });
 
@@ -866,7 +891,6 @@ function createWindow ()
     //
     configWindow.on("ready-to-show", function (event)
     {
-        // Logging to file
         writeLog("info", "configWindow is now ready to show (event: ready-to-show)");
     });
 
@@ -875,7 +899,6 @@ function createWindow ()
     //
     configWindow.on("show", function (event)
     {
-        // Logging to file
         writeLog("info", "configWindow is now shown (event: show)");
     });
 
@@ -908,7 +931,6 @@ function createWindow ()
         // hide window
         configWindow.hide();
 
-        // Logging to file
         writeLog("info", "configWindow is now hidden (ipcMain)");
 
     });
@@ -1037,10 +1059,6 @@ function forceSingleAppInstance()
 
 
 
-
-
-
-
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -1053,13 +1071,14 @@ function forceSingleAppInstance()
 //app.on("ready", createWindow);
 app.on("ready", function ()
 {
+    writeLog("info", "app got ready signal (event: ready)"); 
     forceSingleAppInstance();
     checkArguments();
     createWindow();
     createMenu();
     createTray();
+    checkNetworkConnectivity();
 });
-
 
 // Emitted before the application starts closing its windows. 
 app.on("before-quit", function ()
@@ -1132,33 +1151,46 @@ app.on("remote-get-current-web-contents", function ()
 //
 app.on("window-all-closed", function ()
 {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
+    writeLog("info", "All application windows are now closed (event: window-all-closed)"); 
+
+    // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
+    /*
     if (process.platform !== "darwin")
     {
+        writeLog("info", "Bye."); 
         app.quit();
     }
+    */
+
+    // we handle it the same on all platforms - closing the main windows closes the app
+    writeLog("info", "Bye."); 
+    app.quit();
+
 });
 
 
-// macOS only:
-// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time,
+// activate = macOS only:
+// Emitted when the application is activated. 
+// Various actions can trigger this event, such as launching the application for the first time,
 // attempting to re-launch the application when it's already running,
 // or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
 {
+    writeLog("info", "app got activate event (event: activate)"); 
+
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
-        forceSingleAppInstance();
+        writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)"); 
+
+        //forceSingleAppInstance();
         createWindow();
-        createMenu();
-        createTray();
+        //createMenu();
+        //createTray();
     }
 });
-
 
 
 process.on("uncaughtException", (err, origin) => {

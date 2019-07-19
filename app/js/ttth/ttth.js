@@ -185,6 +185,7 @@ function showNotyAutostartMinimizedConfirm()
                 ttthAutoLauncher.enable();
                 writeLocalStorage("settingAutostart", true);
                 n.close();
+                showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Minimized Autostart (on login)</u> is now enabled.");
             },
             {
                 id: "button1", "data-status": "ok"
@@ -201,10 +202,12 @@ function showNotyAutostartMinimizedConfirm()
                 ttthAutoLauncher.enable();
                 writeLocalStorage("settingAutostart", true);
                 n.close();
+                showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Autostart (on login)</u> is now enabled.");
             })
         ]
     });
 
+    // show the noty dialog
     n.show();
 }
 
@@ -691,7 +694,7 @@ function settingToggleAutostart()
 
         writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
 
-        showNoty("success", "Disabled the autostart");
+        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Autostart (on login)</u> is now disabled.");
     }
 
     ttthAutoLauncher.isEnabled()
@@ -760,7 +763,7 @@ function settingToggleMenubarVisibility()
         writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is enabled");
 
         // show noty
-        showNoty("success", "Hide menubar on startup is now enabled.");
+        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Hide menubar (on load)</u> is now enabled.");
     }
     else
     {
@@ -769,7 +772,7 @@ function settingToggleMenubarVisibility()
         writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is disabled");
 
         // show noty
-        showNoty("success", "Hide menubar on startup is now disabled.");
+        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Hide menubar (on load)</u> is now disabled.");
     }
 }
 
@@ -830,6 +833,8 @@ function switchToService(serviceName)
 function searchUpdate(silent = true)
 {
     var remoteAppVersionLatest = "0.0.0";
+    var localAppVersion = "0.0.0";
+    var versions;
 
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
@@ -841,41 +846,36 @@ function searchUpdate(silent = true)
         timeout:3000; // in milliseconds
 
         // success
-        var versions = data.sort(function (v1, v2)
+        versions = data.sort(function (v1, v2)
         {
             return semver.compare(v2.name, v1.name);
         });
 
-        // remote version
+        // get remote version
         //
-        var remoteAppVersionLatest = versions[0].name;
+        remoteAppVersionLatest = versions[0].name;
         //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
 
-        // local version
+        // get local version
         //
-        var localAppVersion = require("electron").remote.app.getVersion();
+        localAppVersion = require("electron").remote.app.getVersion();
         //localAppVersion = "1.0.0"; // to simulate
 
         writeLog("info", "searchUpdate ::: Local version: " + localAppVersion);
         writeLog("info", "searchUpdate ::: Latest public version: " + remoteAppVersionLatest);
 
-        if( localAppVersion < remoteAppVersionLatest )
+        if( localAppVersion < remoteAppVersionLatest ) // Update available
         {
             writeLog("warn", "searchUpdate ::: Found update, notify user");
 
             // send notification
             showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
         }
-        else
+        else // No update available
         {
             writeLog("info", "searchUpdate ::: No newer version found.");
 
-            if(silent === true) // default case -> when executed on load
-            {
-                // Nothing to do here
-
-            }
-            else // when executed manually via menu -> user should see result of this search
+            if(silent === false) // when executed manually via menu -> user should see result of this search
             {
                 showNoty("success", "No updates available");
             }
@@ -905,7 +905,7 @@ function searchUpdate(silent = true)
 /**
 * @name loadDefaultView
 * @summary Loads the default view
-* @description Loads the default view
+* @description Loads the default view. This is used on load of the .html
 */
 function loadDefaultView()
 {
@@ -984,7 +984,7 @@ function validateConfiguredDefaultView()
 /**
 * @name openURL
 * @summary Opens an url in browser
-* @description Opens a given url in default browser
+* @description Opens a given url in default browser. This is pretty slow, but got no better solution so far.
 * @param url - URL string which contains the target url
 */
 function openURL(url)
@@ -1089,14 +1089,13 @@ function initAvailableServicesSelection()
         });
 
         writeLog("info", "initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _" + counterSupportedServices + "_ service types.");
-
     });
 }
 
 
 /**
 * @name loadConfiguredUserServices
-* @summary updates the settings view which shows all configured user services.
+* @summary loads all the configured-user-services to the configured-services-section of the settings tab.
 * @description removes all configured user services from settings view, reads all configured user services and re-adds them to the settings ui under 'Configured services'
 */
 function loadConfiguredUserServices()
@@ -1280,18 +1279,18 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add new list item to unordner list (tabs/menu)
     //
-    //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link my-ui-text" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
-    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link my-ui-text' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><i class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
+    //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
+    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><i class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
 
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
     // add the tab itself to #tabPanes
-    $( "#tabPanes" ).append( "<div role='tabpanel' class='tab-pane fade flex-fill resizer container-fluid' id=" + serviceId + "></div>" );
+    $( "#tabPanes" ).append( "<div role='tabpanel' class='tab-pane fade flex-fill ttth_resizer container-fluid' id=" + serviceId + "></div>" );
     writeLog("info", "addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
-    //$( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
-    $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+    //$( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="ttth_resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
+    $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
 
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
@@ -1618,24 +1617,26 @@ function settingsUserAddNewService()
 
 /**
 * @name generateNewRandomServiceID
-* @summary Generates a random string and adds the serviceType
-* @description Generates a random string and adds the serviceType
-* @param serviceType - The type/class of the service
-* @return newServiceId - Random string + serviceType
+* @summary Generates a config-file name while adding a new service
+* @description Gets the serviceType and adds a random string. The outcome is the name for the new service config-file.
+* @param serviceType - The type of the service
+* @return newServiceId - serviceType + Random string 
 */
 function generateNewRandomServiceID(serviceType)
 {
+    var i = 0;
     var length = 24;
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     var randomString = "";
+    var newServiceId = "";
 
     // create random string
-    for (var i = 0; i < length; i++)
+    for (i = 0; i < length; i++)
     {
         randomString += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
-    var newServiceId = randomString + "_" + serviceType;
+    newServiceId = serviceType + "_" + randomString;
 
     writeLog("info", "generateNewRandomServiceID ::: Generated a new service ID: _" + newServiceId + "_.");
 
@@ -1652,15 +1653,17 @@ function updateGlobalServicesShortcuts()
 {
     const {ipcRenderer} = require("electron");
 
-    writeLog("info", "updateGlobalServicesShortcuts ::: Starting ...");
-
     var tabCounter = 0;
     var currentTabId;
+    var numberOfEnabledServices; // counts the amount of enabled user services
+
+    writeLog("info", "updateGlobalServicesShortcuts ::: Starting to update global service shortcuts");
+
 
     // Ensure to remove all possible shortcuts before re-creating them. See #74
     //
     // count enabled services:
-    var numberOfEnabledServices = $("#myTabs li").length;
+    numberOfEnabledServices = $("#myTabs li").length;
     ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
 
     // Create new global shortcutd
@@ -1695,19 +1698,22 @@ function updateGlobalServicesShortcuts()
 /**
 * @name localizeUserInterface
 * @summary Localizes the user interface
-* @description Is using i18next to localize the user interface. Translations are located in app/locales
+* @description Is using i18next to localize the user interface. Translations are located in app/locales/
 */
 function localizeUserInterface()
 {
-    var userLang = navigator.language || navigator.userLanguage;
-
-    // for development screenshot - overwrite the language to EN if the project is not packaged
     const isDev = require("electron-is-dev");
+
+    var userLang;
+
+    // detect user language
+    //
+    userLang = navigator.language || navigator.userLanguage;
+    // if the project is not packaged - overwrite the language to EN. This is used to ensure the screenshots are in the expected language
     if (isDev)
     {
         userLang = "en";
     }
-
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
 
     var i18next = require("i18next");
@@ -2022,4 +2028,14 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 {
     writeLog("info", "switchToTab ::: Switching to tab: " + targetTab);
     $("#" + targetTab).trigger("click");
+});
+
+
+
+// Call from main.js ::: 
+//
+require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
+{
+    writeLog("error", "showNoConnectivityError ::: No access to the internet.");
+    showNoty("error", "No access to the internet.", 0);
 });
