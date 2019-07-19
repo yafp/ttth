@@ -14,6 +14,7 @@
 * UI: Added button with link to FontAwesome icons to config-window. See [#86](https://github.com/yafp/ttth/issues/86)
 * UI: Config window is now localized as well. See [#89](https://github.com/yafp/ttth/issues/89)
 * Added basic support for startup parameters. See [#82](https://github.com/yafp/ttth/issues/82)
+* Added check if internet is accessible. See  [#90](https://github.com/yafp/ttth/issues/90)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)

@@ -7,12 +7,8 @@
 * Services
   * Google Duo (video -> webcam)?
   * skype?
-* FontAwesome
-  * Slim it down (size-wise) - see: https://blog.webjeda.com/optimize-fontawesome/ - maybe using: IcoMoon
-  * Integration via webpack: https://discuss.atom.io/t/including-font-awesome-in-electron-build/40090
-  * as dependecy: https://www.npmjs.com/package/font-awesome looks outdated
 * Builds:
-* Context Menu (in WebView)
+* Context Menu (in WebView) -> doesnt make sense. Copy and paste via keyboard already works
   * v1: electron-context-menu: https://github.com/sindresorhus/electron-context-menu
   * v2: electron-editor-context-menu: https://www.npmjs.com/package/electron-editor-context-menu
 * Updater
@@ -22,8 +18,12 @@
   * 'squirrel-updates-server'
   * 'auto-updater'
   * 'Electron-gh-releases'
+  * https://github.com/megahertz/electron-simple-updater/ looks promising
 * Code-Sign: for windows and macOS - required for auto-updates: https://electronjs.org/docs/tutorial/code-signing
   * for mac: needs Mac Developer license - not going to buy that
+* Tabs:
+  * Re-arrangeable tabs: https://github.com/adamschwartz/chrome-tabs
+
 
 ### Reminder
 #### Sources for unread message functions
@@ -51,4 +51,6 @@
 * Misc
   * Keyboard Shortcuts: https://electronjs.org/docs/api/accelerator
   * package.json validator: http://package-json-validator.com/
-  * Handling npm packages https://bytearcher.com/articles/using-npm-update-and-npm-outdated-to-update-dependencies/
+  * Handling npm packages: https://bytearcher.com/articles/using-npm-update-and-npm-outdated-to-update-dependencies/
+  * Electron Awesome list: https://github.com/sindresorhus/awesome-electron
+  * Tracking usage: https://kilianvalkhof.com/2018/apps/using-google-analytics-to-gather-usage-statistics-in-electron/
