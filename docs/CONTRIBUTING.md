@@ -98,6 +98,16 @@ email, or any other method with the owners of this repository before making a ch
 #### npm: install single package in specific version
 * ```npm install PACKAGENAME@1.2.3```
 
+#### npm check for outdated 
+* ```npm install -g npm-check```
+* ```npm-check```
+
+#### npm: check dependencies
+* ```npm install depcheck```
+* ```depcheck```
+
+#### npm auditing (scan for vulnerabilities)
+* ```npm audit```
 
 
 ### CI

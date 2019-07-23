@@ -23,6 +23,10 @@
   * for mac: needs Mac Developer license - not going to buy that
 * Tabs:
   * Re-arrangeable tabs: https://github.com/adamschwartz/chrome-tabs
+  * General tab handling: https://www.npmjs.com/package/@chgibb/electron-tabs
+* Titlebar: check 'electron-react-titlebar' - https://www.npmjs.com/package/electron-react-titlebar
+* Splashscreen: https://www.npmjs.com/package/electron-splashscreen
+
 
 
 ### Reminder
