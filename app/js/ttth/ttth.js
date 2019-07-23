@@ -832,6 +832,8 @@ function switchToService(serviceName)
 */
 function searchUpdate(silent = true)
 {
+    //const semver = require('semver')
+
     var remoteAppVersionLatest = "0.0.0";
     var localAppVersion = "0.0.0";
     var versions;
@@ -848,7 +850,7 @@ function searchUpdate(silent = true)
         // success
         versions = data.sort(function (v1, v2)
         {
-            return semver.compare(v2.name, v1.name);
+            //return semver.compare(v2.name, v1.name);
         });
 
         // get remote version
@@ -1709,10 +1711,11 @@ function localizeUserInterface()
     // detect user language
     //
     userLang = navigator.language || navigator.userLanguage;
+
     // if the project is not packaged - overwrite the language to EN. This is used to ensure the screenshots are in the expected language
     if (isDev)
     {
-        userLang = "en";
+        //userLang = "en";
     }
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
 
@@ -2036,6 +2039,6 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 //
 require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
 {
-    writeLog("error", "showNoConnectivityError ::: No access to the internet.");
+    writeLog("error", "showNoConnectivityError ::: There is no internet connection.");
     showNoty("error", "No access to the internet.", 0);
 });

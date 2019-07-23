@@ -1,33 +1,73 @@
-// Measuring startup
-//
-//console.time("init");
-
-
 // -----------------------------------------------------------------------------
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
 const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
+
 const log = require("electron-log"); // for: logging to file
 const shell = require("electron").shell; // for: opening external urls in default browser
 const openAboutWindow = require("about-window").default; // for: about-window
-const isOnline = require('is-online'); // for online checks
+const isOnline = require("is-online"); // for online connectivity checks
+
+const AutoLaunch = require("auto-launch"); // for autostart
+const path = require("path");
+const fs = require("fs");
+//var AutoLaunch = require("auto-launch"); // for autostart
+//var path = require("path");
+//var fs = require("fs");
 
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 
-var AutoLaunch = require("auto-launch"); // for autostart
-var path = require("path");
-var fs = require("fs");
 
 // Keep a global reference of the window objects,
-// if you don't, the window will be closed automatically
-// when the JavaScript object is garbage collected.
+// if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let configWindow;
 
-
 let verbose;
 verbose = false;
+
+
+/**
+* @name writeLog
+* @summary Writes to log file (and if verbose parameter is given as well to console)
+* @description Writes to log file (and if verbose parameter is given as well to console)
+*/
+function writeLog(logType, logMessage)
+{
+    // configure: logging to file
+    //
+    log.transports.file.level = true;
+
+    // configure: logging to console (default)
+    //
+    log.transports.console.level = false;
+    if(verbose === true) // enable output if verbose parameter is given
+    {
+        log.transports.console.level = true;
+    }
+    
+    // add prefix for all logs from [M]ain
+    logMessage = "[M] " + logMessage;
+
+    switch (logType)
+    {
+        case "info":
+            log.info(logMessage);
+            break;
+
+        case "warn":
+            log.warn(logMessage);
+            break;
+
+        case "error":
+            log.error(logMessage);
+            break;
+
+        default:
+            log.info(logMessage);
+    }
+}
 
 
 /**
@@ -41,11 +81,11 @@ function checkNetworkConnectivity()
 
     if(await isOnline() === true)
     {
-        writeLog("info", "checkNetworkConnectivity ::: got network connectivity");
+        writeLog("info", "checkNetworkConnectivity ::: Got access to the internet.");
     }
     else
     {
-        writeLog("error", "checkNetworkConnectivity ::: got NO ACCESS to the internet.");
+        writeLog("error", "checkNetworkConnectivity ::: Got NO access to the internet.");
 
         // app should show an error
         mainWindow.webContents.send("showNoConnectivityError");
@@ -77,19 +117,11 @@ function checkArguments()
 
             switch (process.argv[key])
             {
+                case "verbose":
                 case "debug":
-                    log.info("Enabling verbose mode");
+                    log.info("Enabling verbose/debug mode");
                     verbose = true;
                     break;
-
-
-                /*
-                case "v":
-                case "version":
-                    log.info("Version: " + app.getVersion());
-
-                    break;
-                */
 
                 default:
                     // nothing to do here
@@ -98,50 +130,6 @@ function checkArguments()
             }
         }
     }
-}
-
-
-/**
-* @name writeLog
-* @summary Writes to log file (and if verbose parameter is given as well to console)
-* @description Writes to log file (and if verbose parameter is given as well to console)
-*/
-function writeLog(logType, logMessage)
-{
-
-    // logging to file
-    //
-    log.transports.file.level = true;
-
-    // logging to console (default)
-    //
-    log.transports.console.level = false;
-    if(verbose === true) // enable output if verbose parameter is given
-    {
-        log.transports.console.level = true;
-    }
-    
-    // add prefix for all logs from [M]ain
-    logMessage = "[M] " + logMessage;
-
-    switch (logType)
-    {
-        case "info":
-            log.info(logMessage);
-            break;
-
-        case "warn":
-            log.warn(logMessage);
-            break;
-
-        case "error":
-            log.error(logMessage);
-            break;
-
-        default:
-            log.info(logMessage);
-    }
-
 }
 
 
@@ -253,7 +241,6 @@ function createMenu()
         {
             label: "Reload current service",
             click() {
-                // calling the renderer process from main.js
                 mainWindow.webContents.send("reloadCurrentService", "whoooooooh!");
             },
             accelerator: "CmdOrCtrl+S",
@@ -416,7 +403,7 @@ function createMenu()
         {
             type: "separator"
         },
-        // SubMenu
+        // SubMenu of help
         {
             label: "Cleaner",
             submenu: [
@@ -452,32 +439,25 @@ function createMenu()
     }
     ]);
 
-
     // Logging to file
     writeLog("info", "Finished creating menues");
-
 
     // use the menu
     Menu.setApplicationMenu(menu);
 
-
-    // Hide Menubar
+    // Hide Menubar - Gets called from renderer
     //
     ipcMain.on("hideMenubar", function() {
         mainWindow.setMenuBarVisibility(false);
-        // Logging to file
         writeLog("info", "Hiding menubar (ipcMain)");
     });
 
-    // Show Menubar
+    // Show Menubar - Gets called from renderer
     //
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
-        // Logging to file
         writeLog("info", "Un-hiding menubar (ipcMain");
     });
-
-
 
     // Disable some menu-elements - depending on the platform
     //
@@ -491,8 +471,6 @@ function createMenu()
         //
         var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
-
-        // Logging to file
         writeLog("info", "Disabling toggle-menubar menu element on osx");
     }
 
@@ -508,7 +486,6 @@ function createMenu()
         // nothing to do so far
     }
 }
-
 
 
 /**
@@ -564,7 +541,7 @@ function createWindow ()
 
     // Restore window position if possible
     //
-    // requirements: found values in .tttUSerData.json from the previous session
+    // requirements: found values in .ttthMainWindowPosSize.json from the previous session
     if ( (typeof windowPositionX !== "undefined") && (typeof windowPositionY !== "undefined") )
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
@@ -585,8 +562,20 @@ function createWindow ()
         mainWindow.show();
         mainWindow.focus();
 
-        // Logging to file
         writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show");
+
+        // analytics
+        // https://kilianvalkhof.com/2018/apps/using-google-analytics-to-gather-usage-statistics-in-electron/
+        //
+        //const { trackEvent } = require('./analytics');
+        //
+        // Tracking: category, action, label, value
+        // Details: https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+        // - categoriy:     text    required    Typically the object that was interacted with (e.g. 'Video')
+        //  -action         text    required    The type of interaction (e.g. 'play')
+        // - label          text    no          Useful for categorizing events (e.g. 'Fall Campaign')
+        // - value          int     no          A numeric value associated with the event (e.g. 42)
+        //trackEvent("app", "ready-to-show", app.getVersion());
     });
 
 
@@ -656,6 +645,7 @@ function createWindow ()
         writeLog("info", "mainWindow got resized (event: resize)");
     });
 
+
     // when the mainwindow gets moved
     //
     mainWindow.on("move", function()
@@ -665,9 +655,13 @@ function createWindow ()
         let bounds = mainWindow.getNormalBounds();
         writeLog("info", "x:" + bounds.x + " y:" + bounds.y + " width:" + bounds.width + " height:" + bounds.height );
 
-        // TODO: move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
-        // Be aware: On macOS the child windows will keep the relative position to parent window when parent window moves, while on Windows and Linux child windows will not move.
+        // TODO: 
+        // move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
+        //
+        // Be aware: On macOS the child windows will keep the relative position to parent window 
+        // when parent window moves, while on Windows and Linux child windows will not move.
     });
+
 
     // when the app gets hidden
     //
@@ -676,12 +670,14 @@ function createWindow ()
         writeLog("info", "mainWindow is hidden (event: hide)");
     });
 
+
     // when the app gets maximized
     //
     mainWindow.on("maximize", function()
     {
         writeLog("info", "mainWindow maximized (event: maximized)");
     });
+
 
     // when the app gets unmaximized
     //
@@ -690,12 +686,14 @@ function createWindow ()
         writeLog("info", "mainWindow unmaximized (event: unmaximized)");
     });
 
+
     // when the app gets minimized
     //
     mainWindow.on("minimize", function()
     {
         writeLog("info", "mainWindow is minimized (event: minimize)");
     });
+
 
     // when the app gets restored from minimized mode
     //
@@ -704,10 +702,12 @@ function createWindow ()
         writeLog("info", "mainWindow was restored (event: restore)");
     });
 
+
     mainWindow.on("app-command", function()
     {
         writeLog("info", "mainWindow got app-command (event: app-command)");
     });
+
 
     // Emitted before the window is closed.
     //
@@ -728,9 +728,7 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
         fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
-        // Logging to file
         writeLog("info", "mainWindow stored window -position and -size (event: close)");
-
     });
 
 
@@ -869,9 +867,6 @@ function createWindow ()
     // load html form to the window
     configWindow.loadFile("app/configWindow.html");
 
-    // make it always on top
-    //configWindow.setAlwaysOnTop(true, "floating");
-
     // hide menubar
     configWindow.setMenuBarVisibility(false);
 
@@ -887,7 +882,7 @@ function createWindow ()
     });
 
 
-    // Emitted when the window ...
+    // Emitted when the window is ready to be shown
     //
     configWindow.on("ready-to-show", function (event)
     {
@@ -934,7 +929,6 @@ function createWindow ()
         writeLog("info", "configWindow is now hidden (ipcMain)");
 
     });
-
 }
 
 
@@ -1068,7 +1062,6 @@ function forceSingleAppInstance()
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 //
-//app.on("ready", createWindow);
 app.on("ready", function ()
 {
     writeLog("info", "app got ready signal (event: ready)"); 
@@ -1200,8 +1193,3 @@ process.on("uncaughtException", (err, origin) => {
     `Exception origin: ${origin}`
   );
 });
-
-
-// Measuring startup
-//
-//console.timeEnd("init");

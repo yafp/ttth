@@ -22,12 +22,25 @@
 * Dependencies
   * Updated electron from 4.2.6 to 5.0.6. See [#37](https://github.com/yafp/ttth/issues/37)
   * Updated electron-packager from 13.1.1 to 14.0.1. See [#81](https://github.com/yafp/ttth/issues/81)
+  * Removed some not-in-used dependencies. See [#91](https://github.com/yafp/ttth/issues/91)
+  * Updated several dependencies. See [#92](https://github.com/yafp/ttth/issues/92)
+    * Updated about-window from 1.13.0 to 1.13.1
+    * Updated electron from 5.0.6 to 5.0.7
+    * Updated electron-packager from 14.0.1 to 14.0.2
+    * Updated electron-builder from 20.44.4 to 21.1.1
+    * Updated mocha from 6.1.4 to 6.2.0
+    * Updated spectron from 5.0.0 to 7.0.0
+    * Updated eslint from 5.16.0 to 6.1.0
+    * Updated i18next from 15.1.3 to 17.0.6
+
+#### ```Deprecated```
+* Removed ia32 builds for linux (deprecated via electron-packager 14.x). See [#93](https://github.com/yafp/ttth/issues/93)
 
 #### ```Fixed```
 * Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
 * Fixed an error in calculation of the next tab position while adding new service tabs. See [#77](https://github.com/yafp/ttth/issues/77)
 * UI: No single element on settings tab is now selectable anymore using CTRL + a.
-* Travis: Building linux builds via travis was broken since rpm support was added ([#78](https://github.com/yafp/ttth/issues/78)). This is now fixed. See [#83](https://github.com/yafp/ttth/issues/83)
+* Travis: Building linux builds via travis was broken since rpm-support was added ([#78](https://github.com/yafp/ttth/issues/78)). This is now fixed. See [#83](https://github.com/yafp/ttth/issues/83)
 
 
 
