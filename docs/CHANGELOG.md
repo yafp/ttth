@@ -32,6 +32,7 @@
     * Updated spectron from 5.0.0 to 7.0.0
     * Updated eslint from 5.16.0 to 6.1.0
     * Updated i18next from 15.1.3 to 17.0.6
+* Code: Slimdown main.js by moving menu code to separate file. [#95](https://github.com/yafp/ttth/issues/95)
 
 #### ```Deprecated```
 * Removed ia32 builds for linux (deprecated via electron-packager 14.x). See [#93](https://github.com/yafp/ttth/issues/93)
