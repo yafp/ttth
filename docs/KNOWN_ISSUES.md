@@ -7,6 +7,10 @@
 #### Function: Hide
 Hide should hide the current window. It is re-accessable afterwards via the Tray icon, but most likely not by any other method. (<kbd>ALT</kbd>+<kbd>TAB</kbd>) to unhide it won't work so far.
 
+### linux specific
+#### Menubar visibilty vs fullscreen-mode
+See #94
+
 ### macOS specific
 #### Function Toggle Fullscreen
 <kbd>F11</kbd> should toggle the fullscreen-mode, but macOS seems to use <kbd>F11</kbd> system-wide for "Show Desktop".

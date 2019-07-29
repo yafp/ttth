@@ -1,7 +1,8 @@
-const { BrowserWindow, Menu, ipcMain} = require("electron");
+const { app, BrowserWindow, Menu, ipcMain} = require("electron");
 
 const openAboutWindow = require("about-window").default; // for: about-window
 const path = require("path"); // needed for about-window
+const shell = require("electron").shell; // for: opening external urls in default browser
 
 /**
 * @name createMenu
@@ -340,5 +341,5 @@ function ()
     {
         // nothing to do so far
     }
-}
+};
 

@@ -32,7 +32,7 @@ verbose = false;
 
 
 // menu.js
-require('./menu').createMenu();
+require("./menu").createMenu();
 
 
 
