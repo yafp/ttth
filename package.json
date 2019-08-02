@@ -175,8 +175,8 @@
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
         "electron": "^5.0.7",
-        "electron-builder": "^21.1.1",
-        "electron-packager": "^14.0.2",
+        "electron-builder": "^21.2.0",
+        "electron-packager": "^14.0.4",
         "eslint": "^6.1.0",
         "mocha": "^6.2.0",
         "spectron": "^7.0.0"
@@ -186,8 +186,8 @@
         "auto-launch": "^5.0.5",
         "electron-is-dev": "^1.1.0",
         "electron-json-storage": "^4.1.6",
-        "electron-log": "^3.0.6",
-        "i18next": "^17.0.6",
+        "electron-log": "^3.0.7",
+        "i18next": "^17.0.8",
         "i18next-sync-fs-backend": "^1.1.1",
         "is-online": "^8.2.0"
     }

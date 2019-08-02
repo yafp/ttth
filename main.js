@@ -5,16 +5,10 @@ const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = req
 
 const log = require("electron-log"); // for: logging to file
 const shell = require("electron").shell; // for: opening external urls in default browser
-//const openAboutWindow = require("about-window").default; // for: about-window
 const isOnline = require("is-online"); // for online connectivity checks
-
 const AutoLaunch = require("auto-launch"); // for autostart
 const path = require("path");
 const fs = require("fs");
-//var AutoLaunch = require("auto-launch"); // for autostart
-//var path = require("path");
-//var fs = require("fs");
-
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 
@@ -26,6 +20,7 @@ let configWindow;
 
 let verbose;
 verbose = false;
+
 
 
 
@@ -217,20 +212,7 @@ function createWindow ()
         mainWindow.show();
         mainWindow.focus();
 
-        writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show");
-
-        // analytics
-        // https://kilianvalkhof.com/2018/apps/using-google-analytics-to-gather-usage-statistics-in-electron/
-        //
-        //const { trackEvent } = require('./analytics');
-        //
-        // Tracking: category, action, label, value
-        // Details: https://developers.google.com/analytics/devguides/collection/analyticsjs/events
-        // - categoriy:     text    required    Typically the object that was interacted with (e.g. 'Video')
-        //  -action         text    required    The type of interaction (e.g. 'play')
-        // - label          text    no          Useful for categorizing events (e.g. 'Fall Campaign')
-        // - value          int     no          A numeric value associated with the event (e.g. 42)
-        //trackEvent("app", "ready-to-show", app.getVersion());
+        writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
     });
 
 
@@ -493,6 +475,7 @@ function createWindow ()
             mainWindow.webContents.send("switchToTab", targetTab);
         });
     });
+
 
 
     // *****************************************************************
@@ -878,6 +861,8 @@ app.on("activate", function ()
         //createTray();
     }
 });
+
+
 
 
 process.on("uncaughtException", (err, origin) => {

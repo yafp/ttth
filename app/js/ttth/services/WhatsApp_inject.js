@@ -10,7 +10,6 @@ function serviceWhatsAppGetUnreadMessageCount()
 {
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
 
-
     // try to count unread messages
     //
     //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version

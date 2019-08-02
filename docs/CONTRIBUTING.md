@@ -99,16 +99,22 @@ email, or any other method with the owners of this repository before making a ch
 * ```npm install PACKAGENAME@1.2.3```
 
 #### npm check for outdated 
-* ```npm install -g npm-check```
-* ```npm-check```
+* Install requirements: ```npm install -g npm-check```
+* Run check: ```npm-check```
 
 #### npm: check dependencies
-* ```npm install depcheck```
-* ```depcheck```
+* Install requirements: ```npm install depcheck```
+* Run check: ```depcheck```
 
 #### npm auditing (scan for vulnerabilities)
 * ```npm audit```
 
+
+#### npm list all package.json scripts
+* ```npm run```
+or a dynamic solution
+* Install requirements: ```npm i -g ntl```
+* Execute ```ntl```
 
 ### CI
 The project repository is using:
