@@ -1,7 +1,7 @@
 /* ########################################################################## */
 /* HTML/BODY/CONTAINER */
 /* ########################################################################## */
-html,body 
+html,body
 {
     /* height:100%;  */
     height: calc(100% - 15px);
@@ -17,8 +17,8 @@ html,body
     margin-left: 0;
     margin-right: 0;
 
-    /* color */
-    background-color: var(--color-main);
+    color: var(--color-bodyText);
+    background-color: var(--color-bodyBackground);
 }
 
 
@@ -31,7 +31,10 @@ html,body
     height: 30px; /* default: 40px */
 
     /* color */
-    background-color: var(--color-menuBackground);
+    background-color: var(--color-navigationBackground);
+
+    /* border */
+    border-bottom: 2px solid var(--color-navigationBorder);
 }
 
 
@@ -44,33 +47,36 @@ ul
 .nav-item
 {
     /* border */
+    /*
     border: 1px solid white;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+    */
 
     /* margin */
     margin-left: 0px;
     margin-right: 3px;
+
+
 }
 
 .nav-link
 {
     /* color */
-    color: var(--color-menuForeground);
+    color: var(--color-navigationText);
 }
 
 .nav-link:hover
 {
     /* color */
-    color: var(--color-menuForegroundHover);
+    color: var(--color-highlight);
 }
 
-.nav>li>a 
+.nav>li>a
 {
     /* padding */
     padding: 5px 10px; /*  top/bottom left/right */
 }
-
 
 
 /* ########################################################################## */
@@ -83,7 +89,7 @@ ul
     padding-right: 0px !important;
 
     /* color */
-    background-color: var(--color-main);
+    background-color: var(--color-bodyBackground);
 }
 
 .fuya
@@ -93,7 +99,7 @@ ul
     /* padding-right: 0px !important; */
 }
 
-.flex-fill 
+.flex-fill
 {
     flex:1 1 auto;
 }
@@ -111,7 +117,7 @@ ul
 
 .row
 {
-    /* ugly - attempt to fight with grid.scss  - see #60*/ 
+    /* ugly - attempt to fight with grid.scss  - see #60*/
     margin-left: -15px !important;
     margin-right:  0px !important;
 }
@@ -123,7 +129,7 @@ ul
 /* ########################################################################## */
 .ttthServiceRow
 {
-    margin-right:  0px !important; 
+    margin-right:  0px !important;
 }
 
 #allSettings
@@ -135,6 +141,62 @@ ul
 h3
 {
     padding-top: 15px;
-    border-bottom: 2px solid var(--color-menuForegroundHover);
     font-size: 20px !important;
+
+    border-bottom: 2px solid var(--color-highlight);
+    color: var(--color-bodyText);
+}
+
+
+
+
+
+
+
+/* ########################################################################## */
+/* CUSTOMIZE BOOTSTRAP FORM ITEMS
+/* ########################################################################## */
+.custom-select
+{
+    color: var(--color-inputFormsTextd);
+    background-color: var(--color-inputFormsBackground);
+    border-color: var(--color-inputFormsBorder);
+}
+
+.input-group-text
+{
+    color: var(--color-inputFormsTextd) !important;
+    background-color: var(--color-inputFormsBackground)!important;
+    border-color: var(--color-inputFormsBorder);
+}
+
+.form-control {
+    color: var(--color-inputFormsTextd) !important;
+    background-color: var(--color-inputFormsBackground) !important;
+    border-color: var(--color-inputFormsBorder);
+}
+
+
+
+.ttth_select{
+    color: var(--color-inputFormsTextd) !important;
+    background-color: var(--color-inputFormsBackground) !important;
+    border-color: var(--color-inputFormsBorder) !important;
+}
+
+/* not yet working */
+.ttth_checkbox{
+    color: var(--color-inputFormsTextd) !important;
+    background-color: var(--color-inputFormsBackground) !important;
+    border-color: var(--color-inputFormsBorder) !important;
+}
+
+
+
+/* ########################################################################## */
+/* FOOTER
+/* ########################################################################## */
+.ttth_footer
+{
+    color: var(--color-inputFormsBorder) !important;
 }

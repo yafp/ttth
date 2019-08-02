@@ -13,9 +13,9 @@ html,body {
 
     /* border */
     border-color: coral;
-    border: 2px solid var(--color-menuBackground);
+    border: 2px solid var(--color-navigationBackground);
 
     height: 100%;
 
-    background-color: var(--color-main);
+    background-color: var(--color-bodyBackground);
 }

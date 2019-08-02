@@ -1,16 +1,4 @@
 /* ########################################################################## */
-/* COLOR VARIABLES */
-/* ########################################################################## */
-:root {
-    --color-main: white; /* the main color */
-    --color-menuBackground: #333; /* used as nav background */
-    --color-menuBackgroundHover: #111; /* used as hover background color */
-    --color-menuForeground: white;
-    --color-menuForegroundHover: limegreen; /* used as highlight color */
-}
-
-
-/* ########################################################################## */
 /* UI TEXT - MAKE THEM NOT SELECTABLE */
 /* ########################################################################## */
 .ttth_nonSelectableText {

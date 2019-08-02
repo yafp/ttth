@@ -1,0 +1,19 @@
+:root {
+
+    /* body */
+    --color-bodyText: white;
+    --color-bodyBackground: #212121;
+
+    /* navigation */
+    --color-navigationText: white;
+    --color-navigationBackground: #171717;
+    --color-navigationBorder: #4e4e4e;
+
+    /* highlight */
+    --color-highlight: limegreen;
+
+    /* bootstrap form elements */
+    --color-inputFormsTextd: white;
+    --color-inputFormsBackground: #171717;
+    --color-inputFormsBorder: #4e4e4e;
+}

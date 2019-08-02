@@ -71,7 +71,7 @@ function writeLog(logType, logMessage)
             break;
 
       default:
-         logR.info(logMessage); // to file
+         //logR.info(logMessage); // to file
          console.log(logMessage);
    }
 }
@@ -118,6 +118,58 @@ function previewIcon()
 
     // try to load font-awesome icon
     $("#previewIcon").html("<i class='" + currentIconCode + " fa-lg'></i>");
+}
+
+
+
+/**
+* @name settingToggleDarkMode
+* @summary Enables or disabled the option darkmode
+* @description Updates the settings / option darkmode
+*/
+function settingToggleDarkMode()
+{
+    // Handle depending on the checkbox state
+    if($("#checkboxSettingDarkMode").prop("checked"))
+    {
+        writeLocalStorage("settingDarkMode", true);
+
+        writeLog("info", "settingToggleDarkMode ::: Finished enabling DarkMode");
+
+        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>DarkMode</u> is now enabled.");
+
+        settingActivateUserColorCss("mainWindow_dark.css");
+    }
+    else
+    {
+        writeLocalStorage("settingDarkMode", false);
+
+        writeLog("info", "settingToggleDarkMode ::: Finished disabling DarkMode");
+
+        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>DarkMode</u> is now disabled.");
+
+        settingActivateUserColorCss("mainWindow_default.css");
+    }
+}
+
+
+
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssFile)
+{
+    console.log("settingActivateUserColorCss ::: Loading DarkMode" );
+
+    // load custom css file
+    $("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/themes/" + cssFile
+    }).appendTo("head");
 }
 
 
@@ -893,8 +945,7 @@ function searchUpdate(silent = true)
     .fail(function()
     {
         writeLog("error", "searchUpdate ::: Checking " + url + " for available releases failed.");
-
-        showNoty("error", "Checking " + url + " for available releases failed. Got network issues?");
+        showNoty("error", "Checking " + url + " for available releases failed. Please troubleshoot your network connection.");
     })
 
     .always(function()
@@ -1232,6 +1283,26 @@ function initSettingsPage()
             writeLog("info", "initSettingsPage ::: Show menubar");
         }
     }
+
+
+    // Setting: DarkMode
+    //
+    curSettingAutostart = readLocalStorage("settingDarkMode");
+    if(curSettingAutostart === "true")
+    {
+        writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
+
+        // activate checkbox
+        $("#checkboxSettingDarkMode").prop("checked", true);
+
+        settingActivateUserColorCss("mainWindow_dark.css");
+    }
+    else
+    {
+        writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
+
+        settingActivateUserColorCss("mainWindow_default.css");
+    }
 }
 
 
@@ -1302,6 +1373,56 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     $("#selectDefaultView").append(new Option(serviceName, serviceId));
 
     loadServiceSpecificCode(serviceId, serviceType);
+}
+
+
+/**
+* @name updateGlobalServicesShortcuts
+* @summary Assigns global shortcuts for all service tabs
+* @description Assigns global shortcuts for all service tabs
+*/
+function updateGlobalServicesShortcuts()
+{
+    const {ipcRenderer} = require("electron");
+
+    var tabCounter = 0;
+    var currentTabId;
+    var numberOfEnabledServices; // counts the amount of enabled user services
+
+    writeLog("info", "updateGlobalServicesShortcuts ::: Starting to update global service shortcuts");
+
+    // Ensure to remove all possible shortcuts before re-creating them. See #74
+    //
+    // count enabled services:
+    numberOfEnabledServices = $("#myTabs li").length;
+    ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+
+    // Create new global shortcutd
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+        if(currentTabId === "target_Settings")
+        {
+           writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab.");
+        }
+        else
+        {
+            tabCounter = tabCounter +1;
+
+            // globalShortcut
+            ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
+        }
+    });
+
+    // show notification
+    /*
+    if(tabCounter > 0) // if at least 1 accesskey was set
+    {
+        //showNoty("success", "Updating accesskeys for enabled service tabs.")
+    }
+    */
+
+    writeLog("info", "updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
 }
 
 
@@ -1443,12 +1564,6 @@ function loadEnabledUserServices()
         // show object which contains all config files
         //writeLog("info", "loadEnabledUserServices ::: Object: " + data);
         //console.error(data);
-
-
-        // TODO
-        // - should sort the object before using it
-        // - currently the services are sorted by its generated IDs
-
 
         // loop over upper object
         for (var key in data)
@@ -1646,56 +1761,6 @@ function generateNewRandomServiceID(serviceType)
 }
 
 
-/**
-* @name updateGlobalServicesShortcuts
-* @summary Assigns global shortcuts for all service tabs
-* @description Assigns global shortcuts for all service tabs
-*/
-function updateGlobalServicesShortcuts()
-{
-    const {ipcRenderer} = require("electron");
-
-    var tabCounter = 0;
-    var currentTabId;
-    var numberOfEnabledServices; // counts the amount of enabled user services
-
-    writeLog("info", "updateGlobalServicesShortcuts ::: Starting to update global service shortcuts");
-
-
-    // Ensure to remove all possible shortcuts before re-creating them. See #74
-    //
-    // count enabled services:
-    numberOfEnabledServices = $("#myTabs li").length;
-    ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
-
-    // Create new global shortcutd
-    $("#myTabs li a").each(function()
-    {
-        currentTabId = $(this).attr("id");
-        if(currentTabId === "target_Settings")
-        {
-           writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab.");
-        }
-        else
-        {
-            tabCounter = tabCounter +1;
-
-            // globalShortcut
-            ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
-        }
-    });
-
-    // show notification
-    /*
-    if(tabCounter > 0) // if at least 1 accesskey was set
-    {
-        //showNoty("success", "Updating accesskeys for enabled service tabs.")
-    }
-    */
-
-    writeLog("info", "updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
-}
-
 
 /**
 * @name localizeUserInterface
@@ -1715,7 +1780,7 @@ function localizeUserInterface()
     // if the project is not packaged - overwrite the language to EN. This is used to ensure the screenshots are in the expected language
     if (isDev)
     {
-        //userLang = "en";
+        userLang = "en";
     }
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
 
