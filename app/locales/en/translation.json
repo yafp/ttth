@@ -27,6 +27,7 @@
     "mw_settingsOptionsButtonTextDefaultViewReset": "Reset default view",
     "mw_settingsOptionsDescAutostart": "Enable autostart (on login)",
     "mw_settingsOptionsDescHideMenubar": "Hide menubar (on load)",
+    "mw_settingsOptionsDescDarkMode": "Enable dark mode",
 
     "cw_windowName": "Config service",
     "cw_labelId": "ID",

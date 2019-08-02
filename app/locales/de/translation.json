@@ -27,6 +27,7 @@
     "mw_settingsOptionsButtonTextDefaultViewReset": "Setze Standardansicht zurück",
     "mw_settingsOptionsDescAutostart": "Aktiviere Autostart (bei Anmeldung)",
     "mw_settingsOptionsDescHideMenubar": "Verstecke Menüzeile (beim laden)",
+    "mw_settingsOptionsDescDarkMode": "Aktiviere dunkles Theme",
 
     "cw_windowName": "Dienst konfigurieren",
     "cw_labelId": "ID",
