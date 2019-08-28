@@ -16,6 +16,7 @@
 * Added basic support for startup parameters. See [#82](https://github.com/yafp/ttth/issues/82)
 * Added check if internet is accessible. See [#90](https://github.com/yafp/ttth/issues/90)
 * Added a basic DarkMode. See [#96](https://github.com/yafp/ttth/issues/96)
+* Added support for Riot.im. See [#101](https://github.com/yafp/ttth/issues/101)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)

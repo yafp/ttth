@@ -58,6 +58,7 @@ It is:
 * Mattermost
 * Messenger
 * Nextcloud
+* Riot.im
 * Slack
 * Telegram
 * Threema
@@ -98,7 +99,7 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 * Download the latest .rpm
 * execute:
   * ```sudo dnf localinstall /path/to/local/ttth-file.rpm``` or
-  * ```sudo yum localinstall /path/to/local/ttth-file.rpm``` 
+  * ```sudo yum localinstall /path/to/local/ttth-file.rpm```
 
 #### Snap
 * Download the latest .snap

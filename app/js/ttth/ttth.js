@@ -1085,6 +1085,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "googleMail":
         case "googleMessages":
         case "mattermost":
+        case "riot":
         case "slack":
         case "telegram":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
@@ -1281,7 +1282,7 @@ function initSettingsPage()
             writeLog("info", "initSettingsPage ::: Show menubar");
             $("#checkboxSettingHideMenubar").prop("checked", false);
             ipcRenderer.send("showMenubar");
-            
+
         }
     }
 
@@ -1336,14 +1337,14 @@ function removeServiceTab(tabId)
 * @description Parsing the Hostname From a Url
 * @param url
 */
-function getHostName(url) 
+function getHostName(url)
 {
     var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
-    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) 
+    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0)
     {
         return match[2];
     }
-    else 
+    else
     {
         return null;
     }
@@ -1356,20 +1357,20 @@ function getHostName(url)
 * @description Parsing the Domain From a Url
 * @param url
 */
-function getDomain(url) 
+function getDomain(url)
 {
     var hostName = getHostName(url);
     var domain = hostName;
-    
-    if (hostName != null) 
+
+    if (hostName != null)
     {
         var parts = hostName.split('.').reverse();
-        
-        if (parts != null && parts.length > 1) 
+
+        if (parts != null && parts.length > 1)
         {
             domain = parts[1] + '.' + parts[0];
-                
-            if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) 
+
+            if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2)
             {
                 domain = parts[2] + '.' + domain;
             }
@@ -1814,7 +1815,7 @@ function settingsUserAddNewService()
 * @summary Generates a config-file name while adding a new service
 * @description Gets the serviceType and adds a random string. The outcome is the name for the new service config-file.
 * @param serviceType - The type of the service
-* @return newServiceId - serviceType + Random string 
+* @return newServiceId - serviceType + Random string
 */
 function generateNewRandomServiceID(serviceType)
 {
@@ -2177,7 +2178,7 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 
 
 
-// Call from main.js ::: 
+// Call from main.js :::
 //
 require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
 {
