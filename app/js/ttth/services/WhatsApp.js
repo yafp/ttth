@@ -13,10 +13,14 @@ function serviceWhatsAppRegister()
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
     const {session} = require("electron");
+
     var ses = remote.session.defaultSession; //Gets the default session
+    
     //ses.clearCache();
     ses.flushStorageData();
-    ses.clearStorageData({ //Clears the specified storages in the session
+    ses.clearStorageData(
+    { 
+        //Clears the specified storages in the session
         storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
     });
 

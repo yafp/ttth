@@ -6,7 +6,6 @@ const electronPath = require("electron"); // Require Electron from the binaries 
 const path = require("path");
 
 
-
 // Load chai assertions
 const chaiAsPromised = require("chai-as-promised");
 const chai = require("chai");
@@ -15,8 +14,6 @@ chai.use(chaiAsPromised);
 
 
 var expect = chai.expect;
-
-
 
 
 describe("Application Window", function ()

@@ -223,6 +223,7 @@ function showNotyAutostartMinimizedConfirm()
     {
         theme: "bootstrap-v4",
         layout: "bottom",
+        type: "information",
         text: "Should autostart enable the minimize mode?",
         buttons: [
             Noty.button("Yes", "btn btn-success", function ()
@@ -1243,13 +1244,12 @@ function initSettingsPage()
     if(curSettingAutostart === "true")
     {
         writeLog("info", "initSettingsPage ::: Setting Autostart is configured");
-
-        // activate checkbox
         $("#checkboxSettingAutostart").prop("checked", true);
     }
     else
     {
         writeLog("info", "initSettingsPage ::: Setting Autostart is not configured");
+        $("#checkboxSettingAutostart").prop("checked", false);
     }
 
 
@@ -1278,29 +1278,29 @@ function initSettingsPage()
         else
         {
             // show menubar
-            ipcRenderer.send("showMenubar");
-            $("#checkboxSettingHideMenubar").prop("checked", false);
             writeLog("info", "initSettingsPage ::: Show menubar");
+            $("#checkboxSettingHideMenubar").prop("checked", false);
+            ipcRenderer.send("showMenubar");
+            
         }
     }
 
 
     // Setting: DarkMode
     //
-    curSettingAutostart = readLocalStorage("settingDarkMode");
-    if(curSettingAutostart === "true")
+    curSettingDarkMode = readLocalStorage("settingDarkMode");
+    if(curSettingDarkMode === "true")
     {
+        // dark theme
         writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
-
-        // activate checkbox
         $("#checkboxSettingDarkMode").prop("checked", true);
-
         settingActivateUserColorCss("mainWindow_dark.css");
     }
     else
     {
+        // default theme
         writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
-
+        $("#checkboxSettingDarkMode").prop("checked", false);
         settingActivateUserColorCss("mainWindow_default.css");
     }
 }
@@ -1329,6 +1329,56 @@ function removeServiceTab(tabId)
 }
 
 
+
+/**
+* @name getHostName
+* @summary Parsing the Hostname From a Url
+* @description Parsing the Hostname From a Url
+* @param url
+*/
+function getHostName(url) 
+{
+    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
+    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) 
+    {
+        return match[2];
+    }
+    else 
+    {
+        return null;
+    }
+}
+
+
+/**
+* @name getDomain
+* @summary Parsing the Domain From a Url
+* @description Parsing the Domain From a Url
+* @param url
+*/
+function getDomain(url) 
+{
+    var hostName = getHostName(url);
+    var domain = hostName;
+    
+    if (hostName != null) 
+    {
+        var parts = hostName.split('.').reverse();
+        
+        if (parts != null && parts.length > 1) 
+        {
+            domain = parts[1] + '.' + parts[0];
+                
+            if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2) 
+            {
+                domain = parts[2] + '.' + domain;
+            }
+        }
+    }
+    return domain;
+}
+
+
 /**
 * @name addServiceTab
 * @summary Add a single tab to UI
@@ -1350,6 +1400,10 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // calculate new tab position
     var newTabPosition = existingTabs -1;
 
+    // Parsing url and extract domain for Persist-handling of webview
+    var serviceDomain = getDomain(serviceUrl);
+
+
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
@@ -1358,12 +1412,35 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
     // add the tab itself to #tabPanes
+    //
     $( "#tabPanes" ).append( "<div role='tabpanel' class='tab-pane fade flex-fill ttth_resizer container-fluid' id=" + serviceId + "></div>" );
     writeLog("info", "addServiceTab :::Added the tab pane for service: _" + serviceId + "_.");
 
     // add webview  to new tab
-    //$( "#"+ serviceId ).append( '<webview id=webview_' + serviceId + ' class="ttth_resizer" src=' + serviceUrl + ' preload='+ serviceInjectCode + ' userAgent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"></webview>' );
-    $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+    //
+    // backup:
+    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+    //
+    // Using partition:
+    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+
+    //
+    // not using partition
+    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+
+
+    // FIXME: right now all services are using a partition for persistent data - only Whatsapp not - as i get a Chrome 49+ needed error after enabling it.
+    if(serviceType === "whatsapp")
+    {
+        // using no partition - thats plain stupid...
+        $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+
+    }
+    else
+    {
+        // Using partition:
+        $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+    }
 
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 

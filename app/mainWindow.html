@@ -101,7 +101,7 @@
                         <h3 i18n-text="mw_settingsServicesAddServiceTitle"><!-- Add service --></h3>
                         <div id="settingsServicesAdd">
                             <div class="input-group mb-3">
-                                <select id="select_availableServices"  class="custom-select" name="select_availableServices" title="" i18n-title="mw_settingsServicesSelectAddService" aria-label="Dropdown element to select a service type for service creation" onChange="settingsSelectServiceToAddChanged();">
+                                <select id="select_availableServices"  class="custom-select ttth_select" name="select_availableServices" title="" i18n-title="mw_settingsServicesSelectAddService" aria-label="Dropdown element to select a service type for service creation" onChange="settingsSelectServiceToAddChanged();">
                                     <option value="" disabled selected name="select_availableServices" i18n-text="mw_settingsServicesSelectAddService"><!-- i18n --></option>
                                 </select>
                                 <div class="input-group-append">
@@ -191,11 +191,6 @@
         </div>
         <!-- /Tab Content -->
 
-
-        <!-- Footer -->
-    <p class="text-center small ttth_footer"><i class="fas fa-code"></i> by yafp</p>
-        <!-- /Footer -->
-
     </div>
     <!-- container -->
 
@@ -231,8 +226,8 @@ $( document ).ready(function()
     // Translate using i18next
     localizeUserInterface();
 
-    // fade in the UI (1 sec animation)
-    $('body').fadeIn(1000);
+    // fade in the UI (0,5 sec animation)
+    $('body').fadeIn(500);
 
     // hide splash after 500 ms
     setInterval(function()

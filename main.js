@@ -12,7 +12,6 @@ const fs = require("fs");
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 
-
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -23,13 +22,8 @@ verbose = false;
 
 
 
-
-
-
 // menu.js
 require("./menu").createMenu();
-
-
 
 
 /**
@@ -196,6 +190,7 @@ function createWindow ()
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
+
 
     // set the user agent
     //changeUserAgent();
@@ -745,7 +740,6 @@ app.on("ready", function ()
     forceSingleAppInstance();
     checkArguments();
     createWindow();
-    //createMenu();
     createTray();
     checkNetworkConnectivity();
 });

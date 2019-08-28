@@ -24,6 +24,7 @@
 - [download](#download)
 - [install](#install)
 - [keyboard-shortcuts](#keyboard-shortcuts)
+- [privacy](#privacy)
 - [faq](#faq)
 - [known-issues](#known-issues)
 - [contributing](#contributing)
@@ -145,6 +146,15 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 | Hide window                     | <kbd>CTRL</kbd> + <kbd>H</kbd>  | <kbd>CMD</kbd> + <kbd>H</kbd>   | <kbd>CTRL</kbd> + <kbd>H</kbd>  |
 
 
+
+## privacy
+* ttth is not tracking it's users (not using Ggoogle Analytics nor using other methods)
+* All data is stored locally only.
+* Sessions will persist using the [partition:persist](https://electronjs.org/docs/api/webview-tag#partition) attribute for electrons webview.
+
+You are always welcome to check the code.
+
+
 ## faq
 Please see the [FAQ](docs/FAQ.md) for more details.
 
@@ -155,6 +165,7 @@ Please see the [Known Issues](docs/KNOWN_ISSUES.md) for more details.
 
 ## contributing
 Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
+A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
 
 
 ## license
