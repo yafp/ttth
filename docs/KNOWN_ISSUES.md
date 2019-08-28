@@ -11,6 +11,10 @@ Hide should hide the current window. It is re-accessable afterwards via the Tray
 #### Menubar visibilty vs fullscreen-mode
 See #94
 
+#### Notification not shown
+ttth needs libnotify to display notifications. This means libnotify must be installed and a notification daemon must be setup.
+See #99
+
 ### macOS specific
 #### Function Toggle Fullscreen
 <kbd>F11</kbd> should toggle the fullscreen-mode, but macOS seems to use <kbd>F11</kbd> system-wide for "Show Desktop".
