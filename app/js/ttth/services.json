@@ -150,6 +150,16 @@
         "injectCode": ""
     },
     {
+        "id": "riot",
+        "name": "Riot",
+        "nameLong": "Riot",
+        "icon": "fas fa-comment",
+        "description": "Riot.im is an open source, free software instant messaging client based on the Matrix protocol",
+        "url": "https://riot.im/app/",
+        "multiple": true,
+        "injectCode": ""
+    },
+    {
         "id": "slack",
         "name": "Slack",
         "nameLong": "Slack",
