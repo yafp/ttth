@@ -23,6 +23,7 @@
 * Dependencies
   * Updated electron from 4.2.6 to 5.0.6. See [#37](https://github.com/yafp/ttth/issues/37)
   * Updated electron from 5.0.6 to 5.0.7
+  * Updated electron from 5.0.7 to 6.0.0. See [#88](https://github.com/yafp/ttth/issues/88)
   * Removed some not-in-used dependencies. See [#91](https://github.com/yafp/ttth/issues/91)
   * Updated several dependencies. See [#92](https://github.com/yafp/ttth/issues/92)
     * Updated about-window from 1.13.0 to 1.13.1
@@ -35,10 +36,12 @@
     * Updated electron-log from 3.0.6 to 3.0.7
     * Updated mocha from 6.1.4 to 6.2.0
     * Updated spectron from 5.0.0 to 7.0.0
+    * Updated spectron from 7.0.0 to 8.0.0
     * Updated eslint from 5.16.0 to 6.1.0
     * Updated i18next from 15.1.3 to 17.0.6
     * Updated i18next from 17.0.6 to 17.0.7
     * Updated i18next from 17.0.7 to 17.0.8
+    * Updated i18next from 17.0.8 to 17.0.9
 * Code: Slimdown main.js by moving menu code to separate file. [#95](https://github.com/yafp/ttth/issues/95)
 
 #### ```Deprecated```
