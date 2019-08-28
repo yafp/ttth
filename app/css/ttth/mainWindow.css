@@ -150,9 +150,6 @@ h3
 
 
 
-
-
-
 /* ########################################################################## */
 /* CUSTOMIZE BOOTSTRAP FORM ITEMS
 /* ########################################################################## */
@@ -170,33 +167,29 @@ h3
     border-color: var(--color-inputFormsBorder);
 }
 
-.form-control {
-    color: var(--color-inputFormsTextd) !important;
+.form-control 
+{
+    color: var(--color-inputFormsText) !important;
     background-color: var(--color-inputFormsBackground) !important;
     border-color: var(--color-inputFormsBorder);
 }
 
 
-
-.ttth_select{
-    color: var(--color-inputFormsTextd) !important;
-    background-color: var(--color-inputFormsBackground) !important;
-    border-color: var(--color-inputFormsBorder) !important;
-}
-
-/* not yet working */
-.ttth_checkbox{
-    color: var(--color-inputFormsTextd) !important;
-    background-color: var(--color-inputFormsBackground) !important;
-    border-color: var(--color-inputFormsBorder) !important;
-}
-
-
-
-/* ########################################################################## */
-/* FOOTER
-/* ########################################################################## */
-.ttth_footer
+.ttth_select
 {
-    color: var(--color-inputFormsBorder) !important;
+    color: var(--color-inputFormsText) !important;
+    background-color: var(--color-inputFormsBackground) !important;
+    border-color: var(--color-inputFormsBorder) !important;
+    outline-color: var(--color-highlight);
+}
+
+.ttth_select:focus
+{
+    border-color: var(--color-highlight) !important;
+}
+
+
+.ttth_select:hover
+{
+    border-color: var(--color-highlight) !important;
 }
