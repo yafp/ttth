@@ -157,7 +157,7 @@
         "description": "Riot.im is an open source, free software instant messaging client based on the Matrix protocol",
         "url": "https://riot.im/app/",
         "multiple": true,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Riot_inject.js"
     },
     {
         "id": "slack",
