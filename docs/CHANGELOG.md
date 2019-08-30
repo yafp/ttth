@@ -17,6 +17,7 @@
 * Added check if internet is accessible. See [#90](https://github.com/yafp/ttth/issues/90)
 * Added a basic DarkMode. See [#96](https://github.com/yafp/ttth/issues/96)
 * Added support for Riot.im. See [#101](https://github.com/yafp/ttth/issues/101)
+* Added new setting to disable tray. See [#98](https://github.com/yafp/ttth/issues/98)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
@@ -24,13 +25,14 @@
 * Dependencies
   * Updated electron from 4.2.6 to 5.0.6. See [#37](https://github.com/yafp/ttth/issues/37)
   * Updated electron from 5.0.6 to 5.0.7
-  * Updated electron from 5.0.7 to 6.0.0. See [#88](https://github.com/yafp/ttth/issues/88)
+  * Updated electron from 5.0.7 to 6.0.6. See [#88](https://github.com/yafp/ttth/issues/88)
   * Removed some not-in-used dependencies. See [#91](https://github.com/yafp/ttth/issues/91)
   * Updated several dependencies. See [#92](https://github.com/yafp/ttth/issues/92)
     * Updated about-window from 1.13.0 to 1.13.1
     * Updated electron-packager from 13.1.1 to 14.0.1. See [#81](https://github.com/yafp/ttth/issues/81)
     * Updated electron-packager from 14.0.1 to 14.0.2
     * Updated electron-packager from 14.0.2 to 14.0.4
+    * Updated electron-packager from 14.0.4 to 14.0.5
     * Updated electron-builder from 20.44.4 to 21.1.1
     * Updated electron-builder from 21.1.1 to 21.1.5
     * Updated electron-builder from 21.1.5 to 21.2.0
@@ -38,11 +40,14 @@
     * Updated mocha from 6.1.4 to 6.2.0
     * Updated spectron from 5.0.0 to 7.0.0
     * Updated spectron from 7.0.0 to 8.0.0
-    * Updated eslint from 5.16.0 to 6.1.0
+    * Updated eslint from 5.16.0 to 6.2.2
     * Updated i18next from 15.1.3 to 17.0.6
     * Updated i18next from 17.0.6 to 17.0.7
     * Updated i18next from 17.0.7 to 17.0.8
     * Updated i18next from 17.0.8 to 17.0.9
+    * Updated i18next from 17.0.9 to 17.0.13
+    * Updated electron-json-storage from 4.1.6 to 4.1.7
+
 * Code: Slimdown main.js by moving menu code to separate file. [#95](https://github.com/yafp/ttth/issues/95)
 
 #### ```Deprecated```

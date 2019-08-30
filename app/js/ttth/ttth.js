@@ -155,6 +155,35 @@ function settingToggleDarkMode()
 
 
 /**
+* @name settingToggleDisableTray
+* @summary Enables or disabled the Tray
+* @description Updates the settings / option DisableTray
+*/
+function settingToggleDisableTray()
+{
+    // Handle depending on the checkbox state
+    if($("#checkboxSettingDisableTray").prop("checked"))
+    {
+        writeLocalStorage("settingDisableTray", true);
+
+        writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
+
+        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Disable Tray</u> is now enabled.");
+    }
+    else
+    {
+        writeLocalStorage("settingDisableTray", false);
+
+        writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
+
+        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Disable Tray</u> is now disabled.");
+    }
+}
+
+
+
+
+/**
 * @name settingActivateUserColorCss
 * @summary Activates a css style
 * @description Activates a css style
@@ -1282,7 +1311,6 @@ function initSettingsPage()
             writeLog("info", "initSettingsPage ::: Show menubar");
             $("#checkboxSettingHideMenubar").prop("checked", false);
             ipcRenderer.send("showMenubar");
-
         }
     }
 
@@ -1303,6 +1331,16 @@ function initSettingsPage()
         writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
         $("#checkboxSettingDarkMode").prop("checked", false);
         settingActivateUserColorCss("mainWindow_default.css");
+    }
+
+    // Setting: DisableTray
+    //
+    curSettingDisableTray = readLocalStorage("settingDisableTray");
+    if(curSettingDisableTray === "true")
+    {
+        writeLog("info", "initSettingsPage ::: Setting DisableTray is configured");
+        $("#checkboxSettingDisableTray").prop("checked", true);
+        ipcRenderer.send("disableTray");
     }
 }
 

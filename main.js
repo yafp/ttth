@@ -44,7 +44,7 @@ function writeLog(logType, logMessage)
     {
         log.transports.console.level = true;
     }
-    
+
     // add prefix for all logs from [M]ain
     logMessage = "[M] " + logMessage;
 
@@ -148,7 +148,7 @@ function createWindow ()
     // Read a local config file
     var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
     var data;
-    try 
+    try
     {
         data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
 
@@ -287,10 +287,10 @@ function createWindow ()
         //let bounds = mainWindow.getNormalBounds();
         //writeLog("info", "x:" + bounds.x + " y:" + bounds.y + " width:" + bounds.width + " height:" + bounds.height );
 
-        // TODO: 
+        // TODO:
         // move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
         //
-        // Be aware: On macOS the child windows will keep the relative position to parent window 
+        // Be aware: On macOS the child windows will keep the relative position to parent window
         // when parent window moves, while on Windows and Linux child windows will not move.
     });
 
@@ -601,6 +601,12 @@ function createWindow ()
 
 
 
+
+
+
+
+
+
 }
 
 
@@ -665,6 +671,14 @@ function createTray()
     //
     ipcMain.on("changeTrayIconToDefault", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+    });
+
+    // DisableTray - Gets called from renderer
+    //
+    ipcMain.on("disableTray", function() {
+        //mainWindow.setMenuBarVisibility(true);
+        tray.destroy();
+        writeLog("info", "Disabling tray (ipcMain");
     });
 }
 
@@ -736,7 +750,7 @@ function forceSingleAppInstance()
 //
 app.on("ready", function ()
 {
-    writeLog("info", "app got ready signal (event: ready)"); 
+    writeLog("info", "app got ready signal (event: ready)");
     forceSingleAppInstance();
     checkArguments();
     createWindow();
@@ -744,13 +758,13 @@ app.on("ready", function ()
     checkNetworkConnectivity();
 });
 
-// Emitted before the application starts closing its windows. 
+// Emitted before the application starts closing its windows.
 app.on("before-quit", function ()
 {
     writeLog("info", "app is preparing to quit (event: before-quit)");
 });
 
-// Emitted when all windows have been closed and the application will quit. 
+// Emitted when all windows have been closed and the application will quit.
 app.on("will-quit", function ()
 {
     writeLog("info", "app will quit (event: will-quit)");
@@ -780,13 +794,13 @@ app.on("certificate-error", function ()
     writeLog("info", "app failed to verify a cert (event: certificate-error)");
 });
 
-// Emitted when remote.require() is called in the renderer process of webContents. 
+// Emitted when remote.require() is called in the renderer process of webContents.
 app.on("remote-require", function ()
 {
     writeLog("info", "app called .require() in the renderer process (event: remote-require)");
 });
 
-// Emitted when remote.getGlobal() is called in the renderer process of webContents. 
+// Emitted when remote.getGlobal() is called in the renderer process of webContents.
 app.on("remote-get-global", function ()
 {
     writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
@@ -815,39 +829,39 @@ app.on("remote-get-current-web-contents", function ()
 //
 app.on("window-all-closed", function ()
 {
-    writeLog("info", "All application windows are now closed (event: window-all-closed)"); 
+    writeLog("info", "All application windows are now closed (event: window-all-closed)");
 
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
     /*
     if (process.platform !== "darwin")
     {
-        writeLog("info", "Bye."); 
+        writeLog("info", "Bye.");
         app.quit();
     }
     */
 
     // we handle it the same on all platforms - closing the main windows closes the app
-    writeLog("info", "Bye."); 
+    writeLog("info", "Bye.");
     app.quit();
 
 });
 
 
 // activate = macOS only:
-// Emitted when the application is activated. 
+// Emitted when the application is activated.
 // Various actions can trigger this event, such as launching the application for the first time,
 // attempting to re-launch the application when it's already running,
 // or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
 {
-    writeLog("info", "app got activate event (event: activate)"); 
+    writeLog("info", "app got activate event (event: activate)");
 
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
-        writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)"); 
+        writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)");
 
         //forceSingleAppInstance();
         createWindow();
