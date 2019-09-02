@@ -665,12 +665,14 @@ function createTray()
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
+        mainWindow.flashFrame(true); // #100
     });
 
     // Call from renderer: Change Tray Icon to Default
     //
     ipcMain.on("changeTrayIconToDefault", function() {
         tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+        mainWindow.flashFrame(false); // #100
     });
 
     // DisableTray - Gets called from renderer

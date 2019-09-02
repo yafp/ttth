@@ -18,6 +18,7 @@
 * Added a basic DarkMode. See [#96](https://github.com/yafp/ttth/issues/96)
 * Added support for Riot.im. See [#101](https://github.com/yafp/ttth/issues/101)
 * Added new setting to disable tray. See [#98](https://github.com/yafp/ttth/issues/98)
+* Added support for urgend-window. See [#100](https://github.com/yafp/ttth/issues/100)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
