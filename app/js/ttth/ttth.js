@@ -1261,6 +1261,9 @@ function initSettingsPage()
 {
     var curSettingAutostart;
     var curSettingHideMenubar;
+    var curSettingDarkMode;
+    var curSettingDisableTray;
+
 
     // load all supported services to checklist (used for adding new services)
     initAvailableServicesSelection();

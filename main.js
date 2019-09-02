@@ -105,7 +105,7 @@ function checkArguments()
 
     // ignore the first 2 arguments
     //log.info(process.argv.slice(2));
-    process.argv = process.argv.slice(2)
+    process.argv = process.argv.slice(2);
 
     for (var key in process.argv)
     {
