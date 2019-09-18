@@ -136,7 +136,7 @@
         "icon": "fas fa-messenger",
         "description": "",
         "url": "https://www.messenger.com/login/",
-        "multiple": true,
+        "multiple": false,
         "injectCode": ""
     },
     {
@@ -153,11 +153,21 @@
         "id": "riot",
         "name": "Riot",
         "nameLong": "Riot",
-        "icon": "fas fa-comment",
+        "icon": "far fa-comment-alt",
         "description": "Riot.im is an open source, free software instant messaging client based on the Matrix protocol",
         "url": "https://riot.im/app/",
         "multiple": true,
         "injectCode": "./js/ttth/services/Riot_inject.js"
+    },
+    {
+        "id": "skype",
+        "name": "Skype",
+        "nameLong": "Skype",
+        "icon": "fab fa-skype",
+        "description": "Keep your life easier with Skype online",
+        "url": "https://web.skype.com/",
+        "multiple": false,
+        "injectCode": ""
     },
     {
         "id": "slack",
