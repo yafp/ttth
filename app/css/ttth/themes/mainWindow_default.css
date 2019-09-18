@@ -1,19 +1,19 @@
 :root {
 
     /* body */
-    --color-bodyText: black;
-    --color-bodyBackground: white;
+    --color-bodyText: #000000; /* black */
+    --color-bodyBackground: #FFFFFF; /* white */
 
     /* navigation */
-    --color-navigationText: white;
+    --color-navigationText: #FFFFFF; /* white */
     --color-navigationBackground: #171717;
-    --color-navigationBorder: limegreen;
+    --color-navigationBorder: #32CD32; /* limegreen */
 
     /* highlight */
-    --color-highlight: limegreen;
+    --color-highlight: #32CD32; /* limegreen */
 
     /* bootstrap form elements */
-    --color-inputFormsText: black;
-    --color-inputFormsBackground: #ebebeb;
-    --color-inputFormsBorder: lightgray;
+    --color-inputFormsText: #000000; /* black */
+    --color-inputFormsBackground: #EBEBEB; /* Gray92  */
+    --color-inputFormsBorder: #D3D3D3; /* lightgray */
 }
