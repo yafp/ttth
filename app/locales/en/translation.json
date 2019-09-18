@@ -28,7 +28,7 @@
     "mw_settingsOptionsDescAutostart": "Enable autostart (on login)",
     "mw_settingsOptionsDescHideMenubar": "Hide menubar (on load)",
     "mw_settingsOptionsDescDarkMode": "Enable dark mode",
-    "mw_settingsOptionsDescDisableTray": "Disable Tray (needs app restart)",
+    "mw_settingsOptionsDescDisableTray": "Disable Tray (on load)",
 
     "cw_windowName": "Config service",
     "cw_labelId": "ID",

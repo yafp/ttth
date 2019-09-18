@@ -28,7 +28,7 @@
     "mw_settingsOptionsDescAutostart": "Aktiviere Autostart (bei Anmeldung)",
     "mw_settingsOptionsDescHideMenubar": "Verstecke Menüzeile (beim laden)",
     "mw_settingsOptionsDescDarkMode": "Aktiviere dunkles Theme",
-    "mw_settingsOptionsDescDisableTray": "Deaktiviere Tray (benötigt Programm Neustart)",
+    "mw_settingsOptionsDescDisableTray": "Deaktiviere Tray (beim laden)",
 
     "cw_windowName": "Dienst konfigurieren",
     "cw_labelId": "ID",
