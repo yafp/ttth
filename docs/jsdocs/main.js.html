@@ -40,7 +40,6 @@ const fs = require("fs");
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 
-
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -51,13 +50,8 @@ verbose = false;
 
 
 
-
-
-
 // menu.js
 require("./menu").createMenu();
-
-
 
 
 /**
@@ -78,7 +72,7 @@ function writeLog(logType, logMessage)
     {
         log.transports.console.level = true;
     }
-    
+
     // add prefix for all logs from [M]ain
     logMessage = "[M] " + logMessage;
 
@@ -139,7 +133,7 @@ function checkArguments()
 
     // ignore the first 2 arguments
     //log.info(process.argv.slice(2));
-    process.argv = process.argv.slice(2)
+    process.argv = process.argv.slice(2);
 
     for (var key in process.argv)
     {
@@ -182,7 +176,7 @@ function createWindow ()
     // Read a local config file
     var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
     var data;
-    try 
+    try
     {
         data = JSON.parse(fs.readFileSync(customUserDataPath, "utf8"));
 
@@ -209,11 +203,18 @@ function createWindow ()
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
+
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
             webviewTag: true, // # see #37
+
+            // new in 1.5.0
+            devTools: true, // should be possible to open them
+            partition: "ttth",
+
+            //nodeIntegrationInWorker: true
         }
     });
 
@@ -224,6 +225,7 @@ function createWindow ()
     {
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
+
 
     // set the user agent
     //changeUserAgent();
@@ -320,10 +322,10 @@ function createWindow ()
         //let bounds = mainWindow.getNormalBounds();
         //writeLog("info", "x:" + bounds.x + " y:" + bounds.y + " width:" + bounds.width + " height:" + bounds.height );
 
-        // TODO: 
+        // TODO:
         // move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
         //
-        // Be aware: On macOS the child windows will keep the relative position to parent window 
+        // Be aware: On macOS the child windows will keep the relative position to parent window
         // when parent window moves, while on Windows and Linux child windows will not move.
     });
 
@@ -634,6 +636,12 @@ function createWindow ()
 
 
 
+
+
+
+
+
+
 }
 
 
@@ -691,14 +699,72 @@ function createTray()
     // Call from renderer: Change Tray Icon to UnreadMessages
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
+        }
+        mainWindow.flashFrame(true); // #100 - - urgent window
     });
 
     // Call from renderer: Change Tray Icon to Default
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+        }
+        mainWindow.flashFrame(false); // #100 - urgent window
     });
+
+    // RecreateTray - Gets called from renderer
+    //
+    ipcMain.on("recreateTray", function() {
+        writeLog("info", "Recreating tray (ipcMain)");
+        createTray();
+    });
+
+    // DisableTray - Gets called from renderer
+    //
+    ipcMain.on("disableTray", function() {
+        writeLog("info", "Disabling tray (ipcMain)");
+        tray.destroy();
+        if(tray.isDestroyed() === true)
+        {
+            writeLog("info", "Disabling tray was working");
+        }
+        else
+        {
+            writeLog("error", "Disabling tray failed");
+        }
+    });
+
+
+
+
+
+    // When the tray gets clicked
+    //
+    tray.on("click", function ()
+    {
+         writeLog("info", "Tray: Left click");
+    });
+
+    // When the tray gets double-clicked (only macOS &amp; Windows)
+    //
+    tray.on("double-click", function ()
+    {
+         writeLog("info", "Tray: Middle click");
+    });
+
+    // When the tray gets right-clicked (only macOS &amp; Windows)
+    //
+    tray.on("right-click", function ()
+    {
+         writeLog("info", "Tray: Right click");
+    });
+
+
+
 }
 
 
@@ -769,22 +835,21 @@ function forceSingleAppInstance()
 //
 app.on("ready", function ()
 {
-    writeLog("info", "app got ready signal (event: ready)"); 
+    writeLog("info", "app got ready signal (event: ready)");
     forceSingleAppInstance();
     checkArguments();
     createWindow();
-    //createMenu();
     createTray();
     checkNetworkConnectivity();
 });
 
-// Emitted before the application starts closing its windows. 
+// Emitted before the application starts closing its windows.
 app.on("before-quit", function ()
 {
     writeLog("info", "app is preparing to quit (event: before-quit)");
 });
 
-// Emitted when all windows have been closed and the application will quit. 
+// Emitted when all windows have been closed and the application will quit.
 app.on("will-quit", function ()
 {
     writeLog("info", "app will quit (event: will-quit)");
@@ -814,13 +879,13 @@ app.on("certificate-error", function ()
     writeLog("info", "app failed to verify a cert (event: certificate-error)");
 });
 
-// Emitted when remote.require() is called in the renderer process of webContents. 
+// Emitted when remote.require() is called in the renderer process of webContents.
 app.on("remote-require", function ()
 {
     writeLog("info", "app called .require() in the renderer process (event: remote-require)");
 });
 
-// Emitted when remote.getGlobal() is called in the renderer process of webContents. 
+// Emitted when remote.getGlobal() is called in the renderer process of webContents.
 app.on("remote-get-global", function ()
 {
     writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
@@ -849,39 +914,39 @@ app.on("remote-get-current-web-contents", function ()
 //
 app.on("window-all-closed", function ()
 {
-    writeLog("info", "All application windows are now closed (event: window-all-closed)"); 
+    writeLog("info", "All application windows are now closed (event: window-all-closed)");
 
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
     /*
     if (process.platform !== "darwin")
     {
-        writeLog("info", "Bye."); 
+        writeLog("info", "Bye.");
         app.quit();
     }
     */
 
     // we handle it the same on all platforms - closing the main windows closes the app
-    writeLog("info", "Bye."); 
+    writeLog("info", "Bye.");
     app.quit();
 
 });
 
 
 // activate = macOS only:
-// Emitted when the application is activated. 
+// Emitted when the application is activated.
 // Various actions can trigger this event, such as launching the application for the first time,
 // attempting to re-launch the application when it's already running,
 // or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
 {
-    writeLog("info", "app got activate event (event: activate)"); 
+    writeLog("info", "app got activate event (event: activate)");
 
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
-        writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)"); 
+        writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)");
 
         //forceSingleAppInstance();
         createWindow();
@@ -910,13 +975,13 @@ process.on("uncaughtException", (err, origin) => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDarkMode">settingToggleDarkMode</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDarkMode">settingToggleDarkMode</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 02 2019 13:45:59 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 12 2019 14:04:54 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

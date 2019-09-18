@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/Threema_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Riot_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/Threema_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Riot_inject.js</h1>
 
     
 
@@ -30,50 +30,37 @@
 
 
 /**
-* @name serviceThreemaGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Threema
-* @description Gets the amount of unread messages of the service Threema
+* @name serviceRiotGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Riot.im
+* @description Gets the amount of unread messages of the service Riot.im
 */
-function serviceThreemaGetUnreadMessageCount()
+function serviceRiotGetUnreadMessageCount()
 {
-    console.log("serviceThreemaGetUnreadMessageCount ::: Start");
+    console.log("serviceRiotGetUnreadMessageCount ::: Start");
 
-    var unreadCount;
+    var i;
+    var ii;
 
-    let newUnread = 0;
-    try
+    var a=document.getElementsByClassName("mx_RoomTile_nameContainer"),b=0;
+    for(i=0;i&lt;a.length;i++)
     {
-        //let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
-        let webClientService = angular.element(document.documentElement).injector().get("WebClientService");
-        let conversations = webClientService.conversations.conversations;
-        conversations.forEach(function(conversation)
+        var c=a[i].getElementsByClassName("mx_RoomTile_badge");
+        for(ii=0;ii&lt;c.length;ii++)
         {
-            newUnread += conversation.unreadCount;
-        });
-    }
-    catch (e)
-    {
-         console.log("serviceThreemaGetUnreadMessageCount ::: Catch");
-    }
-    
-
-    if (newUnread !== unreadCount)
-    {
-        unreadCount = newUnread;
-
-        // send back from webview to main
-        ipcRenderer.sendToHost(unreadCount);
+            parseInt(c[ii].textContent.trim())%1===0&amp;&amp;(b+=parseInt(c[ii].textContent.trim()));
+        }
     }
 
-    console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
+    console.log("serviceRiotGetUnreadMessageCount ::: Unread messages in Riot: _" + b + "_.");
 
-    console.log("serviceThreemaGetUnreadMessageCount ::: End");
+    ipcRenderer.sendToHost(b);
+
+    console.log("serviceRiotGetUnreadMessageCount ::: End");
 }
-
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceThreemaGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceRiotGetUnreadMessageCount());
 });
 </code></pre>
         </article>
