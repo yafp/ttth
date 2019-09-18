@@ -1,3 +1,50 @@
+function showServiceShortcuts()
+{
+    tabCounter = 0;
+
+    // loop over all tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+
+        if(currentTabId !== "target_Settings")
+        {
+            tabCounter = tabCounter +1;
+            currentTabId = currentTabId.replace("target_", "");
+            $( "#shortcut_" + currentTabId).html( tabCounter );
+        }
+    });
+}
+
+
+
+
+function hideServiceShortcuts()
+{
+    // loop over all tabs
+    $("#myTabs li a").each(function()
+    {
+        currentTabId = $(this).attr("id");
+        if(currentTabId !== "target_Settings")
+        {
+            currentTabId = currentTabId.replace("target_", "");
+            $( "#shortcut_" + currentTabId).html("");
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
 * @name showNoty
 * @summary Shows a noty notification
@@ -37,6 +84,7 @@ function writeLog(logType, logMessage)
     //logR.transports.console.level = false; // TODO: should depend on the verbose setting in main.js
 
 
+
     // add prefix for all logs from [R]enderer
     logMessage = "[R] " + logMessage;
 
@@ -57,9 +105,9 @@ function writeLog(logType, logMessage)
             console.log(logMessage); // to console
             break;
 
-        case "verbose" :
+        //case "verbose" :
             //logR.verbose(logMessage); // to file
-            break;
+            //break;
 
         case "debug" :
             //logR.debug(logMessage); // to file
@@ -121,6 +169,24 @@ function previewIcon()
 }
 
 
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssFile)
+{
+    console.log("settingActivateUserColorCss ::: Loading DarkMode" );
+
+    // load custom css file
+    $("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/themes/" + cssFile
+    }).appendTo("head");
+}
+
 
 /**
 * @name settingToggleDarkMode
@@ -166,39 +232,25 @@ function settingToggleDisableTray()
     {
         writeLocalStorage("settingDisableTray", true);
 
-        writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
-
         showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Disable Tray</u> is now enabled.");
+
+        const {ipcRenderer} = require("electron");
+        ipcRenderer.send("disableTray");
+
+        writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
     }
     else
     {
         writeLocalStorage("settingDisableTray", false);
 
-        writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
-
         showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Disable Tray</u> is now disabled.");
+
+        // re-create the tray
+        const {ipcRenderer} = require("electron");
+        ipcRenderer.send("recreateTray");
+
+        writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
     }
-}
-
-
-
-
-/**
-* @name settingActivateUserColorCss
-* @summary Activates a css style
-* @description Activates a css style
-* @param cssStyleName - Name of the css file
-*/
-function settingActivateUserColorCss(cssFile)
-{
-    console.log("settingActivateUserColorCss ::: Loading DarkMode" );
-
-    // load custom css file
-    $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "css/ttth/themes/" + cssFile
-    }).appendTo("head");
 }
 
 
@@ -326,8 +378,8 @@ function openUserServicesConfigFolder()
 */
 function updateTrayIconStatus()
 {
-    var overallUnreadMessages = 0;
-    var curServiceUnreadMessageCount = 0;
+    var overallUnreadMessages = 0; // counts unread messages for all enabled services
+    var curServiceUnreadMessageCount = 0; // contains the unread-message count for a single service
     var serviceName = "";
     var currentTabId;
 
@@ -340,8 +392,6 @@ function updateTrayIconStatus()
         {
             currentTabId = currentTabId.replace("target_", "");
 
-            writeLog("info", "updateTrayIconStatus ::: Check unread message badge of: _" + currentTabId + "_.");
-
             curServiceUnreadMessageCount = 0; // reset to 0
             curServiceUnreadMessageCount = $("#badge_" + currentTabId ).html();
             curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount);
@@ -349,11 +399,11 @@ function updateTrayIconStatus()
             // if the current service has a significant unread message count -> log it and add it to overall counter
             if( (curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== "") && (curServiceUnreadMessageCount !== null) )
             {
-                writeLog("info", "updateTrayIconStatus ::: Unread messages count of service _" + serviceName + "_ is: " + curServiceUnreadMessageCount);
-
-                // increate the overall counter
+                // increase the overall counter
                 overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount;
             }
+
+            writeLog("info", "updateTrayIconStatus ::: Unread messages count of _" + currentTabId + "_ is: " + curServiceUnreadMessageCount);
         }
         else
         {
@@ -361,7 +411,7 @@ function updateTrayIconStatus()
         }
     });
 
-    writeLog("info", "updateTrayIconStatus ::: Overall unread message count is: _" + overallUnreadMessages + "_.");
+    writeLog("info", "updateTrayIconStatus ::: Overall unread message count for all services is: _" + overallUnreadMessages + "_.");
 
     const {ipcRenderer} = require("electron");
     if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
@@ -411,7 +461,6 @@ function updateServiceBadge(serviceId, count)
 */
 function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false)
 {
-    writeLog("info", "eventListenerForSingleService ::: Start for service: _" + serviceId + "_.");
     writeLog("info", "eventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
 
     // get webview
@@ -427,6 +476,82 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     }, 5000);
 
 
+    // adding general webview events (valid for all services)
+    //
+    //
+
+    // WebView Event: did-fail-load (https://electronjs.org/docs/api/webview-tag#event-did-fail-load)
+    //
+    webview.addEventListener("did-fail-load", function()
+    {
+        writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
+    //
+    webview.addEventListener("crashed", function()
+    {
+        writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: page-title-updated (https://electronjs.org/docs/api/webview-tag#event-page-title-updated)
+    //
+    webview.addEventListener("page-title-updated", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: page-title-updated for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: plugin-crashed (https://electronjs.org/docs/api/webview-tag#event-plugin-crashed)
+    //
+    webview.addEventListener("plugin-crashed", function()
+    {
+        writeLog("error", "eventListenerForSingleService ::: plugin-crashed for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: destroyed (https://electronjs.org/docs/api/webview-tag#event-destroyed)
+    //
+    webview.addEventListener("destroyed", function()
+    {
+        writeLog("error", "eventListenerForSingleService ::: destroyed for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: update-target-url (https://electronjs.org/docs/api/webview-tag#event-update-target-url)
+    //
+    webview.addEventListener("update-target-url", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: update-target-url for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: devtools-opened (htps://electronjs.org/docs/api/webview-tag#event-devtools-opened)
+    //
+    webview.addEventListener("devtools-opened", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: devtools-opened for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: devtools closed (https://electronjs.org/docs/api/webview-tag#event-devtools-closed)
+    //
+    webview.addEventListener("devtools closed", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: devtools closed for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: close (https://electronjs.org/docs/api/webview-tag#event-close)
+    //
+    webview.addEventListener("close", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: close for: _" + serviceId + "_.");
+    });
+
+    // WebView Event: console-message (https://electronjs.org/docs/api/webview-tag#event-console-message)
+    //
+    //webview.addEventListener("console-message", function()
+    //{
+        //writeLog("info", "eventListenerForSingleService ::: console-message");
+    //});
+
+
+
     // WebView Events for UnreadMessageHandling
     //
     if(enableUnreadMessageHandling === true)
@@ -435,7 +560,22 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("did-start-loading", function()
         {
-            writeLog("info", "eventListenerForSingleService ::: did-start-loading.");
+            // Debug: Open a separate Console Window for the webview of the current service
+            //
+            //webview.openDevTools();
+
+            writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
+
+            // Triggering search for unread messages
+            webview.send("request");
+        });
+
+
+        // WebView Event: did-finish-load
+        //
+        webview.addEventListener("did-finish-load", function()
+        {
+            writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -446,7 +586,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("dom-ready", function()
         {
-            writeLog("info", "eventListenerForSingleService ::: DOM-Ready");
+            writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
 
             // Triggering search for unread messages
             webview.send("request");
@@ -457,22 +597,20 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("did-stop-loading", function()
         {
-            writeLog("info", "eventListenerForSingleService ::: did-stop-loading");
-
-            // Debug: Open a separate Console Window for this WebView
-            //webview.openDevTools();
+            writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
 
             // Triggering search for unread messages
             webview.send("request");
         });
 
-
         // WebView Event:  ipc-message
-        webview.addEventListener("ipc-message",function(event)
-        {
-            writeLog("info", "eventListenerForSingleService ::: ipc-message");
-            //writeLog("info", event);
-            //console.info(event.channel);
+        // TODO: this eventListener breaks with electron 6 (FIXME)
+        // see #88
+        //
+        //webview.addEventListener("ipc-message",function(event)
+        //{
+        webview.addEventListener('ipc-message', (event) => {
+            writeLog("info", "eventListenerForSingleService ::: ipc-message for: _" + serviceId + "_.");
 
             // update the badge
             if(event.channel != null)
@@ -489,7 +627,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     {
         webview.addEventListener("new-window", function(e)
         {
-            writeLog("info", "eventListenerForSingleService ::: new-window");
+            writeLog("info", "eventListenerForSingleService ::: new-window for: _" + serviceId + "_.");
 
             const BrowserWindow = require("electron");
             const shell = require("electron").shell;
@@ -502,7 +640,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         });
     }
 
-    writeLog("info", "eventListenerForSingleService ::: End");
+    writeLog("info", "eventListenerForSingleService ::: End for service: _" + serviceId + "_.");
 }
 
 
@@ -551,7 +689,7 @@ function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
 */
 function createSingleServiceConfiguration()
 {
-    writeLog("info", "updateSingleServiceConfiguration ::: Starting to create  a new service config");
+    writeLog("info", "updateSingleServiceConfiguration ::: Starting to create a new service config");
 
     const storage = require("electron-json-storage");
 
@@ -711,7 +849,65 @@ function isMac()
     }
     else
     {
-        writeLog("info", "isMac ::: This is no mac");
+        writeLog("info", "isMac ::: No apples here");
+        return false;
+    }
+}
+
+
+/**
+* @name isLinux
+* @summary Checks if the operating system type is linux or not
+* @description Checks if the operating system type islinux or not
+* @return value - Boolean: True if linux, false if not
+*/
+function isLinux()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeLog("info", "isLinux ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Linux")
+    {
+        writeLog("info", "isLinux ::: Smelling penguins");
+        return true;
+    }
+    else
+    {
+        writeLog("info", "isLinux ::: No penguins here");
+        return false;
+    }
+}
+
+
+/**
+* @name isWindows
+* @summary Checks if the operating system type is windows or not
+* @description Checks if the operating system type is windows or not
+* @return value - Boolean: True if windows, false if not
+*/
+function isWindows()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeLog("info", "isWindows ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Windows NT")
+    {
+        writeLog("info", "isWindows ::: Looks like Redmond");
+        return true;
+    }
+    else
+    {
+        writeLog("info", "isWindows ::: There are no windows ... omg");
         return false;
     }
 }
@@ -1001,7 +1197,7 @@ function loadDefaultView()
     }
     else
     {
-        writeLog("info", "loadDefaultView ::: Found configured default view: " + curDefaultView);
+        writeLog("info", "loadDefaultView ::: Found configured default view: _" + curDefaultView + "_.");
         switchToService(curDefaultView);
     }
 }
@@ -1052,7 +1248,7 @@ function validateConfiguredDefaultView()
         }
         else
         {
-            writeLog("info", "validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+            writeLog("warning", "validateConfiguredDefaultView ::: Fallback to default (setting-view)");
 
             // reset the selection of the select item
             $("#selectDefaultView").prop("selectedIndex",0);
@@ -1098,6 +1294,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "freenode":
         case "linkedIn":
         case "messenger":
+        case "skype":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
@@ -1150,9 +1347,6 @@ function initAvailableServicesSelection()
 
     // Empty the select
     //dropdown.empty();
-
-    // Add a disabled dummy/default entry
-    //dropdown.append("<option selected='true' disabled>Choose a service</option>");
 
     // select the first entry
     dropdown.prop("selectedIndex", 0);
@@ -1284,6 +1478,7 @@ function initSettingsPage()
         writeLog("info", "initSettingsPage ::: Setting Autostart is not configured");
         $("#checkboxSettingAutostart").prop("checked", false);
     }
+    // End: Autostart
 
 
     // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
@@ -1301,21 +1496,20 @@ function initSettingsPage()
     }
     else // default case (linux or windows)
     {
-        if(curSettingHideMenubar === "true")
+        if(curSettingHideMenubar === "true") // hide menubar
         {
-            // hide menubar
             writeLog("info", "initSettingsPage ::: Hide menubar");
             $("#checkboxSettingHideMenubar").prop("checked", true);
             ipcRenderer.send("hideMenubar");
         }
-        else
+        else // show menubar
         {
-            // show menubar
             writeLog("info", "initSettingsPage ::: Show menubar");
             $("#checkboxSettingHideMenubar").prop("checked", false);
             ipcRenderer.send("showMenubar");
         }
     }
+    // End: HiodeMenubar
 
 
     // Setting: DarkMode
@@ -1335,16 +1529,31 @@ function initSettingsPage()
         $("#checkboxSettingDarkMode").prop("checked", false);
         settingActivateUserColorCss("mainWindow_default.css");
     }
+    // End: Darkmode
 
-    // Setting: DisableTray
+
+
+    // Setting: DisableTray (only for linux)
     //
-    curSettingDisableTray = readLocalStorage("settingDisableTray");
-    if(curSettingDisableTray === "true")
+    if(isLinux())
     {
-        writeLog("info", "initSettingsPage ::: Setting DisableTray is configured");
-        $("#checkboxSettingDisableTray").prop("checked", true);
-        ipcRenderer.send("disableTray");
+        curSettingDisableTray = readLocalStorage("settingDisableTray");
+        if(curSettingDisableTray === "true")
+        {
+            writeLog("info", "initSettingsPage ::: Setting DisableTray is configured");
+            $("#checkboxSettingDisableTray").prop("checked", true);
+            ipcRenderer.send("disableTray");
+        }
     }
+    else
+    {
+        // hide the entire setting on settingspage
+        $("#settingsSectionDisableTray").hide();
+    }
+    //End: DisableTray
+
+
+
 }
 
 
@@ -1381,7 +1590,7 @@ function removeServiceTab(tabId)
 function getHostName(url)
 {
     var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i);
-    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0)
+    if ( match != null && match.length > 2 && typeof match[2] === "string" && match[2].length > 0 )
     {
         return match[2];
     }
@@ -1405,15 +1614,15 @@ function getDomain(url)
 
     if (hostName != null)
     {
-        var parts = hostName.split('.').reverse();
+        var parts = hostName.split(".").reverse();
 
         if (parts != null && parts.length > 1)
         {
-            domain = parts[1] + '.' + parts[0];
+            domain = parts[1] + "." + parts[0];
 
-            if (hostName.toLowerCase().indexOf('.co.uk') != -1 && parts.length > 2)
+            if (hostName.toLowerCase().indexOf(".co.uk") != -1 && parts.length > 2)
             {
-                domain = parts[2] + '.' + domain;
+                domain = parts[2] + "." + domain;
             }
         }
     }
@@ -1449,7 +1658,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
-    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><i class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
+    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'></span> <i class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
 
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
@@ -1481,8 +1690,16 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     else
     {
         // Using partition:
+        //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
         $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
+        
+
+        // baustelle - session
+        // https://github.com/electron/electron/issues/15365#issuecomment-441456539
+        //
+        //session.fromPartition('persist:'+serviceDomain).cookies.set
     }
+
 
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 

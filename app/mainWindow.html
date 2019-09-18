@@ -9,8 +9,8 @@
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
     <!-- jquery -->
-    <!-- 3.3.1 -->
-    <script type="text/javascript" src="lib/jquery/3.3.1/jquery-3.3.1.min.js"></script>
+    <!-- 3.4.1 -->
+    <script type="text/javascript" src="lib/jquery/3.4.1/jquery-3.4.1.min.js"></script>
 
     <!-- bootstrap -->
     <!-- 4.3.1 -->
@@ -18,8 +18,8 @@
     <script type="text/javascript" src="lib/bootstrap/4.3.1/js/bootstrap.min.js" async></script>
 
     <!-- fontawesome -->
-    <!-- 5.8.1 -->
-    <script type="text/javascript" src="lib/fontawesome-free-web/5.8.1/js/all.min.js" async></script>
+    <!-- 5.10.2 -->
+    <script type="text/javascript" src="lib/fontawesome-free-web/5.10.2/js/all.min.js" async></script>
 
     <!-- noty -->
     <!-- 3.2.0-beta -->
@@ -35,9 +35,22 @@
     <link rel="stylesheet" href="css/ttth/mainWindow.css" >
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services/WhatsApp.js" async></script>
+
+
+    <!-- mousetrap - referenced: https://electronjs.org/docs/tutorial/keyboard-shortcuts -->
+    <!-- 1.6.3 -->
+    <script type="text/javascript" src="lib/mousetrap/1.6.3/mousetrap.min.js" async></script>
+
 </head>
 
 <body>
+
+    <div class="etabs-tabgroup">
+    <div class="etabs-tabs"></div>
+    <div class="etabs-buttons"></div>
+</div>
+<div class="etabs-views"></div>
+
 
     <!-- navigation -->
     <nav class="tabs">
@@ -171,6 +184,16 @@
                         </div>
                         <!-- /Option: HideMenubarOnStartup  -->
 
+                         <!-- Option: DisableTray -->
+                        <div class="input-group input-group-sm mb-1" id="settingsSectionDisableTray">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingDisableTray" aria-label="Checkbox for disable tray" onClick="settingToggleDisableTray();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescDisableTray" disabled>
+                        </div>
+                        <!-- /Option: DisableTray -->
 
                         <!-- Option: DarkMode -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionDarkMode">
@@ -182,17 +205,6 @@
                             <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescDarkMode" disabled>
                         </div>
                         <!-- /Option: DarkMode -->
-
-                        <!-- Option: DisableTray -->
-                        <div class="input-group input-group-sm mb-1" id="settingsSectionDisableTray">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingDisableTray" aria-label="Checkbox for disable tray" onClick="settingToggleDisableTray();">
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescDisableTray" disabled>
-                        </div>
-                        <!-- /Option: DisableTray -->
 
                     </div>
                 </div>
@@ -292,6 +304,32 @@ $(document).bind('afterready', function()
         }
         */
     })
+
+
+
+
+
+
+    //Mousetrap.bind('4', function() { console.log('4'); });
+    //Mousetrap.bind('esc', function() { console.log('escape'); }, 'keyup');
+
+    Mousetrap.bind('ctrl', function() 
+    { 
+        //console.error('ctrl UP'); 
+        hideServiceShortcuts();
+    }, 'keyup');
+
+
+    // CTRL DOWN
+    Mousetrap.bind('ctrl', function() 
+    { 
+        //console.error('ctrl DOWN'); 
+        showServiceShortcuts();
+    }, 'keydown');
+
+
+
+
 
 });
 

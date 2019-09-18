@@ -27,7 +27,6 @@ function serviceTelegramGetUnreadMessageCount()
                 {
                     count = count +1;
                     console.log("serviceTelegramGetUnreadMessageCount ::: Found communication with unread messages. Current sum is: _" + count + "_.");
-                    
                 }
             }
             clearInterval(intervalID);
@@ -39,7 +38,6 @@ function serviceTelegramGetUnreadMessageCount()
         ipcRenderer.sendToHost(count);
     }
 }
-
 
 
 ipcRenderer.on("request", function()

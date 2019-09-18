@@ -6,7 +6,6 @@
 ![GitHub Download latest release](https://img.shields.io/github/downloads/yafp/ttth/latest/total)
 ![GitHub Download All releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
-![GitHub Issues Closed](https://img.shields.io/github/issues-closed-raw/yafp/ttth.svg?style=flat)
 ![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 
@@ -18,8 +17,8 @@
 ## table of contents
 
 - [about](#about)
-- [ui](#ui)
 - [services](#services)
+- [ui](#ui)
 - [changelog](#changelog)
 - [download](#download)
 - [install](#install)
@@ -37,9 +36,6 @@ It is:
 
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
-
-## ui
-![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 
 ## services
@@ -59,6 +55,7 @@ It is:
 * Messenger
 * Nextcloud
 * Riot.im
+* Skype
 * Slack
 * Telegram
 * Threema
@@ -67,6 +64,10 @@ It is:
 * Xing
 
 You can as well add custom urls to ttth.
+
+
+## ui
+![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 
 ## changelog
@@ -78,49 +79,7 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 
 ## install
-
-### linux
-
-#### AppImage
-* Download the latest .AppImage
-* Copy the AppImage to the desired location
-* Make it executable: ```chmod +x /path/to/local/ttth-file.AppImage```
-* Execute it
-
-#### .deb
-* Download the latest .deb
-* execute: ```sudo dpkg -i /path/to/local/ttth-file.deb```
-
-#### pacman
-* Download the latest .pacman
-* execute: ```sudo pacman -U /path/to/local/ttth-file.pacman```
-
-#### rpm
-* Download the latest .rpm
-* execute:
-  * ```sudo dnf localinstall /path/to/local/ttth-file.rpm``` or
-  * ```sudo yum localinstall /path/to/local/ttth-file.rpm```
-
-#### Snap
-* Download the latest .snap
-* execute: ```sudo snap install /path/to/local/ttth-file.snap```
-
-### macOS
-#### dmg
-* Download the latest .dmg
-* Mount the .dmg
-* Drag the .app to /Applications
-
-#### zip
-* Download the latest .zip
-* Extract the zip
-* Drag the .app to /Applications
-
-### windows
-
-#### installer
-* Download the latest *win-installer.exe
-* Execute the *win-installer.exe
+Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 
 ## keyboard-shortcuts
@@ -149,7 +108,7 @@ Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
 
 ## privacy
-* ttth is not tracking it's users (not using Ggoogle Analytics nor using other methods)
+* ttth is not tracking it's users (not using Google Analytics nor using other methods)
 * All data is stored locally only.
 * Sessions will persist using the [partition:persist](https://electronjs.org/docs/api/webview-tag#partition) attribute for electrons webview.
 

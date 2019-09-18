@@ -325,7 +325,6 @@ function ()
     if(os.platform() === "darwin") 
     {
         // see #21 - disable the menuitem Toggle-menubar
-        //
         var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
         item.enabled = false;
     }
@@ -341,5 +340,6 @@ function ()
     {
         // nothing to do so far
     }
+
 };
 

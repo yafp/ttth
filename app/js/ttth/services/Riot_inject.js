@@ -11,6 +11,7 @@ function serviceRiotGetUnreadMessageCount()
     console.log("serviceRiotGetUnreadMessageCount ::: Start");
 
     var i;
+    var ii;
 
     var a=document.getElementsByClassName("mx_RoomTile_nameContainer"),b=0;
     for(i=0;i<a.length;i++)

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // DEFINE CONSTANTS AND VARIABLES
 // -----------------------------------------------------------------------------
-const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
+const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut, crashReporter } = require("electron");
 
 const log = require("electron-log"); // for: logging to file
 const shell = require("electron").shell; // for: opening external urls in default browser
@@ -11,6 +11,7 @@ const path = require("path");
 const fs = require("fs");
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
+const openAboutWindow = require("about-window").default; // for: about-window
 
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
@@ -19,6 +20,29 @@ let configWindow;
 
 let verbose;
 verbose = false;
+
+
+
+// crashReporter
+// 
+// https://electronjs.org/docs/api/crash-reporter
+//
+// Crash reports are saved locally in an application-specific temp directory folder. 
+// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory. 
+// You can customize this temp directory location for your app by calling the 
+//    app.setPath('temp', '/my/custom/temp') 
+// API before starting the crash reporter.
+crashReporter.start({
+        productName: "ttth",
+        companyName: "yafp",
+        submitURL: "https://your-domain.com/url-to-submit",
+        uploadToServer: false
+})
+// crashes directory on linux: "/tmp/ttth Crashes/"
+
+// To simulate a crash - execute: process.crash();
+//process.crash();
+
 
 
 
@@ -175,11 +199,18 @@ function createWindow ()
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
+
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
             webviewTag: true, // # see #37
+
+            // new in 1.5.0
+            devTools: true, // should be possible to open them
+            partition: "ttth",
+
+            //nodeIntegrationInWorker: true
         }
     });
 
@@ -564,26 +595,14 @@ function createWindow ()
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    // Hide Menubar - Gets called from renderer
+    // Menubar: Hide Menubar - Gets called from renderer
     //
     ipcMain.on("hideMenubar", function() {
         mainWindow.setMenuBarVisibility(false);
         writeLog("info", "Hiding menubar (ipcMain)");
     });
 
-    // Show Menubar - Gets called from renderer
+    // Menubar: Show Menubar - Gets called from renderer
     //
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
@@ -591,22 +610,12 @@ function createWindow ()
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    // Tray: RecreateTray - Gets called from renderer
+    //
+    ipcMain.on("recreateTray", function() {
+        writeLog("info", "Recreating tray (ipcMain)");
+        createTray();
+    });
 }
 
 
@@ -623,9 +632,33 @@ function createTray()
 
     const contextMenu = Menu.buildFromTemplate([
         {
+            id: "about",
+            label: "About",
+            click: function () {
+                openAboutWindow({
+                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
+                    open_devtools: false,
+                    use_version_info: true,
+                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                    {
+                        autoHideMenuBar: true,
+                        titleBarStyle: "hidden",
+                        minimizable: false, // not implemented on linux
+                        maximizable: false, // not implemented on linux
+                        movable: false, // not implemented on linux
+                        resizable: false,
+                        alwaysOnTop: true,
+                        fullscreenable: false,
+                        skipTaskbar: false
+                    }
+                });
+            },
+            enabled: true
+        },
+        {
             // Window focus
             id: "show",
-            label: "Show Window",
+            label: "Show",
             click: function () {
                 // focus the main window
                 if (mainWindow.isMinimized())
@@ -664,24 +697,67 @@ function createTray()
     // Call from renderer: Change Tray Icon to UnreadMessages
     //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
-        mainWindow.flashFrame(true); // #100
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
+        }
+        mainWindow.flashFrame(true); // #100 - - urgent window
     });
 
     // Call from renderer: Change Tray Icon to Default
     //
     ipcMain.on("changeTrayIconToDefault", function() {
-        tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
-        mainWindow.flashFrame(false); // #100
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+        }
+        mainWindow.flashFrame(false); // #100 - urgent window
     });
+
+
 
     // DisableTray - Gets called from renderer
     //
     ipcMain.on("disableTray", function() {
-        //mainWindow.setMenuBarVisibility(true);
+        writeLog("info", "Disabling tray (ipcMain)");
         tray.destroy();
-        writeLog("info", "Disabling tray (ipcMain");
+        if(tray.isDestroyed() === true)
+        {
+            writeLog("info", "Disabling tray was working");
+        }
+        else
+        {
+            writeLog("error", "Disabling tray failed");
+        }
     });
+
+
+
+
+
+    // When the tray gets clicked
+    //
+    tray.on("click", function ()
+    {
+         writeLog("info", "Tray: Left click");
+    });
+
+    // When the tray gets double-clicked (only macOS & Windows)
+    //
+    tray.on("double-click", function ()
+    {
+         writeLog("info", "Tray: Middle click");
+    });
+
+    // When the tray gets right-clicked (only macOS & Windows)
+    //
+    tray.on("right-click", function ()
+    {
+         writeLog("info", "Tray: Right click");
+    });
+
+
+
 }
 
 
@@ -738,7 +814,6 @@ function forceSingleAppInstance()
         });
     }
 }
-
 
 
 // -----------------------------------------------------------------------------

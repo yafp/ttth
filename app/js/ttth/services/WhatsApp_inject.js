@@ -34,7 +34,9 @@ function serviceWhatsAppGetUnreadMessageCount()
     }
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
 
+    // Report back the unread count
     ipcRenderer.sendToHost(count);
+
 
     console.log("serviceWhatsAppGetUnreadMessageCount ::: End");
 }
