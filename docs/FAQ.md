@@ -28,7 +28,6 @@ Please check ```~/Library/Logs/ttth/ttthMainWindowPosSize.json```
 #### Windows
 Please check ```%USERPROFILE%\AppData\Roaming\ttth\ttthMainWindowPosSize.json```
 
-
 ### How is the autostart information stored?
 #### Linux
 Using a .desktop entry in ```~/.config/autostart/```
@@ -36,3 +35,13 @@ Using a .desktop entry in ```~/.config/autostart/```
 Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+
+### Where are the crash reports stored
+Crash reports are stored temporary in the temp folder of the operating system
+#### Linux
+In ```/tmp/ttth Crashes/```
+#### macOS
+
+#### Windows
+
+

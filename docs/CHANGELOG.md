@@ -10,45 +10,39 @@
 * Builds: Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
 * Services: Added basic support for linkedin. See [#79](https://github.com/yafp/ttth/issues/79)
 * Services: Added basic support for Facebook Messenger. See [#80](https://github.com/yafp/ttth/issues/80)
+* Services: Added support for Riot.im. See [#101](https://github.com/yafp/ttth/issues/101)
+* Services: Added support for Skype. See [#103](https://github.com/yafp/ttth/issues/103)
 * UI: Added icon preview to service-config-window. See [#85](https://github.com/yafp/ttth/issues/85)
 * UI: Added button with link to FontAwesome icons to service-config-window. See [#86](https://github.com/yafp/ttth/issues/86)
 * UI: Config window is now localized as well. See [#89](https://github.com/yafp/ttth/issues/89)
+* UI: Added a basic DarkMode. See [#96](https://github.com/yafp/ttth/issues/96)
+* Settings: Added new setting to disable tray. See [#98](https://github.com/yafp/ttth/issues/98)
 * Added basic support for startup parameters. See [#82](https://github.com/yafp/ttth/issues/82)
 * Added check if internet is accessible. See [#90](https://github.com/yafp/ttth/issues/90)
-* Added a basic DarkMode. See [#96](https://github.com/yafp/ttth/issues/96)
-* Added support for Riot.im. See [#101](https://github.com/yafp/ttth/issues/101)
-* Added new setting to disable tray. See [#98](https://github.com/yafp/ttth/issues/98)
 * Added support for urgent-window. See [#100](https://github.com/yafp/ttth/issues/100)
+* Added about-window menuItem to tray. See [#104](https://github.com/yafp/ttth/issues/104)
+* Added a crash reporter (local only). See [#105](https://github.com/yafp/ttth/issues/105)
 
 ####  ```Changed```
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
 * Settings: Options - simplify autostart setup. See [#72](https://github.com/yafp/ttth/issues/72)
 * Dependencies
   * Updated electron from 4.2.6 to 5.0.6. See [#37](https://github.com/yafp/ttth/issues/37)
-  * Updated electron from 5.0.6 to 5.0.7
-  * Updated electron from 5.0.7 to 6.0.6. See [#88](https://github.com/yafp/ttth/issues/88)
+  * Updated electron from 5.0.6 to 5.0.10
   * Removed some not-in-used dependencies. See [#91](https://github.com/yafp/ttth/issues/91)
   * Updated several dependencies. See [#92](https://github.com/yafp/ttth/issues/92)
     * Updated about-window from 1.13.0 to 1.13.1
     * Updated electron-packager from 13.1.1 to 14.0.1. See [#81](https://github.com/yafp/ttth/issues/81)
-    * Updated electron-packager from 14.0.1 to 14.0.2
-    * Updated electron-packager from 14.0.2 to 14.0.4
-    * Updated electron-packager from 14.0.4 to 14.0.5
-    * Updated electron-builder from 20.44.4 to 21.1.1
-    * Updated electron-builder from 21.1.1 to 21.1.5
-    * Updated electron-builder from 21.1.5 to 21.2.0
+    * Updated electron-packager from 14.0.1 to 14.0.6
+    * Updated electron-builder from 20.44.4 to 21.2.0
     * Updated electron-log from 3.0.6 to 3.0.7
+    * Updated electron-json-storage from 4.1.6 to 4.1.8
     * Updated mocha from 6.1.4 to 6.2.0
-    * Updated spectron from 5.0.0 to 7.0.0
-    * Updated spectron from 7.0.0 to 8.0.0
-    * Updated eslint from 5.16.0 to 6.2.2
-    * Updated i18next from 15.1.3 to 17.0.6
-    * Updated i18next from 17.0.6 to 17.0.7
-    * Updated i18next from 17.0.7 to 17.0.8
-    * Updated i18next from 17.0.8 to 17.0.9
-    * Updated i18next from 17.0.9 to 17.0.13
-    * Updated electron-json-storage from 4.1.6 to 4.1.7
-
+    * Updated spectron from 5.0.0 to 8.0.0
+    * Updated eslint from 5.16.0 to 6.4.0
+    * Updated i18next from 15.1.3 to 17.0.16
+  * Updated jquery from 3.3.1 to 3.4.1.
+  * Updated font-awesome from 5.8.1 to 5.10.2
 * Code: Slimdown main.js by moving menu code to separate file. [#95](https://github.com/yafp/ttth/issues/95)
 
 #### ```Deprecated```

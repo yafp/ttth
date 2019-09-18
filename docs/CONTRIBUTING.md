@@ -2,14 +2,24 @@
 
 # Contributing
 
+
+## general
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
 
+## CI
+The project repository is using:
 
-## howto
+* [Travis CI](https://travis-ci.org/) (for Linux and macOS)
+* [AppVeyor](https://ci.appveyor.com/project/yafp/ttth) (for Windows)
 
-### 1. First steps (Getting started as developer)
+for Continuos Integration aspects.
+
+
+## Getting started
+
+### 1. First steps
 
 #### Clone repo
 * Clone the repository: ```git clone https://github.com/yafp/ttth```
@@ -19,10 +29,16 @@ email, or any other method with the owners of this repository before making a ch
 * Install dependencies: ```npm install```
 
 #### Run the code
-* Run ttth: ```npm start```
+* Execute: ```npm start```
+
 
 #### Run the code with debug logging
-* Run ttth: ```npm run start-debug```
+* Execute ```npm run start-debug```
+
+or:
+
+* Execute: ```npm start verbose```
+
 
 #### Run some basic test
 * Execute: ```npm test```
@@ -35,7 +51,8 @@ email, or any other method with the owners of this repository before making a ch
 #### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
 
-
+#### other modification or changes
+* ....
 
 
 ### 3. Creating a new build
@@ -73,53 +90,50 @@ email, or any other method with the owners of this repository before making a ch
 
 
 
-### 4. Misc
-#### Install electron
-* Navigate to repository
-* Execute: ```npm install --save-dev electron```
+### 4. Misc howto's
 
-#### Install electron packager
-* Navigate to repository
-* Execute: ```npm install electron-packager --save-dev```
+#### Auditing
 
-#### Add electron-builder to devDependencies
-* Navigate to repository
-* Execute: ```npm install electron-builder --save-dev```
+###### npm auditing (scan for vulnerabilities)
+* ```npm audit```
 
-#### check for outdated npm packages
-* ```npm outdated```
+#### Install packages
 
-#### npm update packages
-* ```npm update```
-
-#### npm update single package
+##### install single package
 * ```npm install PACKAGENAME --save```
 
-#### npm: install single package in specific version
+###### npm: install single package in specific version
 * ```npm install PACKAGENAME@1.2.3```
 
-#### npm check for outdated 
+
+#### Outdated packages
+
+##### check for outdated npm packages
+* ```npm outdated```
+or
 * Install requirements: ```npm install -g npm-check```
 * Run check: ```npm-check```
 
-#### npm: check dependencies
+
+#### Updating
+
+##### check dependencies
 * Install requirements: ```npm install depcheck```
 * Run check: ```depcheck```
 
-#### npm auditing (scan for vulnerabilities)
-* ```npm audit```
+##### update single package
+* ```npm install PACKAGENAME --save```
+
+##### update all packages
+* ```npm update```
 
 
-#### npm list all package.json scripts
+
+#### Others
+##### List all package.json scripts
 * ```npm run```
+
 or a dynamic solution
+
 * Install requirements: ```npm i -g ntl```
 * Execute ```ntl```
-
-### CI
-The project repository is using:
-
-* [Travis CI](https://travis-ci.org/) (for Linux and macOS)
-* [AppVeyor](https://ci.appveyor.com/project/yafp/ttth) (for Windows)
-
-for Continuos Integration aspects.
