@@ -17,6 +17,12 @@
 * Code-Sign: for windows and macOS - required for auto-updates: https://electronjs.org/docs/tutorial/code-signing
   * for mac: needs Mac Developer license - not going to buy that
 
+* Improve CrashReporter: 
+** check Sentry: 
+*** https://sentry.io/
+*** https://docs.sentry.io/platforms/javascript/electron/
+*** src: https://blog.sentry.io/2018/11/06/minidumps-electron-bug-reports
+
 
 ### Reminder
 #### Sources for unread message functions

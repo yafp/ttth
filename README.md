@@ -28,6 +28,8 @@
 - [known-issues](#known-issues)
 - [contributing](#contributing)
 - [license](#license)
+- [disclosure](#disclosure)
+
 
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
@@ -36,6 +38,7 @@ It is:
 
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
+* free and open source
 
 
 ## services
@@ -68,6 +71,8 @@ You can as well add custom urls to ttth.
 
 ## ui
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
+
+![ui_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dark.png)
 
 
 ## changelog
@@ -130,3 +135,7 @@ A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
 
 ## license
 Please see the [LICENSE](LICENSE) for more details.
+
+
+## disclosure
+ttth is not affiliated with any of the supported messaging apps/services.

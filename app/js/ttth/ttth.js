@@ -1,50 +1,3 @@
-function showServiceShortcuts()
-{
-    tabCounter = 0;
-
-    // loop over all tabs
-    $("#myTabs li a").each(function()
-    {
-        currentTabId = $(this).attr("id");
-
-        if(currentTabId !== "target_Settings")
-        {
-            tabCounter = tabCounter +1;
-            currentTabId = currentTabId.replace("target_", "");
-            $( "#shortcut_" + currentTabId).html( tabCounter );
-        }
-    });
-}
-
-
-
-
-function hideServiceShortcuts()
-{
-    // loop over all tabs
-    $("#myTabs li a").each(function()
-    {
-        currentTabId = $(this).attr("id");
-        if(currentTabId !== "target_Settings")
-        {
-            currentTabId = currentTabId.replace("target_", "");
-            $( "#shortcut_" + currentTabId).html("");
-        }
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
 * @name showNoty
 * @summary Shows a noty notification
@@ -609,7 +562,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         //webview.addEventListener("ipc-message",function(event)
         //{
-        webview.addEventListener('ipc-message', (event) => {
+        webview.addEventListener("ipc-message", (event) => {
             writeLog("info", "eventListenerForSingleService ::: ipc-message for: _" + serviceId + "_.");
 
             // update the badge
@@ -1620,7 +1573,7 @@ function getDomain(url)
         {
             domain = parts[1] + "." + parts[0];
 
-            if (hostName.toLowerCase().indexOf(".co.uk") != -1 && parts.length > 2)
+            if (hostName.toLowerCase().indexOf(".co.uk") !== -1 && parts.length > 2)
             {
                 domain = parts[2] + "." + domain;
             }
@@ -1669,35 +1622,18 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add webview  to new tab
     //
-    // backup:
-    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-    //
-    // Using partition:
-    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-
-    //
-    // not using partition
-    //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-
 
     // FIXME: right now all services are using a partition for persistent data - only Whatsapp not - as i get a Chrome 49+ needed error after enabling it.
     if(serviceType === "whatsapp")
     {
         // using no partition - thats plain stupid...
         $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-
     }
     else
     {
         // Using partition:
         //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-        $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-        
-
-        // baustelle - session
-        // https://github.com/electron/electron/issues/15365#issuecomment-441456539
-        //
-        //session.fromPartition('persist:'+serviceDomain).cookies.set
+        $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
     }
 
 

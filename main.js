@@ -37,7 +37,7 @@ crashReporter.start({
         companyName: "yafp",
         submitURL: "https://your-domain.com/url-to-submit",
         uploadToServer: false
-})
+});
 // crashes directory on linux: "/tmp/ttth Crashes/"
 
 // To simulate a crash - execute: process.crash();
@@ -157,6 +157,144 @@ function checkArguments()
 
 
 /**
+* @name createTray
+* @summary Creates the tray of the app
+* @description Creates the tray and the related menu.
+*/
+function createTray()
+{
+    let tray = null;
+
+    tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
+
+    const contextMenu = Menu.buildFromTemplate([
+        {
+            id: "about",
+            label: "About",
+            click: function () {
+                openAboutWindow({
+                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
+                    open_devtools: false,
+                    use_version_info: true,
+                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                    {
+                        autoHideMenuBar: true,
+                        titleBarStyle: "hidden",
+                        minimizable: false, // not implemented on linux
+                        maximizable: false, // not implemented on linux
+                        movable: false, // not implemented on linux
+                        resizable: false,
+                        alwaysOnTop: true,
+                        fullscreenable: false,
+                        skipTaskbar: false
+                    }
+                });
+            },
+            enabled: true
+        },
+        {
+            // Window focus
+            id: "show",
+            label: "Show",
+            click: function () {
+                // focus the main window
+                if (mainWindow.isMinimized())
+                {
+                    mainWindow.restore();
+                }
+                else
+                {
+                    // was maybe: hidden via hide()
+                    mainWindow.show();
+                }
+                mainWindow.focus();
+            },
+            enabled: true
+        },
+        {
+            type: "separator",
+            enabled: false
+        },
+        {
+            // Quit
+            id: "exit",
+            label: "Exit",
+            enabled: true,
+            click: function () {
+                app.quit();
+            }
+        }
+    ]);
+
+    tray.setToolTip("ttth");
+    tray.setContextMenu(contextMenu);
+
+    writeLog("info", "Finished creating tray");
+
+    // Call from renderer: Change Tray Icon to UnreadMessages
+    //
+    ipcMain.on("changeTrayIconToUnreadMessages", function() {
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
+        }
+        mainWindow.flashFrame(true); // #100 - - urgent window
+    });
+
+    // Call from renderer: Change Tray Icon to Default
+    //
+    ipcMain.on("changeTrayIconToDefault", function() {
+        if(tray.isDestroyed() === false)
+        {
+            tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
+        }
+        mainWindow.flashFrame(false); // #100 - urgent window
+    });
+
+
+
+    // DisableTray - Gets called from renderer
+    //
+    ipcMain.on("disableTray", function() {
+        writeLog("info", "Disabling tray (ipcMain)");
+        tray.destroy();
+        if(tray.isDestroyed() === true)
+        {
+            writeLog("info", "Disabling tray was working");
+        }
+        else
+        {
+            writeLog("error", "Disabling tray failed");
+        }
+    });
+
+
+    // When the tray gets clicked
+    //
+    tray.on("click", function ()
+    {
+         writeLog("info", "Tray: Left click");
+    });
+
+    // When the tray gets double-clicked (only macOS & Windows)
+    //
+    tray.on("double-click", function ()
+    {
+         writeLog("info", "Tray: Middle click");
+    });
+
+    // When the tray gets right-clicked (only macOS & Windows)
+    //
+    tray.on("right-click", function ()
+    {
+         writeLog("info", "Tray: Right click");
+    });
+
+}
+
+
+
+/**
 * @name createWindow
 * @summary Creates the main window  of the app
 * @description Creates the main window, restores window position and size of possible
@@ -209,8 +347,6 @@ function createWindow ()
             // new in 1.5.0
             devTools: true, // should be possible to open them
             partition: "ttth",
-
-            //nodeIntegrationInWorker: true
         }
     });
 
@@ -619,146 +755,6 @@ function createWindow ()
 }
 
 
-/**
-* @name createTray
-* @summary Creates the tray of the app
-* @description Creates the tray and the related menu.
-*/
-function createTray()
-{
-    let tray = null;
-
-    tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
-
-    const contextMenu = Menu.buildFromTemplate([
-        {
-            id: "about",
-            label: "About",
-            click: function () {
-                openAboutWindow({
-                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
-                    open_devtools: false,
-                    use_version_info: true,
-                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
-                    {
-                        autoHideMenuBar: true,
-                        titleBarStyle: "hidden",
-                        minimizable: false, // not implemented on linux
-                        maximizable: false, // not implemented on linux
-                        movable: false, // not implemented on linux
-                        resizable: false,
-                        alwaysOnTop: true,
-                        fullscreenable: false,
-                        skipTaskbar: false
-                    }
-                });
-            },
-            enabled: true
-        },
-        {
-            // Window focus
-            id: "show",
-            label: "Show",
-            click: function () {
-                // focus the main window
-                if (mainWindow.isMinimized())
-                {
-                    mainWindow.restore();
-                }
-                else
-                {
-                    // was maybe: hidden via hide()
-                    mainWindow.show();
-                }
-                mainWindow.focus();
-            },
-            enabled: true
-        },
-        {
-            type: "separator",
-            enabled: false
-        },
-        {
-            // Quit
-            id: "exit",
-            label: "Exit",
-            enabled: true,
-            click: function () {
-                app.quit();
-            }
-        }
-    ]);
-
-    tray.setToolTip("ttth");
-    tray.setContextMenu(contextMenu);
-
-    writeLog("info", "Finished creating tray");
-
-    // Call from renderer: Change Tray Icon to UnreadMessages
-    //
-    ipcMain.on("changeTrayIconToUnreadMessages", function() {
-        if(tray.isDestroyed() === false)
-        {
-            tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
-        }
-        mainWindow.flashFrame(true); // #100 - - urgent window
-    });
-
-    // Call from renderer: Change Tray Icon to Default
-    //
-    ipcMain.on("changeTrayIconToDefault", function() {
-        if(tray.isDestroyed() === false)
-        {
-            tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
-        }
-        mainWindow.flashFrame(false); // #100 - urgent window
-    });
-
-
-
-    // DisableTray - Gets called from renderer
-    //
-    ipcMain.on("disableTray", function() {
-        writeLog("info", "Disabling tray (ipcMain)");
-        tray.destroy();
-        if(tray.isDestroyed() === true)
-        {
-            writeLog("info", "Disabling tray was working");
-        }
-        else
-        {
-            writeLog("error", "Disabling tray failed");
-        }
-    });
-
-
-
-
-
-    // When the tray gets clicked
-    //
-    tray.on("click", function ()
-    {
-         writeLog("info", "Tray: Left click");
-    });
-
-    // When the tray gets double-clicked (only macOS & Windows)
-    //
-    tray.on("double-click", function ()
-    {
-         writeLog("info", "Tray: Middle click");
-    });
-
-    // When the tray gets right-clicked (only macOS & Windows)
-    //
-    tray.on("right-click", function ()
-    {
-         writeLog("info", "Tray: Right click");
-    });
-
-
-
-}
 
 
 /**
@@ -816,6 +812,7 @@ function forceSingleAppInstance()
 }
 
 
+
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -834,6 +831,14 @@ app.on("ready", function ()
     createTray();
     checkNetworkConnectivity();
 });
+
+
+// Emitted while app tries to do a basic auth (https://electronjs.org/docs/api/app#event-login)
+app.on("login", function ()
+{
+    writeLog("info", "app tries to do basic auth (event: login)");
+});
+
 
 // Emitted before the application starts closing its windows.
 app.on("before-quit", function ()
@@ -901,9 +906,7 @@ app.on("remote-get-current-web-contents", function ()
     writeLog("info", "app called .getCurrentWebContents() in the renderer process (event: remote-get-current-web-contents)");
 });
 
-
 // Quit when all windows are closed.
-//
 app.on("window-all-closed", function ()
 {
     writeLog("info", "All application windows are now closed (event: window-all-closed)");
@@ -946,8 +949,6 @@ app.on("activate", function ()
         //createTray();
     }
 });
-
-
 
 
 process.on("uncaughtException", (err, origin) => {

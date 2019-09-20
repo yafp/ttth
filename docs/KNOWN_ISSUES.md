@@ -21,3 +21,7 @@ See [#99](https://github.com/yafp/ttth/issues/99)
 ##### Function Toggle Fullscreen
 <kbd>F11</kbd> should toggle the fullscreen-mode, but macOS seems to use <kbd>F11</kbd> system-wide for "Show Desktop".
 As a result toggle fullscreen-mode on macOS only works by manually selecting it via the menu.
+
+
+### ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_16x16.png) windows
+nothing so far

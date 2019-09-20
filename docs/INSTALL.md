@@ -2,9 +2,9 @@
 
 # ttth
 
-## install
+## installation instructions
 
-### linux
+### ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux
 
 #### AppImage
 * Download the latest .AppImage
@@ -30,7 +30,7 @@
 * Download the latest .snap
 * execute: ```sudo snap install /path/to/local/ttth-file.snap```
 
-### macOS
+### [apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS
 #### dmg
 * Download the latest .dmg
 * Mount the .dmg
@@ -41,7 +41,7 @@
 * Extract the zip
 * Drag the .app to /Applications
 
-### windows
+### ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows
 
 #### installer
 * Download the latest *win-installer.exe

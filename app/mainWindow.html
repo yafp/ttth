@@ -36,11 +36,6 @@
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
     <script type="text/javascript" src="js/ttth/services/WhatsApp.js" async></script>
 
-
-    <!-- mousetrap - referenced: https://electronjs.org/docs/tutorial/keyboard-shortcuts -->
-    <!-- 1.6.3 -->
-    <script type="text/javascript" src="lib/mousetrap/1.6.3/mousetrap.min.js" async></script>
-
 </head>
 
 <body>
@@ -304,32 +299,6 @@ $(document).bind('afterready', function()
         }
         */
     })
-
-
-
-
-
-
-    //Mousetrap.bind('4', function() { console.log('4'); });
-    //Mousetrap.bind('esc', function() { console.log('escape'); }, 'keyup');
-
-    Mousetrap.bind('ctrl', function() 
-    { 
-        //console.error('ctrl UP'); 
-        hideServiceShortcuts();
-    }, 'keyup');
-
-
-    // CTRL DOWN
-    Mousetrap.bind('ctrl', function() 
-    { 
-        //console.error('ctrl DOWN'); 
-        showServiceShortcuts();
-    }, 'keydown');
-
-
-
-
 
 });
 

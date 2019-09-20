@@ -1,14 +1,16 @@
 ![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
 
-# Contributing
+
+# ttth
+## Contributing
 
 
-## general
+### general
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
 
-## CI
+### CI
 The project repository is using:
 
 * [Travis CI](https://travis-ci.org/) (for Linux and macOS)
@@ -16,23 +18,25 @@ The project repository is using:
 
 for Continuos Integration aspects.
 
+Build instructions can be found [here](BUILD.md).
 
-## Getting started
 
-### 1. First steps
+### Getting started
 
-#### Clone repo
+#### 1. First steps
+
+##### Clone repo
 * Clone the repository: ```git clone https://github.com/yafp/ttth```
 
-#### Install dependencies
+##### Install dependencies
 * Go into the repository: ```cd ttth```
 * Install dependencies: ```npm install```
 
-#### Run the code
+##### Run the code
 * Execute: ```npm start```
 
 
-#### Run the code with debug logging
+##### Run the code with debug logging
 * Execute ```npm run start-debug```
 
 or:
@@ -40,97 +44,64 @@ or:
 * Execute: ```npm start verbose```
 
 
-#### Run some basic test
+##### Run some basic test
 * Execute: ```npm test```
 
 
 
 
-### 2. Adding functions
+#### 2. Adding functions
 
-#### adding a new service
+##### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
 
-#### other modification or changes
+##### other modification or changes
 * ....
 
 
-### 3. Creating a new build
-
-#### Generate jsdoc files
-* Navigate to repository
-* Execute: ```jsdoc --configure jsdoc.json --readme README.md```
 
 
-#### Packaging
-* Navigate to repository
+#### 3. Misc howto's
 
-##### linux
-* Execute: ```npm run pack-linux```
+##### Auditing
 
-##### mac
-* Execute: ```npm run pack-mac```
-
-##### windows
-* Execute: ```npm run pack-win```
-
-
-
-#### Building
-* Navigate to repository
-
-##### linux
-* Execute: ```npm run build-linux```
-
-##### mac
-* Execute: ```npm run build-mac```
-
-##### windows
-* Execute: ```npm run build-win```
-
-
-
-### 4. Misc howto's
-
-#### Auditing
-
-###### npm auditing (scan for vulnerabilities)
+####### npm auditing (scan for vulnerabilities)
 * ```npm audit```
 
-#### Install packages
+##### Install packages
 
-##### install single package
+###### install single package
 * ```npm install PACKAGENAME --save```
 
-###### npm: install single package in specific version
+####### npm: install single package in specific version
 * ```npm install PACKAGENAME@1.2.3```
 
 
-#### Outdated packages
+##### Outdated packages
 
-##### check for outdated npm packages
+###### check for outdated npm packages
 * ```npm outdated```
 or
 * Install requirements: ```npm install -g npm-check```
 * Run check: ```npm-check```
 
 
-#### Updating
+##### Updating
 
-##### check dependencies
+###### check dependencies
 * Install requirements: ```npm install depcheck```
 * Run check: ```depcheck```
 
-##### update single package
+###### update single package
 * ```npm install PACKAGENAME --save```
 
-##### update all packages
+###### update all packages
 * ```npm update```
 
 
 
-#### Others
-##### List all package.json scripts
+##### Others
+###### List all package.json scripts
 * ```npm run```
 
 or a dynamic solution

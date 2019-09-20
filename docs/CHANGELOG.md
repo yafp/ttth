@@ -4,7 +4,7 @@
 ## changelog
 
 
-### ttth 1.5.0 (2019xxyy)
+### ttth 1.5.0 (20190920)
 #### ```Added```
 * Logging: Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
 * Builds: Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
@@ -56,9 +56,6 @@
 
 
 
-
-
-
 ### ttth 1.4.0 (20190712)
 ####  ```Added```
 * Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
@@ -88,6 +85,7 @@
 #### ```Fixed```
 * Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
 * UI: Fix horizontal scrollbar css bug. See [#60](https://github.com/yafp/ttth/issues/60)
+
 
 
 ### ttth 1.3.0 (20190603)
@@ -124,6 +122,7 @@
 * Services: Unread Message count for Whatsapp was broken. See [#46](https://github.com/yafp/ttth/issues/46)
 
 
+
 ### ttth 1.2.0 (20190524)
 ####  ```Added```
 * Window: changes opacity (from 1.0 to 0.9) if it loses focus (macOS/Windows only). See [#17](https://github.com/yafp/ttth/issues/17)
@@ -146,6 +145,7 @@
 * Mac: Copy and paste was not working. Fixed by adding an 'Edit' section to the menu. See [#23](https://github.com/yafp/ttth/issues/23)
 
 
+
 ### ttth 1.1.0 (20190521)
 ####  ```Added```
 * Menu: Added console entry to view menu, see [#6](https://github.com/yafp/ttth/issues/6)
@@ -163,6 +163,7 @@
 * Settings: Fixing broken load default-view function, see [#1](https://github.com/yafp/ttth/issues/1)
 * Service: Fixed url handling. Should now open clicks on urls in external browser (implemented for Freenode, Mattermost, Slack, Telegram, Whatsapp). See [#8](https://github.com/yafp/ttth/issues/8)
 * Mac: Fixed some issues with the tray icon on macOS. See [#10](https://github.com/yafp/ttth/issues/10)
+
 
 
 ### ttth 1.0.0 (20190517)
