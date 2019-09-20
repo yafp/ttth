@@ -59,15 +59,20 @@ describe("Application Window", function ()
 
     // TEST: Check launching the app window
     //
+    /*
     it("Open application window", function ()
     {
+        //this.timeout(10000);
+
         // at least 1 window should be counted
         return this.app.client.getWindowCount().should.not.equal(0);
     });
+    */
 
 
     // TEST: Check the window title
     //
+    /*
     it("Check window title", function ()
     {
         return this.app.client.browserWindow.getTitle().then(function(title)
@@ -76,19 +81,6 @@ describe("Application Window", function ()
             return Promise.resolve();
         });
     });
-
-
-    // TEST:
-    /*
-    it("Fetch content of settings tab", function ()
-    {
-        return this.app.client.getText("#target_Settings").then(function (tabText)
-        {
-            expect(tabText).to.equal('');
-            //console.log('The settings tab text is: _' + tabText + '_.')
-        });
-    });
     */
-
 
 });
