@@ -213,27 +213,24 @@ function settingToggleDisableTray()
     {
         writeLocalStorage("settingDisableTray", true);
 
-        writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
-
         showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now enabled.");
 
-        // reload the main window
         const {ipcRenderer} = require("electron");
-        ipcRenderer.send("reloadMainWindow");
+        ipcRenderer.send("disableTray");
 
-
+        writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
     }
     else
     {
         writeLocalStorage("settingDisableTray", false);
 
-        writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
-
         showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now disabled.");
 
-        // reload the main window
+        // re-create the tray
         const {ipcRenderer} = require("electron");
         ipcRenderer.send("recreateTray");
+
+        writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
     }
 }
 
@@ -520,6 +517,13 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         writeLog("info", "eventListenerForSingleService ::: devtools closed for: _" + serviceId + "_.");
     });
 
+    // WebView Event: close (https://electronjs.org/docs/api/webview-tag#event-close)
+    //
+    webview.addEventListener("close", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: close for: _" + serviceId + "_.");
+    });
+
     // WebView Event: console-message (https://electronjs.org/docs/api/webview-tag#event-console-message)
     //
     //webview.addEventListener("console-message", function()
@@ -586,7 +590,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         //webview.addEventListener("ipc-message",function(event)
         //{
-        webview.addEventListener('ipc-message', (event) => {
+        webview.addEventListener("ipc-message", (event) => {
             writeLog("info", "eventListenerForSingleService ::: ipc-message for: _" + serviceId + "_.");
 
             // update the badge
@@ -1325,9 +1329,6 @@ function initAvailableServicesSelection()
     // Empty the select
     //dropdown.empty();
 
-    // Add a disabled dummy/default entry
-    //dropdown.append("&lt;option selected='true' disabled>Choose a service&lt;/option>");
-
     // select the first entry
     dropdown.prop("selectedIndex", 0);
 
@@ -1600,7 +1601,7 @@ function getDomain(url)
         {
             domain = parts[1] + "." + parts[0];
 
-            if (hostName.toLowerCase().indexOf(".co.uk") != -1 &amp;&amp; parts.length > 2)
+            if (hostName.toLowerCase().indexOf(".co.uk") !== -1 &amp;&amp; parts.length > 2)
             {
                 domain = parts[2] + "." + domain;
             }
@@ -1638,7 +1639,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('&lt;li class="nav-item small" id=menu_'+ serviceId +'>&lt;a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab">&lt;i class="' + serviceIcon +'">&lt;/i> ' + serviceName + ' &lt;span id=badge_' + serviceId + ' class="badge badge-success">&lt;/span>&lt;/a>&lt;/li>');
-    $("#myTabs li:eq(" + newTabPosition + ")").after("&lt;li class='nav-item small' id=menu_"+ serviceId +">&lt;a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'>&lt;i class='" + serviceIcon +"'>&lt;/i> " + serviceName + " &lt;span id=badge_" + serviceId + " class='badge badge-success'>&lt;/span>&lt;/a>&lt;/li>");
+    $("#myTabs li:eq(" + newTabPosition + ")").after("&lt;li class='nav-item small' id=menu_"+ serviceId +">&lt;a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'>&lt;span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'>&lt;/span> &lt;i class='" + serviceIcon +"'>&lt;/i> " + serviceName + " &lt;span id=badge_" + serviceId + " class='badge badge-success'>&lt;/span>&lt;/a>&lt;/li>");
 
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
@@ -1649,31 +1650,20 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add webview  to new tab
     //
-    // backup:
-    //$( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-    //
-    // Using partition:
-    //$( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-
-    //
-    // not using partition
-    //$( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-
 
     // FIXME: right now all services are using a partition for persistent data - only Whatsapp not - as i get a Chrome 49+ needed error after enabling it.
     if(serviceType === "whatsapp")
     {
         // using no partition - thats plain stupid...
         $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-
     }
     else
     {
         // Using partition:
         //$( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-        $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>" );
-        
+        $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + ">&lt;/webview>" );
     }
+
 
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
@@ -2433,7 +2423,7 @@ require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Sep 12 2019 14:04:54 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Sep 20 2019 08:11:34 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
