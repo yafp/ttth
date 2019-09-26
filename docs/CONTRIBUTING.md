@@ -20,6 +20,8 @@ for Continuos Integration aspects.
 
 Build instructions can be found [here](BUILD.md).
 
+Crashreport informations [here](https://sentry.io/organizations/yafp/ttth).
+
 
 ### Getting started
 
@@ -65,7 +67,7 @@ or:
 
 ##### Auditing
 
-####### npm auditing (scan for vulnerabilities)
+###### npm auditing (scan for vulnerabilities)
 * ```npm audit```
 
 ##### Install packages
@@ -73,7 +75,7 @@ or:
 ###### install single package
 * ```npm install PACKAGENAME --save```
 
-####### npm: install single package in specific version
+###### npm: install single package in specific version
 * ```npm install PACKAGENAME@1.2.3```
 
 

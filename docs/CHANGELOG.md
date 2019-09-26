@@ -3,6 +3,27 @@
 # ttth
 ## changelog
 
+### ttth 1.6.0 (2019xxyy)
+#### ```Added```
+* Crash Reporting: See [#106](https://github.com/yafp/ttth/issues/106)
+  * Added crashReporter for renderer.
+  * Added support for Sentry (collects crash informations).
+* Settings:
+  * Added a new setting urgent-mode. See [#110](https://github.com/yafp/ttth/issues/110)
+* Menubar:
+  * Added a new entry to help menu for quick access to FAQ. See [#111](https://github.com/yafp/ttth/issues/111) 
+  * Added a new entry to help menu for quick access to CHANGELOG. See [#112](https://github.com/yafp/ttth/issues/112)
+
+####  ```Changed```
+* Improved (some) log messages
+* Improved handling of file which stores window position and size. See [#109](https://github.com/yafp/ttth/issues/109)
+* The urgent window notification (introduced in 1.5.0) is now optional as user-setting. See [#110](https://github.com/yafp/ttth/issues/110)
+
+#### ```Fixed```
+* Settings:
+  * LocalStorage was broken in 1.5.0. This broke all user settings from the settings tab. Replaced with electron-json-storage. See [#107](https://github.com/yafp/ttth/issues/107)
+
+
 
 ### ttth 1.5.0 (20190920)
 #### ```Added```

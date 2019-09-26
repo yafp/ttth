@@ -12,15 +12,16 @@ Please check ```~/Library/Application Support/ttth/```
 #### Windows
 Please check ```%APPDATA%\ttth```
 
-### Where is the ttth log file
+### Where is the ttth log file?
 #### linux
 Please check ```~/.config/ttth/log.log```
 #### macOS
 Please check ```~/Library/Logs/ttth/log.log```
+Consider using ```/Applications/Utilities/Console.app``` to access read the log.
 #### Windows
 Please check ```%USERPROFILE%\AppData\Roaming\ttth\log.log```
 
-### Where is the window position and size stored
+### Where is the window position and size stored?
 #### linux
 Please check ```~/.config/ttth/ttthMainWindowPosSize.json```
 #### macOS
@@ -35,13 +36,3 @@ Using a .desktop entry in ```~/.config/autostart/```
 Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
-
-### Where are the crash reports stored
-Crash reports are stored temporary in the temp folder of the operating system
-#### Linux
-In ```/tmp/ttth Crashes/```
-#### macOS
-
-#### Windows
-
-
