@@ -26,7 +26,47 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>
+
+// crashReporter
+// 
+// https://electronjs.org/docs/api/crash-reporter
+//
+// Crash reports are saved locally in an application-specific temp directory folder. 
+// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory. 
+// You can customize this temp directory location for your app by calling the 
+//    app.setPath('temp', '/my/custom/temp') 
+// API before starting the crash reporter.
+//
+const { crashReporter } = require('electron')
+crashReporter.start({
+        productName: "ttth",
+        companyName: "yafp",
+        submitURL: "https://your-domain.com/url-to-submit",
+        uploadToServer: false
+});
+// crashes directory on linux: "/tmp/ttth Crashes/"
+
+// To simulate a crash - execute: process.crash();
+//process.crash();
+
+
+
+// Sentry: Issue #106
+// 
+// https://sentry.io/organizations/yafp/
+// https://docs.sentry.io/platforms/javascript/electron/
+//
+const Sentry = require("@sentry/electron");
+Sentry.init({dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940'});
+//
+// simple way to force a crash:
+//myUndefinedFunction();
+
+
+
+
+/**
 * @name showNoty
 * @summary Shows a noty notification
 * @description Creates a notification using the noty framework
@@ -86,17 +126,9 @@ function writeLog(logType, logMessage)
             console.log(logMessage); // to console
             break;
 
-        //case "verbose" :
-            //logR.verbose(logMessage); // to file
-            //break;
-
         case "debug" :
             //logR.debug(logMessage); // to file
             console.debug(logMessage); // to console
-            break;
-
-        case "silly" :
-            //logR.silly(logMessage); // to file
             break;
 
       default:
@@ -107,32 +139,251 @@ function writeLog(logType, logMessage)
 
 
 /**
-* @name readLocalStorage
+* @name readLocalUserSetting
 * @summary Read from local storage
 * @description Reads a value stored in local storage (for a given key)
 * @param key - Name of local storage key
-* @return value - The value of the supplied key
+* @param optional Boolean used for an ugly hack
 */
-function readLocalStorage(key)
+function readLocalUserSetting(key, optional=false)
 {
-    var value = localStorage.getItem(key);
-    writeLog("info", "readLocalStorage ::: key: _" + key + "_ - got value: _" + value +"_");
-    return(value);
+    const storage = require('electron-json-storage');
+    const remote = require('electron').remote;
+    const app = remote.app;
+    const path = require("path");
+
+    writeLog("info", "readLocalUserSetting ::: Trying to read value of key: " + key);
+
+    // get default storage path
+    const defaultDataPath = storage.getDefaultDataPath()
+
+    // change path for userSettings
+    const userSettingsPath = path.join(app.getPath('userData'), "ttthUserSettings");
+    storage.setDataPath(userSettingsPath)
+
+    // read the json file
+    storage.get(key, function(error, data) 
+    {
+        if (error) 
+        {
+            throw error;
+        }
+
+        var value = data.setting;
+
+        writeLog("info", "readLocalUserSetting ::: key: _" + key + "_ - got value: _" + value +"_");
+
+        // revert storage path
+        storage.setDataPath(defaultDataPath);
+
+        // setting DefaultView
+        if(key === "settingDefaultView")
+        {
+            if(value === null) // no default view configured
+            {
+                writeLog("info", "validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
+            }
+            else
+            {
+                writeLog("info", "validateConfiguredDefaultView ::: Found configured default view: " + value);
+
+                // check if the configured service is enabled or not
+                writeLog("info", "validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
+
+                var exists = false;
+
+                // Check if Dropdown contains the defined default view as enabled service
+                $("#selectDefaultView option").each(function()
+                {
+                    if (this.value === value)
+                    {
+                        exists = true;
+                        return false;
+                    }
+                });
+
+                if(exists)
+                {
+                    writeLog("info", "validateConfiguredDefaultView ::: Configured default view is valid");
+
+                    // Update select
+                    $("#selectDefaultView").val(value);
+
+                    // load the default view
+                    loadDefaultView(value);
+                }
+                else
+                {
+                    writeLog("warning", "validateConfiguredDefaultView ::: Fallback to default (setting-view)");
+
+                    // reset the selection of the select item
+                    $("#selectDefaultView").prop("selectedIndex",0);
+
+                    // delete the localstorage entry for defaultview
+                    settingDefaultViewReset();
+                }
+            }
+        }
+
+
+
+
+        // Setting Autostart
+        //
+        if(key === "settingAutostart")
+        {
+            if(value === true)
+            {
+                writeLog("info", "initSettingsPage ::: Setting Autostart is configured");
+                $("#checkboxSettingAutostart").prop("checked", true);
+            }
+            else
+            {
+                writeLog("info", "initSettingsPage ::: Setting Autostart is not configured");
+                $("#checkboxSettingAutostart").prop("checked", false);
+            }
+        }
+        // End: Autostart
+
+
+
+
+        // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
+        //
+        if(key === "settingHideMenubar")
+        {
+            const {ipcRenderer} = require("electron");
+            //curSettingHideMenubar = readLocalUserSetting("settingHideMenubar");
+
+            if(isMac())
+            {
+                // hide the entire setting on settingspage
+                $("#settingsSectionStartupHideMenubar").hide();
+            }
+            else // default case (linux or windows)
+            {
+                if(value === true) // hide menubar
+                {
+                    writeLog("info", "initSettingsPage ::: Hide menubar");
+                    $("#checkboxSettingHideMenubar").prop("checked", true);
+                    ipcRenderer.send("hideMenubar");
+                }
+                else // show menubar
+                {
+                    writeLog("info", "initSettingsPage ::: Show menubar");
+                    $("#checkboxSettingHideMenubar").prop("checked", false);
+                    ipcRenderer.send("showMenubar");
+                }
+            }
+        }
+        // End: HideMenubar
+
+
+
+        // Setting DisableTray
+        //
+        if(key === "settingDisableTray")
+        {
+            if(isLinux())
+            {
+                if(value === true)
+                {
+                    const {ipcRenderer} = require("electron");
+
+                    writeLog("info", "initSettingsPage ::: Setting DisableTray is configured");
+                    $("#checkboxSettingDisableTray").prop("checked", true);
+                    ipcRenderer.send("disableTray");
+                }
+            }
+            else
+            {
+                // hide the entire setting on settingspage
+                $("#settingsSectionDisableTray").hide();
+            }
+        }
+        // End DisableTRay
+
+
+        // Setting: DarkMode
+        //
+        if(key === "settingDarkMode")
+        {
+            if(value === true)
+            {
+                // dark theme
+                writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
+                $("#checkboxSettingDarkMode").prop("checked", true);
+                settingActivateUserColorCss("mainWindow_dark.css");
+            }
+            else
+            {
+                // default theme
+                writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
+                $("#checkboxSettingDarkMode").prop("checked", false);
+                settingActivateUserColorCss("mainWindow_default.css");
+            }
+        }
+        // End: DarkMode
+
+
+
+        // Setting Urgent Window - #110
+        if(key === "settingUrgentWindow")
+        {
+            if(value === true)
+            {
+                const {ipcRenderer} = require("electron");
+   
+                $("#checkboxSettingUrgentWindow").prop("checked", true);
+
+                // baustelle
+                if(optional === true)
+                {
+                    ipcRenderer.send("makeWindowUrgent");
+                    //writeLog("warn", "Window should now be urgent - flashing");
+                }
+
+                writeLog("info", "initSettingsPage ::: Setting UrgentWindow is enabled");
+            }
+        }
+        // End: Urgent Window
+
+    });
+
 }
 
 
 /**
-* @name writeLocalStorage
-* @summary Write to local storage
-* @description Writes a value for a given key to local storage
-* @param key - Name of local storage key
+* @name writeLocalUserSetting
+* @summary Write to electron-json-storage
+* @description Writes a value for a given key to electron-json-storage
+* @param key - Name of storage key
 * @param value - New value
 */
-function writeLocalStorage(key, value)
+function writeLocalUserSetting(key,value)
 {
-    writeLog("info", "writeLocalStorage ::: key: _" + key + "_ - new value: _" + value + "_");
-    localStorage.setItem(key, value);
+    const storage = require("electron-json-storage");
+    const remote = require('electron').remote;
+    const app = remote.app;
+    const path = require("path");
+
+    // get default storage path
+    const defaultDataPath = storage.getDefaultDataPath()
+
+    // set new path for userUsettings
+    const userSettingsPath = path.join(app.getPath('userData'), "ttthUserSettings");
+    storage.setDataPath(userSettingsPath)
+
+    // write the user setting
+    storage.set(key, { "setting": value }, function(error) {
+      if (error) throw error;
+      writeLog("info", "writeLocalUserSetting ::: key: _" + key + "_ - new value: _" + value + "_");
+
+      // revert:
+      storage.setDataPath(defaultDataPath);
+    });
 }
+
 
 
 /**
@@ -179,22 +430,16 @@ function settingToggleDarkMode()
     // Handle depending on the checkbox state
     if($("#checkboxSettingDarkMode").prop("checked"))
     {
-        writeLocalStorage("settingDarkMode", true);
-
+        writeLocalUserSetting("settingDarkMode", true);
         writeLog("info", "settingToggleDarkMode ::: Finished enabling DarkMode");
-
         showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>DarkMode&lt;/u> is now enabled.");
-
         settingActivateUserColorCss("mainWindow_dark.css");
     }
     else
     {
-        writeLocalStorage("settingDarkMode", false);
-
+        writeLocalUserSetting("settingDarkMode", false);
         writeLog("info", "settingToggleDarkMode ::: Finished disabling DarkMode");
-
         showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>DarkMode&lt;/u> is now disabled.");
-
         settingActivateUserColorCss("mainWindow_default.css");
     }
 }
@@ -211,28 +456,50 @@ function settingToggleDisableTray()
     // Handle depending on the checkbox state
     if($("#checkboxSettingDisableTray").prop("checked"))
     {
-        writeLocalStorage("settingDisableTray", true);
-
-        showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now enabled.");
-
         const {ipcRenderer} = require("electron");
         ipcRenderer.send("disableTray");
 
+        writeLocalUserSetting("settingDisableTray", true);
+        showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now enabled.");
         writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
     }
     else
     {
-        writeLocalStorage("settingDisableTray", false);
-
-        showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now disabled.");
-
-        // re-create the tray
         const {ipcRenderer} = require("electron");
         ipcRenderer.send("recreateTray");
 
+        writeLocalUserSetting("settingDisableTray", false);
+        showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Disable Tray&lt;/u> is now disabled.");
         writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
     }
 }
+
+
+
+
+/**
+* @name settingToggleUrgentWindow
+* @summary Enables or disabled the urgent window mode
+* @description Updates the settings / option Urgentwindow
+*/
+function settingToggleUrgentWindow()
+{
+    // Handle depending on the checkbox state
+    if($("#checkboxSettingUrgentWindow").prop("checked"))
+    {
+        writeLocalUserSetting("settingUrgentWindow", true);
+        showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Urgent window&lt;/u> is now enabled.");
+        writeLog("info", "settingToggleUrgentWindow ::: Finished enabling UrgentWindow");
+    }
+    else
+    {
+        writeLocalUserSetting("settingUrgentWindow", false);
+        showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Urgent window&lt;/u> is now disabled.");
+        writeLog("info", "settingToggleUrgentWindow ::: Finished re-enabling UrgentWindow");
+    }
+}
+
+
 
 
 /**
@@ -298,7 +565,7 @@ function showNotyAutostartMinimizedConfirm()
                 });
 
                 ttthAutoLauncher.enable();
-                writeLocalStorage("settingAutostart", true);
+                writeLocalUserSetting("settingAutostart", true);
                 n.close();
                 showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Minimized Autostart (on login)&lt;/u> is now enabled.");
             },
@@ -315,7 +582,7 @@ function showNotyAutostartMinimizedConfirm()
                 });
 
                 ttthAutoLauncher.enable();
-                writeLocalStorage("settingAutostart", true);
+                writeLocalUserSetting("settingAutostart", true);
                 n.close();
                 showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now enabled.");
             })
@@ -404,7 +671,10 @@ function updateTrayIconStatus()
     {
         // tray should show that we got unread messages
         ipcRenderer.send("changeTrayIconToUnreadMessages");
+
+        readLocalUserSetting("settingUrgentWindow", true);
     }
+
 }
 
 /**
@@ -948,11 +1218,8 @@ function settingToggleAutostart()
     else
     {
         ttthAutoLauncher.disable();
-
-        writeLocalStorage("settingAutostart", false);
-
+        writeLocalUserSetting("settingAutostart", false);
         writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
-
         showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now disabled.");
     }
 
@@ -981,7 +1248,7 @@ function settingDefaultViewUpdate()
     writeLog("info", "settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
 
     // Store new default view in local storage
-    writeLocalStorage("settingDefaultView", newDefaultView);
+    writeLocalUserSetting("settingDefaultView", newDefaultView);
 
     // show noty
     showNoty("success", "Set default view to " + newDefaultView);
@@ -995,16 +1262,13 @@ function settingDefaultViewUpdate()
 */
 function settingDefaultViewReset()
 {
-    // delete local storage key and its related value
-    localStorage.removeItem("settingDefaultView");
+    writeLocalUserSetting("settingDefaultView", false);
 
     // reset the selection of the select item
     $("#selectDefaultView").prop("selectedIndex",0);
 
     writeLog("info", "settingDefaultViewReset ::: Did reset the default view");
 
-    // show noty
-    showNoty("success", "Resetted default view.");
 }
 
 
@@ -1017,7 +1281,7 @@ function settingToggleMenubarVisibility()
 {
     if($("#checkboxSettingHideMenubar").prop("checked"))
     {
-        writeLocalStorage("settingHideMenubar", true);
+        writeLocalUserSetting("settingHideMenubar", true);
 
         writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is enabled");
 
@@ -1026,7 +1290,7 @@ function settingToggleMenubarVisibility()
     }
     else
     {
-        writeLocalStorage("settingHideMenubar", false);
+        writeLocalUserSetting("settingHideMenubar", false);
 
         writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is disabled");
 
@@ -1115,7 +1379,7 @@ function searchUpdate(silent = true)
         // get remote version
         //
         remoteAppVersionLatest = versions[0].name;
-        //remoteAppVersionLatest = "66.1.2"; // overwrite variable to simulate available updates
+        //remoteAppVersionLatest = "66.6.6"; // overwrite variable to simulate available updates
 
         // get local version
         //
@@ -1128,8 +1392,6 @@ function searchUpdate(silent = true)
         if( localAppVersion &lt; remoteAppVersionLatest ) // Update available
         {
             writeLog("warn", "searchUpdate ::: Found update, notify user");
-
-            // send notification
             showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available for &lt;a href='https://github.com/yafp/ttth/releases' target='new'>download&lt;/a>.", 0);
         }
         else // No update available
@@ -1167,20 +1429,10 @@ function searchUpdate(silent = true)
 * @summary Loads the default view
 * @description Loads the default view. This is used on load of the .html
 */
-function loadDefaultView()
+function loadDefaultView(newDefaultView)
 {
-    // read from local storage
-    var curDefaultView = readLocalStorage("settingDefaultView");
-
-    if(curDefaultView === null) // no default view configured
-    {
-        writeLog("info", "loadDefaultView ::: No default configured");
-    }
-    else
-    {
-        writeLog("info", "loadDefaultView ::: Found configured default view: _" + curDefaultView + "_.");
-        switchToService(curDefaultView);
-    }
+    writeLog("info", "loadDefaultView ::: Found configured default view: _" + newDefaultView + "_.");
+    switchToService(newDefaultView);
 }
 
 
@@ -1191,53 +1443,7 @@ function loadDefaultView()
 */
 function validateConfiguredDefaultView()
 {
-    // read from local storage
-    var curDefaultView = readLocalStorage("settingDefaultView");
-
-    if(curDefaultView === null) // no default view configured
-    {
-        writeLog("info", "validateConfiguredDefaultView ::: No default configured - Stay on settings-view");
-    }
-    else
-    {
-        writeLog("info", "validateConfiguredDefaultView ::: Found configured default view: " + curDefaultView);
-
-        // check if the configured service is enabled or not
-        writeLog("info", "validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not");
-
-        var exists = false;
-
-        // Check if Dropdown contains the defined default view as enabled service
-        $("#selectDefaultView option").each(function()
-        {
-            if (this.value === curDefaultView)
-            {
-                exists = true;
-                return false;
-            }
-        });
-
-        if(exists)
-        {
-            writeLog("info", "validateConfiguredDefaultView ::: Configured default view is valid");
-
-            // Update select
-            $("#selectDefaultView").val(curDefaultView);
-
-            // load the default view
-            loadDefaultView();
-        }
-        else
-        {
-            writeLog("warning", "validateConfiguredDefaultView ::: Fallback to default (setting-view)");
-
-            // reset the selection of the select item
-            $("#selectDefaultView").prop("selectedIndex",0);
-
-            // delete the localstorage entry for defaultview
-            settingDefaultViewReset();
-        }
-    }
+    readLocalUserSetting("settingDefaultView");
 }
 
 
@@ -1360,11 +1566,19 @@ function initAvailableServicesSelection()
 function loadConfiguredUserServices()
 {
     const storage = require("electron-json-storage");
+    const remote = require('electron').remote;
+    const app = remote.app;
+    const path = require("path");
+
+    // ensure we are reading from the correct location
+    const defaultUserDataPath = app.getPath("userData");
+    var customUserDataPath = path.join(defaultUserDataPath, "storage");
+    storage.setDataPath(customUserDataPath);
 
     // empty the div
     $( "#settingsServicesConfigured" ).empty();
 
-    // read all user service files
+    // read all user service configuration files
     storage.getAll(function(error, data)
     {
         if (error)
@@ -1434,10 +1648,18 @@ function loadConfiguredUserServices()
 */
 function initSettingsPage()
 {
-    var curSettingAutostart;
-    var curSettingHideMenubar;
-    var curSettingDarkMode;
-    var curSettingDisableTray;
+    // Settings
+    //
+    // Autostart
+    readLocalUserSetting("settingAutostart");
+    // Hide Menubar (Windows &amp; Linux only)
+    readLocalUserSetting("settingHideMenubar");
+    // DarkMode
+    readLocalUserSetting("settingDarkMode");
+    // DisableTray (Linux only)
+    readLocalUserSetting("settingDisableTray");
+    // Urgent Window
+    readLocalUserSetting("settingUrgentWindow");
 
 
     // load all supported services to checklist (used for adding new services)
@@ -1445,96 +1667,6 @@ function initSettingsPage()
 
     // show all user configured services
     loadConfiguredUserServices();
-
-    // Setting: Autostart
-    //
-    curSettingAutostart = readLocalStorage("settingAutostart");
-    if(curSettingAutostart === "true")
-    {
-        writeLog("info", "initSettingsPage ::: Setting Autostart is configured");
-        $("#checkboxSettingAutostart").prop("checked", true);
-    }
-    else
-    {
-        writeLog("info", "initSettingsPage ::: Setting Autostart is not configured");
-        $("#checkboxSettingAutostart").prop("checked", false);
-    }
-    // End: Autostart
-
-
-    // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
-    //
-    const {ipcRenderer} = require("electron");
-    curSettingHideMenubar = readLocalStorage("settingHideMenubar");
-
-    if(isMac())
-    {
-        // ensure the setting is disabled
-        writeLocalStorage("settingHideMenubar", "false");
-
-        // hide the entire setting on settingspage
-        $("#settingsSectionStartupHideMenubar").hide();
-    }
-    else // default case (linux or windows)
-    {
-        if(curSettingHideMenubar === "true") // hide menubar
-        {
-            writeLog("info", "initSettingsPage ::: Hide menubar");
-            $("#checkboxSettingHideMenubar").prop("checked", true);
-            ipcRenderer.send("hideMenubar");
-        }
-        else // show menubar
-        {
-            writeLog("info", "initSettingsPage ::: Show menubar");
-            $("#checkboxSettingHideMenubar").prop("checked", false);
-            ipcRenderer.send("showMenubar");
-        }
-    }
-    // End: HiodeMenubar
-
-
-    // Setting: DarkMode
-    //
-    curSettingDarkMode = readLocalStorage("settingDarkMode");
-    if(curSettingDarkMode === "true")
-    {
-        // dark theme
-        writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
-        $("#checkboxSettingDarkMode").prop("checked", true);
-        settingActivateUserColorCss("mainWindow_dark.css");
-    }
-    else
-    {
-        // default theme
-        writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
-        $("#checkboxSettingDarkMode").prop("checked", false);
-        settingActivateUserColorCss("mainWindow_default.css");
-    }
-    // End: Darkmode
-
-
-
-    // Setting: DisableTray (only for linux)
-    //
-    if(isLinux())
-    {
-        curSettingDisableTray = readLocalStorage("settingDisableTray");
-        if(curSettingDisableTray === "true")
-        {
-            writeLog("info", "initSettingsPage ::: Setting DisableTray is configured");
-            $("#checkboxSettingDisableTray").prop("checked", true);
-            ipcRenderer.send("disableTray");
-        }
-    }
-    else
-    {
-        // hide the entire setting on settingspage
-        $("#settingsSectionDisableTray").hide();
-    }
-    //End: DisableTray
-
-
-
 }
 
 
@@ -1664,7 +1796,6 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
         $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + ">&lt;/webview>" );
     }
 
-
     writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     writeLog("info", "addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
@@ -1781,8 +1912,6 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             removeServiceTab(configuredUserServiceConfigName);
 
             writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
-
-            //  show noty
             showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
         }
         else
@@ -1812,8 +1941,6 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             $("#selectDefaultView").append(new Option(name, configuredUserServiceConfigName));
 
             writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
-
-            //  show noty
             showNoty("success", "Enabled the service " + configuredUserServiceConfigName);
         }
 
@@ -1930,7 +2057,6 @@ function deleteConfiguredService(serviceId)
     });
 
     writeLog("info", "deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
-
     showNoty("success", "Successfully deleted the service " + serviceId);
 
     // reload the main window
@@ -2417,13 +2543,13 @@ require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#changeUserAgent">changeUserAgent</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalStorage">readLocalStorage</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDarkMode">settingToggleDarkMode</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalStorage">writeLocalStorage</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#sendNotification">sendNotification</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostInit">serviceMattermostInit</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDarkMode">settingToggleDarkMode</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleMenubarVisibility">settingToggleMenubarVisibility</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateMainWindowTitle">updateMainWindowTitle</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Sep 20 2019 08:11:34 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Sep 25 2019 15:06:39 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>
