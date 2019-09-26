@@ -246,6 +246,22 @@ function ()
             },
             accelerator: "F2"
         },
+        // open changelog
+        {
+            label: "Changelog",
+            click() {
+                shell.openExternal("https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md");
+            },
+            accelerator: "F3"
+        },
+        // open FAQ
+        {
+            label: "FAQ",
+            click() {
+                shell.openExternal("https://github.com/yafp/ttth/blob/master/docs/FAQ.md");
+            },
+            accelerator: "F4"
+        },
         {
             type: "separator"
         },
@@ -256,8 +272,9 @@ function ()
                 //mainWindow.webContents.toggleDevTools();
                 mainWindow.webContents.send("startSearchUpdates");
             },
-            enabled: true
+            enabled: true,
             //accelerator: "F12"
+            accelerator: "F5"
         },
         {
             type: "separator"
