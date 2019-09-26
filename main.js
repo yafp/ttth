@@ -13,17 +13,19 @@ const defaultUserDataPath = app.getPath("userData"); // for: storing window posi
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
 
-// Keep a global reference of the window objects,
-// if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-let configWindow;
 
-let verbose;
-verbose = false;
+// FIXME
+// i want to use fontawesome via npm but
+// it seems to break in my packaged buil.d
+// therefor: not yet in use
+//
+//const fa = require('@fortawesome/fontawesome-free');
 
 
 
-// crashReporter
+// ----------------------------------------------------------------------------
+// Error Handling using: crashReporter
+// ----------------------------------------------------------------------------
 // 
 // https://electronjs.org/docs/api/crash-reporter
 //
@@ -39,14 +41,45 @@ crashReporter.start({
         uploadToServer: false
 });
 // crashes directory on linux: "/tmp/ttth Crashes/"
-
+//
 // To simulate a crash - execute: process.crash();
 //process.crash();
 
 
+// ----------------------------------------------------------------------------
+// Error Handling using: sentry (via #106)
+// ----------------------------------------------------------------------------
+//
+// * https://sentry.io/organizations/yafp/
+// * https://docs.sentry.io/platforms/javascript/electron/
+//
+const Sentry = require("@sentry/electron");
+Sentry.init({dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940'});
+//
+// simple way to force a crash:
+//myUndefinedFunction();
+
+
+// ----------------------------------------------------------------------------
+// Error Handling using: electron-unhandled
+// ----------------------------------------------------------------------------
+const unhandled = require('electron-unhandled'); // error handling
+unhandled();
+
+
+
+// Keep a global reference of the window objects,
+// if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
+let mainWindow;
+let configWindow;
+
+let verbose;
+verbose = false;
+
 
 
 // menu.js
+//
 require("./menu").createMenu();
 
 
@@ -141,13 +174,13 @@ function checkArguments()
             {
                 case "verbose":
                 case "debug":
-                    log.info("Enabling verbose/debug mode");
+                    log.info("[M] Enabling verbose/debug mode");
                     verbose = true;
                     break;
 
                 default:
                     // nothing to do here
-                    log.warn("Ignoring unsupported parameter: " + process.argv[key]);
+                    log.warn("[M] Ignoring unsupported parameter: " + process.argv[key]);
                     break;
             }
         }
@@ -238,7 +271,7 @@ function createTray()
         {
             tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
         }
-        mainWindow.flashFrame(true); // #100 - - urgent window
+        //mainWindow.flashFrame(true); // #100 - - urgent window
     });
 
     // Call from renderer: Change Tray Icon to Default
@@ -248,9 +281,15 @@ function createTray()
         {
             tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
         }
-        mainWindow.flashFrame(false); // #100 - urgent window
+        //mainWindow.flashFrame(false); // #100 - urgent window
     });
 
+
+    // Urgent window - as user setting  - see #110
+    ipcMain.on("makeWindowUrgent", function() {
+
+        mainWindow.flashFrame(true); // #110 - urgent window
+    });
 
 
     // DisableTray - Gets called from renderer
@@ -271,6 +310,7 @@ function createTray()
 
     // When the tray gets clicked
     //
+    /*
     tray.on("click", function ()
     {
          writeLog("info", "Tray: Left click");
@@ -289,7 +329,7 @@ function createTray()
     {
          writeLog("info", "Tray: Right click");
     });
-
+    */
 }
 
 
@@ -337,14 +377,12 @@ function createWindow ()
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
-
+        //preload: path.join(__dirname, 'sentry.js'),  // sentry - #106
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
             webviewTag: true, // # see #37
-
-            // new in 1.5.0
             devTools: true, // should be possible to open them
             partition: "ttth",
         }
@@ -386,7 +424,7 @@ function createWindow ()
         let windowTitle = name + " " + version;
         mainWindow.setTitle(windowTitle);
 
-        writeLog("info", "DOM is now ready (event: dom-ready)");
+        writeLog("info", "mainwWindow DOM is now ready (event: dom-ready)");
     });
 
 
@@ -433,7 +471,7 @@ function createWindow ()
     //
     mainWindow.on("leave-full-screen", function()
     {
-        writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
+        //writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
 
@@ -441,7 +479,7 @@ function createWindow ()
     //
     mainWindow.on("resize", function()
     {
-        writeLog("info", "mainWindow got resized (event: resize)");
+        //writeLog("info", "mainWindow got resized (event: resize)");
     });
 
 
@@ -466,7 +504,7 @@ function createWindow ()
     //
     mainWindow.on("hide", function()
     {
-        writeLog("info", "mainWindow is hidden (event: hide)");
+        writeLog("info", "mainWindow is now hidden (event: hide)");
     });
 
 
@@ -474,7 +512,7 @@ function createWindow ()
     //
     mainWindow.on("maximize", function()
     {
-        writeLog("info", "mainWindow maximized (event: maximized)");
+        writeLog("info", "mainWindow is now maximized (event: maximized)");
     });
 
 
@@ -482,7 +520,7 @@ function createWindow ()
     //
     mainWindow.on("unmaximize", function()
     {
-        writeLog("info", "mainWindow unmaximized (event: unmaximized)");
+        writeLog("info", "mainWindow is now unmaximized (event: unmaximized)");
     });
 
 
@@ -490,7 +528,7 @@ function createWindow ()
     //
     mainWindow.on("minimize", function()
     {
-        writeLog("info", "mainWindow is minimized (event: minimize)");
+        writeLog("info", "mainWindow is now minimized (event: minimize)");
     });
 
 
@@ -498,7 +536,7 @@ function createWindow ()
     //
     mainWindow.on("restore", function()
     {
-        writeLog("info", "mainWindow was restored (event: restore)");
+        writeLog("info", "mainWindow is now restored (event: restore)");
     });
 
 
@@ -523,11 +561,19 @@ function createWindow ()
         var data = {
             bounds: mainWindow.getBounds()
         };
-        // store it to file in user data
-        var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
-        fs.writeFileSync(customUserDataPath, JSON.stringify(data));
 
-        writeLog("info", "mainWindow stored window -position and -size (event: close)");
+        // define target path (in user data)
+        var customUserDataPath = path.join(defaultUserDataPath, "ttthMainWindowPosSize.json");
+
+        // try to write
+        fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
+            if (err) {
+                writeLog("error", "storing window -position and -size of mainwindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
+                return console.log(err);
+            }
+
+            writeLog("info", "mainWindow stored window -position and -size in  _" + customUserDataPath + "_ (event: close)");
+        }); 
     });
 
 
@@ -540,7 +586,7 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
 
-        writeLog("info", "mainWindow is closed (event: closed)");
+        writeLog("info", "mainWindow is now closed (event: closed)");
     });
 
 
@@ -548,7 +594,22 @@ function createWindow ()
     //
     mainWindow.on("unresponsive", function ()
     {
-        writeLog("error", "mainWindow is unresponsive (event: unresponsive)");
+        writeLog("error", "mainWindow is now unresponsive (event: unresponsive)");
+
+        // show alert message
+        const { dialog } = require('electron');
+        const options = {
+            type: 'error',
+            buttons: ['OK'],
+            defaultId: 2,
+            title: 'Alert',
+            message: 'ttth seems unresponsive',
+            detail: 'Consider restarting the app',
+        };
+
+        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+            //console.log(response);
+        });
     });
 
 
@@ -556,7 +617,7 @@ function createWindow ()
     //
     mainWindow.on("responsive", function ()
     {
-        writeLog("info", "mainWindow is responsive (event: responsive)");
+        writeLog("info", "mainWindow is now responsive (event: responsive)");
     });
 
 
@@ -565,6 +626,21 @@ function createWindow ()
     mainWindow.webContents.on("crashed", function ()
     {
         writeLog("info", "mainWindow crashed (event: crashed)");
+
+        // show alert message
+        const { dialog } = require('electron');
+        const options = {
+            type: 'error',
+            buttons: ['OK'],
+            defaultId: 2,
+            title: 'Alert',
+            message: 'ttth just crashed',
+            detail: 'Consider reporting this issue',
+        };
+
+        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+            //console.log(response);
+        });
     });
 
 
@@ -573,7 +649,7 @@ function createWindow ()
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
 
-        writeLog("info", "mainWindow reloaded (ipcMain)");
+        writeLog("info", "mainWindow is now reloaded (ipcMain)");
     });
 
 
@@ -581,9 +657,14 @@ function createWindow ()
     //
     ipcMain.on("openUserServicesConfigFolder", (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
-        shell.openItem(customUserDataPath);
-
-        writeLog("info", "Opening the folder which contains all user-configured services (ipcMain)");
+        if (shell.openItem(customUserDataPath) === true)
+        {
+            writeLog("info", "ServiceConfigs: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+        }
+        else
+        {
+            writeLog("warn", "ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+        }
     });
 
 
@@ -617,10 +698,10 @@ function createWindow ()
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            writeLog("info", "Deleting the global shortcut: CmdOrCtrl+" + i);
+            writeLog("info", "Shortcuts: Deleting the global shortcut: CmdOrCtrl+" + i);
         }
 
-        writeLog("info", "Deleted global shortcuts (ipcMain)");
+        writeLog("info", "Shortcuts: Finished deleting all global shortcuts (ipcMain)");
     });
 
 
@@ -628,7 +709,7 @@ function createWindow ()
     //
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        writeLog("info", "Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
+        writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
             writeLog("info", "Shortcut: _" + shortcut + "_ was pressed.");
@@ -756,32 +837,6 @@ function createWindow ()
 
 
 
-
-/**
-* @name changeUserAgent
-* @summary Owerwrites the user agent
-* @description Can owerwrite the user agent with a hard-coded new user string
-*/
-function changeUserAgent()
-{
-    // get the out-of-the-box userAgent
-    var defaultAgent = mainWindow.webContents.getUserAgent();
-
-    // change user agent of browser
-    //
-    // Examples:
-    // Windows:       Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36
-    //                Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.78 Safari/537.36
-    // Linux:         Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36
-    //
-    var userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36";
-    mainWindow.webContents.setUserAgent(userAgent);
-
-    // check if setting the userAgent worked
-    var newAgent = mainWindow.webContents.getUserAgent();
-}
-
-
 /**
 * @name forceSingleAppInstance
 * @summary Takes care that there is only 1 instance of this app running
@@ -855,7 +910,7 @@ app.on("will-quit", function ()
 // Emitted when the application is quitting.
 app.on("quit", function ()
 {
-    writeLog("info", "Got quit event (event: quit)");
+    writeLog("info", "app got quit event (event: quit)");
 });
 
 // Emitted when a browserWindow gets blurred. (loosing focus)
@@ -891,7 +946,7 @@ app.on("remote-get-global", function ()
 // Emitted when remote.getBuiltin() is called in the renderer process of webContents.
 app.on("remote-get-builtin", function ()
 {
-    writeLog("info", "app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
+    //writeLog("info", "app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
 });
 
 // Emitted when remote.getCurrentWindow() is called in the renderer process of webContents.
@@ -909,7 +964,7 @@ app.on("remote-get-current-web-contents", function ()
 // Quit when all windows are closed.
 app.on("window-all-closed", function ()
 {
-    writeLog("info", "All application windows are now closed (event: window-all-closed)");
+    writeLog("info", "app closed all application windows (event: window-all-closed)");
 
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
     /*
@@ -957,4 +1012,6 @@ process.on("uncaughtException", (err, origin) => {
     `Caught exception: ${err}\n` +
     `Exception origin: ${origin}`
   );
+
+  writeLog("error", "UncaughtException - got error: _" + err + "_ with origin: _" + origin + "_.");
 });

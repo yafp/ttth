@@ -20,6 +20,10 @@
     <!-- fontawesome -->
     <!-- 5.10.2 -->
     <script type="text/javascript" src="lib/fontawesome-free-web/5.10.2/js/all.min.js" async></script>
+    <!-- FIXME: breaks in packaged builds -->
+    <!--
+    <script type="text/javascript" src="../node_modules/@fortawesome/fontawesome-free/js/all.min.js" async></script>
+    -->
 
     <!-- noty -->
     <!-- 3.2.0-beta -->
@@ -79,6 +83,7 @@
                 <div role="tabpanel" class="tab-pane active flex-fill ttth_resizer container-fluid" id="Settings">
 
                     <div id="allSettings" class="ttth_nonSelectableText">
+
 
                         <!-- About -->
                         <h3 i18n-text="mw_settingsAboutTitle"><!-- About --></h3>
@@ -179,6 +184,7 @@
                         </div>
                         <!-- /Option: HideMenubarOnStartup  -->
 
+
                          <!-- Option: DisableTray -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionDisableTray">
                             <div class="input-group-prepend">
@@ -186,9 +192,10 @@
                                     <input type="checkbox" id="checkboxSettingDisableTray" aria-label="Checkbox for disable tray" onClick="settingToggleDisableTray();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescDisableTray" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the disable tray setting" value="" i18n-value="mw_settingsOptionsDescDisableTray" disabled>
                         </div>
                         <!-- /Option: DisableTray -->
+
 
                         <!-- Option: DarkMode -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionDarkMode">
@@ -197,9 +204,21 @@
                                     <input type="checkbox" id="checkboxSettingDarkMode" aria-label="Checkbox for dark mode" onClick="settingToggleDarkMode();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescDarkMode" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the darkmode setting" value="" i18n-value="mw_settingsOptionsDescDarkMode" disabled>
                         </div>
                         <!-- /Option: DarkMode -->
+
+
+                        <!-- Option: UrgentWindow -->
+                        <div class="input-group input-group-sm mb-1" id="settingsSectionUrgentWindow">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingUrgentWindow" aria-label="Checkbox for urgent window" onClick="settingToggleUrgentWindow();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsUrgentWindow" disabled>
+                        </div>
+                        <!-- /Option: UrgentWindow -->
 
                     </div>
                 </div>
@@ -232,14 +251,14 @@ $( document ).ready(function()
     // load the configured user services
     loadEnabledUserServices();
 
+    // init the settings tab
+    initSettingsPage();
+
     // check operating system
     checkSupportedOperatingSystem();
 
     // check for updates
     searchUpdate();
-
-    // init the settings tab
-    initSettingsPage();
 
     // Translate using i18next
     localizeUserInterface();
@@ -252,6 +271,7 @@ $( document ).ready(function()
     {
         loading.remove();
     }, 500);
+
 
     updateMainWindowTitle("");
 
