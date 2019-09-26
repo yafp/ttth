@@ -29,11 +29,7 @@ html,body
 {
     /* height */
     height: 30px; /* default: 40px */
-
-    /* color */
     background-color: var(--color-navigationBackground);
-
-    /* border */
     border-bottom: 2px solid var(--color-navigationBorder);
 }
 
@@ -56,45 +52,36 @@ ul
     /* margin */
     margin-left: 0px;
     margin-right: 3px;
-
-
 }
 
 .nav-link
 {
-    /* color */
     color: var(--color-navigationText);
 }
 
 .nav-link:hover
 {
-    /* color */
     color: var(--color-highlight);
 }
 
 .nav>li>a
 {
-    /* padding */
     padding: 5px 10px; /*  top/bottom left/right */
 }
-
 
 /* ########################################################################## */
 /* CONTENT */
 /* ########################################################################## */
 .container-fluid
 {
-    /* padding */
     padding-bottom: 0px !important;
     padding-right: 0px !important;
 
-    /* color */
     background-color: var(--color-bodyBackground);
 }
 
 .fuya
 {
-    /* padding */
     padding-left: 0px !important;
     /* padding-right: 0px !important; */
 }
@@ -106,11 +93,9 @@ ul
 
 .ttth_resizer
 {
-    /* height */
     height: 100%;
     min-height: 100%;
 
-    /* padding */
     padding-left: 0 !important;
     /* padding-right: 0 !important; */
 }
@@ -149,7 +134,6 @@ h3
 
 
 
-
 /* ########################################################################## */
 /* CUSTOMIZE BOOTSTRAP FORM ITEMS
 /* ########################################################################## */
@@ -173,7 +157,6 @@ h3
     background-color: var(--color-inputFormsBackground) !important;
     border-color: var(--color-inputFormsBorder);
 }
-
 
 .ttth_select
 {
