@@ -29,6 +29,7 @@
     "mw_settingsOptionsDescHideMenubar": "Hide menubar (on load)",
     "mw_settingsOptionsDescDarkMode": "Enable dark mode",
     "mw_settingsOptionsDescDisableTray": "Disable Tray (on load)",
+    "mw_settingsOptionsUrgentWindow": "Enable urgent window mode",
 
     "cw_windowName": "Config service",
     "cw_labelId": "ID",

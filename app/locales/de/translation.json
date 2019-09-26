@@ -29,6 +29,7 @@
     "mw_settingsOptionsDescHideMenubar": "Verstecke Menüzeile (beim laden)",
     "mw_settingsOptionsDescDarkMode": "Aktiviere dunkles Theme",
     "mw_settingsOptionsDescDisableTray": "Deaktiviere Tray (beim laden)",
+    "mw_settingsOptionsUrgentWindow": "Aktiviere Fenster-Aktivitätshinweise",
 
     "cw_windowName": "Dienst konfigurieren",
     "cw_labelId": "ID",
