@@ -36,9 +36,9 @@
 
 It is:
 
-* free and open source
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+* free and open source
 
 
 
@@ -126,7 +126,7 @@ Please see the [FAQ](docs/FAQ.md) for more details.
 
 
 ## known-issues
-Please see the [Known Issues](docs/KNOWN_ISSUES.md) for more details.
+Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
 
 ## contributing

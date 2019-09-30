@@ -36,3 +36,8 @@ Using a .desktop entry in ```~/.config/autostart/```
 Using a .plist file in  ```~/Library/LaunchAgents/``` to create a Launch Agent
 #### Windows
 Using a registry entry in ```\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run```
+
+
+### What is urgent window mode
+With urgent window mode enabled the app tries to inform the user about unread messages.
+That means: If a configured and enabled service has an unread message count > 0 and ttth is not in foreground/focus the window or its dock icon will flash to inform the user.

@@ -30,16 +30,16 @@
 * Download the latest .snap
 * execute: ```sudo snap install /path/to/local/ttth-file.snap```
 
-### [apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS
+### ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS
 #### dmg
-* Download the latest .dmg
+* Download the latest ```.dmg```
 * Mount the .dmg
-* Drag the .app to /Applications
+* Drag the .app to ```/Applications```
 
 #### zip
-* Download the latest .zip
+* Download the latest ```.zip```
 * Extract the zip
-* Drag the .app to /Applications
+* Drag the ```.app``` to ```/Applications```
 
 ### ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows
 

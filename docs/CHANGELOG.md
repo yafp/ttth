@@ -10,6 +10,8 @@
   * Added support for Sentry (collects crash informations).
 * Settings:
   * Added a new setting urgent-mode. See [#110](https://github.com/yafp/ttth/issues/110)
+  * Added title descriptions for all user settings.
+  * Added a button in settings view to open the folder which contains all user-setting json files.
 * Menubar:
   * Added a new entry to help menu for quick access to FAQ. See [#111](https://github.com/yafp/ttth/issues/111) 
   * Added a new entry to help menu for quick access to CHANGELOG. See [#112](https://github.com/yafp/ttth/issues/112)
@@ -18,10 +20,18 @@
 * Improved (some) log messages
 * Improved handling of file which stores window position and size. See [#109](https://github.com/yafp/ttth/issues/109)
 * The urgent window notification (introduced in 1.5.0) is now optional as user-setting. See [#110](https://github.com/yafp/ttth/issues/110)
+* Dependencies
+  * Updated eslint from 6.4.0 to 6.5.0
+  * Updated mocha from 6.2.0 to 6.2.1
+  * jquery is now used via npm
+
+#### ```Removed```
+* Maintenance: Removed 'clean local storage' from help menu. As side effect from [#107](https://github.com/yafp/ttth/issues/107)
 
 #### ```Fixed```
-* Settings:
-  * LocalStorage was broken in 1.5.0. This broke all user settings from the settings tab. Replaced with electron-json-storage. See [#107](https://github.com/yafp/ttth/issues/107)
+* Settings: LocalStorage was broken in 1.5.0. This broke all user settings from the settings tab. Replaced with electron-json-storage. See [#107](https://github.com/yafp/ttth/issues/107)
+* Window position and size was not properly saved on macOS (since 1.5.0). See [#109](https://github.com/yafp/ttth/issues/109)
+* Maintenance: Fixed 'clear cache' function. See [#114](https://github.com/yafp/ttth/issues/114)
 
 
 

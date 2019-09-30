@@ -2,6 +2,6 @@
 
 # ttth
 
-## /app/lib
+## /app/lib/
 
 This folder contains the third party libraries included in the html code of the ttth unter interface.
