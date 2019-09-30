@@ -294,34 +294,36 @@ function ()
         },
         // SubMenu of help
         {
-            label: "Cleaner",
+            label: "Maintenance",
             submenu: [
             // Clear cache
             {
                 id: "ClearCache",
                 label: "Clear cache",
                 click(item, mainWindow) {
-                    const ses = mainWindow.webContents.session;
-                    ses.clearCache(() => {
+                    const fs = require("fs");
 
-                    });
+                    var chromeCacheDir = path.join(app.getPath('userData'), 'Cache'); 
+                    if(fs.existsSync(chromeCacheDir)) {
+                        var files = fs.readdirSync(chromeCacheDir);
+                        for(var i=0; i<files.length; i++) {
+                            var filename = path.join(chromeCacheDir, files[i]);
+                            if(fs.existsSync(filename)) {
+                                try {
+                                    fs.unlinkSync(filename);
+                                }
+                                catch(e) {
+                                    console.log(e);
+                                }
+                            }
+                        }
+                    }
+
+
                     mainWindow.reload();
                 },
                 enabled: true
-            },
-            // Clear Local Storage
-            {
-                id: "ClearLocalStorage",
-                label: "Clear local storage",
-                click(item, mainWindow) {
-                    const ses = mainWindow.webContents.session;
-                    ses.clearStorageData(() => {
-                        storages: ["localstorage"];
-                    });
-                    mainWindow.reload();
-                },
-                enabled: true
-            },
+            }
             ]
         }
         ]
