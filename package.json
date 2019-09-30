@@ -67,6 +67,7 @@
         "extraFiles": [
             "LICENSE",
             "docs/CHANGELOG.md",
+            "docs/FAQ.md",
             "README.md"
         ],
         "asar": true,
@@ -79,6 +80,7 @@
         },
         "dmg": {
             "title": "ttth",
+            "background": "resources/installer/background.png",
             "iconSize": 128,
             "contents": [
                 {
@@ -175,26 +177,29 @@
         ]
     },
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "^5.11.2",
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
         "electron": "^5.0.10",
         "electron-builder": "^21.2.0",
         "electron-packager": "^14.0.6",
-        "eslint": "^6.4.0",
-        "mocha": "^6.2.0",
+        "eslint": "^6.5.0",
+        "mocha": "^6.2.1",
         "spectron": "^8.0.0"
     },
     "dependencies": {
+        "@fortawesome/fontawesome-free": "^5.11.2",
         "@sentry/electron": "^0.17.4",
         "about-window": "^1.13.1",
         "auto-launch": "^5.0.5",
+        "bootstrap": "^4.3.1",
         "electron-is-dev": "^1.1.0",
         "electron-json-storage": "^4.1.8",
         "electron-log": "^3.0.8",
         "electron-unhandled": "^3.0.0",
         "i18next": "^17.0.16",
         "i18next-sync-fs-backend": "^1.1.1",
-        "is-online": "^8.2.0"
+        "is-online": "^8.2.0",
+        "jquery": "^3.4.1",
+        "popper.js": "^1.15.0"
     }
 }

@@ -48,10 +48,7 @@ Sentry.init({dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940"})
 // src: https://github.com/sindresorhus/electron-unhandled
 //
 const unhandled = require('electron-unhandled');
-
 unhandled();
-
-
 
 
 
@@ -325,11 +322,9 @@ function readLocalUserSetting(key, optional=false)
    
                 $("#checkboxSettingUrgentWindow").prop("checked", true);
 
-                // baustelle
                 if(optional === true)
                 {
                     ipcRenderer.send("makeWindowUrgent");
-                    //writeLog("warn", "Window should now be urgent - flashing");
                 }
 
                 writeLog("info", "initSettingsPage ::: Setting UrgentWindow is enabled");
@@ -338,7 +333,6 @@ function readLocalUserSetting(key, optional=false)
         // End: Urgent Window
 
     });
-
 }
 
 
@@ -606,6 +600,23 @@ function openUserServicesConfigFolder()
 
     writeLog("info", "openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.");
 }
+
+
+
+/**
+* @name openUserSettingsConfigFolder
+* @summary Opens the folder in filesystem which contains the user settings
+* @description Triggers a method in main.js which then opens the folder which contains all user settings
+*/
+function openUserSettingsConfigFolder
+()
+{
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("openUserSettingsConfigFolder");
+
+    writeLog("info", "openUserSettingsConfigFolder ::: Should try to open the folder which contains the user settings.");
+}
+
 
 
 /**
@@ -1815,7 +1826,12 @@ function updateGlobalServicesShortcuts()
     //
     // count enabled services:
     numberOfEnabledServices = $("#myTabs li").length;
-    ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+
+    // if there are configured services so far - delete all existing shortcuts
+    if(numberOfEnabledServices > 1)
+    {
+        ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+    }
 
     // Create new global shortcutd
     $("#myTabs li a").each(function()
@@ -1833,14 +1849,6 @@ function updateGlobalServicesShortcuts()
             ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
         }
     });
-
-    // show notification
-    /*
-    if(tabCounter > 0) // if at least 1 accesskey was set
-    {
-        //showNoty("success", "Updating accesskeys for enabled service tabs.")
-    }
-    */
 
     writeLog("info", "updateGlobalServicesShortcuts ::: Finished updating global shortcuts for services");
 }

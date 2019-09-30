@@ -134,18 +134,18 @@ function checkNetworkConnectivity()
 {
     (async () => {
 
-    if(await isOnline() === true)
-    {
-        writeLog("info", "checkNetworkConnectivity ::: Got access to the internet.");
-    }
-    else
-    {
-        writeLog("error", "checkNetworkConnectivity ::: Got NO access to the internet.");
+        if(await isOnline() === true)
+        {
+            writeLog("info", "checkNetworkConnectivity ::: Got access to the internet.");
+        }
+        else
+        {
+            writeLog("error", "checkNetworkConnectivity ::: Got NO access to the internet.");
 
-        // app should show an error
-        mainWindow.webContents.send("showNoConnectivityError");
-    }
-})();
+            // app should show an error
+            mainWindow.webContents.send("showNoConnectivityError");
+        }
+    })();
 }
 
 
@@ -361,8 +361,13 @@ function createWindow ()
         // position
         windowPositionX = data.bounds.x;
         windowPositionY = data.bounds.y;
+
+        writeLog("info", "Got window position and size information from ("+ customUserDataPath +")");
     }
     catch(e) {
+
+        writeLog("warn", "No window position and size information found ("+ customUserDataPath +")");
+
         // set some default values for window size
         windowWidth = 800;
         windowHeight = 600;
@@ -553,7 +558,7 @@ function createWindow ()
         writeLog("info", "mainWindow will close (event: close)");
 
         // close configWindow
-        configWindow.close();
+        //configWindow.close(); // results on closing issues on mac os - see #109
 
         // Saving window position and size
         //
@@ -666,6 +671,23 @@ function createWindow ()
             writeLog("warn", "ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
+
+
+    // Call from renderer: Open folder with user configured services
+    //
+    ipcMain.on("openUserSettingsConfigFolder", (event) => {
+        var customUserDataPath = path.join(defaultUserDataPath, "ttthUserSettings");
+        if (shell.openItem(customUserDataPath) === true)
+        {
+            writeLog("info", "UserSettings: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+        }
+        else
+        {
+            writeLog("warn", "UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+        }
+    });
+
+
 
 
     // Call from renderer: Update Window Title
@@ -966,19 +988,18 @@ app.on("window-all-closed", function ()
 {
     writeLog("info", "app closed all application windows (event: window-all-closed)");
 
+    // Baustelle
+
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
-    /*
     if (process.platform !== "darwin")
     {
-        writeLog("info", "Bye.");
+        writeLog("info", "Bye");
         app.quit();
     }
-    */
 
     // we handle it the same on all platforms - closing the main windows closes the app
-    writeLog("info", "Bye.");
-    app.quit();
-
+    //writeLog("info", "Bye.");
+    //app.quit();
 });
 
 

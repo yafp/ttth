@@ -8,21 +8,34 @@
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
+
     <!-- jquery -->
+    <script>window.$ = window.jQuery = require('jquery');</script>
     <!-- 3.4.1 -->
+    <!--
     <script type="text/javascript" src="lib/jquery/3.4.1/jquery-3.4.1.min.js"></script>
+    -->
+
 
     <!-- bootstrap -->
+    <!--
+    <script>window.popper = require("popper.js");</script>
+    <script>require("bootstrap");</script>
+    -->
     <!-- 4.3.1 -->
     <link rel="stylesheet" href="lib/bootstrap/4.3.1/css/bootstrap.min.css">
     <script type="text/javascript" src="lib/bootstrap/4.3.1/js/bootstrap.min.js" async></script>
 
+
     <!-- fontawesome -->
     <!-- 5.10.2 -->
     <script type="text/javascript" src="lib/fontawesome-free-web/5.10.2/js/all.min.js" async></script>
-    <!-- FIXME: breaks in packaged builds -->
+    <!-- FIXME: breaks in packaged builds - see #113 -->
     <!--
     <script type="text/javascript" src="../node_modules/@fortawesome/fontawesome-free/js/all.min.js" async></script>
+    -->
+    <!--
+     <script>require("@fortawesome/fontawesome-free");</script>
     -->
 
     <!-- noty -->
@@ -43,13 +56,6 @@
 </head>
 
 <body>
-
-    <div class="etabs-tabgroup">
-    <div class="etabs-tabs"></div>
-    <div class="etabs-buttons"></div>
-</div>
-<div class="etabs-views"></div>
-
 
     <!-- navigation -->
     <nav class="tabs">
@@ -145,7 +151,7 @@
                                     <input type="checkbox" aria-label="Disabled checkbox for the selectDefaultView option" checked disabled>
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="mw_settingsOptionsDescDefaultView" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="mw_settingsOptionsDescDefaultView" i18n-title="mw_settingsOptionsDescDefaultViewDescription" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <select id="selectDefaultView" name="selectDefaultView" class="ttth_select">
@@ -168,7 +174,7 @@
                                     <input type="checkbox" class="ttth_checkbox" id="checkboxSettingAutostart" aria-label="Checkbox for option Autostart" onClick="settingToggleAutostart();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="" i18n-value="mw_settingsOptionsDescAutostart" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the autostart option" value="" i18n-value="mw_settingsOptionsDescAutostart" i18n-title="mw_settingsOptionsDescAutostartDescription" disabled>
                         </div>
                         <!-- /Option: Autostart  -->
 
@@ -180,7 +186,7 @@
                                     <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for the hide menubar on startup otion" onClick="settingToggleMenubarVisibility();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescHideMenubar" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescHideMenubar" i18n-title="mw_settingsOptionsDescHideMenubarDescription" disabled>
                         </div>
                         <!-- /Option: HideMenubarOnStartup  -->
 
@@ -192,7 +198,7 @@
                                     <input type="checkbox" id="checkboxSettingDisableTray" aria-label="Checkbox for disable tray" onClick="settingToggleDisableTray();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the disable tray setting" value="" i18n-value="mw_settingsOptionsDescDisableTray" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the disable tray setting" value="" i18n-value="mw_settingsOptionsDescDisableTray" i18n-title="mw_settingsOptionsDescDisableTrayDescription"disabled>
                         </div>
                         <!-- /Option: DisableTray -->
 
@@ -204,7 +210,7 @@
                                     <input type="checkbox" id="checkboxSettingDarkMode" aria-label="Checkbox for dark mode" onClick="settingToggleDarkMode();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the darkmode setting" value="" i18n-value="mw_settingsOptionsDescDarkMode" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the darkmode setting" value="" i18n-value="mw_settingsOptionsDescDarkMode" i18n-title="mw_settingsOptionsDescDarkModeDescription" disabled>
                         </div>
                         <!-- /Option: DarkMode -->
 
@@ -216,9 +222,13 @@
                                     <input type="checkbox" id="checkboxSettingUrgentWindow" aria-label="Checkbox for urgent window" onClick="settingToggleUrgentWindow();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsUrgentWindow" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsUrgentWindow"  i18n-title="mw_settingsOptionsUrgentWindowDescription" disabled>
                         </div>
                         <!-- /Option: UrgentWindow -->
+
+                        <div class="text-left">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserSettingsConfigFolder();" i18n-text="mw_settingsServicesButtonTextShowConfigs" i18n-title="mw_settingsServicesButtonTitleShowConfigs" aria-label="Button to open the folder which contains all user settings"><!-- Configurations --></button>
+                        </div>
 
                     </div>
                 </div>
