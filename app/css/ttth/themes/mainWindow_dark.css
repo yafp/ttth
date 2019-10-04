@@ -8,6 +8,7 @@
     --color-navigationText: #FFFFFF; /* white */
     --color-navigationBackground: #171717; /* some even darker gray, almost black */
     --color-navigationBorder: #4e4e4e; /* some dark gray */
+    --color-navigationHighlight: #32CD32; /* limegreen */;
 
     /* highlight */
     --color-highlight: #32CD32; /* limegreen */
