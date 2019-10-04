@@ -2,6 +2,6 @@
 
 # ttth
 
-## /app/css/
+## /app/img/
 
-This folder contains all css related files
+This folder contains (most) images

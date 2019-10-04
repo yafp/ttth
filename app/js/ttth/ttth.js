@@ -2,20 +2,20 @@
 // ----------------------------------------------------------------------------
 // Error Handling using: crashReporter
 // ----------------------------------------------------------------------------
-// 
+//
 // https://electronjs.org/docs/api/crash-reporter
 //
-// Crash reports are saved locally in an application-specific temp directory folder. 
-// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory. 
-// You can customize this temp directory location for your app by calling the 
-//    app.setPath('temp', '/my/custom/temp') 
+// Crash reports are saved locally in an application-specific temp directory folder.
+// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory.
+// You can customize this temp directory location for your app by calling the
+//    app.setPath('temp', '/my/custom/temp')
 // API before starting the crash reporter.
 //
-const { crashReporter } = require('electron')
+const { crashReporter } = require("electron");
 crashReporter.start({
         productName: "ttth",
         companyName: "yafp",
-        submitURL: "https://your-domain.com/url-to-submit",
+        submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
         uploadToServer: false
 });
 // crashes directory on linux: "/tmp/ttth Crashes/"
@@ -29,12 +29,15 @@ crashReporter.start({
 // ----------------------------------------------------------------------------
 //
 // Sentry: see github issue #106
-// 
+//
 // https://sentry.io/organizations/yafp/
 // https://docs.sentry.io/platforms/javascript/electron/
 //
 const Sentry = require("@sentry/electron");
-Sentry.init({dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940"});
+Sentry.init({
+    dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
+    release: "ttth@1.6.0"
+});
 //
 // simple way to force a crash:
 //myUndefinedFunction();
@@ -47,7 +50,7 @@ Sentry.init({dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940"})
 //
 // src: https://github.com/sindresorhus/electron-unhandled
 //
-const unhandled = require('electron-unhandled');
+const unhandled = require("electron-unhandled");
 unhandled();
 
 
@@ -125,6 +128,93 @@ function writeLog(logType, logMessage)
 
 
 /**
+* @name isMac
+* @summary Checks if the operating system type is mac/darwin or not
+* @description Checks if the operating system type is mac/darwin or not
+* @return value - Boolean: True if mac, false if not
+*/
+function isMac()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeLog("info", "isMac ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Darwin")
+    {
+        writeLog("info", "isMac ::: Smelling apples");
+        return true;
+    }
+    else
+    {
+        writeLog("info", "isMac ::: No apples here");
+        return false;
+    }
+}
+
+
+/**
+* @name isLinux
+* @summary Checks if the operating system type is linux or not
+* @description Checks if the operating system type islinux or not
+* @return value - Boolean: True if linux, false if not
+*/
+function isLinux()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeLog("info", "isLinux ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Linux")
+    {
+        writeLog("info", "isLinux ::: Smelling penguins");
+        return true;
+    }
+    else
+    {
+        writeLog("info", "isLinux ::: No penguins here");
+        return false;
+    }
+}
+
+
+/**
+* @name isWindows
+* @summary Checks if the operating system type is windows or not
+* @description Checks if the operating system type is windows or not
+* @return value - Boolean: True if windows, false if not
+*/
+function isWindows()
+{
+    var os = require("os");
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeLog("info", "isWindows ::: Detected operating system type is: " + os.type());
+    if(os.type() === "Windows NT")
+    {
+        writeLog("info", "isWindows ::: Looks like Redmond");
+        return true;
+    }
+    else
+    {
+        writeLog("info", "isWindows ::: There are no windows ... omg");
+        return false;
+    }
+}
+
+
+/**
 * @name readLocalUserSetting
 * @summary Read from local storage
 * @description Reads a value stored in local storage (for a given key)
@@ -141,16 +231,16 @@ function readLocalUserSetting(key, optional=false)
     writeLog("info", "readLocalUserSetting ::: Trying to read value of key: " + key);
 
     // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
+    const defaultDataPath = storage.getDefaultDataPath();
 
     // change path for userSettings
     const userSettingsPath = path.join(app.getPath("userData"), "ttthUserSettings");
-    storage.setDataPath(userSettingsPath)
+    storage.setDataPath(userSettingsPath);
 
     // read the json file
-    storage.get(key, function(error, data) 
+    storage.get(key, function(error, data)
     {
-        if (error) 
+        if (error)
         {
             throw error;
         }
@@ -319,7 +409,7 @@ function readLocalUserSetting(key, optional=false)
             if(value === true)
             {
                 const {ipcRenderer} = require("electron");
-   
+
                 $("#checkboxSettingUrgentWindow").prop("checked", true);
 
                 if(optional === true)
@@ -359,7 +449,10 @@ function writeLocalUserSetting(key,value)
 
     // write the user setting
     storage.set(key, { "setting": value }, function(error) {
-      if (error) throw error;
+        if (error)
+        {
+            throw error;
+        }
       writeLog("info", "writeLocalUserSetting ::: key: _" + key + "_ - new value: _" + value + "_");
 
       // revert:
@@ -1078,93 +1171,6 @@ function updateMainWindowTitle(tabName)
 
 
 /**
-* @name isMac
-* @summary Checks if the operating system type is mac/darwin or not
-* @description Checks if the operating system type is mac/darwin or not
-* @return value - Boolean: True if mac, false if not
-*/
-function isMac()
-{
-    var os = require("os");
-
-    // os types:
-    //
-    // - Darwin
-    // - Linux
-    // - Windows_NT
-    writeLog("info", "isMac ::: Detected operating system type is: " + os.type());
-    if(os.type() === "Darwin")
-    {
-        writeLog("info", "isMac ::: Smelling apples");
-        return true;
-    }
-    else
-    {
-        writeLog("info", "isMac ::: No apples here");
-        return false;
-    }
-}
-
-
-/**
-* @name isLinux
-* @summary Checks if the operating system type is linux or not
-* @description Checks if the operating system type islinux or not
-* @return value - Boolean: True if linux, false if not
-*/
-function isLinux()
-{
-    var os = require("os");
-
-    // os types:
-    //
-    // - Darwin
-    // - Linux
-    // - Windows_NT
-    writeLog("info", "isLinux ::: Detected operating system type is: " + os.type());
-    if(os.type() === "Linux")
-    {
-        writeLog("info", "isLinux ::: Smelling penguins");
-        return true;
-    }
-    else
-    {
-        writeLog("info", "isLinux ::: No penguins here");
-        return false;
-    }
-}
-
-
-/**
-* @name isWindows
-* @summary Checks if the operating system type is windows or not
-* @description Checks if the operating system type is windows or not
-* @return value - Boolean: True if windows, false if not
-*/
-function isWindows()
-{
-    var os = require("os");
-
-    // os types:
-    //
-    // - Darwin
-    // - Linux
-    // - Windows_NT
-    writeLog("info", "isWindows ::: Detected operating system type is: " + os.type());
-    if(os.type() === "Windows NT")
-    {
-        writeLog("info", "isWindows ::: Looks like Redmond");
-        return true;
-    }
-    else
-    {
-        writeLog("info", "isWindows ::: There are no windows ... omg");
-        return false;
-    }
-}
-
-
-/**
 * @name openDevTools
 * @summary Toggles DevConsole
 * @description Opens or closes the Developer Console inside the app
@@ -1693,7 +1699,6 @@ function removeServiceTab(tabId)
 }
 
 
-
 /**
 * @name getHostName
 * @summary Parsing the Hostname From a Url
@@ -1782,7 +1787,6 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add webview  to new tab
     //
-
     // FIXME: right now all services are using a partition for persistent data - only Whatsapp not - as i get a Chrome 49+ needed error after enabling it.
     if(serviceType === "whatsapp")
     {

@@ -4,6 +4,7 @@ const openAboutWindow = require("about-window").default; // for: about-window
 const path = require("path"); // needed for about-window
 const shell = require("electron").shell; // for: opening external urls in default browser
 
+
 /**
 * @name createMenu
 * @summary Creates the menu
@@ -13,7 +14,6 @@ exports.createMenu =
 function ()
 {
     // Create a custom menu
-    //
     var menu = Menu.buildFromTemplate([
 
     // Menu: File
@@ -303,7 +303,7 @@ function ()
                 click(item, mainWindow) {
                     const fs = require("fs");
 
-                    var chromeCacheDir = path.join(app.getPath('userData'), 'Cache'); 
+                    var chromeCacheDir = path.join(app.getPath("userData"), "Cache"); 
                     if(fs.existsSync(chromeCacheDir)) {
                         var files = fs.readdirSync(chromeCacheDir);
                         for(var i=0; i<files.length; i++) {

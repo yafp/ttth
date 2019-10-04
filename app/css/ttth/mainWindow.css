@@ -69,6 +69,15 @@ ul
     padding: 5px 10px; /*  top/bottom left/right */
 }
 
+/* the active tab */
+.nav>li>a.active
+{
+    border: 2px solid var(--color-navigationBorder) !important;
+
+    background-color: var(--color-bodyBackground)!important;
+    color: var(--color-navigationHighlight) !important;
+}
+
 /* ########################################################################## */
 /* CONTENT */
 /* ########################################################################## */

@@ -16,7 +16,7 @@ const openAboutWindow = require("about-window").default; // for: about-window
 
 // FIXME
 // i want to use fontawesome via npm but
-// it seems to break in my packaged buil.d
+// it seems to break in my packaged builds, as the js file does not exist
 // therefor: not yet in use
 //
 //const fa = require('@fortawesome/fontawesome-free');
@@ -26,18 +26,18 @@ const openAboutWindow = require("about-window").default; // for: about-window
 // ----------------------------------------------------------------------------
 // Error Handling using: crashReporter
 // ----------------------------------------------------------------------------
-// 
+//
 // https://electronjs.org/docs/api/crash-reporter
 //
-// Crash reports are saved locally in an application-specific temp directory folder. 
-// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory. 
-// You can customize this temp directory location for your app by calling the 
-//    app.setPath('temp', '/my/custom/temp') 
+// Crash reports are saved locally in an application-specific temp directory folder.
+// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory.
+// You can customize this temp directory location for your app by calling the
+//    app.setPath('temp', '/my/custom/temp')
 // API before starting the crash reporter.
 crashReporter.start({
         productName: "ttth",
         companyName: "yafp",
-        submitURL: "https://your-domain.com/url-to-submit",
+        submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
         uploadToServer: false
 });
 // crashes directory on linux: "/tmp/ttth Crashes/"
@@ -54,7 +54,10 @@ crashReporter.start({
 // * https://docs.sentry.io/platforms/javascript/electron/
 //
 const Sentry = require("@sentry/electron");
-Sentry.init({dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940'});
+Sentry.init({
+    dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
+    release: "ttth@1.6.0"
+});
 //
 // simple way to force a crash:
 //myUndefinedFunction();
@@ -63,7 +66,7 @@ Sentry.init({dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940'})
 // ----------------------------------------------------------------------------
 // Error Handling using: electron-unhandled
 // ----------------------------------------------------------------------------
-const unhandled = require('electron-unhandled'); // error handling
+const unhandled = require("electron-unhandled"); // error handling
 unhandled();
 
 
@@ -77,9 +80,9 @@ let verbose;
 verbose = false;
 
 
-
+// ----------------------------------------------------------------------------
 // menu.js
-//
+// ----------------------------------------------------------------------------
 require("./menu").createMenu();
 
 
@@ -188,7 +191,6 @@ function checkArguments()
 }
 
 
-
 /**
 * @name createTray
 * @summary Creates the tray of the app
@@ -265,23 +267,19 @@ function createTray()
     writeLog("info", "Finished creating tray");
 
     // Call from renderer: Change Tray Icon to UnreadMessages
-    //
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
         if(tray.isDestroyed() === false)
         {
             tray.setImage(path.join(__dirname, "app/img/tray/tray_unread.png"));
         }
-        //mainWindow.flashFrame(true); // #100 - - urgent window
     });
 
     // Call from renderer: Change Tray Icon to Default
-    //
     ipcMain.on("changeTrayIconToDefault", function() {
         if(tray.isDestroyed() === false)
         {
             tray.setImage(path.join(__dirname, "app/img/tray/tray_default.png"));
         }
-        //mainWindow.flashFrame(false); // #100 - urgent window
     });
 
 
@@ -293,7 +291,6 @@ function createTray()
 
 
     // DisableTray - Gets called from renderer
-    //
     ipcMain.on("disableTray", function() {
         writeLog("info", "Disabling tray (ipcMain)");
         tray.destroy();
@@ -307,29 +304,6 @@ function createTray()
         }
     });
 
-
-    // When the tray gets clicked
-    //
-    /*
-    tray.on("click", function ()
-    {
-         writeLog("info", "Tray: Left click");
-    });
-
-    // When the tray gets double-clicked (only macOS & Windows)
-    //
-    tray.on("double-click", function ()
-    {
-         writeLog("info", "Tray: Middle click");
-    });
-
-    // When the tray gets right-clicked (only macOS & Windows)
-    //
-    tray.on("right-click", function ()
-    {
-         writeLog("info", "Tray: Right click");
-    });
-    */
 }
 
 
@@ -365,7 +339,6 @@ function createWindow ()
         writeLog("info", "Got window position and size information from ("+ customUserDataPath +")");
     }
     catch(e) {
-
         writeLog("warn", "No window position and size information found ("+ customUserDataPath +")");
 
         // set some default values for window size
@@ -401,10 +374,6 @@ function createWindow ()
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
 
-
-    // set the user agent
-    //changeUserAgent();
-
     // and load the html of the app.
     mainWindow.loadFile("app/mainWindow.html");
 
@@ -416,14 +385,13 @@ function createWindow ()
     {
         mainWindow.show();
         mainWindow.focus();
-
         writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
     });
 
 
-    // When dom is ready
-    //
+    // When dom is ready - set window title
     mainWindow.webContents.once("dom-ready", () => {
+        // set window title
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
@@ -434,14 +402,12 @@ function createWindow ()
 
 
     // When page title gets changed
-    //
     mainWindow.webContents.once("page-title-updated", () => {
-        writeLog("info", "mainWindow got new title (event: page-title-updated");
+        writeLog("info", "mainWindow got new title (event: page-title-updated)");
     });
 
 
     // when the app is shown
-    //
     mainWindow.on("show", function()
     {
         writeLog("info", "mainWindow is visible (event: show)");
@@ -449,7 +415,6 @@ function createWindow ()
 
 
     // when the app loses focus / aka blur
-    //
     mainWindow.on("blur", function()
     {
         writeLog("info", "mainWindow lost focus (event: blur)");
@@ -457,7 +422,6 @@ function createWindow ()
 
 
     // when the app gets focus
-    //
     mainWindow.on("focus", function()
     {
         writeLog("info", "mainWindow got focus (event: focus)");
@@ -465,7 +429,6 @@ function createWindow ()
 
 
     // when the app goes fullscreen
-    //
     mainWindow.on("enter-full-screen", function()
     {
         writeLog("info", "mainWindow is now in fullscreen (event: enter-full-screen)");
@@ -473,23 +436,22 @@ function createWindow ()
 
 
     // when the app goes leaves fullscreen
-    //
     mainWindow.on("leave-full-screen", function()
     {
+        // disabled to reduce clutter
         //writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
 
     // when the app gets resized
-    //
     mainWindow.on("resize", function()
     {
+        // disabled to reduce clutter
         //writeLog("info", "mainWindow got resized (event: resize)");
     });
 
 
     // when the mainwindow gets moved
-    //
     mainWindow.on("move", function()
     {
         //writeLog("info", "mainWindow got moved (event: move)");
@@ -506,7 +468,6 @@ function createWindow ()
 
 
     // when the app gets hidden
-    //
     mainWindow.on("hide", function()
     {
         writeLog("info", "mainWindow is now hidden (event: hide)");
@@ -514,7 +475,6 @@ function createWindow ()
 
 
     // when the app gets maximized
-    //
     mainWindow.on("maximize", function()
     {
         writeLog("info", "mainWindow is now maximized (event: maximized)");
@@ -522,7 +482,6 @@ function createWindow ()
 
 
     // when the app gets unmaximized
-    //
     mainWindow.on("unmaximize", function()
     {
         writeLog("info", "mainWindow is now unmaximized (event: unmaximized)");
@@ -530,7 +489,6 @@ function createWindow ()
 
 
     // when the app gets minimized
-    //
     mainWindow.on("minimize", function()
     {
         writeLog("info", "mainWindow is now minimized (event: minimize)");
@@ -538,7 +496,6 @@ function createWindow ()
 
 
     // when the app gets restored from minimized mode
-    //
     mainWindow.on("restore", function()
     {
         writeLog("info", "mainWindow is now restored (event: restore)");
@@ -552,7 +509,6 @@ function createWindow ()
 
 
     // Emitted before the window is closed.
-    //
     mainWindow.on("close", function ()
     {
         writeLog("info", "mainWindow will close (event: close)");
@@ -578,12 +534,11 @@ function createWindow ()
             }
 
             writeLog("info", "mainWindow stored window -position and -size in  _" + customUserDataPath + "_ (event: close)");
-        }); 
+        });
     });
 
 
     // Emitted when the window is closed.
-    //
     mainWindow.on("closed", function ()
     {
         // Dereference the window object, usually you would store windows
@@ -596,20 +551,19 @@ function createWindow ()
 
 
     // When the app is unresponsive
-    //
     mainWindow.on("unresponsive", function ()
     {
         writeLog("error", "mainWindow is now unresponsive (event: unresponsive)");
 
         // show alert message
-        const { dialog } = require('electron');
+        const { dialog } = require("electron");
         const options = {
-            type: 'error',
-            buttons: ['OK'],
+            type: "error",
+            buttons: ["OK"],
             defaultId: 2,
-            title: 'Alert',
-            message: 'ttth seems unresponsive',
-            detail: 'Consider restarting the app',
+            title: "Alert",
+            message: "ttth seems unresponsive",
+            detail: "Consider restarting the app",
         };
 
         dialog.showMessageBox(null, options, (response, checkboxChecked) => {
@@ -619,7 +573,6 @@ function createWindow ()
 
 
     // When the app gets responsive again
-    //
     mainWindow.on("responsive", function ()
     {
         writeLog("info", "mainWindow is now responsive (event: responsive)");
@@ -627,20 +580,19 @@ function createWindow ()
 
 
     // When the app is crashed
-    //
     mainWindow.webContents.on("crashed", function ()
     {
         writeLog("info", "mainWindow crashed (event: crashed)");
 
         // show alert message
-        const { dialog } = require('electron');
+        const { dialog } = require("electron");
         const options = {
-            type: 'error',
-            buttons: ['OK'],
+            type: "error",
+            buttons: ["OK"],
             defaultId: 2,
-            title: 'Alert',
-            message: 'ttth just crashed',
-            detail: 'Consider reporting this issue',
+            title: "Alert",
+            message: "ttth just crashed",
+            detail: "Consider reporting this issue",
         };
 
         dialog.showMessageBox(null, options, (response, checkboxChecked) => {
@@ -650,7 +602,6 @@ function createWindow ()
 
 
     // Call from renderer: Reload mainWindow
-    //
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
 
@@ -659,7 +610,6 @@ function createWindow ()
 
 
     // Call from renderer: Open folder with user configured services
-    //
     ipcMain.on("openUserServicesConfigFolder", (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         if (shell.openItem(customUserDataPath) === true)
@@ -673,8 +623,7 @@ function createWindow ()
     });
 
 
-    // Call from renderer: Open folder with user configured services
-    //
+    // Call from renderer: Open folder with user settings
     ipcMain.on("openUserSettingsConfigFolder", (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserSettings");
         if (shell.openItem(customUserDataPath) === true)
@@ -688,11 +637,9 @@ function createWindow ()
     });
 
 
-
-
     // Call from renderer: Update Window Title
-    //
     ipcMain.on("updateMainWindowTitle", (event, arg) => {
+        // update title
         let name = require("./package.json").name;
         let version = require("./package.json").version;
         let windowTitle = name + " " + version;
@@ -700,8 +647,6 @@ function createWindow ()
         {
             windowTitle = windowTitle + " - " + arg;
         }
-
-        // update title
         mainWindow.setTitle(windowTitle);
 
         writeLog("info", "Updated title of mainWindow to _" + windowTitle + "_ (ipcMain)");
@@ -709,7 +654,6 @@ function createWindow ()
 
 
     // Call from renderer ::: deleteAllGlobalServicesShortcut
-    //
     ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
     {
         // doesnt work - whyever
@@ -728,7 +672,6 @@ function createWindow ()
 
 
     // Call from renderer ::: createNewGlobalShortcut
-    //
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
         writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
@@ -775,7 +718,6 @@ function createWindow ()
 
 
     // Emitted when the window gets a close event.(close VS closed)
-    //
     configWindow.on("close", function (event)
     {
         writeLog("info", "configWindow will close, but we hide it (event: close)");
@@ -786,7 +728,6 @@ function createWindow ()
 
 
     // Emitted when the window is ready to be shown
-    //
     configWindow.on("ready-to-show", function (event)
     {
         writeLog("info", "configWindow is now ready to show (event: ready-to-show)");
@@ -794,7 +735,6 @@ function createWindow ()
 
 
     // Emitted when the window is shown
-    //
     configWindow.on("show", function (event)
     {
         writeLog("info", "configWindow is now shown (event: show)");
@@ -802,7 +742,6 @@ function createWindow ()
 
 
     // Call from renderer: show configure-single-service window for a new service
-    //
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
         writeLog("info", "configWindow preparing for new service creation. (ipcMain)");
 
@@ -813,7 +752,6 @@ function createWindow ()
 
 
     // Call from renderer: show configure-single-service window
-    //
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
         writeLog("info", "configWindow preparing for service editing (ipcMain)");
 
@@ -824,25 +762,22 @@ function createWindow ()
 
 
     // Call from renderer: hide configure-single-service window
-    //
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
         // hide window
         configWindow.hide();
 
         writeLog("info", "configWindow is now hidden (ipcMain)");
-
     });
 
 
     // Menubar: Hide Menubar - Gets called from renderer
-    //
     ipcMain.on("hideMenubar", function() {
         mainWindow.setMenuBarVisibility(false);
         writeLog("info", "Hiding menubar (ipcMain)");
     });
 
+
     // Menubar: Show Menubar - Gets called from renderer
-    //
     ipcMain.on("showMenubar", function() {
         mainWindow.setMenuBarVisibility(true);
         writeLog("info", "Un-hiding menubar (ipcMain");
@@ -850,7 +785,6 @@ function createWindow ()
 
 
     // Tray: RecreateTray - Gets called from renderer
-    //
     ipcMain.on("recreateTray", function() {
         writeLog("info", "Recreating tray (ipcMain)");
         createTray();
@@ -938,13 +872,14 @@ app.on("quit", function ()
 // Emitted when a browserWindow gets blurred. (loosing focus)
 app.on("browser-window-blur", function ()
 {
-    writeLog("info", "app lost focus (event: browser-window-blur)");
+    //writeLog("info", "app lost focus (event: browser-window-blur)");
 });
 
 // Emitted when a browserWindow gets focused.
 app.on("browser-window-focus", function ()
 {
-    writeLog("info", "app got focus (event: browser-window-focus)");
+    // disabled to reduce clutter
+    //writeLog("info", "app got focus (event: browser-window-focus)");
 });
 
 // Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior with event.preventDefault() and call callback(true).
@@ -968,6 +903,7 @@ app.on("remote-get-global", function ()
 // Emitted when remote.getBuiltin() is called in the renderer process of webContents.
 app.on("remote-get-builtin", function ()
 {
+    // disabled to reduce clutter
     //writeLog("info", "app called .getBuiltin() in the renderer process (event: remote-get-builtin)");
 });
 
@@ -988,20 +924,14 @@ app.on("window-all-closed", function ()
 {
     writeLog("info", "app closed all application windows (event: window-all-closed)");
 
-    // Baustelle
-
-    // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
+    // On macOS it is common for applications and their menu bar to stay active
+    // until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin")
     {
         writeLog("info", "Bye");
         app.quit();
     }
-
-    // we handle it the same on all platforms - closing the main windows closes the app
-    //writeLog("info", "Bye.");
-    //app.quit();
 });
-
 
 // activate = macOS only:
 // Emitted when the application is activated.

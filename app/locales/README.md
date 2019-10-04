@@ -2,6 +2,6 @@
 
 # ttth
 
-## /app/locales
+## /app/locales/
 
 This folder contains the translation files

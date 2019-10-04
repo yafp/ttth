@@ -71,8 +71,10 @@ You can as well add custom urls to ttth.
 
 
 ## ui
+### default theme
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
+### dark theme
 ![ui_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dark.png)
 
 
@@ -139,4 +141,4 @@ Please see the [LICENSE](LICENSE) for more details.
 
 
 ## disclosure
-ttth is not affiliated with any of the supported messaging apps/services.
+ttth is not affiliated with any of the supported apps/services.

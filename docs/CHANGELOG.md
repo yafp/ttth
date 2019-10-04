@@ -3,7 +3,7 @@
 # ttth
 ## changelog
 
-### ttth 1.6.0 (2019xxyy)
+### ttth 1.6.0 (20191002)
 #### ```Added```
 * Crash Reporting: See [#106](https://github.com/yafp/ttth/issues/106)
   * Added crashReporter for renderer.
@@ -21,12 +21,17 @@
 * Improved handling of file which stores window position and size. See [#109](https://github.com/yafp/ttth/issues/109)
 * The urgent window notification (introduced in 1.5.0) is now optional as user-setting. See [#110](https://github.com/yafp/ttth/issues/110)
 * Dependencies
-  * Updated eslint from 6.4.0 to 6.5.0
+  * Updated eslint from 6.4.0 to 6.5.1
   * Updated mocha from 6.2.0 to 6.2.1
-  * jquery is now used via npm
+  * Updated i18next from 17.0.16 to 17.0.17
+* Third party js libraries
+  * jquery: changed from LOCAL to CDN
+  * Bootstrap: changed from LOCAL to CDN
+  * FontAwesome: changed from LOCAL to CDN & updated from 5.10.2 to 5.11.2
 
 #### ```Removed```
 * Maintenance: Removed 'clean local storage' from help menu. As side effect from [#107](https://github.com/yafp/ttth/issues/107)
+* Removed javascript splash screen (cleanup -> jquery.modalLoading)
 
 #### ```Fixed```
 * Settings: LocalStorage was broken in 1.5.0. This broke all user settings from the settings tab. Replaced with electron-json-storage. See [#107](https://github.com/yafp/ttth/issues/107)
