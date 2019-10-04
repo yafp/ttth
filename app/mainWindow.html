@@ -10,33 +10,31 @@
 
 
     <!-- jquery -->
-    <script>window.$ = window.jQuery = require('jquery');</script>
     <!-- 3.4.1 -->
     <!--
-    <script type="text/javascript" src="lib/jquery/3.4.1/jquery-3.4.1.min.js"></script>
+    <script>window.$ = window.jQuery = require('jquery');</script>
     -->
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous">
+    </script>
 
 
     <!-- bootstrap -->
-    <!--
-    <script>window.popper = require("popper.js");</script>
-    <script>require("bootstrap");</script>
-    -->
-    <!-- 4.3.1 -->
-    <link rel="stylesheet" href="lib/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script type="text/javascript" src="lib/bootstrap/4.3.1/js/bootstrap.min.js" async></script>
+    <!-- cdn: 4.3.1 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script 
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
+        crossorigin="anonymous">
+    </script>
 
 
     <!-- fontawesome -->
-    <!-- 5.10.2 -->
-    <script type="text/javascript" src="lib/fontawesome-free-web/5.10.2/js/all.min.js" async></script>
-    <!-- FIXME: breaks in packaged builds - see #113 -->
-    <!--
-    <script type="text/javascript" src="../node_modules/@fortawesome/fontawesome-free/js/all.min.js" async></script>
-    -->
-    <!--
-     <script>require("@fortawesome/fontawesome-free");</script>
-    -->
+    <!-- 5.11.2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"></script>
+
 
     <!-- noty -->
     <!-- 3.2.0-beta -->
@@ -44,8 +42,6 @@
     <link rel="stylesheet" href="lib/noty/3.2.0-beta/themes/bootstrap-v4.css">
     <script type="text/javascript" src="lib/noty/3.2.0-beta/noty.min.js" async></script>
 
-    <!-- modalLoading -->
-    <script type="text/javascript" src="lib/jquery.modalLoading/modalLoading.js"></script>
 
     <!-- ttth -->
     <link rel="stylesheet" href="css/ttth/general.css" >
@@ -255,9 +251,6 @@ $( document ).ready(function()
     // hide the entire body on launch. we'll fade it back in later
     $('body').css('display', 'none');
 
-    // start splash
-    loading = $(document.body).modalLoading(100, '<img src="img/splash/icon_splash.png">');
-
     // load the configured user services
     loadEnabledUserServices();
 
@@ -276,13 +269,7 @@ $( document ).ready(function()
     // fade in the UI (0,5 sec animation)
     $('body').fadeIn(500);
 
-    // hide splash after 500 ms
-    setInterval(function()
-    {
-        loading.remove();
-    }, 500);
-
-
+    // set the window title
     updateMainWindowTitle("");
 
     // execute some things later ...
