@@ -3,6 +3,25 @@
 # ttth
 ## changelog
 
+
+### ttth 1.7.0 (2019xxyy)
+#### ```Added```
+* Window title now includes the menu.  See [#115](https://github.com/yafp/ttth/issues/115)
+
+####  ```Changed```
+* Dependencies
+  * Updated i18next from 17.0.17 to 17.0.18
+
+#### ```Removed```
+* Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+* Setting 'Hide menubar' is not longer needed. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+* Menu: 'View' -> 'Toggle Menubar' is not longer nedded. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+
+#### ```Fixed```
+* Cleaned up the css code. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+
+
+
 ### ttth 1.6.0 (20191002)
 #### ```Added```
 * Crash Reporting: See [#106](https://github.com/yafp/ttth/issues/106)

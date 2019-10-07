@@ -28,8 +28,6 @@
     "mw_settingsOptionsButtonTextDefaultViewReset": "Reset default view",
     "mw_settingsOptionsDescAutostart": "Enable autostart (on login)",
     "mw_settingsOptionsDescAutostartDescription": "Enables the autostart for ttth",
-    "mw_settingsOptionsDescHideMenubar": "Hide menubar (on load)",
-    "mw_settingsOptionsDescHideMenubarDescription": "Hides the application menubar",
     "mw_settingsOptionsDescDarkMode": "Enable dark mode",
     "mw_settingsOptionsDescDarkModeDescription": "Activates the dark mode / theme",
     "mw_settingsOptionsDescDisableTray": "Disable Tray (on load)",

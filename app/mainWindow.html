@@ -53,11 +53,15 @@
 
 <body>
 
-    <!-- navigation -->
+    
+
+
+    <!-- container -->
+    <div class="container-fluid h-100 d-flex flex-column fuya">
+
+        <!-- navigation -->
     <nav class="tabs">
-        <!-- tabBar -->
         <div id="tabBar" >
-            <!-- Tab Names -->
             <ul class="nav nav-tabs" id="myTabs" role="tablist">
                 <li class="nav-item small" id="menu_Settings" i18n-title="mw_settingsTabName">
                     <a class="nav-link ttth_nonSelectableText active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
@@ -65,15 +69,9 @@
                     </a>
                 </li>
             </ul>
-            <!-- /Tab Names -->
         </div>
-        <!-- /tabBar -->
     </nav>
     <!-- /navigation -->
-
-
-    <!-- container -->
-    <div class="container-fluid h-100 d-flex flex-column fuya">
 
         <!-- Tab Content -->
         <div class="row flex-fill">
@@ -175,18 +173,6 @@
                         <!-- /Option: Autostart  -->
 
 
-                        <!-- Option: HideMenubarOnStartup -->
-                        <div class="input-group input-group-sm mb-1" id="settingsSectionStartupHideMenubar">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingHideMenubar" aria-label="Checkbox for the hide menubar on startup otion" onClick="settingToggleMenubarVisibility();">
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsDescHideMenubar" i18n-title="mw_settingsOptionsDescHideMenubarDescription" disabled>
-                        </div>
-                        <!-- /Option: HideMenubarOnStartup  -->
-
-
                          <!-- Option: DisableTray -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionDisableTray">
                             <div class="input-group-prepend">
@@ -218,7 +204,7 @@
                                     <input type="checkbox" id="checkboxSettingUrgentWindow" aria-label="Checkbox for urgent window" onClick="settingToggleUrgentWindow();">
                                 </div>
                             </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the hide menubar on startup option" value="" i18n-value="mw_settingsOptionsUrgentWindow"  i18n-title="mw_settingsOptionsUrgentWindowDescription" disabled>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the urgent window option" value="" i18n-value="mw_settingsOptionsUrgentWindow"  i18n-title="mw_settingsOptionsUrgentWindowDescription" disabled>
                         </div>
                         <!-- /Option: UrgentWindow -->
 
@@ -270,7 +256,7 @@ $( document ).ready(function()
     $('body').fadeIn(500);
 
     // set the window title
-    updateMainWindowTitle("");
+    //updateMainWindowTitle("");
 
     // execute some things later ...
     setTimeout(function()
@@ -304,9 +290,6 @@ $(document).bind('afterready', function()
         }
 
         console.log("ready ::: Switched to tab: _" + target + "_.");
-
-        // Update window title
-        updateMainWindowTitle(target);
 
         // do page-specific things
         /*

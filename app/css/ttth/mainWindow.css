@@ -3,8 +3,8 @@
 /* ########################################################################## */
 html,body
 {
-    /* height:100%;  */
-    height: calc(100% - 15px);
+    /* height */
+    height:100%;
 
     /* width */
     width: 100%;
@@ -13,12 +13,9 @@ html,body
     padding-right: 0;
     padding-left: 0;
 
-    /* margin */
-    margin-left: 0;
-    margin-right: 0;
-
     color: var(--color-bodyText);
     background-color: var(--color-bodyBackground);
+
 }
 
 
@@ -28,7 +25,8 @@ html,body
 #tabBar
 {
     /* height */
-    height: 30px; /* default: 40px */
+    height: 30px; /* 30, default: 40px */
+
     background-color: var(--color-navigationBackground);
     border-bottom: 2px solid var(--color-navigationBorder);
 }
@@ -42,13 +40,6 @@ ul
 
 .nav-item
 {
-    /* border */
-    /*
-    border: 1px solid white;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    */
-
     /* margin */
     margin-left: 0px;
     margin-right: 3px;
@@ -179,7 +170,6 @@ h3
 {
     border-color: var(--color-highlight) !important;
 }
-
 
 .ttth_select:hover
 {

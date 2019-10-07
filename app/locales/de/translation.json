@@ -28,8 +28,6 @@
     "mw_settingsOptionsButtonTextDefaultViewReset": "Setze Standardansicht zurück",
     "mw_settingsOptionsDescAutostart": "Aktiviere Autostart (bei Anmeldung)",
     "mw_settingsOptionsDescAutostartDescription": "Aktiviere den Autostart für ttth",
-    "mw_settingsOptionsDescHideMenubar": "Verstecke Menüzeile (beim laden)",
-    "mw_settingsOptionsDescHideMenubarDescription": "Versteckt die Menüzeile des Programmes",
     "mw_settingsOptionsDescDarkMode": "Aktiviere dunkles Theme",
     "mw_settingsOptionsDescDarkModeDescription": "Aktiviert das dunkle Theme",
     "mw_settingsOptionsDescDisableTray": "Deaktiviere Tray (beim laden)",

@@ -37,7 +37,7 @@
 It is:
 
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
-* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition).
+* inspired by apps like [Franz](https://github.com/meetfranz/franz), [Rambox](https://github.com/ramboxapp/community-edition) and [Hamsket](https://github.com/TheGoddessInari/hamsket). 
 * free and open source
 
 
@@ -96,7 +96,9 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 | ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
 | Homepage                        | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   |
 | Report issue                    | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   |
-| Toggle menubar                  | <kbd>F10</kbd>                  | -                               | <kbd>F10</kbd>                  |
+| Changelog                       | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   |
+| FAQ                             | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   |
+| Search updates                  | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   |
 | Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
 | Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
 | Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |

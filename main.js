@@ -14,13 +14,6 @@ const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance hand
 const openAboutWindow = require("about-window").default; // for: about-window
 
 
-// FIXME
-// i want to use fontawesome via npm but
-// it seems to break in my packaged builds, as the js file does not exist
-// therefor: not yet in use
-//
-//const fa = require('@fortawesome/fontawesome-free');
-
 
 
 // ----------------------------------------------------------------------------
@@ -56,7 +49,7 @@ crashReporter.start({
 const Sentry = require("@sentry/electron");
 Sentry.init({
     dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.6.0"
+    release: "ttth@1.7.0"
 });
 //
 // simple way to force a crash:
@@ -349,7 +342,7 @@ function createWindow ()
     // Create the browser window.
     mainWindow = new BrowserWindow({
         title: "${productName}",
-        frame: true, // false results in a borderless window
+        frame: false, // false results in a borderless window
         show: false, // hide until: ready-to-show
         width: windowWidth,
         height: windowHeight,
@@ -637,22 +630,6 @@ function createWindow ()
     });
 
 
-    // Call from renderer: Update Window Title
-    ipcMain.on("updateMainWindowTitle", (event, arg) => {
-        // update title
-        let name = require("./package.json").name;
-        let version = require("./package.json").version;
-        let windowTitle = name + " " + version;
-        if(arg !== "")
-        {
-            windowTitle = windowTitle + " - " + arg;
-        }
-        mainWindow.setTitle(windowTitle);
-
-        writeLog("info", "Updated title of mainWindow to _" + windowTitle + "_ (ipcMain)");
-    });
-
-
     // Call from renderer ::: deleteAllGlobalServicesShortcut
     ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
     {
@@ -767,20 +744,6 @@ function createWindow ()
         configWindow.hide();
 
         writeLog("info", "configWindow is now hidden (ipcMain)");
-    });
-
-
-    // Menubar: Hide Menubar - Gets called from renderer
-    ipcMain.on("hideMenubar", function() {
-        mainWindow.setMenuBarVisibility(false);
-        writeLog("info", "Hiding menubar (ipcMain)");
-    });
-
-
-    // Menubar: Show Menubar - Gets called from renderer
-    ipcMain.on("showMenubar", function() {
-        mainWindow.setMenuBarVisibility(true);
-        writeLog("info", "Un-hiding menubar (ipcMain");
     });
 
 

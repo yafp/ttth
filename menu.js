@@ -117,24 +117,6 @@ function ()
             },
             accelerator: "CmdOrCtrl+S",
             enabled: true
-        },
-        {
-            type: "separator"
-        },
-        {
-            id: "ViewToggleMenubar",
-            label: "Toggle MenuBar",
-            click(item, mainWindow) {
-                if(mainWindow.isMenuBarVisible())
-                {
-                    mainWindow.setMenuBarVisibility(false);
-                }
-                else
-                {
-                    mainWindow.setMenuBarVisibility(true);
-                }
-            },
-            accelerator: "F10"
         }
     ]
     },

@@ -55,6 +55,25 @@ unhandled();
 
 
 
+// ----------------------------------------------------------------------------
+// Titlebar
+// ----------------------------------------------------------------------------
+//
+const customTitlebar = require('custom-electron-titlebar');
+ 
+new customTitlebar.Titlebar({
+    titleHorizontalAlignment: "center", // position of window title
+    icon: "img/icon/icon.png", 
+    drag: true, // whether or not you can drag the window by holding the click on the title bar.
+    backgroundColor: customTitlebar.Color.fromHex("#171717"),
+    minimizable: true,
+    maximizable: true,
+    closeable: true
+});
+
+
+
+
 /**
 * @name showNoty
 * @summary Shows a noty notification
@@ -322,40 +341,6 @@ function readLocalUserSetting(key, optional=false)
         // End: Autostart
 
 
-
-
-        // Setting: HideMenubar (is platform specific - as function is not supported on darwin)
-        //
-        if(key === "settingHideMenubar")
-        {
-            const {ipcRenderer} = require("electron");
-            //curSettingHideMenubar = readLocalUserSetting("settingHideMenubar");
-
-            if(isMac())
-            {
-                // hide the entire setting on settingspage
-                $("#settingsSectionStartupHideMenubar").hide();
-            }
-            else // default case (linux or windows)
-            {
-                if(value === true) // hide menubar
-                {
-                    writeLog("info", "initSettingsPage ::: Hide menubar");
-                    $("#checkboxSettingHideMenubar").prop("checked", true);
-                    ipcRenderer.send("hideMenubar");
-                }
-                else // show menubar
-                {
-                    writeLog("info", "initSettingsPage ::: Show menubar");
-                    $("#checkboxSettingHideMenubar").prop("checked", false);
-                    ipcRenderer.send("showMenubar");
-                }
-            }
-        }
-        // End: HideMenubar
-
-
-
         // Setting DisableTray
         //
         if(key === "settingDisableTray")
@@ -441,11 +426,11 @@ function writeLocalUserSetting(key,value)
     const path = require("path");
 
     // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
+    const defaultDataPath = storage.getDefaultDataPath();
 
     // set new path for userUsettings
     const userSettingsPath = path.join(app.getPath("userData"), "ttthUserSettings");
-    storage.setDataPath(userSettingsPath)
+    storage.setDataPath(userSettingsPath);
 
     // write the user setting
     storage.set(key, { "setting": value }, function(error) {
@@ -1156,21 +1141,6 @@ function configureSingleUserService(serviceId)
 
 
 /**
-* @name updateMainWindowTitle
-* @summary Triggers an update title function in main.js
-* @description Triggers an update title function in main.js. This is needed to update the app window title to display the current / frontmost service.
-* @param TabName - Name of the current tab
-*/
-function updateMainWindowTitle(tabName)
-{
-    writeLog("info", "updateMainWindowTitle ::: Sending _" + tabName + "_ to main.js");
-
-    const {ipcRenderer} = require("electron");
-    ipcRenderer.send("updateMainWindowTitle", tabName);
-}
-
-
-/**
 * @name openDevTools
 * @summary Toggles DevConsole
 * @description Opens or closes the Developer Console inside the app
@@ -1275,34 +1245,6 @@ function settingDefaultViewReset()
 
     writeLog("info", "settingDefaultViewReset ::: Did reset the default view");
 
-}
-
-
-/**
-* @name settingToggleMenubarVisibility
-* @summary Toggles the setting hideMenubar
-* @description Enabled or disables the srtting Hide-Menubar-On-Startup
-*/
-function settingToggleMenubarVisibility()
-{
-    if($("#checkboxSettingHideMenubar").prop("checked"))
-    {
-        writeLocalUserSetting("settingHideMenubar", true);
-
-        writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is enabled");
-
-        // show noty
-        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Hide menubar (on load)</u> is now enabled.");
-    }
-    else
-    {
-        writeLocalUserSetting("settingHideMenubar", false);
-
-        writeLog("info", "settingToggleMenubarVisibility ::: Hide menubar is disabled");
-
-        // show noty
-        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Hide menubar (on load)</u> is now disabled.");
-    }
 }
 
 
@@ -1658,15 +1600,12 @@ function initSettingsPage()
     //
     // Autostart
     readLocalUserSetting("settingAutostart");
-    // Hide Menubar (Windows & Linux only)
-    readLocalUserSetting("settingHideMenubar");
     // DarkMode
     readLocalUserSetting("settingDarkMode");
     // DisableTray (Linux only)
     readLocalUserSetting("settingDisableTray");
     // Urgent Window
     readLocalUserSetting("settingUrgentWindow");
-
 
     // load all supported services to checklist (used for adding new services)
     initAvailableServicesSelection();
@@ -1797,10 +1736,19 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     {
         // Using partition:
         //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-        $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
+        //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
+
+        if(serviceInjectCode === "") // no inject code
+        {
+            $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + "></webview>" );
+        }
+        else // got injectCode, preload it
+        {
+            $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
+        }
     }
 
-    writeLog("info", "addServiceTab :::Added the webview to the tab pane for service: _" + serviceId + "_.");
+    writeLog("info", "addServiceTab ::: Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     writeLog("info", "addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
 
