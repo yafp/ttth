@@ -179,7 +179,7 @@
     "devDependencies": {
         "chai": "^4.2.0",
         "chai-as-promised": "^7.1.1",
-        "electron": "^5.0.10",
+        "electron": "^5.0.11",
         "electron-builder": "^21.2.0",
         "electron-packager": "^14.0.6",
         "eslint": "^6.5.1",
@@ -195,7 +195,7 @@
         "electron-json-storage": "^4.1.8",
         "electron-log": "^3.0.8",
         "electron-unhandled": "^3.0.0",
-        "i18next": "^17.0.18",
+        "i18next": "^17.1.0",
         "i18next-sync-fs-backend": "^1.1.1",
         "is-online": "^8.2.0"
     }
