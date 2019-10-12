@@ -6,11 +6,13 @@
 
 ### ttth 1.7.0 (2019xxyy)
 #### ```Added```
-* Window title now includes the menu.  See [#115](https://github.com/yafp/ttth/issues/115)
+* Window titlebar now includes the menu. See [#115](https://github.com/yafp/ttth/issues/115)
+* Added a first (pretty poor) version of french localication. See [#118](https://github.com/yafp/ttth/issues/118)
 
 ####  ```Changed```
 * Dependencies
-  * Updated i18next from 17.0.17 to 17.0.18
+  * Updated electron from 5.0.10 to 5.0.11
+  * Updated i18next from 17.0.17 to 17.1.0
 
 #### ```Removed```
 * Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
@@ -19,8 +21,11 @@
 
 #### ```Fixed```
 * Cleaned up the css code. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+* Fixed issue where fullscreen toggle caused display of previous hidden menubar on linux. See [#94](https://github.com/yafp/ttth/issues/94). Sideffect of [#115](https://github.com/yafp/ttth/issues/115)
+* Fixed issue on disabling a service. See [#117](https://github.com/yafp/ttth/issues/117)
+* Fixed issue with global shortcuts for services (when service amount > 9). See [#116](https://github.com/yafp/ttth/issues/116)
 
-
+***
 
 ### ttth 1.6.0 (20191002)
 #### ```Added```
@@ -57,7 +62,7 @@
 * Window position and size was not properly saved on macOS (since 1.5.0). See [#109](https://github.com/yafp/ttth/issues/109)
 * Maintenance: Fixed 'clear cache' function. See [#114](https://github.com/yafp/ttth/issues/114)
 
-
+***
 
 ### ttth 1.5.0 (20190920)
 #### ```Added```
@@ -109,7 +114,7 @@
 * UI: No single element on settings tab is now selectable anymore using CTRL + a.
 * Travis: Building linux builds via travis was broken since rpm-support was added ([#78](https://github.com/yafp/ttth/issues/78)). This is now fixed. See [#83](https://github.com/yafp/ttth/issues/83)
 
-
+***
 
 ### ttth 1.4.0 (20190712)
 ####  ```Added```
@@ -141,7 +146,7 @@
 * Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
 * UI: Fix horizontal scrollbar css bug. See [#60](https://github.com/yafp/ttth/issues/60)
 
-
+***
 
 ### ttth 1.3.0 (20190603)
 ####  ```Added```
@@ -176,7 +181,7 @@
 * Services: When a user tried to enable Mattermost or Slack and cancelled the prompt, the service status button was still green. Is now fixed. See [#42](https://github.com/yafp/ttth/issues/42)
 * Services: Unread Message count for Whatsapp was broken. See [#46](https://github.com/yafp/ttth/issues/46)
 
-
+***
 
 ### ttth 1.2.0 (20190524)
 ####  ```Added```
@@ -199,7 +204,7 @@
 #### ```Fixed```
 * Mac: Copy and paste was not working. Fixed by adding an 'Edit' section to the menu. See [#23](https://github.com/yafp/ttth/issues/23)
 
-
+***
 
 ### ttth 1.1.0 (20190521)
 ####  ```Added```
@@ -219,7 +224,7 @@
 * Service: Fixed url handling. Should now open clicks on urls in external browser (implemented for Freenode, Mattermost, Slack, Telegram, Whatsapp). See [#8](https://github.com/yafp/ttth/issues/8)
 * Mac: Fixed some issues with the tray icon on macOS. See [#10](https://github.com/yafp/ttth/issues/10)
 
-
+***
 
 ### ttth 1.0.0 (20190517)
 ####  ```Added```

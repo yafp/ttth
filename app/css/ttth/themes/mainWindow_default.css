@@ -15,6 +15,6 @@
 
     /* bootstrap form elements */
     --color-inputFormsText: #000000; /* black */
-    --color-inputFormsBackground: #EBEBEB; /* Gray92  */
+    --color-inputFormsBackground: #F8F8F8; /* almost white */
     --color-inputFormsBorder: #D3D3D3; /* lightgray */
 }

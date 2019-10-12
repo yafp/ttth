@@ -9,7 +9,7 @@
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
 
-    <!-- jquery -->
+    <!-- Remote: jquery -->
     <!-- 3.4.1 -->
     <!--
     <script>window.$ = window.jQuery = require('jquery');</script>
@@ -21,7 +21,7 @@
     </script>
 
 
-    <!-- bootstrap -->
+    <!-- Remote: bootstrap -->
     <!-- cdn: 4.3.1 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script 
@@ -31,19 +31,19 @@
     </script>
 
 
-    <!-- fontawesome -->
+    <!-- Remote: fontawesome -->
     <!-- 5.11.2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"></script>
 
 
-    <!-- noty -->
+    <!-- Local: noty -->
     <!-- 3.2.0-beta -->
     <link rel="stylesheet" href="lib/noty/3.2.0-beta/noty.css" >
     <link rel="stylesheet" href="lib/noty/3.2.0-beta/themes/bootstrap-v4.css">
     <script type="text/javascript" src="lib/noty/3.2.0-beta/noty.min.js" async></script>
 
 
-    <!-- ttth -->
+    <!-- Local: ttth -->
     <link rel="stylesheet" href="css/ttth/general.css" >
     <link rel="stylesheet" href="css/ttth/mainWindow.css" >
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
@@ -53,25 +53,23 @@
 
 <body>
 
-    
-
-
     <!-- container -->
     <div class="container-fluid h-100 d-flex flex-column fuya">
 
         <!-- navigation -->
-    <nav class="tabs">
-        <div id="tabBar" >
-            <ul class="nav nav-tabs" id="myTabs" role="tablist">
-                <li class="nav-item small" id="menu_Settings" i18n-title="mw_settingsTabName">
-                    <a class="nav-link ttth_nonSelectableText active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
-                        <i class="fas fa-cog"></i> <span i18n-text=""></span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <!-- /navigation -->
+        <nav class="tabs">
+            <div id="tabBar" >
+                <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                    <li class="nav-item small" id="menu_Settings">
+                        <a class="nav-link ttth_nonSelectableText active" id="target_Settings" href="#Settings" role="tab" data-toggle="tab" >
+                            <i class="fas fa-cog"></i> <span i18n-text=""></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- /navigation -->
+
 
         <!-- Tab Content -->
         <div class="row flex-fill">
@@ -91,10 +89,10 @@
                         <!-- About: Description -->
                         <div>
                             <span class="small" i18n-text="mw_settingsAboutAppDescription" id="settingsAppDescription"><!-- Description --></span>
-                            <button type="button" id="bt_aboutShowMore" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#demo" onClick="settingsAboutShowMore();" i18n-text="mw_settingsAboutButtonShowMore"><!-- show more --></button><br>
+                            <button type="button" id="bt_aboutShowMore" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#links" onClick="settingsAboutShowMore();" i18n-text="mw_settingsAboutButtonShowMore"><!-- show more --></button><br>
                         </div>
 
-                        <div id="demo" class="collapse">
+                        <div id="links" class="collapse">
                             <!-- List of buttons with links -->
                             <div>
                                 <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
@@ -103,7 +101,7 @@
                                 <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
                                 <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
                                 <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
-                                <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="mw_settingsAboutButtonConsole" onclick="openDevTools();"><!-- Console --></a>
+                                <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="mw_settingsAboutButtonConsole" onclick="openDevTools();" title="Open DevTools"><!-- Console --></a>
                             </div>
                         </div>
                         <!-- /About -->
@@ -129,8 +127,16 @@
                             <!-- load dynamic from json file in user data -->
                         </div>
 
+                        <!-- Button: show config folder -->
                         <div class="text-left">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserServicesConfigFolder();" i18n-text="mw_settingsServicesButtonTextShowConfigs" i18n-title="mw_settingsServicesButtonTitleShowConfigs" aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations --></button>
+                            <button 
+                                type="button" 
+                                class="btn btn-outline-secondary btn-sm" 
+                                onClick="openUserServicesConfigFolder();" 
+                                i18n-text="mw_settingsServicesButtonTextShowConfigs" 
+                                i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
+                                aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations -->
+                            </button>
                         </div>
                         <!-- /Service Section -->
 
@@ -208,8 +214,16 @@
                         </div>
                         <!-- /Option: UrgentWindow -->
 
+                        <!-- Button: show config folder -->
                         <div class="text-left">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onClick="openUserSettingsConfigFolder();" i18n-text="mw_settingsServicesButtonTextShowConfigs" i18n-title="mw_settingsServicesButtonTitleShowConfigs" aria-label="Button to open the folder which contains all user settings"><!-- Configurations --></button>
+                            <button 
+                                type="button" 
+                                class="btn btn-outline-secondary btn-sm" 
+                                onClick="openUserSettingsConfigFolder();" 
+                                i18n-text="mw_settingsServicesButtonTextShowConfigs" 
+                                i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
+                                aria-label="Button to open the folder which contains all user settings"><!-- Configurations -->
+                            </button>
                         </div>
 
                     </div>
@@ -236,6 +250,12 @@ $( document ).ready(function()
 
     // hide the entire body on launch. we'll fade it back in later
     $('body').css('display', 'none');
+
+    // init the custom titlebar - see #115
+    initTitlebar();
+
+    // change font size of application name in titlebar
+    $('.window-title').css('font-size', '13px'); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
 
     // load the configured user services
     loadEnabledUserServices();

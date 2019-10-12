@@ -17,26 +17,16 @@ const openAboutWindow = require("about-window").default; // for: about-window
 
 
 // ----------------------------------------------------------------------------
-// Error Handling using: crashReporter
+// Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
 // ----------------------------------------------------------------------------
 //
-// https://electronjs.org/docs/api/crash-reporter
-//
-// Crash reports are saved locally in an application-specific temp directory folder.
-// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory.
-// You can customize this temp directory location for your app by calling the
-//    app.setPath('temp', '/my/custom/temp')
-// API before starting the crash reporter.
 crashReporter.start({
         productName: "ttth",
         companyName: "yafp",
         submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
         uploadToServer: false
 });
-// crashes directory on linux: "/tmp/ttth Crashes/"
-//
 // To simulate a crash - execute: process.crash();
-//process.crash();
 
 
 // ----------------------------------------------------------------------------
@@ -61,7 +51,6 @@ Sentry.init({
 // ----------------------------------------------------------------------------
 const unhandled = require("electron-unhandled"); // error handling
 unhandled();
-
 
 
 // Keep a global reference of the window objects,
@@ -278,7 +267,6 @@ function createTray()
 
     // Urgent window - as user setting  - see #110
     ipcMain.on("makeWindowUrgent", function() {
-
         mainWindow.flashFrame(true); // #110 - urgent window
     });
 
@@ -344,10 +332,12 @@ function createWindow ()
         title: "${productName}",
         frame: false, // false results in a borderless window
         show: false, // hide until: ready-to-show
+        titleBarStyle: "hidden", // needed for custom-electron-titlebar
         width: windowWidth,
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
+        center: true, // since 1.7.0
         //preload: path.join(__dirname, 'sentry.js'),  // sentry - #106
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
@@ -384,12 +374,6 @@ function createWindow ()
 
     // When dom is ready - set window title
     mainWindow.webContents.once("dom-ready", () => {
-        // set window title
-        let name = require("./package.json").name;
-        let version = require("./package.json").version;
-        let windowTitle = name + " " + version;
-        mainWindow.setTitle(windowTitle);
-
         writeLog("info", "mainwWindow DOM is now ready (event: dom-ready)");
     });
 
@@ -441,22 +425,6 @@ function createWindow ()
     {
         // disabled to reduce clutter
         //writeLog("info", "mainWindow got resized (event: resize)");
-    });
-
-
-    // when the mainwindow gets moved
-    mainWindow.on("move", function()
-    {
-        //writeLog("info", "mainWindow got moved (event: move)");
-
-        //let bounds = mainWindow.getNormalBounds();
-        //writeLog("info", "x:" + bounds.x + " y:" + bounds.y + " width:" + bounds.width + " height:" + bounds.height );
-
-        // TODO:
-        // move configWindow as well, if mainWindow is moved. To have it always above the mainWindow
-        //
-        // Be aware: On macOS the child windows will keep the relative position to parent window
-        // when parent window moves, while on Windows and Linux child windows will not move.
     });
 
 
@@ -521,7 +489,8 @@ function createWindow ()
 
         // try to write
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
-            if (err) {
+            if (err) 
+            {
                 writeLog("error", "storing window -position and -size of mainwindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
                 return console.log(err);
             }
@@ -597,7 +566,6 @@ function createWindow ()
     // Call from renderer: Reload mainWindow
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
-
         writeLog("info", "mainWindow is now reloaded (ipcMain)");
     });
 
@@ -664,16 +632,16 @@ function createWindow ()
 
 
     // *****************************************************************
-    // modal window
+    // modal window: to allow creating and configuring a single service
     // *****************************************************************
     //
-    // modal window to allow creating and configuring a single service
     configWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
         title: "${productName}",
         frame: false, // false results in a borderless window
         show: false, // hide as default
+        titleBarStyle: "hidden",
         resizable: false,
         width: 600,
         height: 580,
@@ -698,9 +666,7 @@ function createWindow ()
     configWindow.on("close", function (event)
     {
         writeLog("info", "configWindow will close, but we hide it (event: close)");
-
-        // just hide it - so it can re-opened
-        configWindow.hide();
+        configWindow.hide(); // just hide it - so it can re-opened
     });
 
 
@@ -740,9 +706,7 @@ function createWindow ()
 
     // Call from renderer: hide configure-single-service window
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
-        // hide window
-        configWindow.hide();
-
+        configWindow.hide(); // hide window
         writeLog("info", "configWindow is now hidden (ipcMain)");
     });
 
@@ -887,8 +851,7 @@ app.on("window-all-closed", function ()
 {
     writeLog("info", "app closed all application windows (event: window-all-closed)");
 
-    // On macOS it is common for applications and their menu bar to stay active
-    // until the user quits explicitly with Cmd + Q
+    // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== "darwin")
     {
         writeLog("info", "Bye");
@@ -897,25 +860,18 @@ app.on("window-all-closed", function ()
 });
 
 // activate = macOS only:
-// Emitted when the application is activated.
-// Various actions can trigger this event, such as launching the application for the first time,
-// attempting to re-launch the application when it's already running,
-// or clicking on the application's dock or taskbar icon.
+// Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time,
+// attempting to re-launch the application when it's already running, or clicking on the application's dock or taskbar icon.
 //
 app.on("activate", function ()
 {
     writeLog("info", "app got activate event (event: activate)");
 
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
+    // On macOS it's common to re-create a window in the app when the dock icon is clicked and there are no other windows open.
     if (mainWindow === null)
     {
         writeLog("warn", "Trying to re-create the mainWindow, as it doesnt exist anymore (event: activate)");
-
-        //forceSingleAppInstance();
         createWindow();
-        //createMenu();
-        //createTray();
     }
 });
 

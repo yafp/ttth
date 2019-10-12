@@ -1,15 +1,7 @@
 
 // ----------------------------------------------------------------------------
-// Error Handling using: crashReporter
+// Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
 // ----------------------------------------------------------------------------
-//
-// https://electronjs.org/docs/api/crash-reporter
-//
-// Crash reports are saved locally in an application-specific temp directory folder.
-// For a productName of YourName, crash reports will be stored in a folder named YourName Crashes inside the temp directory.
-// You can customize this temp directory location for your app by calling the
-//    app.setPath('temp', '/my/custom/temp')
-// API before starting the crash reporter.
 //
 const { crashReporter } = require("electron");
 crashReporter.start({
@@ -18,10 +10,7 @@ crashReporter.start({
         submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
         uploadToServer: false
 });
-// crashes directory on linux: "/tmp/ttth Crashes/"
-
 // To simulate a crash - execute: process.crash();
-//process.crash();
 
 
 // ----------------------------------------------------------------------------
@@ -36,42 +25,40 @@ crashReporter.start({
 const Sentry = require("@sentry/electron");
 Sentry.init({
     dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.6.0"
+    release: "ttth@1.7.0"
 });
 //
 // simple way to force a crash:
 //myUndefinedFunction();
 
 
-
 // ----------------------------------------------------------------------------
-// Error Handling using: electron-unhandled
+// Error Handling using: electron-unhandled (https://github.com/sindresorhus/electron-unhandled)
 // ----------------------------------------------------------------------------
-//
-// src: https://github.com/sindresorhus/electron-unhandled
 //
 const unhandled = require("electron-unhandled");
 unhandled();
 
 
+/**
+* @name initTitlebar
+* @summary Init the titlebar for the frameless mainWindow
+* @description Creates a custom titlebar for the mainWindow using custom-electron-titlebar (https://github.com/AlexTorresSk/custom-electron-titlebar)
+*/
+function initTitlebar()
+{
+    const customTitlebar = require('custom-electron-titlebar');
 
-// ----------------------------------------------------------------------------
-// Titlebar
-// ----------------------------------------------------------------------------
-//
-const customTitlebar = require('custom-electron-titlebar');
- 
-new customTitlebar.Titlebar({
-    titleHorizontalAlignment: "center", // position of window title
-    icon: "img/icon/icon.png", 
-    drag: true, // whether or not you can drag the window by holding the click on the title bar.
-    backgroundColor: customTitlebar.Color.fromHex("#171717"),
-    minimizable: true,
-    maximizable: true,
-    closeable: true
-});
-
-
+    new customTitlebar.Titlebar({
+        titleHorizontalAlignment: "center", // position of window title
+        icon: "img/icon/icon.png", 
+        drag: true, // whether or not you can drag the window by holding the click on the title bar.
+        backgroundColor: customTitlebar.Color.fromHex("#171717"),
+        minimizable: true,
+        maximizable: true,
+        closeable: true
+    });
+}
 
 
 /**
@@ -85,6 +72,8 @@ new customTitlebar.Titlebar({
 function showNoty(type, message, timeout = 3000)
 {
     //const Noty = require("noty");
+    //import Noty from 'noty';
+
     new Noty({
         type: type,
         timeout: timeout,
@@ -111,7 +100,6 @@ function writeLog(logType, logMessage)
 
     // log to console
     //logR.transports.console.level = false; // TODO: should depend on the verbose setting in main.js
-
 
 
     // add prefix for all logs from [R]enderer
@@ -234,6 +222,53 @@ function isWindows()
 
 
 /**
+* @name loadDefaultView
+* @summary Loads the default view
+* @description Loads the default view. This is used on load of the .html
+*/
+function loadDefaultView(newDefaultView)
+{
+    writeLog("info", "loadDefaultView ::: Found configured default view: _" + newDefaultView + "_.");
+    switchToService(newDefaultView);
+}
+
+
+/**
+* @name settingDefaultViewReset
+* @summary Reset the stored default view
+* @description Deletes the localstorage key 'settingDefaultview'
+*/
+function settingDefaultViewReset()
+{
+    writeLocalUserSetting("settingDefaultView", false);
+
+    // reset the selection of the select item
+    $("#selectDefaultView").prop("selectedIndex",0);
+
+    writeLog("info", "settingDefaultViewReset ::: Did reset the default view");
+}
+
+
+/**
+* @name settingActivateUserColorCss
+* @summary Activates a css style
+* @description Activates a css style / theme
+* @param cssStyleName - Name of the css file
+*/
+function settingActivateUserColorCss(cssFile)
+{
+    console.log("settingActivateUserColorCss ::: Loading css file: _" + cssFile + "_.");
+
+    // load custom css file
+    $("<link/>", {
+        rel: "stylesheet",
+        type: "text/css",
+        href: "css/ttth/themes/" + cssFile
+    }).appendTo("head");
+}
+
+
+/**
 * @name readLocalUserSetting
 * @summary Read from local storage
 * @description Reads a value stored in local storage (for a given key)
@@ -321,8 +356,6 @@ function readLocalUserSetting(key, optional=false)
         }
 
 
-
-
         // Setting Autostart
         //
         if(key === "settingAutostart")
@@ -385,7 +418,6 @@ function readLocalUserSetting(key, optional=false)
             }
         }
         // End: DarkMode
-
 
 
         // Setting Urgent Window - #110
@@ -463,25 +495,6 @@ function previewIcon()
 
 
 /**
-* @name settingActivateUserColorCss
-* @summary Activates a css style
-* @description Activates a css style
-* @param cssStyleName - Name of the css file
-*/
-function settingActivateUserColorCss(cssFile)
-{
-    console.log("settingActivateUserColorCss ::: Loading DarkMode" );
-
-    // load custom css file
-    $("<link/>", {
-        rel: "stylesheet",
-        type: "text/css",
-        href: "css/ttth/themes/" + cssFile
-    }).appendTo("head");
-}
-
-
-/**
 * @name settingToggleDarkMode
 * @summary Enables or disabled the option darkmode
 * @description Updates the settings / option darkmode
@@ -504,7 +517,6 @@ function settingToggleDarkMode()
         settingActivateUserColorCss("mainWindow_default.css");
     }
 }
-
 
 
 /**
@@ -686,15 +698,13 @@ function openUserServicesConfigFolder()
 * @summary Opens the folder in filesystem which contains the user settings
 * @description Triggers a method in main.js which then opens the folder which contains all user settings
 */
-function openUserSettingsConfigFolder
-()
+function openUserSettingsConfigFolder()
 {
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("openUserSettingsConfigFolder");
 
     writeLog("info", "openUserSettingsConfigFolder ::: Should try to open the folder which contains the user settings.");
 }
-
 
 
 /**
@@ -799,6 +809,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     //  5.000 =  5 sec
     var intervalID = setInterval(function()
+    //var "interval_" + serviceId = setInterval(function()
     {
         //writeLog("info", "EventListener of: " + serviceId);
         webview.send("request");
@@ -917,6 +928,9 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         {
             writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
 
+            // debugging a single webview
+            //webview.openDevTools()
+
             // Triggering search for unread messages
             webview.send("request");
         });
@@ -933,7 +947,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         });
 
         // WebView Event:  ipc-message
-        // TODO: this eventListener breaks with electron 6 (FIXME)
+        // TODO: this eventListener seems to breaks with electron 6 (FIXME)
         // see #88
         //
         //webview.addEventListener("ipc-message",function(event)
@@ -1053,8 +1067,6 @@ function createSingleServiceConfiguration()
 
             writeLog("info", "createSingleServiceConfiguration ::: Created a new service config for: _" + serviceId + "_.");
 
-            showNoty("success", "Successfully created the new service: " + serviceId);
-
             if (error)
             {
                 throw error;
@@ -1113,8 +1125,6 @@ function updateSingleServiceConfiguration()
 
             writeLog("info", "updateSingleServiceConfiguration ::: Updating service config: _" + serviceId + "_.");
 
-            showNoty("success", "Successfully edited the existing service: " + serviceId);
-
             if (error)
             {
                 throw error;
@@ -1134,7 +1144,7 @@ function configureSingleUserService(serviceId)
 {
     writeLog("info", "configureSingleUserService ::: Trying to open service configure window for service: _" + serviceId + "_.");
 
-    // send ipc to show second window
+    // send ipc to show service-configuration window
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("showConfigureSingleServiceWindow", serviceId);
 }
@@ -1142,7 +1152,7 @@ function configureSingleUserService(serviceId)
 
 /**
 * @name openDevTools
-* @summary Toggles DevConsole
+* @summary Toggles the DevConsole
 * @description Opens or closes the Developer Console inside the app
 */
 function openDevTools()
@@ -1154,25 +1164,7 @@ function openDevTools()
 
 
 /**
-* @name sendNotification
-* @summary Send a notification
-* @description Creates a desktop notification
-* @param title- Title string for the notification
-* @param message - Message string for the notification
-*/
-function sendNotification(title, message)
-{
-    writeLog("info", "sendNotification ::: Sending a notification with the title _" + title + "_ and the message: _" + message + "_.");
-
-    let myNotification = new Notification(title, {
-        body: message,
-        icon: "img/notification/icon_notification.png"
-    });
-}
-
-
-/**
-* @name  settingToggleAutostart
+* @name settingToggleAutostart
 * @summary Enables or disables the autostart
 * @description Enables or disables the autostart
 */
@@ -1232,23 +1224,6 @@ function settingDefaultViewUpdate()
 
 
 /**
-* @name settingDefaultViewReset
-* @summary Reset the stored default view
-* @description Deletes the localstorage key 'settingDefaultview'
-*/
-function settingDefaultViewReset()
-{
-    writeLocalUserSetting("settingDefaultView", false);
-
-    // reset the selection of the select item
-    $("#selectDefaultView").prop("selectedIndex",0);
-
-    writeLog("info", "settingDefaultViewReset ::: Did reset the default view");
-
-}
-
-
-/**
 * @name checkSupportedOperatingSystem
 * @summary Checks if the operating system is supported or not
 * @description Checks if the operating system is linux, windows or macOS. Those are supported - others are currently not.
@@ -1288,10 +1263,10 @@ function checkSupportedOperatingSystem()
 */
 function switchToService(serviceName)
 {
-    writeLog("info", "switchToService ::: Switching to tab: " + serviceName);
-
     // activate the related tab
     $("#target_" + serviceName).trigger("click");
+
+    writeLog("info", "switchToService ::: Switched to tab: _" + serviceName + "_.");
 }
 
 
@@ -1303,8 +1278,6 @@ function switchToService(serviceName)
 */
 function searchUpdate(silent = true)
 {
-    //const semver = require('semver')
-
     var remoteAppVersionLatest = "0.0.0";
     var localAppVersion = "0.0.0";
     var versions;
@@ -1312,7 +1285,7 @@ function searchUpdate(silent = true)
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
-    writeLog("info", "searchUpdate ::: Start checking " + url + " for available releases");
+    writeLog("info", "searchUpdate ::: Start checking _" + url + "_ for available releases");
 
     var updateStatus = $.get( url, function( data )
     {
@@ -1325,12 +1298,10 @@ function searchUpdate(silent = true)
         });
 
         // get remote version
-        //
         remoteAppVersionLatest = versions[0].name;
         //remoteAppVersionLatest = "66.6.6"; // overwrite variable to simulate available updates
 
         // get local version
-        //
         localAppVersion = require("electron").remote.app.getVersion();
         //localAppVersion = "1.0.0"; // to simulate
 
@@ -1340,7 +1311,7 @@ function searchUpdate(silent = true)
         if( localAppVersion < remoteAppVersionLatest ) // Update available
         {
             writeLog("warn", "searchUpdate ::: Found update, notify user");
-            showNoty("success", "An update to version " + remoteAppVersionLatest + " is now available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
+            showNoty("warning", "An update from " + localAppVersion + " to version " + remoteAppVersionLatest + " is available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
         }
         else // No update available
         {
@@ -1369,18 +1340,6 @@ function searchUpdate(silent = true)
     {
         writeLog("info", "searchUpdate ::: Finished checking " + url + " for available releases");
     });
-}
-
-
-/**
-* @name loadDefaultView
-* @summary Loads the default view
-* @description Loads the default view. This is used on load of the .html
-*/
-function loadDefaultView(newDefaultView)
-{
-    writeLog("info", "loadDefaultView ::: Found configured default view: _" + newDefaultView + "_.");
-    switchToService(newDefaultView);
 }
 
 
@@ -1480,9 +1439,6 @@ function initAvailableServicesSelection()
     // get reference to select which contains all supported service type definitions
     let dropdown = $("#select_availableServices");
 
-    // Empty the select
-    //dropdown.empty();
-
     // select the first entry
     dropdown.prop("selectedIndex", 0);
 
@@ -1518,13 +1474,13 @@ function loadConfiguredUserServices()
     const app = remote.app;
     const path = require("path");
 
+    // empty the div
+    $( "#settingsServicesConfigured" ).empty();
+
     // ensure we are reading from the correct location
     const defaultUserDataPath = app.getPath("userData");
     var customUserDataPath = path.join(defaultUserDataPath, "storage");
     storage.setDataPath(customUserDataPath);
-
-    // empty the div
-    $( "#settingsServicesConfigured" ).empty();
 
     // read all user service configuration files
     storage.getAll(function(error, data)
@@ -1596,43 +1552,59 @@ function loadConfiguredUserServices()
 */
 function initSettingsPage()
 {
-    // Settings
+    // Start checking each single option
     //
-    // Autostart
+    // Option: Autostart
     readLocalUserSetting("settingAutostart");
-    // DarkMode
-    readLocalUserSetting("settingDarkMode");
-    // DisableTray (Linux only)
+    // Option: DisableTray (Linux only)
     readLocalUserSetting("settingDisableTray");
-    // Urgent Window
+    // Option: DarkMode
+    readLocalUserSetting("settingDarkMode");
+    // Option: Urgent Window
     readLocalUserSetting("settingUrgentWindow");
 
-    // load all supported services to checklist (used for adding new services)
+    // load all supported services to drop-down-list (used for adding new services)
     initAvailableServicesSelection();
 
-    // show all user configured services
+    // show all user-configured services under "configured services"
     loadConfiguredUserServices();
 }
 
 
 /**
 * @name removeServiceTab
-* @summary Remove a single tab from UI
-* @description Removes the li item fromtab menu, removed the tab itself
+* @summary Remove a single service tab from the UI
+* @description Removes the li item from tab menu, removes the tab itself
 * @param tabId
 */
 function removeServiceTab(tabId)
 {
     writeLog("info", "removeServiceTab ::: Starting to remove the tab: _" + tabId + "_.");
 
-    // remove item from menu
+    // remove service nav-item from menu
     $("#menu_" + tabId).remove();
+    writeLog("info", "removeServiceTab ::: Removed service nav item from navigation (_" + tabId + "_)");
+
+    //  get webview
+    var webview = document.getElementById("webview_" + tabId);
+
+    // remove webview listeners
+    //webview.removeEventListener("ipc-message");
+
+    // remove webview itself
+    webview.remove();
+    writeLog("info", "removeServiceTab ::: Removing the webview itself: _" + webview + "_.");
+
 
     // remove tabcontent from tab pane
     $("#" + tabId).remove();
 
     // remove service from select for DefaultView
     $("#selectDefaultView option[value=" + tabId + "]").remove();
+
+    // reload the main window (see #117 - to avoid sending request to non-existing webviews)
+    const {ipcRenderer} = require("electron");
+    ipcRenderer.send("reloadMainWindow");
 
     writeLog("info", "removeServiceTab ::: Finished removing the tab: _" + tabId + "_.");
 }
@@ -1735,9 +1707,6 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     else
     {
         // Using partition:
-        //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
-        //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
-
         if(serviceInjectCode === "") // no inject code
         {
             $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + "></webview>" );
@@ -1748,7 +1717,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
         }
     }
 
-    writeLog("info", "addServiceTab ::: Added the webview to the tab pane for service: _" + serviceId + "_.");
+    //writeLog("info", "addServiceTab ::: Added the webview to the tab pane for service: _" + serviceId + "_.");
 
     writeLog("info", "addServiceTab ::: Finished adding the tab: _" + serviceId + "_.");
 
@@ -1779,26 +1748,31 @@ function updateGlobalServicesShortcuts()
     // count enabled services:
     numberOfEnabledServices = $("#myTabs li").length;
 
+    numberOfEnabledServices = numberOfEnabledServices - 1 // as the settings tab doesnt count 
+
     // if there are configured services so far - delete all existing shortcuts
-    if(numberOfEnabledServices > 1)
+    if(numberOfEnabledServices > 0)
     {
-        ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+        //ipcRenderer.send("deleteAllGlobalServicesShortcut", numberOfEnabledServices);
+        ipcRenderer.send("deleteAllGlobalServicesShortcut", 9);
     }
 
-    // Create new global shortcutd
+    // Create new global shortcuts
     $("#myTabs li a").each(function()
     {
         currentTabId = $(this).attr("id");
         if(currentTabId === "target_Settings")
         {
-           writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab.");
+           writeLog("info", "updateGlobalServicesShortcuts ::: Ignoring settings tab."); // Shortcut for settings tab is already hard-coded.
         }
-        else
+        else // dynamic shortcuts for all services (well max. 9 - not all)
         {
             tabCounter = tabCounter +1;
 
-            // globalShortcut
-            ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId);
+            if(tabCounter < 10) // can't assign shortcuts > 9
+            {
+                ipcRenderer.send("createNewGlobalShortcut", "CmdOrCtrl+" + tabCounter, currentTabId); // create dynamic globalShortcut
+            }
         }
     });
 
@@ -1837,18 +1811,12 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
 
 
         // get status of enable/disable button:
-        if( $("#bt_" + configuredUserServiceConfigName).attr("title") === "enabled")
+        if( $("#bt_" + configuredUserServiceConfigName).attr("title") === "enabled") // is enabled - so disable it
         {
-            // is enabled - so disable it
-
             // Status Button
-            //
-            // update button type
-            $("#bt_" + configuredUserServiceConfigName).removeClass();
-            $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-secondary btn-sm");
-
-            // update button title
-            $("#bt_" + configuredUserServiceConfigName).prop("title", "disabled");
+            $("#bt_" + configuredUserServiceConfigName).removeClass(); // update button type by removing class and ...
+            $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-secondary btn-sm"); // update button type by adding a new class
+            $("#bt_" + configuredUserServiceConfigName).prop("title", "disabled"); // update button title
 
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
@@ -1863,18 +1831,12 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
             showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
         }
-        else
+        else // is disabled - so enable it
         {
-            // is disabled - so enable it
-
             // Status Button
-            //
-            // update button type
-            $("#bt_" + configuredUserServiceConfigName).removeClass();
-            $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-success btn-sm");
-
-            // update button title
-            $("#bt_" + configuredUserServiceConfigName).prop("title", "enabled");
+            $("#bt_" + configuredUserServiceConfigName).removeClass(); // update button type by removing class and ...
+            $("#bt_" + configuredUserServiceConfigName).addClass("btn btn-success btn-sm"); // update button type by adding a new class
+            $("#bt_" + configuredUserServiceConfigName).prop("title", "enabled"); // update button title
 
             // update button icon
             $("#statusIconService_" + configuredUserServiceConfigName).removeClass();
@@ -2136,7 +2098,6 @@ function generateNewRandomServiceID(serviceType)
 }
 
 
-
 /**
 * @name localizeUserInterface
 * @summary Localizes the user interface
@@ -2149,14 +2110,15 @@ function localizeUserInterface()
     var userLang;
 
     // detect user language
-    //
     userLang = navigator.language || navigator.userLanguage;
 
-    // if the project is not packaged - overwrite the language to EN. This is used to ensure the screenshots are in the expected language
+    // if the project is not packaged - overwrite the language ...
     if (isDev)
     {
-        userLang = "en";
+        //userLang = "en"; // to EN. This is used to ensure the screenshots are in the expected language
+        userLang = "pl"; // to PL. This is used to test unsupported languages
     }
+
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
 
     var i18next = require("i18next");
@@ -2165,12 +2127,12 @@ function localizeUserInterface()
     i18next
     .use(Backend)
     .init({
-        debug: true,
-        whitelist: ["en", "de"],
-        lng: userLang,
-        fallbackLng: "en",
-        ns: "translation",
-        defaultNS: "translation",
+        debug: true, // logs info-level to console output. Helps finding issues with loading not working.
+        lng: userLang, // configured user language
+        whitelist: ["en", "de", "fr"], // supported languages
+        fallbackLng: "en", // language to use if translations in user language are not available. 
+        ns: "translation", // string or array of namespaces to load
+        defaultNS: "translation", // default namespace used if not passed to translation function
         updateMissing: false,
         initImmediate: true,
         backend:
@@ -2188,7 +2150,7 @@ function localizeUserInterface()
 
     $(function()
     {
-        // text
+        // attribute: text
         $("[i18n-text]").each(function()
         {
             var node = $(this), key = node.attr("i18n-text");
@@ -2215,7 +2177,6 @@ function localizeUserInterface()
             var node = $(this), key = node.attr("i18n-value");
             node.attr("value", i18next.t(key));
         });
-
     });
 }
 
@@ -2224,13 +2185,10 @@ function localizeUserInterface()
 //
 require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
 {
-    //writeLog("info", message);  // Prints "whoooooooh!"
-
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
-
 
     // get configured target url & inject code from config
     const storage = require("electron-json-storage");
@@ -2268,8 +2226,7 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 {
     writeLog("info", "startSearchUpdates ::: Show update information div");
-
-    searchUpdate(false);
+    searchUpdate(false); // silent = false. Forces result feedback, even if no update is available
 });
 
 
@@ -2318,9 +2275,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
     }
 
     writeLog("info", "nextTab ::: Should switch to: " + serviceName + " now.");
-
-    // jump to next tab
-    switchToService(serviceName);
+    switchToService(serviceName); // jump to next tab
 });
 
 
@@ -2369,9 +2324,7 @@ require("electron").ipcRenderer.on("previousTab", function(event)
     }
 
     writeLog("info", "previousTab ::: Should switch to: " + serviceName + " now.");
-
-    // jump to previous tab
-    switchToService(serviceName);
+    switchToService(serviceName); // jump to previous tab
 });
 
 
@@ -2409,9 +2362,7 @@ require("electron").ipcRenderer.on("serviceToCreate", function(event, serviceId)
                 // show the add-new-service button
                 $("#bt_addNewService").show();
 
-                // preview the icon
-                previewIcon();
-
+                previewIcon(); // preview the icon
                 writeLog("info", "serviceToCreate ::: Loaded default values for this service-type to UI");
             }
         });
@@ -2457,8 +2408,7 @@ require("electron").ipcRenderer.on("serviceToConfigure", function(event, service
         // show the edit service  button
         $("#bt_saveExistingService").show();
 
-        // preview the icon
-        previewIcon();
+        previewIcon(); // preview the icon
 
         writeLog("info", "serviceToConfigure ::: Loaded current values for this service to UI");
     });
