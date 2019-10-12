@@ -323,12 +323,14 @@ function ()
     Menu.getApplicationMenu().items; // all the items
 
     // macos specific 
+    
     if(os.platform() === "darwin") 
     {
         // see #21 - disable the menuitem Toggle-menubar
-        var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
-        item.enabled = false;
+        //var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
+        //item.enabled = false;
     }
+    
 
     // linux  specific 
     if(os.platform() === "linux") 
