@@ -37,7 +37,6 @@ function serviceWhatsAppGetUnreadMessageCount()
     // Report back the unread count
     ipcRenderer.sendToHost(count);
 
-
     console.log("serviceWhatsAppGetUnreadMessageCount ::: End");
 }
 
