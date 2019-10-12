@@ -1,6 +1,4 @@
 {
-    "mw_settingsTabName": "Settings",
-
     "mw_settingsAboutTitle": "About",
     "mw_settingsAboutAppDescription": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
     "mw_settingsAboutButtonShowMore": "Show more",
@@ -35,7 +33,7 @@
     "mw_settingsOptionsUrgentWindow": "Enable urgent window mode",
     "mw_settingsOptionsUrgentWindowDescription": "Starts flashing the window to attract user's attention for unread messages.",
 
-    "cw_windowName": "Config service",
+    "cw_windowName": "Service configuration",
     "cw_labelId": "ID",
     "cw_labelName": "Displayname",
     "cw_labelNameHelp": "The displayname is used for the service tab.",
