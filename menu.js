@@ -251,15 +251,23 @@ function ()
         {
             label: "Search updates",
             click(item, mainWindow) {
-                //mainWindow.webContents.toggleDevTools();
                 mainWindow.webContents.send("startSearchUpdates");
             },
             enabled: true,
-            //accelerator: "F12"
             accelerator: "F5"
         },
         {
             type: "separator"
+        },
+        // Console current service
+        {
+            id: "HelpConsoleCurrentService",
+            label: "Console for current service",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("openDevToolForCurrentService");
+            },
+            enabled: true,
+            accelerator: "F10"
         },
         // Console
         {
