@@ -3,16 +3,39 @@
 # ttth
 ## changelog
 
+This project is using [Semantic Versioning](https://semver.org/).
+
+  ```
+  MAJOR.MINOR.PATCH
+  ```
+
+* ```MAJOR``` version (incompatible API changes etc)
+* ```MINOR``` version (adding functionality)
+* ```PATCH``` version (bug fixes)
+
+
+The following categories are used:
+
+* ```Added```: for new features
+* ```Changed```: for changes in existing functionality.
+* ```Deprecated```: for soon-to-be removed features.
+* ```Removed```: for now removed features.
+* ```Fixed```: for any bug fixes.
+* ```Security```: in case of vulnerabilities.
+
+
 
 ### ttth 1.7.0 (2019xxyy)
 #### ```Added```
 * Window titlebar now includes the menu. See [#115](https://github.com/yafp/ttth/issues/115)
 * Added a first (pretty poor) version of french localication. See [#118](https://github.com/yafp/ttth/issues/118)
+* Added error notification when service url failed to load. See [#119](https://github.com/yafp/ttth/issues/119)
+* Added a menu item to the help menu to open DevTools for the current service. See [#120](https://github.com/yafp/ttth/issues/120)
 
 ####  ```Changed```
 * Dependencies
   * Updated electron from 5.0.10 to 5.0.11
-  * Updated i18next from 17.0.17 to 17.1.0
+  * Updated i18next from 17.0.17 to 17.2.0
 
 #### ```Removed```
 * Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
@@ -269,25 +292,3 @@
 * Basic jsdoc documentation
 * Check for new releases on startup
 * Forcing single app instance
-
-
-
-## About versioning
-This project is using [Semantic Versioning](https://semver.org/).
-
-  ```
-  MAJOR.MINOR.PATCH
-  ```
-
-* ```MAJOR``` version (incompatible API changes etc)
-* ```MINOR``` version (adding functionality)
-* ```PATCH``` version (bug fixes)
-
-
-### Categories
-* ```Added```: for new features
-* ```Changed```: for changes in existing functionality.
-* ```Deprecated```: for soon-to-be removed features.
-* ```Removed```: for now removed features.
-* ```Fixed```: for any bug fixes.
-* ```Security```: in case of vulnerabilities.

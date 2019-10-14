@@ -7,6 +7,8 @@
 ![GitHub Download All releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
 ![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
+[![GitHub contributors](https://img.shields.io/github/contributors/yafp/ttth.svg)](https://github.com/yafp//graphs/contributors/)
+[![Merged PRs](https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs)](https://github.com/yafp/ttth/pulls?q=is:pr+is:merged)
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 
 
@@ -38,7 +40,7 @@
 It is:
 
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
-* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork. 
+* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork.
 * free and open source
 
 
@@ -94,29 +96,30 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 ## keyboard-shortcuts
 
-| Function                        | Linux                           | macOS                           | Windows                         |
-| ------------------------------- | ------------------------------- | ------------------------------- | ------------------------------- |
-| Homepage                        | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   |
-| Report issue                    | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   |
-| Changelog                       | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   |
-| FAQ                             | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   |
-| Search updates                  | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   |
-| Toggle Fullscreen mode          | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
-| Toggle developer console        | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
-| Show Settings                   | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
-| Jump to next service            | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>   | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
-| Jump to previous service        | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>   | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
-| Jump to service tab 1           | <kbd>CTRL</kbd> + <kbd>1</kbd>  | <kbd>CMD</kbd> + <kbd>1</kbd>   | <kbd>CTRL</kbd> + <kbd>1</kbd>  |
-| Jump to service tab 2           | <kbd>CTRL</kbd> + <kbd>2</kbd>  | <kbd>CMD</kbd> + <kbd>2</kbd>   | <kbd>CTRL</kbd> + <kbd>2</kbd>  |
-| Jump to service tab 3           | <kbd>CTRL</kbd> + <kbd>3</kbd>  | <kbd>CMD</kbd> + <kbd>3</kbd>   | <kbd>CTRL</kbd> + <kbd>3</kbd>  |
-| Jump to service tab ...         | <kbd>CTRL</kbd> + <kbd>...</kbd>  | <kbd>CMD</kbd> + <kbd>...</kbd>   | <kbd>CTRL</kbd> + <kbd>...</kbd>  |
-| Jump to service tab 9           | <kbd>CTRL</kbd> + <kbd>9</kbd>  | <kbd>CMD</kbd> + <kbd>9</kbd>   | <kbd>CTRL</kbd> + <kbd>9</kbd>  |
-| Reload current service          | <kbd>CTRL</kbd> + <kbd>S</kbd>  | <kbd>CMD</kbd> + <kbd>S</kbd>   | <kbd>CTRL</kbd> + <kbd>S</kbd>  |
-| Quit/exit the application       | <kbd>CTRL</kbd> + <kbd>Q</kbd>  | <kbd>CMD</kbd> + <kbd>Q</kbd>   | <kbd>CTRL</kbd> + <kbd>Q</kbd>  |
-| Reload the application          | <kbd>CTRL</kbd> + <kbd>R</kbd>  | <kbd>CMD</kbd> + <kbd>R</kbd>   | <kbd>CTRL</kbd> + <kbd>R</kbd>  |
-| Minimize window                 | <kbd>CTRL</kbd> + <kbd>M</kbd>  | <kbd>CMD</kbd> + <kbd>M</kbd>   | <kbd>CTRL</kbd> + <kbd>M</kbd>  |
-| Maximize window                 | <kbd>CTRL</kbd> + <kbd>K</kbd>  | <kbd>CMD</kbd> + <kbd>K</kbd>   | <kbd>CTRL</kbd> + <kbd>K</kbd>  |
-| Hide window                     | <kbd>CTRL</kbd> + <kbd>H</kbd>  | <kbd>CMD</kbd> + <kbd>H</kbd>   | <kbd>CTRL</kbd> + <kbd>H</kbd>  |
+| Function                                   | Linux                           | macOS                           | Windows                         |
+| ------------------------------------------ | ------------------------------- | ------------------------------- | ------------------------------- |
+| Homepage                                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   | <kbd>F1</kbd>                   |
+| Report issue                               | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   |
+| Changelog                                  | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   |
+| FAQ                                        | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   |
+| Search updates                             | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   |
+| Open developer console for current service | <kbd>F10</kbd>                  | <kbd>F10</kbd>                  | <kbd>F10</kbd>                  |
+| Toggle Fullscreen mode                     | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
+| Toggle developer console                   | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
+| Show Settings                              | <kbd>CTRL</kbd> + <kbd>,</kbd>  | <kbd>CMD</kbd> + <kbd>,</kbd>   | <kbd>CTRL</kbd> + <kbd>,</kbd>  |
+| Jump to next service                       | <kbd>CTRL</kbd> + <kbd>🡆</kbd> | <kbd>CMD</kbd> + <kbd>🡆</kbd>   | <kbd>CTRL</kbd> + <kbd>🡆</kbd>  |
+| Jump to previous service                   | <kbd>CTRL</kbd> + <kbd>🡄</kbd> | <kbd>CMD</kbd> + <kbd>🡄</kbd>   | <kbd>CTRL</kbd> + <kbd>🡄</kbd>  |
+| Jump to service tab 1                      | <kbd>CTRL</kbd> + <kbd>1</kbd>  | <kbd>CMD</kbd> + <kbd>1</kbd>   | <kbd>CTRL</kbd> + <kbd>1</kbd>  |
+| Jump to service tab 2                      | <kbd>CTRL</kbd> + <kbd>2</kbd>  | <kbd>CMD</kbd> + <kbd>2</kbd>   | <kbd>CTRL</kbd> + <kbd>2</kbd>  |
+| Jump to service tab 3                      | <kbd>CTRL</kbd> + <kbd>3</kbd>  | <kbd>CMD</kbd> + <kbd>3</kbd>   | <kbd>CTRL</kbd> + <kbd>3</kbd>  |
+| Jump to service tab ...                    | <kbd>CTRL</kbd> + <kbd>...</kbd>  | <kbd>CMD</kbd> + <kbd>...</kbd>   | <kbd>CTRL</kbd> + <kbd>...</kbd>  |
+| Jump to service tab 9                      | <kbd>CTRL</kbd> + <kbd>9</kbd>  | <kbd>CMD</kbd> + <kbd>9</kbd>   | <kbd>CTRL</kbd> + <kbd>9</kbd>  |
+| Reload current service                     | <kbd>CTRL</kbd> + <kbd>S</kbd>  | <kbd>CMD</kbd> + <kbd>S</kbd>   | <kbd>CTRL</kbd> + <kbd>S</kbd>  |
+| Quit/exit the application                  | <kbd>CTRL</kbd> + <kbd>Q</kbd>  | <kbd>CMD</kbd> + <kbd>Q</kbd>   | <kbd>CTRL</kbd> + <kbd>Q</kbd>  |
+| Reload the application                     | <kbd>CTRL</kbd> + <kbd>R</kbd>  | <kbd>CMD</kbd> + <kbd>R</kbd>   | <kbd>CTRL</kbd> + <kbd>R</kbd>  |
+| Minimize window                            | <kbd>CTRL</kbd> + <kbd>M</kbd>  | <kbd>CMD</kbd> + <kbd>M</kbd>   | <kbd>CTRL</kbd> + <kbd>M</kbd>  |
+| Maximize window                            | <kbd>CTRL</kbd> + <kbd>K</kbd>  | <kbd>CMD</kbd> + <kbd>K</kbd>   | <kbd>CTRL</kbd> + <kbd>K</kbd>  |
+| Hide window                                | <kbd>CTRL</kbd> + <kbd>H</kbd>  | <kbd>CMD</kbd> + <kbd>H</kbd>   | <kbd>CTRL</kbd> + <kbd>H</kbd>  |
 
 
 ## privacy
