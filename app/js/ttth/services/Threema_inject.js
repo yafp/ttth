@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceThreemaGetUnreadMessageCount()
 {
-    console.log("serviceThreemaGetUnreadMessageCount ::: Start");
+    console.log("serviceThreemaGetUnreadMessageCount ::: Checking unread message count");
 
     var unreadCount;
 
@@ -38,8 +38,6 @@ function serviceThreemaGetUnreadMessageCount()
     }
 
     console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
-
-    console.log("serviceThreemaGetUnreadMessageCount ::: End");
 }
 
 

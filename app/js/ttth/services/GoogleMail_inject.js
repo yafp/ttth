@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceGoogleMailGetUnreadMessageCount()
 {
-    console.log("serviceGoogleMailGetUnreadMessageCount ::: Start");
+    console.log("serviceGoogleMailGetUnreadMessageCount ::: Checking unread message count");
 
     var counter = document.querySelector(".aim .aio").querySelector("span").querySelector("a").getAttribute("aria-label").replace(/\D/g, "");
 

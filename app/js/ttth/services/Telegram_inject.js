@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceTelegramGetUnreadMessageCount()
 {
-    console.log("serviceTelegramGetUnreadMessageCount ::: Start");
+    console.log("serviceTelegramGetUnreadMessageCount ::: Checking unread message count");
 
     var count = 0;
     var intervalID = window.setInterval(myCallback, 50);

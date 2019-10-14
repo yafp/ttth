@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceSlackGetUnreadMessageCount()
 {
-    console.log("serviceSlackGetUnreadMessageCount ::: Start");
+    console.log("serviceSlackGetUnreadMessageCount ::: Checking unread message count");
 
     var n;
     var counter;
@@ -24,8 +24,6 @@ function serviceSlackGetUnreadMessageCount()
 
     // send back from webview to main
     ipcRenderer.sendToHost(counter);
-
-    console.log("serviceSlackGetUnreadMessageCount ::: End");
 }
 
 

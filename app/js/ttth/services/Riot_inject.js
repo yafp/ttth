@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceRiotGetUnreadMessageCount()
 {
-    console.log("serviceRiotGetUnreadMessageCount ::: Start");
+    console.log("serviceRiotGetUnreadMessageCount ::: Checking unread message count");
 
     var i;
     var ii;
@@ -26,8 +26,6 @@ function serviceRiotGetUnreadMessageCount()
     console.log("serviceRiotGetUnreadMessageCount ::: Unread messages in Riot: _" + b + "_.");
 
     ipcRenderer.sendToHost(b);
-
-    console.log("serviceRiotGetUnreadMessageCount ::: End");
 }
 
 ipcRenderer.on("request", function()

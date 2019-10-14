@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceGoogleMessagesGetUnreadMessageCount()
 {
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Start");
+    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Checking unread message count");
 
     var counter = document.querySelectorAll(".tpEAA.yrs5ff").length;
     

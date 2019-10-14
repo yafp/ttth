@@ -7,7 +7,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceMattermostGetUnreadMessageCount()
 {
-    console.log("serviceMattermostGetUnreadMessageCount ::: Start");
+    console.log("serviceMattermostGetUnreadMessageCount ::: Checking unread message count");
 
     const selectBadges = "#sidebarChannelContainer .unread-title.has-badge > span.badge";
 
@@ -25,7 +25,6 @@ function serviceMattermostGetUnreadMessageCount()
     count = count + pmUnread + channelsUnread + teamsUnread;
     console.log("serviceMattermostGetUnreadMessageCount ::: Overall: " + count);
     //count = channelsUnread + teamsUnread;
-
 
     console.log("serviceMattermostGetUnreadMessageCount ::: Total Mattermost chats with unread messages: " + count);
 

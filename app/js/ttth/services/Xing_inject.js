@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceXingGetUnreadMessageCount()
 {
-    console.log("serviceXingGetUnreadMessageCount ::: Start");
+    console.log("serviceXingGetUnreadMessageCount ::: Checking unread message count");
 
     let count = null;
 
@@ -23,8 +23,6 @@ function serviceXingGetUnreadMessageCount()
     console.log("serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: " + count);
 
     ipcRenderer.sendToHost(count);
-
-    console.log("serviceXingGetUnreadMessageCount ::: End");
 }
 
 

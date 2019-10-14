@@ -8,6 +8,8 @@ const {ipcRenderer} = require("electron");
 */
 function serviceTwitterGetUnreadMessageCount()
 {
+    console.log("serviceTwitterGetUnreadMessageCount ::: Checking unread message count");
+    
     const getMessages = function getMessages()
     {
         let count = 0;

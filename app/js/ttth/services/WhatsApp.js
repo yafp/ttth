@@ -6,9 +6,6 @@
 function serviceWhatsAppRegister()
 {
     // via: https://github.com/meetfranz/franz/issues/1185
-
-    console.log("serviceWhatsAppRegister ::: Start");
-
     console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
 
     const {remote} = require("electron"); //Imports the remote module to use session inside webview
@@ -30,8 +27,6 @@ function serviceWhatsAppRegister()
             registration.unregister(); //Unregisters all the service workers
         }
     });
-
-    console.log("serviceWhatsAppRegister ::: End");
 }
 
 
@@ -42,7 +37,7 @@ function serviceWhatsAppRegister()
 */
 function serviceWhatsAppInit(serviceName, serviceUrl)
 {
-    console.log("serviceWhatsAppInit ::: Start");
+    console.log("serviceWhatsAppInit ::: Trying to init WhatsApp");
 
     // re-set the src for the webview
     //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
@@ -50,6 +45,4 @@ function serviceWhatsAppInit(serviceName, serviceUrl)
 
      // register
     serviceWhatsAppRegister();
-
-    console.log("serviceWhatsAppInit ::: End");
 }

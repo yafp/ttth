@@ -8,7 +8,7 @@ const {ipcRenderer} = require("electron");
 */
 function serviceWhatsAppGetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Start");
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
 
     // try to count unread messages
     //
@@ -36,8 +36,6 @@ function serviceWhatsAppGetUnreadMessageCount()
 
     // Report back the unread count
     ipcRenderer.sendToHost(count);
-
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: End");
 }
 
 
