@@ -825,6 +825,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     webview.addEventListener("did-fail-load", function()
     {
         writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
+        showNoty("error", "Failed to load url for service: _" + serviceId + "_.", 0); // #119
     });
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
@@ -832,6 +833,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     webview.addEventListener("crashed", function()
     {
         writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
+        showNoty("error", "Ooops, the service _" + serviceId + "_ crashed.", 0);
     });
 
     // WebView Event: page-title-updated (https://electronjs.org/docs/api/webview-tag#event-page-title-updated)
@@ -2115,8 +2117,8 @@ function localizeUserInterface()
     // if the project is not packaged - overwrite the language ...
     if (isDev)
     {
-        //userLang = "en"; // to EN. This is used to ensure the screenshots are in the expected language
-        userLang = "pl"; // to PL. This is used to test unsupported languages
+        userLang = "en"; // to EN. This is used to ensure the screenshots are in the expected language
+        //userLang = "pl"; // to PL. This is used to test unsupported languages
     }
 
     writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
@@ -2190,6 +2192,8 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
 
+    showNoty("info", "Trying to reload the current service: _" + tabValue + "_.")
+
     // get configured target url & inject code from config
     const storage = require("electron-json-storage");
 
@@ -2227,6 +2231,23 @@ require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 {
     writeLog("info", "startSearchUpdates ::: Show update information div");
     searchUpdate(false); // silent = false. Forces result feedback, even if no update is available
+});
+
+
+// Call from main.js ::: openDevToolForCurrentService
+//
+require("electron").ipcRenderer.on("openDevToolForCurrentService", function(event)
+{
+    // get href of current active tab
+    var tabValue = $(".nav-tabs .active").attr("href");
+    tabValue = tabValue.substring(1); // cut the first char ( =  #)
+    writeLog("info", "openDevToolForCurrentService ::: Trying to open DevTools for current service: _" + tabValue + "_.");
+
+    // get webview
+    var webview = document.getElementById("webview_" + tabValue);
+
+    // Open devTools
+    webview.openDevTools();
 });
 
 
