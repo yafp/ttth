@@ -76,9 +76,11 @@ The following services are currently supported:
 
 ## ui
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
+
 *Default theme*
 
 ![ui_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dark.png)
+
 *Dark theme*
 
 
