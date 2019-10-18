@@ -60,6 +60,16 @@
         "injectCode": ""
     },
     {
+        "id": "googleDuo",
+        "name": "Duo",
+        "nameLong": "Google Duo",
+        "icon": "fab fa-google",
+        "description": "Googles Duoa Chat",
+        "url": "https://duo.google.com/?web",
+        "multiple": false,
+        "injectCode": ""
+    },
+    {
         "id": "googleDrive",
         "name": "Drive",
         "nameLong": "Google Drive",
@@ -110,6 +120,16 @@
         "injectCode": ""
     },
     {
+        "id": "icq",
+        "name": "ICQ",
+        "nameLong": "ICQ",
+        "icon": "fas fa-comments",
+        "description": "ICQ",
+        "url": "https://web.icq.com/",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/ICQ_inject.js"
+    },
+    {
         "id": "linkedIn",
         "name": "LinkedIn",
         "nameLong": "LinkedIn",
@@ -140,6 +160,26 @@
         "injectCode": ""
     },
     {
+        "id": "microsoftOutlook",
+        "name": "Outlook",
+        "nameLong": "Microsoft Outlook",
+        "icon": "fab fa-microsoft",
+        "description": "",
+        "url": "https://outlook.live.com/mail/inbox",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/MicrosoftOutlook_inject.js"
+    },
+    {
+        "id": "microsoftTeams",
+        "name": "Teams",
+        "nameLong": "Microsoft Teams",
+        "icon": "fab fa-microsoft",
+        "description": "Microsoft Teams is the chat-based workspace in Office 365 that integrates all the people, content, and tools your team needs to be more engaged and effective.",
+        "url": "https://teams.microsoft.com",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/MicrosoftTeams_inject.js"
+    },
+    {
         "id": "nextcloud",
         "name": "Nextcloud",
         "nameLong": "Nextcloud",
@@ -147,6 +187,16 @@
         "description": "The self-hosted productivity platform that keeps you in control",
         "url": "https://example.com",
         "multiple": true,
+        "injectCode": ""
+    },
+    {
+        "id": "reddit",
+        "name": "Reddit",
+        "nameLong": "Reddit Chat",
+        "icon": "fab fa-reddit-alien",
+        "description": "Reddit Community chatrooms",
+        "url": "https://www.reddit.com/chat/",
+        "multiple": false,
         "injectCode": ""
     },
     {
@@ -206,6 +256,16 @@
         "icon": "fab fa-twitter",
         "description": "From breaking news and entertainment to sports and politics, from big events to everyday interests.",
         "url": "https://mobile.twitter.com/",
+        "multiple": false,
+        "injectCode": ""
+    },
+    {
+        "id": "wechat",
+        "name": "wechat",
+        "nameLong": "WeChat",
+        "icon": "fab fa-weixin",
+        "description": "",
+        "url": "https://web.wechat.com/",
         "multiple": false,
         "injectCode": ""
     },
