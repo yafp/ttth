@@ -10,20 +10,19 @@ function serviceTwitterGetUnreadMessageCount()
 {
     console.log("serviceTwitterGetUnreadMessageCount ::: Checking unread message count");
     
-    const getMessages = function getMessages()
+
+    let count = 0;
+    const elem = document.querySelector('a[href="/messages"] div div');
+
+    if (elem)
     {
-        let count = 0;
-        const elem = document.querySelector('a[href="/messages"] div div');
+        count = parseInt(elem.innerText, 10);
+    }
 
-        if (elem)
-        {
-          count = parseInt(elem.innerText, 10);
-        }
+    ipcRenderer.sendToHost(count);
 
-        ipcRenderer.sendToHost(count);
+    console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
 
-        console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
-    };
 }
 
 

@@ -19,7 +19,6 @@ function serviceGoogleMailGetUnreadMessageCount()
 }
 
 
-const {ipcRenderer} = require("electron");
 ipcRenderer.on("request", function()
 {
     ipcRenderer.sendToHost(serviceGoogleMailGetUnreadMessageCount());

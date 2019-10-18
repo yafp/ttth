@@ -14,10 +14,11 @@ function serviceWhatsAppRegister()
     var ses = remote.session.defaultSession; //Gets the default session
     
     //ses.clearCache();
-    ses.flushStorageData();
+    ses.flushStorageData(); // Writes any unwritten DOMStorage data to disk.
     ses.clearStorageData(
-    { 
-        //Clears the specified storages in the session
+    {
+        // Clears the storage data for the current session.
+        // Clears the specified storages in the session
         storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
     });
 
