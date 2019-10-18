@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/WhatsApp_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/MicrosoftTeams_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/MicrosoftTeams_inject.js</h1>
 
     
 
@@ -30,48 +30,38 @@
 
 
 /**
-* @name serviceWhatsAppGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service WhatsApp
-* @description Gets the amount of unread messages of the service WhatsApp
+* @name serviceMicrosoftTeamsGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Teams
+* @description Gets the amount of unread messages of the service Teams
 */
-function serviceWhatsAppGetUnreadMessageCount()
+function serviceMicrosoftTeamsGetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
+    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Checking unread message count");
 
-    // try to count unread messages
-    //
-    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
-    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
-    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
-    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
-    console.log(elements);
-
-    let count = 0;
-    for (let i = 0; i &lt; elements.length; i++)
+    // via: https://github.com/meetfranz/Microsoft-Teams/blob/master/webview.js
+    let messages = 0;
+    const badge = document.querySelector('.activity-badge.dot-activity-badge .activity-badge');
+    if (badge) 
     {
-        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
-        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
+        const value = parseInt(badge.innerHTML, 10);
+
+        if (!isNaN(value)) 
         {
-            count += 1;
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
-        }
-        else
-        {
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
+            messages = value;
         }
     }
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
 
-    // Report back the unread count
-    ipcRenderer.sendToHost(count);
+    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Outlook unread messages: " + messages);
+
+    ipcRenderer.sendToHost(messages);
 }
-
 
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceMicrosoftTeamsGetUnreadMessageCount());
 });
+
 </code></pre>
         </article>
     </section>

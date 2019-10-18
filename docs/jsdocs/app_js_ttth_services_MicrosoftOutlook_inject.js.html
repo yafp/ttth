@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/WhatsApp_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/MicrosoftOutlook_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/MicrosoftOutlook_inject.js</h1>
 
     
 
@@ -30,47 +30,27 @@
 
 
 /**
-* @name serviceWhatsAppGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service WhatsApp
-* @description Gets the amount of unread messages of the service WhatsApp
+* @name serviceMicrosoftOutlookGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Outlook
+* @description Gets the amount of unread messages of the service Outlook
 */
-function serviceWhatsAppGetUnreadMessageCount()
+function serviceMicrosoftOutlookGetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
+    /*
+    console.log("serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count");
 
-    // try to count unread messages
-    //
-    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
-    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
-    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
-    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
-    console.log(elements);
+    var e=null!==$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span")?$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span").innerText:0;
 
-    let count = 0;
-    for (let i = 0; i &lt; elements.length; i++)
-    {
-        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
-        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
-        {
-            count += 1;
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
-        }
-        else
-        {
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
-        }
-    }
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
+    console.log("serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: " + e);
 
-    // Report back the unread count
-    ipcRenderer.sendToHost(count);
+    ipcRenderer.sendToHost(e);
+    */
 }
-
 
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount());
 });
 </code></pre>
         </article>

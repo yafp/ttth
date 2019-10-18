@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/WhatsApp_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/ICQ_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/ICQ_inject.js</h1>
 
     
 
@@ -30,47 +30,26 @@
 
 
 /**
-* @name serviceWhatsAppGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service WhatsApp
-* @description Gets the amount of unread messages of the service WhatsApp
+* @name serviceICQGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service ICQ
+* @description Gets the amount of unread messages of the service ICQ
 */
-function serviceWhatsAppGetUnreadMessageCount()
+function serviceICQGetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
+    console.log("serviceICQGetUnreadMessageCount ::: Checking unread message count");
 
-    // try to count unread messages
-    //
-    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
-    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
-    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
-    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
-    console.log(elements);
+    let total=0;
+    for(let counter of document.getElementsByClassName("icq-msg-counter"))total+=parseInt("block"===counter.style.display?counter.innerHTML.trim():0);
 
-    let count = 0;
-    for (let i = 0; i &lt; elements.length; i++)
-    {
-        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
-        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
-        {
-            count += 1;
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
-        }
-        else
-        {
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
-        }
-    }
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
+    console.log("serviceICQGetUnreadMessageCount ::: Total ICQ unread messages: " + total);
 
-    // Report back the unread count
-    ipcRenderer.sendToHost(count);
+    ipcRenderer.sendToHost(total);
 }
-
 
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceICQGetUnreadMessageCount());
 });
 </code></pre>
         </article>
