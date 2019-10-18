@@ -23,14 +23,23 @@ The following categories are used:
 * ```Fixed```: for any bug fixes.
 * ```Security```: in case of vulnerabilities.
 
+***
 
-
-### ttth 1.7.0 (2019xxyy)
+### ttth 1.7.0 (20191018)
 #### ```Added```
 * Window titlebar now includes the menu. See [#115](https://github.com/yafp/ttth/issues/115)
 * Added a first (pretty poor) version of french localication. See [#118](https://github.com/yafp/ttth/issues/118)
 * Added error notification when service url failed to load. See [#119](https://github.com/yafp/ttth/issues/119)
 * Added a menu item to the help menu to open DevTools for the current service. See [#120](https://github.com/yafp/ttth/issues/120)
+* Services: 
+  * Added Reddit Chat. See [#121](https://github.com/yafp/ttth/issues/121)
+  * Added WeChat. See [#122](https://github.com/yafp/ttth/issues/122)
+  * Added Google Duo. See [#123](https://github.com/yafp/ttth/issues/123)
+  * Added ICQ. See [#124](https://github.com/yafp/ttth/issues/124)
+  * Added Microsoft Teams. See [#126](https://github.com/yafp/ttth/issues/126)
+  * Added Microsoft Outlook. See [#127](https://github.com/yafp/ttth/issues/127)
+* Performance: Added v8-compile-cache which might speed up ttth a bit.
+* Builds: Added support for freebsd. See [#129](https://github.com/yafp/ttth/issues/129)
 
 ####  ```Changed```
 * Dependencies
@@ -41,12 +50,15 @@ The following categories are used:
 * Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Setting 'Hide menubar' is not longer needed. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Menu: 'View' -> 'Toggle Menubar' is not longer nedded. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
+* Removed 'electron-unhandled' as it is currently causing more issues then use. See [#125](https://github.com/yafp/ttth/issues/125)
 
 #### ```Fixed```
 * Cleaned up the css code. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Fixed issue where fullscreen toggle caused display of previous hidden menubar on linux. See [#94](https://github.com/yafp/ttth/issues/94). Sideffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Fixed issue on disabling a service. See [#117](https://github.com/yafp/ttth/issues/117)
 * Fixed issue with global shortcuts for services (when service amount > 9). See [#116](https://github.com/yafp/ttth/issues/116)
+* Fixed noty is not defined error. See [#128](https://github.com/yafp/ttth/issues/128)
+* Fixed several js lint errors
 
 ***
 
