@@ -6,7 +6,6 @@
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
-
     <!-- Remote: jquery -->
     <!-- 3.4.1 -->
     <script
@@ -14,7 +13,6 @@
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous">
     </script>
-
 
     <!-- Remote: bootstrap -->
     <!-- 4.3.1 -->
@@ -29,22 +27,19 @@
     <!-- 5.11.2 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"></script>
 
-
-    <!-- Local: noty -->
-    <!-- 3.2.0-beta -->
-    <link rel="stylesheet" href="lib/noty/3.2.0-beta/noty.css" >
-    <link rel="stylesheet" href="lib/noty/3.2.0-beta/themes/bootstrap-v4.css">
-    <script type="text/javascript" src="lib/noty/3.2.0-beta/noty.min.js" async></script>
-
+    <!-- noty -->
+    <link rel="stylesheet" href="../node_modules/noty/lib/noty.css" >
+    <link rel="stylesheet" href="../node_modules/noty/lib/themes/bootstrap-v4.css">
+    <script type="text/javascript" src="../node_modules/noty/lib/noty.min.js" async></script>
 
     <!-- local: ttth -->
     <link rel="stylesheet" href="css/ttth/general.css" >
     <link rel="stylesheet" href="css/ttth/configWindow.css">
-    <link rel="stylesheet" href="css/ttth/ttth/mainWindow_default.css">
+    <link rel="stylesheet" href="css/ttth/themes/mainWindow_default.css"> <!-- themes arent dynamicly changed on configWindow -->
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
 </head>
-<body>
 
+<body>
     <!-- navbar -->
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark ttth_nonSelectableText">
         <!-- Links -->

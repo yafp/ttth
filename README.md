@@ -47,31 +47,7 @@ It is:
 
 ## services
 While ttth supports a growing list of pre-configured services, you can as well add custom urls yourself (using the CUSTOM URL type).
-The following services are currently supported:
-
-* Discord
-* Dropbox
-* Freenode
-* GitHub
-* Google Calendar
-* Google Contacts
-* Google Drive
-* Google Keep
-* Google Mail
-* Google Messages
-* Google Photos
-* LinkedIn
-* Mattermost
-* Messenger
-* Nextcloud
-* Riot.im
-* Skype
-* Slack
-* Telegram
-* Threema
-* Twitter
-* WhatsApp
-* Xing
+Please see the supported [services](docs/SERVICES.md) for more details.
 
 
 ## ui
@@ -128,8 +104,9 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 * ttth is not tracking it's users (not using Google Analytics nor using other methods)
 * All data is stored locally only.
 * Sessions will persist using the [partition:persist](https://electronjs.org/docs/api/webview-tag#partition) attribute for electrons webview.
+* ttth is using [sentry](https://sentry.io) to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the [sentry privacy policy](https://sentry.io/privacy/) for more details.
 
-You are always welcome to check the code.
+You are always welcome to check and even improve the code.
 
 
 ## faq

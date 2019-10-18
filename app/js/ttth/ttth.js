@@ -14,10 +14,8 @@ crashReporter.start({
 
 
 // ----------------------------------------------------------------------------
-// Error Handling using: sentry
+// Error Handling using: sentry (see #106)
 // ----------------------------------------------------------------------------
-//
-// Sentry: see github issue #106
 //
 // https://sentry.io/organizations/yafp/
 // https://docs.sentry.io/platforms/javascript/electron/
@@ -36,18 +34,42 @@ Sentry.init({
 // Error Handling using: electron-unhandled (https://github.com/sindresorhus/electron-unhandled)
 // ----------------------------------------------------------------------------
 //
-const unhandled = require("electron-unhandled");
-unhandled();
+//const unhandled = require("electron-unhandled");
+//unhandled();
 
 
 /**
 * @name initTitlebar
 * @summary Init the titlebar for the frameless mainWindow
-* @description Creates a custom titlebar for the mainWindow using custom-electron-titlebar (https://github.com/AlexTorresSk/custom-electron-titlebar)
+* @description Creates a custom titlebar for the mainWindow using custom-electron-titlebar (https://github.com/AlexTorresSk/custom-electron-titlebar).
 */
 function initTitlebar()
 {
-    const customTitlebar = require('custom-electron-titlebar');
+    // FIXME - custom-electron-titlebar is now an archived repo - what should we do?
+
+
+
+    // USING: https://www.npmjs.com/package/pj-custom-electron-titlebar (Fork from custom-electron-titlebar)
+    //
+    const customTitlebar = require('pj-custom-electron-titlebar');
+ 
+    new customTitlebar.Titlebar({
+        titleHorizontalAlignment: "center", // position of window title
+        icon: "img/icon/icon.png", 
+        drag: true, // whether or not you can drag the window by holding the click on the title bar.
+        backgroundColor: customTitlebar.Color.fromHex("#171717"),
+        minimizable: true,
+        maximizable: true,
+        closeable: true
+    });
+
+
+
+
+
+    // USING: custom-electron-titlebar
+    /*
+    const customTitlebar = require("custom-electron-titlebar");
 
     new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
@@ -58,6 +80,14 @@ function initTitlebar()
         maximizable: true,
         closeable: true
     });
+
+    // TODO / FIXME
+    // custom-electron-titlebar is throwing errors caused by titlebar.js. Details: see https://github.com/AlexTorresSk/custom-electron-titlebar/issues/32
+    // project is archived - so most likely no more updates/fixes or anything else.
+    */
+
+    // change font size of application name in titlebar
+    $('.window-title').css('font-size', '13px'); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
 }
 
 
@@ -71,9 +101,7 @@ function initTitlebar()
 */
 function showNoty(type, message, timeout = 3000)
 {
-    //const Noty = require("noty");
-    //import Noty from 'noty';
-
+    const Noty = require("noty");
     new Noty({
         type: type,
         timeout: timeout,
@@ -620,7 +648,8 @@ function settingsSelectServiceToAddChanged()
 function showNotyAutostartMinimizedConfirm()
 {
     var AutoLaunch = require("auto-launch");
-
+    
+    const Noty = require("noty");
     var n = new Noty(
     {
         theme: "bootstrap-v4",
@@ -670,7 +699,7 @@ function showNotyAutostartMinimizedConfirm()
 /**
 * @name settingsAboutShowMore
 * @summary Makes several buttons visible in the about section of the settings tab
-* @description USed to keep the settings ui clean on-load, button show-more hides itself after being pressed and loads several other buttons
+* @description Used to keep the settings ui clean on-load. button 'show-more' hides itself after being pressed and loads several other buttons. Gets called from mainWindow.html
 */
 function settingsAboutShowMore()
 {
@@ -716,7 +745,6 @@ function updateTrayIconStatus()
 {
     var overallUnreadMessages = 0; // counts unread messages for all enabled services
     var curServiceUnreadMessageCount = 0; // contains the unread-message count for a single service
-    var serviceName = "";
     var currentTabId;
 
     // loop over all tabs - count unread messages
@@ -825,7 +853,12 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     webview.addEventListener("did-fail-load", function()
     {
         writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
-        showNoty("error", "Failed to load url for service: _" + serviceId + "_.", 0); // #119
+
+        var checkForMicrosoftOutlook = serviceId.startsWith("microsoftOutlook");
+        if(checkForMicrosoftOutlook === false) // show noty for all services except microsoftOutlook (as it throws tons of errors)
+        {
+            showNoty("error", "Failed to load url for service: _" + serviceId + "_.", 0); // #119
+        }
     });
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
@@ -902,10 +935,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         //
         webview.addEventListener("did-start-loading", function()
         {
-            // Debug: Open a separate Console Window for the webview of the current service
-            //
-            //webview.openDevTools();
-
             writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
 
             // Triggering search for unread messages
@@ -929,9 +958,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         webview.addEventListener("dom-ready", function()
         {
             writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
-
-            // debugging a single webview
-            //webview.openDevTools()
 
             // Triggering search for unread messages
             webview.send("request");
@@ -1155,13 +1181,13 @@ function configureSingleUserService(serviceId)
 /**
 * @name openDevTools
 * @summary Toggles the DevConsole
-* @description Opens or closes the Developer Console inside the app
+* @description Opens or closes the Developer Console inside the app. Gets called from mainWindow.html
 */
 function openDevTools()
 {
-    writeLog("info", "openDevTools ::: Opening Developer Console");
     const remote = require("electron").remote;
     remote.getCurrentWindow().toggleDevTools();
+    writeLog("info", "openDevTools ::: Opening Developer Console");
 }
 
 
@@ -1172,8 +1198,7 @@ function openDevTools()
 */
 function settingToggleAutostart()
 {
-    // auto-launch - via: https://www.npmjs.com/package/auto-launch
-    var AutoLaunch = require("auto-launch");
+    var AutoLaunch = require("auto-launch"); // auto-launch - via: https://www.npmjs.com/package/auto-launch
 
     var ttthAutoLauncher = new AutoLaunch({
         name: "ttth",
@@ -1181,11 +1206,11 @@ function settingToggleAutostart()
     });
 
     // Handle depending on the checkbox state
-    if($("#checkboxSettingAutostart").prop("checked"))
+    if($("#checkboxSettingAutostart").prop("checked")) // enabling the autostart
     {
         showNotyAutostartMinimizedConfirm();
     }
-    else
+    else // disabling the autostart
     {
         ttthAutoLauncher.disable();
         writeLocalUserSetting("settingAutostart", false);
@@ -1233,7 +1258,7 @@ function settingDefaultViewUpdate()
 function checkSupportedOperatingSystem()
 {
     var supportedOperatingSystemMessage = "";
-    var userPlatform = process.platform;
+    var userPlatform = process.platform; // process.platform (works without require) vs os.platform
 
     writeLog("info", "checkSupportedOperatingSystem ::: Detected operating system as: " + userPlatform);
 
@@ -1249,6 +1274,10 @@ function checkSupportedOperatingSystem()
         default:
             // define message
             supportedOperatingSystemMessage = userPlatform + " is currently not supported. Please contact devs.";
+
+            // could be:
+            // - freebsd
+            // - sunos
 
             showNoty("warning", supportedOperatingSystemMessage, 0);
 
@@ -1388,9 +1417,13 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
         // NO unread-message-handling but link-handler
         case "freenode":
+        case "googleDuo":
         case "linkedIn":
         case "messenger":
+        case "microsoftTeams":
+        case "reddit":
         case "skype":
+        case "wechat":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
@@ -1406,7 +1439,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
         // Unread-message-handler and link-handler
         case "googleMail":
         case "googleMessages":
+        case "icq":
         case "mattermost":
+        case "microsoftOutlook":
         case "riot":
         case "slack":
         case "telegram":
@@ -1550,7 +1585,7 @@ function loadConfiguredUserServices()
 /**
 * @name initSettingsPage
 * @summary Initializes the settings page
-* @description Shows links to github informations. update informations. Initializes the service-checkboxes on loading the view
+* @description Shows links to github informations. update informations. Initializes the service-checkboxes on loading the view.
 */
 function initSettingsPage()
 {
@@ -1588,14 +1623,14 @@ function removeServiceTab(tabId)
     writeLog("info", "removeServiceTab ::: Removed service nav item from navigation (_" + tabId + "_)");
 
     //  get webview
-    var webview = document.getElementById("webview_" + tabId);
+    //var webview = document.getElementById("webview_" + tabId);
 
     // remove webview listeners
     //webview.removeEventListener("ipc-message");
 
     // remove webview itself
-    webview.remove();
-    writeLog("info", "removeServiceTab ::: Removing the webview itself: _" + webview + "_.");
+    //webview.remove();
+    //writeLog("info", "removeServiceTab ::: Removing the webview itself: _" + webview + "_.");
 
 
     // remove tabcontent from tab pane
@@ -1749,8 +1784,7 @@ function updateGlobalServicesShortcuts()
     //
     // count enabled services:
     numberOfEnabledServices = $("#myTabs li").length;
-
-    numberOfEnabledServices = numberOfEnabledServices - 1 // as the settings tab doesnt count 
+    numberOfEnabledServices = numberOfEnabledServices - 1; // as the settings tab doesnt count 
 
     // if there are configured services so far - delete all existing shortcuts
     if(numberOfEnabledServices > 0)
@@ -1792,9 +1826,9 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
 {
     writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _" + configuredUserServiceConfigName + "_.");
 
-    const os = require("os");
+    //const os = require("os");
     const storage = require("electron-json-storage");
-    const dataPath = storage.getDataPath();
+    //const dataPath = storage.getDataPath();
 
     var serviceEnableStatus;
 
@@ -1810,7 +1844,6 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
         var icon = data.icon;
         var url =  data.url;
         var injectCode = data.injectCode;
-
 
         // get status of enable/disable button:
         if( $("#bt_" + configuredUserServiceConfigName).attr("title") === "enabled") // is enabled - so disable it
@@ -1940,7 +1973,7 @@ function deleteConfiguredService(serviceId)
     writeLog("info", "deleteConfiguredService ::: Deleting the user service: _" + serviceId + "_.");
 
     // cleanup after deleting the entire service
-    var webview = document.getElementById("webview_" + serviceId);
+    //var webview = document.getElementById("webview_" + serviceId);
 
     // delete all Event handlers
     //
@@ -1981,17 +2014,17 @@ function deleteConfiguredService(serviceId)
 /**
 * @name settingsUserAddNewService
 * @summary user wants to configure a new service
-* @description user wants to configure a new service
+* @description user wants to configure a new service. Gets called from mainWindow.html
 */
 function settingsUserAddNewService()
 {
     writeLog("info", "settingsUserAddNewService ::: Starting to add a new user configured service.");
 
-    const os = require("os");
+    //const os = require("os");
     const storage = require("electron-json-storage");
-    const dataPath = storage.getDataPath();
+    //const dataPath = storage.getDataPath();
 
-    var serviceAllowsMultipleInstances;
+    //var serviceAllowsMultipleInstances;
 
     // get selected option from #select_availableServices
     var userSelectedService = $( "#select_availableServices" ).val();
@@ -2015,12 +2048,11 @@ function settingsUserAddNewService()
                     if(entry.multiple === true)
                     {
                         writeLog("info", "settingsUserAddNewService ::: Service: _" + userSelectedService + "_ allows multiple instances");
-                        serviceAllowsMultipleInstances = true;
+                        //serviceAllowsMultipleInstances = true;
 
                         // send ipc to show second window
                         const {ipcRenderer} = require("electron");
                         ipcRenderer.send("showConfigureSingleServiceWindowNew", userSelectedService);
-
                     }
                     else // single instance service
                     {
@@ -2103,7 +2135,7 @@ function generateNewRandomServiceID(serviceType)
 /**
 * @name localizeUserInterface
 * @summary Localizes the user interface
-* @description Is using i18next to localize the user interface. Translations are located in app/locales/
+* @description Is using i18next to localize the user interface. Translations are located in app/locales/.
 */
 function localizeUserInterface()
 {
@@ -2183,9 +2215,81 @@ function localizeUserInterface()
 }
 
 
+function onAfterReadyMainWindow()
+{
+    // call code here that you want to run after all $(document).ready() calls have run
+    updateGlobalServicesShortcuts();
+
+    // validate default view
+    validateConfiguredDefaultView();
+
+    // Configure click-handler for navigation/tabs
+    $('#myTabs a').click(function (link)
+    {
+        var target = link.currentTarget.innerText;
+
+        // remove leading space
+        if(target.substr(0,1) == " ")
+        {
+            target = target.substr(1);
+        }
+
+        console.log("ready ::: Switched to tab: _" + target + "_.");
+
+        // do page-specific things
+        /*
+        if(target === "Photos")
+        {
+            // needs a reload to display the webview properly
+        }
+        */
+    })
+}
+
+
+
+/**
+* @name onReadyMainWindow
+* @summary Initialized the application after jquerys ready signal
+* @description launcher for several init methods after jquerys ready signal. Gets called from mwinWindow.html
+*/
+function onReadyMainWindow()
+{
+    // init the custom titlebar - see #115
+    initTitlebar();
+
+    // load the configured user services
+    loadEnabledUserServices();
+
+    // init the settings tab
+    initSettingsPage();
+
+    // check operating system
+    checkSupportedOperatingSystem();
+
+    // check for updates
+    searchUpdate();
+
+    // Translate using i18next
+    localizeUserInterface();
+
+    // fade in the UI (0,5 sec animation)
+    //$('body').fadeIn(500);
+
+    // execute some things later ...
+    setTimeout(function()
+    {
+        //$(document).trigger('afterready');
+        onAfterReadyMainWindow();
+    }, 1000);
+}
+
+
+
+
 // Call from main.js ::: reloadCurrentService
 //
-require("electron").ipcRenderer.on("reloadCurrentService", function(event, message)
+require("electron").ipcRenderer.on("reloadCurrentService", function()
 {
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
@@ -2196,7 +2300,6 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
 
     // get configured target url & inject code from config
     const storage = require("electron-json-storage");
-
     storage.get(tabValue, function(error, data)
     {
         if (error)
@@ -2205,20 +2308,21 @@ require("electron").ipcRenderer.on("reloadCurrentService", function(event, messa
         }
 
         var url =  data.url;
-        var injectCode = data.injectCode;
+        
 
         writeLog("info", "reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
         document.getElementById( "webview_" + tabValue ).loadURL(url);
 
         // TODO
         // inject code
+        //var injectCode = data.injectCode;
     });
 });
 
 
 // Call from main.js ::: showSettings
 //
-require("electron").ipcRenderer.on("showSettings", function(event)
+require("electron").ipcRenderer.on("showSettings", function()
 {
     writeLog("info", "showSettings ::: Switching to Settings tab");
     switchToService("Settings");
@@ -2227,7 +2331,7 @@ require("electron").ipcRenderer.on("showSettings", function(event)
 
 // Call from main.js ::: startSearchUpdates
 //
-require("electron").ipcRenderer.on("startSearchUpdates", function(event)
+require("electron").ipcRenderer.on("startSearchUpdates", function()
 {
     writeLog("info", "startSearchUpdates ::: Show update information div");
     searchUpdate(false); // silent = false. Forces result feedback, even if no update is available
@@ -2236,24 +2340,32 @@ require("electron").ipcRenderer.on("startSearchUpdates", function(event)
 
 // Call from main.js ::: openDevToolForCurrentService
 //
-require("electron").ipcRenderer.on("openDevToolForCurrentService", function(event)
+require("electron").ipcRenderer.on("openDevToolForCurrentService", function()
 {
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
-    writeLog("info", "openDevToolForCurrentService ::: Trying to open DevTools for current service: _" + tabValue + "_.");
 
-    // get webview
-    var webview = document.getElementById("webview_" + tabValue);
+    if(tabValue === "Settings") // This makes no sense on the settings tab
+    {
+        showNoty("info", "This function is supposed to be used on a service tab, not the settings tab.");
+    }
+    else // default case
+    {
+        writeLog("info", "openDevToolForCurrentService ::: Trying to open DevTools for current service: _" + tabValue + "_.");
 
-    // Open devTools
-    webview.openDevTools();
+        // get webview
+        var webview = document.getElementById("webview_" + tabValue);
+
+        // Open devTools
+        webview.openDevTools();
+    }
 });
 
 
 // Call from main.js ::: nextTab
 //
-require("electron").ipcRenderer.on("nextTab", function(event)
+require("electron").ipcRenderer.on("nextTab", function()
 {
     // variables
     var currentTabId;
@@ -2302,7 +2414,7 @@ require("electron").ipcRenderer.on("nextTab", function(event)
 
 // Call from main.js ::: previousTab
 //
-require("electron").ipcRenderer.on("previousTab", function(event)
+require("electron").ipcRenderer.on("previousTab", function()
 {
     // variables
     var currentTabId;
@@ -2448,8 +2560,8 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
 
 // Call from main.js :::
 //
-require("electron").ipcRenderer.on("showNoConnectivityError", function(event)
+require("electron").ipcRenderer.on("showNoConnectivityError", function()
 {
     writeLog("error", "showNoConnectivityError ::: There is no internet connection.");
-    showNoty("error", "No access to the internet.", 0);
+    showNoty("error", "No access to the internet (critical) ", 0);
 });

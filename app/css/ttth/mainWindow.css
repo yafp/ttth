@@ -15,7 +15,6 @@ html,body
 
     color: var(--color-bodyText);
     background-color: var(--color-bodyBackground);
-
 }
 
 
@@ -25,7 +24,7 @@ html,body
 .titlebar, .titlebar > * {
     /* font-family: Roboto, sans-serif; */
     /*font-family: caption; */
-    font-family: "Arial;
+    font-family: Arial;
     /* font-size: 20px; */
 }
 
@@ -94,15 +93,19 @@ ul
     background-color: var(--color-bodyBackground);
 }
 
+
 .fuya
 {
     padding-left: 0px !important;
     /* padding-right: 0px !important; */
+
 }
 
 .flex-fill
 {
     flex:1 1 auto;
+
+
 }
 
 .ttth_resizer
@@ -112,6 +115,8 @@ ul
 
     padding-left: 0 !important;
     /* padding-right: 0 !important; */
+
+
 }
 
 .row
@@ -121,6 +126,14 @@ ul
     margin-right:  0px !important;
 }
 
+
+
+.settingsTabBody{
+        /* border for borderless-window/content */
+    border-left: 1px solid var(--color-inputFormsBorder) !important;
+    border-right: 1px solid var(--color-inputFormsBorder) !important;
+    border-bottom: 1px solid var(--color-inputFormsBorder) !important;
+}
 
 
 /* ########################################################################## */

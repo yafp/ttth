@@ -113,7 +113,7 @@ function ()
         {
             label: "Reload current service",
             click(item, mainWindow) {
-                mainWindow.webContents.send("reloadCurrentService", "whoooooooh!");
+                mainWindow.webContents.send("reloadCurrentService");
             },
             accelerator: "CmdOrCtrl+S",
             enabled: true

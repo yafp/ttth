@@ -13,6 +13,8 @@ const defaultUserDataPath = app.getPath("userData"); // for: storing window posi
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
 
+// via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
+require('v8-compile-cache');
 
 
 
@@ -30,7 +32,7 @@ crashReporter.start({
 
 
 // ----------------------------------------------------------------------------
-// Error Handling using: sentry (via #106)
+// Error Handling using: sentry (see #106)
 // ----------------------------------------------------------------------------
 //
 // * https://sentry.io/organizations/yafp/
@@ -49,14 +51,15 @@ Sentry.init({
 // ----------------------------------------------------------------------------
 // Error Handling using: electron-unhandled
 // ----------------------------------------------------------------------------
-const unhandled = require("electron-unhandled"); // error handling
-unhandled();
+//const unhandled = require("electron-unhandled"); // error handling
+//unhandled();
 
 
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let configWindow;
+let onlineStatusWindow // for handling network connectivity
 
 let verbose;
 verbose = false;
@@ -76,11 +79,9 @@ require("./menu").createMenu();
 function writeLog(logType, logMessage)
 {
     // configure: logging to file
-    //
     log.transports.file.level = true;
 
     // configure: logging to console (default)
-    //
     log.transports.console.level = false;
     if(verbose === true) // enable output if verbose parameter is given
     {
@@ -264,14 +265,12 @@ function createTray()
         }
     });
 
-
-    // Urgent window - as user setting  - see #110
+    // Call from renderer: Option: Urgent window - see #110
     ipcMain.on("makeWindowUrgent", function() {
         mainWindow.flashFrame(true); // #110 - urgent window
     });
 
-
-    // DisableTray - Gets called from renderer
+    // Call from renderer: Option: DisableTray
     ipcMain.on("disableTray", function() {
         writeLog("info", "Disabling tray (ipcMain)");
         tray.destroy();
@@ -284,7 +283,6 @@ function createTray()
             writeLog("error", "Disabling tray failed");
         }
     });
-
 }
 
 
@@ -317,10 +315,10 @@ function createWindow ()
         windowPositionX = data.bounds.x;
         windowPositionY = data.bounds.y;
 
-        writeLog("info", "Got window position and size information from ("+ customUserDataPath +")");
+        writeLog("info", "Got window position and size information from _"+ customUserDataPath +"_.");
     }
     catch(e) {
-        writeLog("warn", "No window position and size information found ("+ customUserDataPath +")");
+        writeLog("warn", "No window position and size information found in _"+ customUserDataPath +"_. Using fallback values");
 
         // set some default values for window size
         windowWidth = 800;
@@ -369,6 +367,9 @@ function createWindow ()
         mainWindow.show();
         mainWindow.focus();
         writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
+
+        // check network access
+        checkNetworkConnectivity();
     });
 
 
@@ -474,12 +475,7 @@ function createWindow ()
     {
         writeLog("info", "mainWindow will close (event: close)");
 
-        // close configWindow
-        //configWindow.close(); // results on closing issues on mac os - see #109
-
-        // Saving window position and size
-        //
-        // get window position and size:
+        // get window position and size
         var data = {
             bounds: mainWindow.getBounds()
         };
@@ -491,11 +487,11 @@ function createWindow ()
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
             if (err) 
             {
-                writeLog("error", "storing window -position and -size of mainwindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
+                writeLog("error", "storing window-position and -size of mainWindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
                 return console.log(err);
             }
 
-            writeLog("info", "mainWindow stored window -position and -size in  _" + customUserDataPath + "_ (event: close)");
+            writeLog("info", "mainWindow stored window-position and -size in _" + customUserDataPath + "_ (event: close)");
         });
     });
 
@@ -755,7 +751,6 @@ function forceSingleAppInstance()
 // LETS GO
 // -----------------------------------------------------------------------------
 
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -767,7 +762,7 @@ app.on("ready", function ()
     checkArguments();
     createWindow();
     createTray();
-    checkNetworkConnectivity();
+    //checkNetworkConnectivity();
 });
 
 
@@ -824,7 +819,7 @@ app.on("remote-require", function ()
 // Emitted when remote.getGlobal() is called in the renderer process of webContents.
 app.on("remote-get-global", function ()
 {
-    writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
+    //writeLog("info", "app called .getGlobal() in the renderer process (event: remote-get-global)");
 });
 
 // Emitted when remote.getBuiltin() is called in the renderer process of webContents.
@@ -837,7 +832,7 @@ app.on("remote-get-builtin", function ()
 // Emitted when remote.getCurrentWindow() is called in the renderer process of webContents.
 app.on("remote-get-current-window", function ()
 {
-    writeLog("info", "app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
+    //writeLog("info", "app called .getCurrentWindow() in the renderer process(event: remote-get-current-window)");
 });
 
 // Emitted when remote.getCurrentWebContents() is called in the renderer process of webContents
