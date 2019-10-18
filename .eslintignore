@@ -1,5 +1,1 @@
-/app/js/bootstrap/*
-/app/js/fontawesome-free-web/*
-/app/js/jquery/*
-/app/js/jquery.modalLoading/*
-/app/js/semver/*
+/app/lib/noty/*

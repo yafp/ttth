@@ -1,9 +1,5 @@
 ---
 exclude_paths:
-  - 'app/lib/bootstrap/**/*'
-  - 'app/lib/fontawesome-free-web/**/*'
-  - 'app/lib/jquery/**/*'
-  - 'app/lib/jquery.modalLoading/*'
   - 'app/lib/noty/**/*'
   - 'docs/**'
   - 'docs/**/*'
