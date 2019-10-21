@@ -1,0 +1,22 @@
+:root {
+
+    /* influcenced by: https://github.com/dracula/dracula-theme */
+
+    /* body */
+    --color-bodyText: #f8f8f2; /* white */
+    --color-bodyBackground: #282a36; /* some other dark gray, almost black */
+
+    /* navigation */
+    --color-navigationText: #FFFFFF; /* white */
+    --color-navigationBackground: #171717; /*almost black */
+    --color-navigationBorder: #4e4e4e; /* some dark gray */
+    --color-navigationHighlight: #ff79c6; /* limegreen */;
+
+    /* highlight */
+    --color-highlight: #ff79c6; /* limegreen */
+
+    /* bootstrap form elements */
+    --color-inputFormsText: #FFFFFF; /* white */
+    --color-inputFormsBackground: #6272a4; /* some even darker gray, almost black */
+    --color-inputFormsBorder: #44475a; /* some dark gray */
+}
