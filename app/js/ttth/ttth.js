@@ -23,7 +23,7 @@ crashReporter.start({
 const Sentry = require("@sentry/electron");
 Sentry.init({
     dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.7.0"
+    release: "ttth@1.8.0"
 });
 //
 // simple way to force a crash:
@@ -36,6 +36,10 @@ Sentry.init({
 //
 //const unhandled = require("electron-unhandled");
 //unhandled();
+
+
+var isLocked = false;
+
 
 
 /**
@@ -296,6 +300,72 @@ function settingActivateUserColorCss(cssFile)
 }
 
 
+
+
+
+
+
+
+function settingThemeUpdate()
+{
+    // get value from theme select
+    var currentSelectedTheme = $("#selectTheme").val();
+
+    if((currentSelectedTheme === "") | (currentSelectedTheme === null))
+    {
+        var currentSelectedTheme = "mainWindow_default.css";
+
+        // load default theme
+        settingActivateUserColorCss(currentSelectedTheme);
+
+        showNoty("warning", "Please choose a theme first");
+    }
+    else
+    {
+        // activate the theme
+        settingActivateUserColorCss(currentSelectedTheme)
+
+        // write Setting
+        writeLocalUserSetting("settingTheme", currentSelectedTheme);
+
+        // noty
+        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Theme</u> changed.");
+
+        // log
+        console.log("settingThemeUpdate ::: Updating user selected css file to: _" + currentSelectedTheme + "_.");
+    }
+
+    
+
+}
+
+
+function settingThemeReset()
+{
+    // reset the selection of the select item
+    $("#selectTheme").prop("selectedIndex",0);
+
+    var currentSelectedTheme = "mainWindow_default.css";
+
+    // load default theme
+    settingActivateUserColorCss(currentSelectedTheme);
+
+    // write setting
+    writeLocalUserSetting("settingTheme", currentSelectedTheme);
+
+    // noty
+    showNoty("success", "<i class='fas fa-toggle-on'></i> Changed <b>Option:</b> <u>Theme</u> back to default.");
+
+    // log
+    console.log("settingThemeReset ::: Resetting user selected css file back to default: _" + currentSelectedTheme + "_.");
+}
+
+
+
+
+
+
+
 /**
 * @name readLocalUserSetting
 * @summary Read from local storage
@@ -384,6 +454,32 @@ function readLocalUserSetting(key, optional=false)
         }
 
 
+        // Setting Theme
+        //
+        if(key === "settingTheme")
+        {
+            writeLog("info", "initSettingsPage ::: Setting Theme is configured to: _" + value + "_.");
+
+            if((value === null) | (value === undefined))
+            {
+                // fallback to default
+                settingActivateUserColorCss("mainWindow_default.css");
+            }
+            else
+            {
+                settingActivateUserColorCss(value);
+
+                // Update select
+                $("#selectTheme").val(value);
+            }
+
+            
+        }
+        // End: Autostart
+
+
+
+
         // Setting Autostart
         //
         if(key === "settingAutostart")
@@ -426,28 +522,6 @@ function readLocalUserSetting(key, optional=false)
         // End DisableTRay
 
 
-        // Setting: DarkMode
-        //
-        if(key === "settingDarkMode")
-        {
-            if(value === true)
-            {
-                // dark theme
-                writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
-                $("#checkboxSettingDarkMode").prop("checked", true);
-                settingActivateUserColorCss("mainWindow_dark.css");
-            }
-            else
-            {
-                // default theme
-                writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
-                $("#checkboxSettingDarkMode").prop("checked", false);
-                settingActivateUserColorCss("mainWindow_default.css");
-            }
-        }
-        // End: DarkMode
-
-
         // Setting Urgent Window - #110
         if(key === "settingUrgentWindow")
         {
@@ -466,6 +540,10 @@ function readLocalUserSetting(key, optional=false)
             }
         }
         // End: Urgent Window
+
+
+        // Baustelle
+        //writeLog("error", "isLocked is set to: " + isLocked);
 
     });
 }
@@ -519,31 +597,6 @@ function previewIcon()
 
     // try to load font-awesome icon
     $("#previewIcon").html("<i class='" + currentIconCode + " fa-lg'></i>");
-}
-
-
-/**
-* @name settingToggleDarkMode
-* @summary Enables or disabled the option darkmode
-* @description Updates the settings / option darkmode
-*/
-function settingToggleDarkMode()
-{
-    // Handle depending on the checkbox state
-    if($("#checkboxSettingDarkMode").prop("checked"))
-    {
-        writeLocalUserSetting("settingDarkMode", true);
-        writeLog("info", "settingToggleDarkMode ::: Finished enabling DarkMode");
-        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>DarkMode</u> is now enabled.");
-        settingActivateUserColorCss("mainWindow_dark.css");
-    }
-    else
-    {
-        writeLocalUserSetting("settingDarkMode", false);
-        writeLog("info", "settingToggleDarkMode ::: Finished disabling DarkMode");
-        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>DarkMode</u> is now disabled.");
-        settingActivateUserColorCss("mainWindow_default.css");
-    }
 }
 
 
@@ -1593,10 +1646,10 @@ function initSettingsPage()
     //
     // Option: Autostart
     readLocalUserSetting("settingAutostart");
+    // Option: Theme
+    readLocalUserSetting("settingTheme");
     // Option: DisableTray (Linux only)
     readLocalUserSetting("settingDisableTray");
-    // Option: DarkMode
-    readLocalUserSetting("settingDarkMode");
     // Option: Urgent Window
     readLocalUserSetting("settingUrgentWindow");
 
@@ -2273,13 +2326,10 @@ function onReadyMainWindow()
     // Translate using i18next
     localizeUserInterface();
 
-    // fade in the UI (0,5 sec animation)
-    //$('body').fadeIn(500);
 
     // execute some things later ...
     setTimeout(function()
     {
-        //$(document).trigger('afterready');
         onAfterReadyMainWindow();
     }, 1000);
 }
@@ -2327,6 +2377,47 @@ require("electron").ipcRenderer.on("showSettings", function()
     writeLog("info", "showSettings ::: Switching to Settings tab");
     switchToService("Settings");
 });
+
+
+
+
+
+
+
+
+
+// FIXME - see #130
+// Call from main.js ::: lockUI
+//
+require("electron").ipcRenderer.on("lockUI", function()
+{
+    writeLog("info", "lockUI ::: Trying to lock ui");
+
+    $("#content").fadeOut(); // keeps the nav available - all other elements are fading out.
+    $('#div_lock').fadeIn();
+
+    isLocked = true;
+});
+
+
+// FIXME - see #130
+// Call from main.js ::: lockUI
+//
+require("electron").ipcRenderer.on("unlockUI", function()
+{
+    writeLog("info", "unlockUI ::: Trying to unlock ui");
+
+    $('#div_lock').fadeOut();
+    $("#content").fadeIn(); // keeps the nav available - all other elements are fading out.
+
+    isLocked = false;
+});
+
+
+
+
+
+
 
 
 // Call from main.js ::: startSearchUpdates

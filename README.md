@@ -3,7 +3,6 @@
 [![Build Status](https://travis-ci.org/yafp/ttth.svg?branch=master)](https://travis-ci.org/yafp/ttth)
 ![GitHub Current Release](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
 ![GitHub Release Date](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
-![GitHub Download latest release](https://img.shields.io/github/downloads/yafp/ttth/latest/total)
 ![GitHub Download All releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
 ![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
@@ -29,6 +28,7 @@
 - [faq](#faq)
 - [known-issues](#known-issues)
 - [support](#support)
+- [build](#build)
 - [contributing](#contributing)
 - [license](#license)
 - [disclosure](#disclosure)
@@ -101,10 +101,10 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 
 ## privacy
-* ttth is not tracking it's users (not using Google Analytics nor using other methods)
+* ttth is using [sentry](https://sentry.io) to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the [sentry privacy policy](https://sentry.io/privacy/) for more details.
+* ttth is not tracking it's users (i.e. using Google Analytics or similar)
 * All data is stored locally only.
 * Sessions will persist using the [partition:persist](https://electronjs.org/docs/api/webview-tag#partition) attribute for electrons webview.
-* ttth is using [sentry](https://sentry.io) to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the [sentry privacy policy](https://sentry.io/privacy/) for more details.
 
 You are always welcome to check and even improve the code.
 
@@ -119,6 +119,10 @@ Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
 ## support
 There is a public #ttth riot.im room available on matrix.org. Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join.
+
+
+## build
+Building ttth yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.
 
 
 ## contributing

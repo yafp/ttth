@@ -27,6 +27,24 @@ function ()
             },
             accelerator: "CmdOrCtrl+,"
         },
+
+
+        {
+            label: "Lock UI",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("lockUI");
+            },
+        },
+        {
+            label: "Unlock UI",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("unlockUI");
+            },
+        },
+
+
+
+
         {
             type: "separator"
         },
@@ -308,7 +326,6 @@ function ()
                             }
                         }
                     }
-
 
                     mainWindow.reload();
                 },

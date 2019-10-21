@@ -41,7 +41,7 @@ crashReporter.start({
 const Sentry = require("@sentry/electron");
 Sentry.init({
     dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.7.0"
+    release: "ttth@1.8.0"
 });
 //
 // simple way to force a crash:
@@ -847,11 +847,19 @@ app.on("window-all-closed", function ()
     writeLog("info", "app closed all application windows (event: window-all-closed)");
 
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
+    /*
     if (process.platform !== "darwin")
     {
         writeLog("info", "Bye");
         app.quit();
     }
+    */
+
+    // we handle all systemes the same - this means:
+    // close the mainWindow = the app closes as well
+    // why: see #134
+    writeLog("info", "Bye");
+    app.quit();
 });
 
 // activate = macOS only:

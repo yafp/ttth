@@ -46,7 +46,7 @@
 
 <body>
     <!-- container -->
-    <div class="container-fluid h-100 d-flex flex-column fuya">
+    <div class="container-fluid h-100 d-flex flex-column fuya" id="core" name="core">
 
         <!-- navigation -->
         <nav class="tabs">
@@ -63,8 +63,18 @@
         <!-- /navigation -->
 
 
+
+
+        <!-- Lock - see #130 -->
+        <div id="div_lock" name="div_lock" style="display:none">
+            <i class="fas fa-lock fa-10x"></i>
+        </div>
+
+
+
+
         <!-- Tab Content -->
-        <div class="row flex-fill">
+        <div class="row flex-fill" id="content" name="content">
 
             <!-- Tab panes -->
             <div id="tabPanes" class="tab-content container-fluid">
@@ -72,7 +82,7 @@
                 <!-- TabContent: Settings -->
                 <div role="tabpanel" class="tab-pane active flex-fill ttth_resizer container-fluid settingsTabBody" id="Settings">
 
-                    <div id="allSettings" class="ttth_nonSelectableText">
+                    <div id="allSettings" name="allSettings" class="ttth_nonSelectableText">
 
 
                         <!-- About -->
@@ -159,6 +169,37 @@
                         <!-- /Option: DefaultView -->
 
 
+
+
+                        <!-- Option: Themes-->
+                        <div class="input-group input-group-sm mb-1">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" aria-label="Disabled checkbox for the selectDefaultView option" checked disabled>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="mw_settingsOptionsDescTheme" i18n-title="mw_settingsOptionsDescThemeDescription" disabled>
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <select id="selectTheme" name="selectTheme" class="ttth_select">
+                                        <option value="" disabled selected i18n-text="mw_settingsOptionsSelectTheme"><!-- i18n --></option>
+                                        <option value="mainWindow_default.css" i18n-text="mw_settingsOptionsSelectThemeDefault"><!-- i18n --></option>
+                                        <option value="mainWindow_dark.css" i18n-text="mw_settingsOptionsSelectThemeDark"><!-- i18n --></option>
+                                        <option value="mainWindow_dracula.css" i18n-text="mw_settingsOptionsSelectThemeDracula"><!-- i18n --></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-success btn-sm" id="bt_updateTheme" title="" i18n-title="mw_settingsOptionsButtonTextThemeSet" onClick="settingThemeUpdate();"><i class="fas fa-save"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm" id="bt_resetTheme" title="" i18n-title="mw_settingsOptionsButtonTextThemeReset" onClick="settingThemeReset();"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <!-- /Option: Themes -->
+
+
+
+
+
                         <!-- Option: Autostart -->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
@@ -182,17 +223,6 @@
                         </div>
                         <!-- /Option: DisableTray -->
 
-
-                        <!-- Option: DarkMode -->
-                        <div class="input-group input-group-sm mb-1" id="settingsSectionDarkMode">
-                            <div class="input-group-prepend">
-                                <div class="input-group-text">
-                                    <input type="checkbox" id="checkboxSettingDarkMode" aria-label="Checkbox for dark mode" onClick="settingToggleDarkMode();">
-                                </div>
-                            </div>
-                            <input type="text" class="form-control" aria-label="Disabled text input which describes the darkmode setting" value="" i18n-value="mw_settingsOptionsDescDarkMode" i18n-title="mw_settingsOptionsDescDarkModeDescription" disabled>
-                        </div>
-                        <!-- /Option: DarkMode -->
 
 
                         <!-- Option: UrgentWindow -->
