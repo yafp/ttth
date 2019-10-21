@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleMessages_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Messenger_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleMessages_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Messenger_inject.js</h1>
 
     
 
@@ -30,17 +30,22 @@
 
 
 /**
-* @name serviceGoogleMessagesGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service googleMessages
-* @description Gets the amount of unread messages of the service googleMessages
+* @name serviceMessengerGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Messenger
+* @description Gets the amount of unread messages of the service Messenger
 */
-function serviceGoogleMessagesGetUnreadMessageCount()
+function serviceMessengerGetUnreadMessageCount()
 {
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Checking unread message count");
+    console.log("serviceMessengerGetUnreadMessageCount ::: Checking unread message count");
 
-    var counter = document.querySelectorAll(".tpEAA.yrs5ff").length;
-    
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Total GoogleMessages unread messages: " + counter);
+    let count = document.querySelectorAll('._5fx8:not(._569x),._1ht3:not(._569x)').length;
+    const messageRequestsElement = document.querySelector('._5nxf');
+    if (messageRequestsElement) 
+    {
+        count += parseInt(messageRequestsElement.innerHTML, 10);
+    }
+
+    console.log("serviceMessengerGetUnreadMessageCount ::: Total Messenger chats with unread messages: " + count);
 
     // send back from webview to main
     ipcRenderer.sendToHost(counter);
@@ -49,7 +54,7 @@ function serviceGoogleMessagesGetUnreadMessageCount()
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceGoogleMessagesGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceMessengerGetUnreadMessageCount());
 });
 </code></pre>
         </article>

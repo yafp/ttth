@@ -324,6 +324,72 @@ function settingActivateUserColorCss(cssFile)
 }
 
 
+
+
+
+
+
+
+function settingThemeUpdate()
+{
+    // get value from theme select
+    var currentSelectedTheme = $("#selectTheme").val();
+
+    if((currentSelectedTheme === "") | (currentSelectedTheme === null))
+    {
+        var currentSelectedTheme = "mainWindow_default.css";
+
+        // load default theme
+        settingActivateUserColorCss(currentSelectedTheme);
+
+        showNoty("warning", "Please choose a theme first");
+    }
+    else
+    {
+        // activate the theme
+        settingActivateUserColorCss(currentSelectedTheme)
+
+        // write Setting
+        writeLocalUserSetting("settingTheme", currentSelectedTheme);
+
+        // noty
+        showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Theme&lt;/u> changed.");
+
+        // log
+        console.log("settingThemeUpdate ::: Updating user selected css file to: _" + currentSelectedTheme + "_.");
+    }
+
+    
+
+}
+
+
+function settingThemeReset()
+{
+    // reset the selection of the select item
+    $("#selectTheme").prop("selectedIndex",0);
+
+    var currentSelectedTheme = "mainWindow_default.css";
+
+    // load default theme
+    settingActivateUserColorCss(currentSelectedTheme);
+
+    // write setting
+    writeLocalUserSetting("settingTheme", currentSelectedTheme);
+
+    // noty
+    showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> Changed &lt;b>Option:&lt;/b> &lt;u>Theme&lt;/u> back to default.");
+
+    // log
+    console.log("settingThemeReset ::: Resetting user selected css file back to default: _" + currentSelectedTheme + "_.");
+}
+
+
+
+
+
+
+
 /**
 * @name readLocalUserSetting
 * @summary Read from local storage
@@ -412,6 +478,32 @@ function readLocalUserSetting(key, optional=false)
         }
 
 
+        // Setting Theme
+        //
+        if(key === "settingTheme")
+        {
+            writeLog("info", "initSettingsPage ::: Setting Theme is configured to: _" + value + "_.");
+
+            if((value === null) | (value === undefined))
+            {
+                // fallback to default
+                settingActivateUserColorCss("mainWindow_default.css");
+            }
+            else
+            {
+                settingActivateUserColorCss(value);
+
+                // Update select
+                $("#selectTheme").val(value);
+            }
+
+            
+        }
+        // End: Autostart
+
+
+
+
         // Setting Autostart
         //
         if(key === "settingAutostart")
@@ -452,28 +544,6 @@ function readLocalUserSetting(key, optional=false)
             }
         }
         // End DisableTRay
-
-
-        // Setting: DarkMode
-        //
-        if(key === "settingDarkMode")
-        {
-            if(value === true)
-            {
-                // dark theme
-                writeLog("info", "initSettingsPage ::: Setting DarkMode is configured");
-                $("#checkboxSettingDarkMode").prop("checked", true);
-                settingActivateUserColorCss("mainWindow_dark.css");
-            }
-            else
-            {
-                // default theme
-                writeLog("info", "initSettingsPage ::: Setting DarkMode is not configured");
-                $("#checkboxSettingDarkMode").prop("checked", false);
-                settingActivateUserColorCss("mainWindow_default.css");
-            }
-        }
-        // End: DarkMode
 
 
         // Setting Urgent Window - #110
@@ -547,31 +617,6 @@ function previewIcon()
 
     // try to load font-awesome icon
     $("#previewIcon").html("&lt;i class='" + currentIconCode + " fa-lg'>&lt;/i>");
-}
-
-
-/**
-* @name settingToggleDarkMode
-* @summary Enables or disabled the option darkmode
-* @description Updates the settings / option darkmode
-*/
-function settingToggleDarkMode()
-{
-    // Handle depending on the checkbox state
-    if($("#checkboxSettingDarkMode").prop("checked"))
-    {
-        writeLocalUserSetting("settingDarkMode", true);
-        writeLog("info", "settingToggleDarkMode ::: Finished enabling DarkMode");
-        showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>DarkMode&lt;/u> is now enabled.");
-        settingActivateUserColorCss("mainWindow_dark.css");
-    }
-    else
-    {
-        writeLocalUserSetting("settingDarkMode", false);
-        writeLog("info", "settingToggleDarkMode ::: Finished disabling DarkMode");
-        showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>DarkMode&lt;/u> is now disabled.");
-        settingActivateUserColorCss("mainWindow_default.css");
-    }
 }
 
 
@@ -1621,10 +1666,10 @@ function initSettingsPage()
     //
     // Option: Autostart
     readLocalUserSetting("settingAutostart");
+    // Option: Theme
+    readLocalUserSetting("settingTheme");
     // Option: DisableTray (Linux only)
     readLocalUserSetting("settingDisableTray");
-    // Option: DarkMode
-    readLocalUserSetting("settingDarkMode");
     // Option: Urgent Window
     readLocalUserSetting("settingUrgentWindow");
 
@@ -2357,6 +2402,22 @@ require("electron").ipcRenderer.on("showSettings", function()
 });
 
 
+
+// Call from main.js ::: lockUI
+//
+require("electron").ipcRenderer.on("lockUI", function()
+{
+    writeLog("info", "lockUI ::: Trying to lock ui");
+    
+    //$("#allSettings").fadeOut(); 
+    //$("#core").hide(); 
+    //$(document).fadeOut();
+    //$("html").fadeOut();
+    $("#content").fadeOut(); // keeps the nav available - all other elements are fading out.
+});
+
+
+
 // Call from main.js ::: startSearchUpdates
 //
 require("electron").ipcRenderer.on("startSearchUpdates", function()
@@ -2603,13 +2664,13 @@ require("electron").ipcRenderer.on("showNoConnectivityError", function()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDarkMode">settingToggleDarkMode</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsAboutShowMore">settingsAboutShowMore</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 18 2019 13:05:10 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 21 2019 10:30:52 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

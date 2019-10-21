@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/GoogleMessages_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Skype_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/GoogleMessages_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Skype_inject.js</h1>
 
     
 
@@ -30,17 +30,32 @@
 
 
 /**
-* @name serviceGoogleMessagesGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service googleMessages
-* @description Gets the amount of unread messages of the service googleMessages
+* @name serviceSkypeGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Skype
+* @description Gets the amount of unread messages of the service Skype
 */
-function serviceGoogleMessagesGetUnreadMessageCount()
+function serviceSkypeGetUnreadMessageCount()
 {
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Checking unread message count");
+    console.log("serviceSkypeGetUnreadMessageCount ::: Checking unread message count");
 
-    var counter = document.querySelectorAll(".tpEAA.yrs5ff").length;
-    
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Total GoogleMessages unread messages: " + counter);
+    let count = 0;
+    const container = document.querySelector('[role="tablist"] > [title="Chats"] > div');
+    if (container) 
+    {
+        const children = container.children;
+
+        if (children.length === 3) 
+        {
+            const elementContainer = children[children.length - 1];
+            if (elementContainer) 
+            {
+                const element = elementContainer.querySelector('[data-text-as-pseudo-element]');
+                count = parseInt(element.dataset.textAsPseudoElement, 10);
+            }
+        }
+    }
+
+    console.log("serviceSkypeGetUnreadMessageCount ::: Total Skype chats with unread messages: " + count);
 
     // send back from webview to main
     ipcRenderer.sendToHost(counter);
@@ -49,7 +64,7 @@ function serviceGoogleMessagesGetUnreadMessageCount()
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceGoogleMessagesGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceSkypeGetUnreadMessageCount());
 });
 </code></pre>
         </article>
