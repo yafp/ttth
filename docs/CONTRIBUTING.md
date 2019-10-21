@@ -9,6 +9,8 @@
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
+### jsdocs
+A documentation of all ttth specific js code is located in ```/docs/jsdocs```.
 
 ### CI
 The project repository is using:
@@ -18,9 +20,11 @@ The project repository is using:
 
 for Continuos Integration aspects.
 
+### Building ttth
 Build instructions can be found [here](BUILD.md).
 
-Crashreport informations [here](https://sentry.io/organizations/yafp/ttth).
+### Sentry (Crashreports)
+Crashreport informations are located [here](https://sentry.io/organizations/yafp/ttth).
 
 
 ### Getting started
@@ -50,12 +54,11 @@ or:
 * Execute: ```npm test```
 
 
-
-
 #### 2. Adding functions
 
 ##### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
+
 
 ##### other modification or changes
 * ....
@@ -83,7 +86,9 @@ or:
 
 ###### check for outdated npm packages
 * ```npm outdated```
-or
+
+or using ```npm-check```:
+
 * Install requirements: ```npm install -g npm-check```
 * Run check: ```npm-check```
 

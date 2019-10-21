@@ -23,6 +23,22 @@ The following categories are used:
 * ```Fixed```: for any bug fixes.
 * ```Security```: in case of vulnerabilities.
 
+
+***
+
+### ttth 1.8.0 (2019xxyy)
+#### ```Added```
+* Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
+* Services:
+  * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
+  * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
+
+####  ```Changed```
+* Dependencies
+  * Updated mocha from 6.2.1 to 6.2.2
+  * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.5
+
+
 ***
 
 ### ttth 1.7.0 (20191018)
