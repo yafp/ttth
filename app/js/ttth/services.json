@@ -157,7 +157,7 @@
         "description": "",
         "url": "https://www.messenger.com/login/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Messenger_inject.js"
     },
     {
         "id": "microsoftOutlook",
@@ -217,7 +217,7 @@
         "description": "Keep your life easier with Skype online",
         "url": "https://web.skype.com/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Skype_inject.js"
     },
     {
         "id": "slack",
