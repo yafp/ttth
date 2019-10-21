@@ -2,14 +2,13 @@
 
 # Message for a new user who open an issue
 issueOpen: >
-  Hello World! Welcome to the project ttth!
+  Welcome to the project ttth!
   Thanks and congrats for opening your very first issue in this project.
-  You may submit a PR on the same if you like!
   Hope you have a great time here :)
 
 # Message for a new user who comments on an issue
 issueComment: >
-  Hello World! Welcome to the project ttth!
+  Welcome to the project ttth!
   Thanks and congrats for your very first comment on this project.
   Checkout the Readme for more details on it.
   Want to contribute? Make an issue or submit a PR.
@@ -17,15 +16,14 @@ issueComment: >
 
 # Message for a new user who opens a PR
 prOpen: >
-  Hello World! Welcome to the project ttth!
-  Thankyou and congarts for your first PR on this project.
+  Welcome to the project ttth!
+  Thank you and congarts for your first PR on this project.
   We will review it soon!
-  Till then you can checkout the Readme for more details on it.
   Hope you have a great time here :)
 
 # Default message for a new user
 welcomeMessage: >
-  Hello World! Welcome to the project ttth! Feel free to explore it.
+  Welcome to the project ttth! Feel free to explore it.
   Checkout the Readme.md for more details on it.
   Want to contribute? Make an issue or submit a PR.
   You can check the contributing guides.
