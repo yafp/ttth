@@ -30,6 +30,7 @@
     "mw_settingsOptionsSelectThemeDefault": "Standard",
     "mw_settingsOptionsSelectThemeDark": "Dunkel",
     "mw_settingsOptionsSelectThemeDracula": "Dracula",
+    "mw_settingsOptionsSelectThemeNord": "Nord",
     "mw_settingsOptionsButtonTextThemeSet": "Aktiviert das Theme",
     "mw_settingsOptionsButtonTextThemeReset": "Setzt die Theme Wahl zurück",
     "mw_settingsOptionsDescAutostart": "Autostart",
