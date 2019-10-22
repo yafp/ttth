@@ -58,7 +58,7 @@ or:
 
 ##### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
-
+* Check the function ```loadServiceSpecificCode``` in ```/app/js/ttth/ttth.js```
 
 ##### other modification or changes
 * ....

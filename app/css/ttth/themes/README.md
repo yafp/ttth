@@ -6,5 +6,7 @@
 
 This folder contains the 2 supported css themes
 
-* default
-* dark
+  * default
+  * dark
+  * dracula
+  * nord

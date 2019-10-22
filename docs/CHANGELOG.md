@@ -29,14 +29,19 @@ The following categories are used:
 ### ttth 1.8.0 (2019xxyy)
 #### ```Added```
 * Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
+  * New: 'Dracula'
+  * New: 'Nord'
 * Services:
+  * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
   * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
   * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
+* Network accessibility: Added a periodic check for network accessibility. See [#136](https://github.com/yafp/ttth/issues/136)
 
 ####  ```Changed```
 * Dependencies
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.5
+  * Updated i18next from 17.2.0 to 17.3.0
 
 
 ***

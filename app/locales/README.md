@@ -6,6 +6,6 @@
 
 This folder contains the translation files.
 
-* de
-* en
-* fr
+  * de
+  * en
+  * fr
