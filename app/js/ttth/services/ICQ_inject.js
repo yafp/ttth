@@ -10,12 +10,15 @@ function serviceICQGetUnreadMessageCount()
 {
     console.log("serviceICQGetUnreadMessageCount ::: Checking unread message count");
 
-    let total=0;
-    for(let counter of document.getElementsByClassName("icq-msg-counter"))total+=parseInt("block"===counter.style.display?counter.innerHTML.trim():0);
+    let count=0;
+    for(let counter of document.getElementsByClassName("icq-msg-counter"))
+    {
+        count+=parseInt("block"===counter.style.display?counter.innerHTML.trim():0);
+    }
 
-    console.log("serviceICQGetUnreadMessageCount ::: Total ICQ unread messages: " + total);
+    console.log("serviceICQGetUnreadMessageCount ::: Total ICQ unread messages: " + count);
 
-    ipcRenderer.sendToHost(total);
+    ipcRenderer.sendToHost(count);
 }
 
 

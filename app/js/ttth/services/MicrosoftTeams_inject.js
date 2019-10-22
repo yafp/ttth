@@ -11,21 +11,21 @@ function serviceMicrosoftTeamsGetUnreadMessageCount()
     console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Checking unread message count");
 
     // via: https://github.com/meetfranz/Microsoft-Teams/blob/master/webview.js
-    let messages = 0;
-    const badge = document.querySelector('.activity-badge.dot-activity-badge .activity-badge');
+    let count = 0;
+    const badge = document.querySelector(".activity-badge.dot-activity-badge .activity-badge");
     if (badge) 
     {
         const value = parseInt(badge.innerHTML, 10);
 
         if (!isNaN(value)) 
         {
-            messages = value;
+            count = value;
         }
     }
 
-    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Outlook unread messages: " + messages);
+    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Outlook unread messages: " + count);
 
-    ipcRenderer.sendToHost(messages);
+    ipcRenderer.sendToHost(count);
 }
 
 

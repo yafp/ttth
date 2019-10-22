@@ -10,8 +10,8 @@ function serviceMessengerGetUnreadMessageCount()
 {
     console.log("serviceMessengerGetUnreadMessageCount ::: Checking unread message count");
 
-    let count = document.querySelectorAll('._5fx8:not(._569x),._1ht3:not(._569x)').length;
-    const messageRequestsElement = document.querySelector('._5nxf');
+    let count = document.querySelectorAll("._5fx8:not(._569x),._1ht3:not(._569x)").length;
+    const messageRequestsElement = document.querySelector("._5nxf");
     if (messageRequestsElement) 
     {
         count += parseInt(messageRequestsElement.innerHTML, 10);
@@ -20,7 +20,7 @@ function serviceMessengerGetUnreadMessageCount()
     console.log("serviceMessengerGetUnreadMessageCount ::: Total Messenger chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(counter);
+    ipcRenderer.sendToHost(count);
 }
 
 

@@ -21,7 +21,7 @@ function serviceSkypeGetUnreadMessageCount()
             const elementContainer = children[children.length - 1];
             if (elementContainer) 
             {
-                const element = elementContainer.querySelector('[data-text-as-pseudo-element]');
+                const element = elementContainer.querySelector("[data-text-as-pseudo-element]");
                 count = parseInt(element.dataset.textAsPseudoElement, 10);
             }
         }
@@ -30,7 +30,7 @@ function serviceSkypeGetUnreadMessageCount()
     console.log("serviceSkypeGetUnreadMessageCount ::: Total Skype chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(counter);
+    ipcRenderer.sendToHost(count);
 }
 
 
