@@ -3,20 +3,26 @@
     /* influcenced by: https://github.com/dracula/dracula-theme */
 
     /* body */
-    --color-bodyText: #f8f8f2; /* white */
-    --color-bodyBackground: #282a36; /* some other dark gray, almost black */
+    --color-bodyText: #f8f8f2; /*  */
+    --color-bodyBackground: #44475a; /*  */
 
     /* navigation */
-    --color-navigationText: #FFFFFF; /* white */
-    --color-navigationBackground: #171717; /*almost black */
-    --color-navigationBorder: #4e4e4e; /* some dark gray */
-    --color-navigationHighlight: #ff79c6; /* limegreen */;
+    --color-navigationText: #FFFFFF; /*  */
+    --color-navigationBackground: #171717; /*  */
+    --color-navigationBorder: #4e4e4e; /*  */
+    --color-navigationHighlight: #ff79c6; /*  */;
 
     /* highlight */
-    --color-highlight: #ff79c6; /* limegreen */
+    --color-highlight: #ff79c6; /*  */
 
     /* bootstrap form elements */
-    --color-inputFormsText: #FFFFFF; /* white */
-    --color-inputFormsBackground: #6272a4; /* some even darker gray, almost black */
-    --color-inputFormsBorder: #44475a; /* some dark gray */
+    --color-inputFormsText: #f8f8f2; /* */
+    --color-inputFormsBackground: #282a36  ; /*  */
+    --color-inputFormsBorder: #6272a4  ; /* */
+
+    /* bootstrap buttons */
+    --color-buttonSuccess: #50fa7b; /*  */
+    --color-buttonDanger: #ff5555; /*  */
+    --color-buttonSecondary: #6272a4;
+    --color-buttonDark: #282a36;
 }

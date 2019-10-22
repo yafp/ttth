@@ -198,6 +198,7 @@ h3
 
 .ttth_select
 {
+    min-width: 200px;
     color: var(--color-inputFormsText) !important;
     background-color: var(--color-inputFormsBackground) !important;
     border-color: var(--color-inputFormsBorder) !important;
@@ -212,4 +213,34 @@ h3
 .ttth_select:hover
 {
     border-color: var(--color-highlight) !important;
+}
+
+
+
+/* ########################################################################## */
+/* CUSTOMIZE BOOTSTRAP BUTTONS
+/* ########################################################################## */
+.btn-success{
+    background-color: var(--color-buttonSuccess) !important;
+    border-color: var(--color-buttonSuccess) !important;
+}
+
+.btn-secondary{
+    background-color: var(--color-buttonSecondary) !important;
+    border-color: var(--color-buttonSecondary) !important;
+}
+
+.btn-danger{
+    background-color: var(--color-buttonDanger) !important;
+    border-color: var(--color-buttonDanger) !important;
+}
+
+.btn-dark{
+    background-color: var(--color-buttonDark) !important;
+    border-color: var(--color-buttonDark) !important;
+}
+
+/* Filter */
+.btn:hover{
+    filter: brightness(75%);
 }

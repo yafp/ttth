@@ -17,4 +17,10 @@
     --color-inputFormsText: #000000; /* black */
     --color-inputFormsBackground: #F8F8F8; /* almost white */
     --color-inputFormsBorder: #D3D3D3; /* lightgray */
+
+    /* bootstrap buttons */
+    --color-buttonSuccess: #5cb85c; /* limegreen */
+    --color-buttonDanger: #d9534f; /* red */
+    --color-buttonSecondary: gray;
+    --color-buttonDark: #292b2c;
 }
