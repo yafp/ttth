@@ -14,7 +14,7 @@ const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance hand
 const openAboutWindow = require("about-window").default; // for: about-window
 
 // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
-require('v8-compile-cache');
+require("v8-compile-cache");
 
 
 
@@ -59,7 +59,7 @@ Sentry.init({
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let configWindow;
-let onlineStatusWindow // for handling network connectivity
+let onlineStatusWindow;
 
 let verbose;
 verbose = false;
@@ -68,7 +68,7 @@ verbose = false;
 // ----------------------------------------------------------------------------
 // menu.js
 // ----------------------------------------------------------------------------
-require("./menu").createMenu();
+require("./menu").createMenu(); // generate the application menu
 
 
 /**
@@ -145,7 +145,6 @@ function checkArguments()
     // using https://www.npmjs.com/package/minimist could improve handling
 
     //log.info(process.argv);
-
     // ignore the first 2 arguments
     //log.info(process.argv.slice(2));
     process.argv = process.argv.slice(2);
@@ -155,7 +154,6 @@ function checkArguments()
         if (process.argv.hasOwnProperty(key))
         {
             //console.log(key + " -> " + process.argv[key]);
-
             switch (process.argv[key])
             {
                 case "verbose":
@@ -215,17 +213,25 @@ function createTray()
             id: "show",
             label: "Show",
             click: function () {
-                // focus the main window
-                if (mainWindow.isMinimized())
+
+                if (mainWindow === null) // #134
                 {
-                    mainWindow.restore();
+                    // do nothing, as no mainWindow exists. Most likely on macOS
                 }
                 else
                 {
-                    // was maybe: hidden via hide()
-                    mainWindow.show();
+                    // focus the main window
+                    if (mainWindow.isMinimized())
+                    {
+                        mainWindow.restore();
+                    }
+                    else // is not minimized
+                    {
+                        // was maybe: hidden via hide()
+                        mainWindow.show();
+                    }
+                    mainWindow.focus();
                 }
-                mainWindow.focus();
             },
             enabled: true
         },
@@ -735,11 +741,18 @@ function forceSingleAppInstance()
             // Someone tried to run a second instance, we should focus our first instance window.
             if (mainWindow)
             {
-                if (mainWindow.isMinimized())
+                if (mainWindow === null) //#134
                 {
-                    mainWindow.restore();
+                    // do nothing - there is no mainwindow - most likely we are on macOS
                 }
-                mainWindow.focus();
+                else // mainWindow exists
+                {
+                    if (mainWindow.isMinimized())
+                    {
+                        mainWindow.restore();
+                    }
+                    mainWindow.focus();
+                }
             }
         });
     }
@@ -762,7 +775,6 @@ app.on("ready", function ()
     checkArguments();
     createWindow();
     createTray();
-    //checkNetworkConnectivity();
 });
 
 
@@ -847,19 +859,15 @@ app.on("window-all-closed", function ()
     writeLog("info", "app closed all application windows (event: window-all-closed)");
 
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
-    /*
     if (process.platform !== "darwin")
     {
         writeLog("info", "Bye");
         app.quit();
     }
-    */
 
-    // we handle all systemes the same - this means:
-    // close the mainWindow = the app closes as well
-    // why: see #134
-    writeLog("info", "Bye");
-    app.quit();
+    // we handle all systemes the same - this means: close the mainWindow = the app closes as well -  why: see #134
+    //writeLog("info", "Bye");
+    //app.quit();
 });
 
 // activate = macOS only:

@@ -55,7 +55,7 @@ function initTitlebar()
 
     // USING: https://www.npmjs.com/package/pj-custom-electron-titlebar (Fork from custom-electron-titlebar)
     //
-    const customTitlebar = require('pj-custom-electron-titlebar');
+    const customTitlebar = require("pj-custom-electron-titlebar");
  
     new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
@@ -91,7 +91,7 @@ function initTitlebar()
     */
 
     // change font size of application name in titlebar
-    $('.window-title').css('font-size', '13px'); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
+    $(".window-title").css("font-size", "13px"); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
 }
 
 
@@ -313,7 +313,7 @@ function settingThemeUpdate()
 
     if((currentSelectedTheme === "") | (currentSelectedTheme === null))
     {
-        var currentSelectedTheme = "mainWindow_default.css";
+        currentSelectedTheme = "mainWindow_default.css";
 
         // load default theme
         settingActivateUserColorCss(currentSelectedTheme);
@@ -323,7 +323,7 @@ function settingThemeUpdate()
     else
     {
         // activate the theme
-        settingActivateUserColorCss(currentSelectedTheme)
+        settingActivateUserColorCss(currentSelectedTheme);
 
         // write Setting
         writeLocalUserSetting("settingTheme", currentSelectedTheme);
@@ -890,11 +890,14 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     //  5.000 =  5 sec
     var intervalID = setInterval(function()
-    //var "interval_" + serviceId = setInterval(function()
     {
-        //writeLog("info", "EventListener of: " + serviceId);
         webview.send("request");
     }, 5000);
+
+
+    // TODO: 
+    // add a network-connectivity check for each single service?
+
 
 
     // adding general webview events (valid for all services)
@@ -1321,19 +1324,17 @@ function checkSupportedOperatingSystem()
         case "windows":
         case "linux":
         case "darwin":
+        case "freebsd":
             writeLog("info", "checkSupportedOperatingSystem ::: Operating system " + userPlatform + " is fine." );
             break;
 
         default:
+            // could be: sunos
+
             // define message
             supportedOperatingSystemMessage = userPlatform + " is currently not supported. Please contact devs.";
 
-            // could be:
-            // - freebsd
-            // - sunos
-
             showNoty("warning", supportedOperatingSystemMessage, 0);
-
             writeLog("error", "checkSupportedOperatingSystem ::: " + supportedOperatingSystemMessage );
     }
 }
@@ -1472,10 +1473,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "freenode":
         case "googleDuo":
         case "linkedIn":
-        case "messenger":
-        case "microsoftTeams":
         case "reddit":
-        case "skype":
         case "wechat":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
@@ -1494,9 +1492,12 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "googleMessages":
         case "icq":
         case "mattermost":
+        case "messenger":
         case "microsoftOutlook":
+        case "microsoftTeams":
         case "riot":
         case "slack":
+        case "skype":
         case "telegram":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, true);
@@ -2277,12 +2278,12 @@ function onAfterReadyMainWindow()
     validateConfiguredDefaultView();
 
     // Configure click-handler for navigation/tabs
-    $('#myTabs a').click(function (link)
+    $("#myTabs a").click(function (link)
     {
         var target = link.currentTarget.innerText;
 
         // remove leading space
-        if(target.substr(0,1) == " ")
+        if(target.substr(0,1) === " ")
         {
             target = target.substr(1);
         }
@@ -2296,7 +2297,7 @@ function onAfterReadyMainWindow()
             // needs a reload to display the webview properly
         }
         */
-    })
+    });
 }
 
 
@@ -2326,16 +2327,53 @@ function onReadyMainWindow()
     // Translate using i18next
     localizeUserInterface();
 
+    // start periodic network checker
+    checkNetworkConnectivityPeriodic(10000);
+
 
     // execute some things later ...
     setTimeout(function()
     {
         onAfterReadyMainWindow();
     }, 1000);
+
+
+}
+
+
+/**
+* @name checkNetworkConnectivityPeriodic
+* @summary Periodically checks if network access exists or not
+* @description Testmethod to inform the user when there is no access to the internet.
+* @param timeInterval - The timeinterval which is used to start re-testing
+*/
+function checkNetworkConnectivityPeriodic(timeInterval)
+{
+    const isOnline = require("is-online"); // for online connectivity checks
+    var intervalID = setInterval(function()
+    {
+        (async () => {
+
+        if(await isOnline() === true)
+        {
+            writeLog("info", "checkNetworkConnectivityPeriodic ::: Got access to the internet.");
+        }
+        else
+        {
+            writeLog("error", "checkNetworkConnectivityPeriodic ::: Got NO access to the internet.");
+            showNoty("error", "No access to the internet (critical) ");
+        }
+    })();
+
+    }, timeInterval);
 }
 
 
 
+
+// ----------------------------------------------------------------------------
+// ipcRenderer things
+// ----------------------------------------------------------------------------
 
 // Call from main.js ::: reloadCurrentService
 //
@@ -2346,7 +2384,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function()
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    showNoty("info", "Trying to reload the current service: _" + tabValue + "_.")
+    showNoty("info", "Trying to reload the current service: _" + tabValue + "_.");
 
     // get configured target url & inject code from config
     const storage = require("electron-json-storage");
@@ -2380,12 +2418,6 @@ require("electron").ipcRenderer.on("showSettings", function()
 
 
 
-
-
-
-
-
-
 // FIXME - see #130
 // Call from main.js ::: lockUI
 //
@@ -2393,31 +2425,35 @@ require("electron").ipcRenderer.on("lockUI", function()
 {
     writeLog("info", "lockUI ::: Trying to lock ui");
 
+    // TODO
+    // - check if ui is unlocked
+    // - if so - lock it (if a password is defined)
+
     $("#content").fadeOut(); // keeps the nav available - all other elements are fading out.
-    $('#div_lock').fadeIn();
+    $("#div_lock").fadeIn();
 
     isLocked = true;
 });
 
 
 // FIXME - see #130
-// Call from main.js ::: lockUI
+// Call from main.js ::: unlockUI
 //
 require("electron").ipcRenderer.on("unlockUI", function()
 {
     writeLog("info", "unlockUI ::: Trying to unlock ui");
 
-    $('#div_lock').fadeOut();
+    // TODO
+    // - check if UI is locked
+    // - if so - display an unlock dialog
+    // - if that is validated 
+    // - unlock
+
+    $("#div_lock").fadeOut();
     $("#content").fadeIn(); // keeps the nav available - all other elements are fading out.
 
     isLocked = false;
 });
-
-
-
-
-
-
 
 
 // Call from main.js ::: startSearchUpdates
@@ -2646,7 +2682,6 @@ require("electron").ipcRenderer.on("switchToTab", function(event, targetTab)
     writeLog("info", "switchToTab ::: Switching to tab: " + targetTab);
     $("#" + targetTab).trigger("click");
 });
-
 
 
 // Call from main.js :::
