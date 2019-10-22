@@ -230,6 +230,16 @@
         "injectCode": ""
     },
     {
+        "id": "steam",
+        "name": "Steam",
+        "nameLong": "Steam Chat",
+        "icon": "fab fa-steam",
+        "description": "",
+        "url": "https://steamcommunity.com/chat",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/SteamChat_inject.js"
+    },
+    {
         "id": "telegram",
         "name": "Telegram",
         "nameLong": "Telegram",
