@@ -1,6 +1,5 @@
 ---
 exclude_paths:
-  - 'app/lib/noty/**/*'
   - 'docs/**'
   - 'docs/**/*'
   - 'docs/jsdocs/**/*'
