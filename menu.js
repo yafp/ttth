@@ -20,6 +20,7 @@ function ()
     {
         label: "File",
         submenu: [
+        // Settings
         {
             label: "Settings",
             click(item, mainWindow) {
@@ -27,27 +28,11 @@ function ()
             },
             accelerator: "CmdOrCtrl+,"
         },
-
-
-        {
-            label: "Lock UI",
-            click(item, mainWindow) {
-                mainWindow.webContents.send("lockUI");
-            },
-        },
-        {
-            label: "Unlock UI",
-            click(item, mainWindow) {
-                mainWindow.webContents.send("unlockUI");
-            },
-        },
-
-
-
-
+        // Separator
         {
             type: "separator"
         },
+        // Exit
         {
             role: "quit",
             label: "Exit",
@@ -262,6 +247,14 @@ function ()
             },
             accelerator: "F4"
         },
+        // open Releases
+        {
+            label: "Releases",
+            click() {
+                shell.openExternal("https://github.com/yafp/ttth/releases");
+            },
+            accelerator: "F5"
+        },
         {
             type: "separator"
         },
@@ -272,7 +265,7 @@ function ()
                 mainWindow.webContents.send("startSearchUpdates");
             },
             enabled: true,
-            accelerator: "F5"
+            accelerator: "F9"
         },
         {
             type: "separator"
