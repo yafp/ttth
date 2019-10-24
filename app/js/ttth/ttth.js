@@ -38,10 +38,6 @@ Sentry.init({
 //unhandled();
 
 
-var isLocked = false;
-
-
-
 /**
 * @name initTitlebar
 * @summary Init the titlebar for the frameless mainWindow
@@ -49,12 +45,9 @@ var isLocked = false;
 */
 function initTitlebar()
 {
-    // FIXME - custom-electron-titlebar is now an archived repo - what should we do?
-
-
-
-    // USING: https://www.npmjs.com/package/pj-custom-electron-titlebar (Fork from custom-electron-titlebar)
-    //
+    // NOTE:
+    // - "custom-electron-titlebar" is now an archived repo
+    // - switched to fork of it "pj-custom-electron-titlebar"
     const customTitlebar = require("pj-custom-electron-titlebar");
  
     new customTitlebar.Titlebar({
@@ -64,31 +57,9 @@ function initTitlebar()
         backgroundColor: customTitlebar.Color.fromHex("#171717"),
         minimizable: true,
         maximizable: true,
-        closeable: true
+        closeable: true,
+        itemBackgroundColor: customTitlebar.Color.fromHex("#525252") // hover color
     });
-
-
-
-
-
-    // USING: custom-electron-titlebar
-    /*
-    const customTitlebar = require("custom-electron-titlebar");
-
-    new customTitlebar.Titlebar({
-        titleHorizontalAlignment: "center", // position of window title
-        icon: "img/icon/icon.png", 
-        drag: true, // whether or not you can drag the window by holding the click on the title bar.
-        backgroundColor: customTitlebar.Color.fromHex("#171717"),
-        minimizable: true,
-        maximizable: true,
-        closeable: true
-    });
-
-    // TODO / FIXME
-    // custom-electron-titlebar is throwing errors caused by titlebar.js. Details: see https://github.com/AlexTorresSk/custom-electron-titlebar/issues/32
-    // project is archived - so most likely no more updates/fixes or anything else.
-    */
 
     // change font size of application name in titlebar
     $(".window-title").css("font-size", "13px"); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
@@ -254,6 +225,56 @@ function isWindows()
 
 
 /**
+* @name switchToService
+* @summary Activates a given service tab
+* @description Activates the tab of a given service. Needed for handling DefaultView setting.
+* @param serviceName - Name of the service
+*/
+function switchToService(serviceName)
+{
+    // activate the related tab
+    $("#target_" + serviceName).trigger("click");
+
+    writeLog("info", "switchToService ::: Switched to tab: _" + serviceName + "_.");
+}
+
+
+/**
+* @name writeLocalUserSetting
+* @summary Write to electron-json-storage
+* @description Writes a value for a given key to electron-json-storage
+* @param key - Name of storage key
+* @param value - New value
+*/
+function writeLocalUserSetting(key,value)
+{
+    const storage = require("electron-json-storage");
+    const remote = require("electron").remote;
+    const app = remote.app;
+    const path = require("path");
+
+    // get default storage path
+    const defaultDataPath = storage.getDefaultDataPath();
+
+    // set new path for userUsettings
+    const userSettingsPath = path.join(app.getPath("userData"), "ttthUserSettings");
+    storage.setDataPath(userSettingsPath);
+
+    // write the user setting
+    storage.set(key, { "setting": value }, function(error) {
+        if (error)
+        {
+            throw error;
+        }
+      writeLog("info", "writeLocalUserSetting ::: key: _" + key + "_ - new value: _" + value + "_");
+
+      // revert:
+      storage.setDataPath(defaultDataPath);
+    });
+}
+
+
+/**
 * @name loadDefaultView
 * @summary Loads the default view
 * @description Loads the default view. This is used on load of the .html
@@ -300,46 +321,35 @@ function settingActivateUserColorCss(cssFile)
 }
 
 
-
-
-
-
-
-
+/**
+* @name settingThemeUpdate
+* @summary Updates which theme is selected
+* @description Sets the new theme and activates a css style / theme
+*/
 function settingThemeUpdate()
 {
-    // get value from theme select
-    var currentSelectedTheme = $("#selectTheme").val();
+    // get values from theme select
+    var currentSelectedTheme = $("#selectTheme").val(); // displayed theme css name
+    var currentSelectedThemeDisplayName = $( "#selectTheme option:selected" ).text(); // displayed theme name
 
-    if((currentSelectedTheme === "") | (currentSelectedTheme === null))
-    {
-        currentSelectedTheme = "mainWindow_default.css";
+    // activate the theme
+    settingActivateUserColorCss(currentSelectedTheme);
 
-        // load default theme
-        settingActivateUserColorCss(currentSelectedTheme);
+    // write Setting
+    writeLocalUserSetting("settingTheme", currentSelectedTheme);
 
-        showNoty("warning", "Please choose a theme first");
-    }
-    else
-    {
-        // activate the theme
-        settingActivateUserColorCss(currentSelectedTheme);
+    // noty
+    showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Theme</u> changed to " + currentSelectedThemeDisplayName + ".");
 
-        // write Setting
-        writeLocalUserSetting("settingTheme", currentSelectedTheme);
-
-        // noty
-        showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Theme</u> changed.");
-
-        // log
-        console.log("settingThemeUpdate ::: Updating user selected css file to: _" + currentSelectedTheme + "_.");
-    }
-
-    
-
+    // log
+    console.log("settingThemeUpdate ::: Updating user selected css file to: _" + currentSelectedTheme + "_.");
 }
 
-
+/**
+* @name settingThemeReset
+* @summary Resets the selected theme back to default
+* @description Sets the new theme and activates a css style / theme
+*/
 function settingThemeReset()
 {
     // reset the selection of the select item
@@ -359,11 +369,6 @@ function settingThemeReset()
     // log
     console.log("settingThemeReset ::: Resetting user selected css file back to default: _" + currentSelectedTheme + "_.");
 }
-
-
-
-
-
 
 
 /**
@@ -472,12 +477,8 @@ function readLocalUserSetting(key, optional=false)
                 // Update select
                 $("#selectTheme").val(value);
             }
-
-            
         }
-        // End: Autostart
-
-
+        // End: Theme
 
 
         // Setting Autostart
@@ -540,49 +541,8 @@ function readLocalUserSetting(key, optional=false)
             }
         }
         // End: Urgent Window
-
-
-        // Baustelle
-        //writeLog("error", "isLocked is set to: " + isLocked);
-
     });
 }
-
-
-/**
-* @name writeLocalUserSetting
-* @summary Write to electron-json-storage
-* @description Writes a value for a given key to electron-json-storage
-* @param key - Name of storage key
-* @param value - New value
-*/
-function writeLocalUserSetting(key,value)
-{
-    const storage = require("electron-json-storage");
-    const remote = require("electron").remote;
-    const app = remote.app;
-    const path = require("path");
-
-    // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath();
-
-    // set new path for userUsettings
-    const userSettingsPath = path.join(app.getPath("userData"), "ttthUserSettings");
-    storage.setDataPath(userSettingsPath);
-
-    // write the user setting
-    storage.set(key, { "setting": value }, function(error) {
-        if (error)
-        {
-            throw error;
-        }
-      writeLog("info", "writeLocalUserSetting ::: key: _" + key + "_ - new value: _" + value + "_");
-
-      // revert:
-      storage.setDataPath(defaultDataPath);
-    });
-}
-
 
 
 /**
@@ -607,28 +567,24 @@ function previewIcon()
 */
 function settingToggleDisableTray()
 {
+    const {ipcRenderer} = require("electron");
+
     // Handle depending on the checkbox state
     if($("#checkboxSettingDisableTray").prop("checked"))
     {
-        const {ipcRenderer} = require("electron");
         ipcRenderer.send("disableTray");
-
         writeLocalUserSetting("settingDisableTray", true);
         showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Disable Tray</u> is now enabled.");
         writeLog("info", "settingToggleDisableTray ::: Finished enabling DisableTray");
     }
     else
     {
-        const {ipcRenderer} = require("electron");
         ipcRenderer.send("recreateTray");
-
         writeLocalUserSetting("settingDisableTray", false);
         showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Disable Tray</u> is now disabled.");
         writeLog("info", "settingToggleDisableTray ::: Finished re-enabling DisableTray");
     }
 }
-
-
 
 
 /**
@@ -654,8 +610,6 @@ function settingToggleUrgentWindow()
 }
 
 
-
-
 /**
 * @name settingsSelectServiceToAddChanged
 * @summary Changes the add-service-template was selected and enables the button
@@ -664,7 +618,6 @@ function settingToggleUrgentWindow()
 function settingsSelectServiceToAddChanged()
 {
     var currentSelectedServiceTemplate = $("#select_availableServices").val();
-
     writeLog("info", "settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _" + currentSelectedServiceTemplate + "_.");
 
     if(currentSelectedServiceTemplate !== "")
@@ -678,18 +631,19 @@ function settingsSelectServiceToAddChanged()
 
         writeLog("info", "settingsSelectServiceToAddChanged ::: Enabled the add-service button.");
     }
+    /*
     else // this code should never be triggered - might be deleteable.
     {
         // disable the add button
         $("#bt_addNewService").prop("disabled", true);
 
-        // change button type to secondary
         // change button type to success
         $("#bt_addNewService").removeClass();
         $("#bt_addNewService").addClass("btn btn-secondary btn-sm");
 
         writeLog("info", "settingsSelectServiceToAddChanged ::: Disabled the add-service button.");
     }
+    */
 }
 
 
@@ -750,17 +704,6 @@ function showNotyAutostartMinimizedConfirm()
 
 
 /**
-* @name settingsAboutShowMore
-* @summary Makes several buttons visible in the about section of the settings tab
-* @description Used to keep the settings ui clean on-load. button 'show-more' hides itself after being pressed and loads several other buttons. Gets called from mainWindow.html
-*/
-function settingsAboutShowMore()
-{
-    $("#bt_aboutShowMore").hide();
-}
-
-
-/**
 * @name openUserServicesConfigFolder
 * @summary Opens the folder in filesystem which contains the service configurations of the current user
 * @description Triggers a method in main.js which then opens the folder which contains all service configurations of the current user.
@@ -769,7 +712,6 @@ function openUserServicesConfigFolder()
 {
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("openUserServicesConfigFolder");
-
     writeLog("info", "openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.");
 }
 
@@ -784,7 +726,6 @@ function openUserSettingsConfigFolder()
 {
     const {ipcRenderer} = require("electron");
     ipcRenderer.send("openUserSettingsConfigFolder");
-
     writeLog("info", "openUserSettingsConfigFolder ::: Should try to open the folder which contains the user settings.");
 }
 
@@ -805,7 +746,7 @@ function updateTrayIconStatus()
     {
         currentTabId = $(this).attr("id");
 
-        if(currentTabId !== "target_Settings")
+        if(currentTabId !== "target_Settings") // for all tabs - but NOT for the settings tab
         {
             currentTabId = currentTabId.replace("target_", "");
 
@@ -822,25 +763,18 @@ function updateTrayIconStatus()
 
             writeLog("info", "updateTrayIconStatus ::: Unread messages count of _" + currentTabId + "_ is: " + curServiceUnreadMessageCount);
         }
-        else
-        {
-            //writeLog("info", "updateTrayIconStatus ::: Ignoring settings-tab - as it has no badge.");
-        }
     });
 
     writeLog("info", "updateTrayIconStatus ::: Overall unread message count for all services is: _" + overallUnreadMessages + "_.");
 
     const {ipcRenderer} = require("electron");
-    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) )
+    if( (overallUnreadMessages === "0" ) || (overallUnreadMessages === 0 ) ) // tray should show the default icon
     {
-        // tray should show the default icon
         ipcRenderer.send("changeTrayIconToDefault");
     }
-    else
+    else // tray should show that we got unread messages
     {
-        // tray should show that we got unread messages
         ipcRenderer.send("changeTrayIconToUnreadMessages");
-
         readLocalUserSetting("settingUrgentWindow", true);
     }
 
@@ -892,7 +826,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     var intervalID = setInterval(function()
     {
         webview.send("request");
-    }, 5000);
+    }, 3000); // 3.000 milliseconds = 3 sec
 
 
     // TODO: 
@@ -911,9 +845,10 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
 
         var checkForMicrosoftOutlook = serviceId.startsWith("microsoftOutlook");
-        if(checkForMicrosoftOutlook === false) // show noty for all services except microsoftOutlook (as it throws tons of errors)
+        var checkForMicrosoftTeams = serviceId.startsWith("microsoftTeams");
+        if( (checkForMicrosoftOutlook === false) && (checkForMicrosoftTeams === false) ) // show noty for all services except microsoftOutlook & microsoftTeams (as it throws tons of errors)
         {
-            showNoty("error", "Failed to load url for service: _" + serviceId + "_.", 0); // #119
+            showNoty("error", "Failed to load url for service: <b>" + serviceId + "</b>.", 0); // #119
         }
     });
 
@@ -922,7 +857,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     webview.addEventListener("crashed", function()
     {
         writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
-        showNoty("error", "Ooops, the service _" + serviceId + "_ crashed.", 0);
+        showNoty("error", "Ooops, the service <b>" + serviceId + "</b> crashed.", 0);
     });
 
     // WebView Event: page-title-updated (https://electronjs.org/docs/api/webview-tag#event-page-title-updated)
@@ -1056,7 +991,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         {
             writeLog("info", "eventListenerForSingleService ::: new-window for: _" + serviceId + "_.");
 
-            const BrowserWindow = require("electron");
+            //const BrowserWindow = require("electron");
             const shell = require("electron").shell;
             const protocol = require("url").parse(e.url).protocol;
 
@@ -1095,7 +1030,6 @@ function closeSingleServiceConfiguratationWindow()
 function validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
 {
     writeLog("info", "validateConfigSingleServiceForm ::: Starting to validate the form.");
-
     if ((serviceName === "") || (serviceIcon === "") || (serviceUrl === ""))
     {
         writeLog("warn", "validateConfigSingleServiceForm ::: Form is not valid.");
@@ -1241,9 +1175,10 @@ function configureSingleUserService(serviceId)
 */
 function openDevTools()
 {
+    writeLog("info", "openDevTools ::: Opening Developer Console");
+
     const remote = require("electron").remote;
     remote.getCurrentWindow().toggleDevTools();
-    writeLog("info", "openDevTools ::: Opening Developer Console");
 }
 
 
@@ -1302,7 +1237,7 @@ function settingDefaultViewUpdate()
     writeLocalUserSetting("settingDefaultView", newDefaultView);
 
     // show noty
-    showNoty("success", "Set default view to " + newDefaultView);
+    showNoty("success", "Set default view to <b>" + newDefaultView + "</b>.");
 }
 
 
@@ -1341,21 +1276,6 @@ function checkSupportedOperatingSystem()
 
 
 /**
-* @name switchToService
-* @summary Activates a given service tab
-* @description Activates the tab of a given service. Needed for handling DefaultView setting.
-* @param serviceName - Name of the service
-*/
-function switchToService(serviceName)
-{
-    // activate the related tab
-    $("#target_" + serviceName).trigger("click");
-
-    writeLog("info", "switchToService ::: Switched to tab: _" + serviceName + "_.");
-}
-
-
-/**
 * @name searchUpdate
 * @summary Checks if there is a new release available
 * @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
@@ -1366,7 +1286,6 @@ function searchUpdate(silent = true)
     var remoteAppVersionLatest = "0.0.0";
     var localAppVersion = "0.0.0";
     var versions;
-
     var gitHubPath = "yafp/ttth";  // user/repo
     var url = "https://api.github.com/repos/" + gitHubPath + "/tags";
 
@@ -1396,7 +1315,7 @@ function searchUpdate(silent = true)
         if( localAppVersion < remoteAppVersionLatest ) // Update available
         {
             writeLog("warn", "searchUpdate ::: Found update, notify user");
-            showNoty("warning", "An update from " + localAppVersion + " to version " + remoteAppVersionLatest + " is available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
+            showNoty("warning", "An update from <b>" + localAppVersion + "</b> to version <b>" + remoteAppVersionLatest + "</b> is available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
         }
         else // No update available
         {
@@ -1418,7 +1337,7 @@ function searchUpdate(silent = true)
     .fail(function()
     {
         writeLog("error", "searchUpdate ::: Checking " + url + " for available releases failed.");
-        showNoty("error", "Checking " + url + " for available releases failed. Please troubleshoot your network connection.");
+        showNoty("error", "Checking <b>" + url + "</b> for available releases failed. Please troubleshoot your network connection.");
     })
 
     .always(function()
@@ -1466,10 +1385,10 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
     switch (serviceName)
     {
-        // NO unread message handler and NO Link handler
+        // V1: unread message handler: NO - &&  Link handler: NO
         //
 
-        // NO unread-message-handling but link-handler
+        // V2: unread-message-handler: NO - && - Link-handler: YES
         case "freenode":
         case "googleDuo":
         case "linkedIn":
@@ -1479,7 +1398,8 @@ function loadServiceSpecificCode(serviceId, serviceName)
             eventListenerForSingleService(serviceId, false, true);
             break;
 
-        // Unread-message-handler but NO link handler
+        // V3: Unread-message-handler: YES - && - link handler: NO
+        case "gitter":
         case "threema":
         case "twitter":
         case "xing":
@@ -1487,7 +1407,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
             eventListenerForSingleService(serviceId, true, false);
             break;
 
-        // Unread-message-handler and link-handler
+        // V4: Unread-message-handler: YES && link-handler: YES
         case "googleMail":
         case "googleMessages":
         case "icq":
@@ -1506,6 +1426,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         // Specialcase: WhatsApp
         case "whatsapp":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            /*global serviceWhatsAppRegister*/
             serviceWhatsAppRegister();
             eventListenerForSingleService(serviceId, true, true);
             break;
@@ -1645,14 +1566,10 @@ function initSettingsPage()
 {
     // Start checking each single option
     //
-    // Option: Autostart
-    readLocalUserSetting("settingAutostart");
-    // Option: Theme
-    readLocalUserSetting("settingTheme");
-    // Option: DisableTray (Linux only)
-    readLocalUserSetting("settingDisableTray");
-    // Option: Urgent Window
-    readLocalUserSetting("settingUrgentWindow");
+    readLocalUserSetting("settingAutostart"); // Option: Autostart
+    readLocalUserSetting("settingTheme"); // Option: Theme
+    readLocalUserSetting("settingDisableTray"); // Option: DisableTray (Linux only)
+    readLocalUserSetting("settingUrgentWindow"); // Option: Urgent Window
 
     // load all supported services to drop-down-list (used for adding new services)
     initAvailableServicesSelection();
@@ -1685,7 +1602,6 @@ function removeServiceTab(tabId)
     // remove webview itself
     //webview.remove();
     //writeLog("info", "removeServiceTab ::: Removing the webview itself: _" + webview + "_.");
-
 
     // remove tabcontent from tab pane
     $("#" + tabId).remove();
@@ -1918,7 +1834,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             removeServiceTab(configuredUserServiceConfigName);
 
             writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now disabled.");
-            showNoty("success", "Disabled the service " + configuredUserServiceConfigName);
+            showNoty("success", "Disabled the service <b>" + configuredUserServiceConfigName + "</b>.");
         }
         else // is disabled - so enable it
         {
@@ -2057,7 +1973,7 @@ function deleteConfiguredService(serviceId)
     });
 
     writeLog("info", "deleteConfiguredService ::: Finished deleting the user service: _" + serviceId + "_.");
-    showNoty("success", "Successfully deleted the service " + serviceId);
+    showNoty("success", "Successfully deleted the service <b>" + serviceId + "</b>.");
 
     // reload the main window
     const {ipcRenderer} = require("electron");
@@ -2075,10 +1991,8 @@ function settingsUserAddNewService()
     writeLog("info", "settingsUserAddNewService ::: Starting to add a new user configured service.");
 
     //const os = require("os");
-    const storage = require("electron-json-storage");
     //const dataPath = storage.getDataPath();
-
-    //var serviceAllowsMultipleInstances;
+    const storage = require("electron-json-storage");
 
     // get selected option from #select_availableServices
     var userSelectedService = $( "#select_availableServices" ).val();
@@ -2134,7 +2048,7 @@ function settingsUserAddNewService()
 
                                     if(data[key]["type"] === userSelectedService)
                                     {
-                                        showNoty("error", "There is already a configured service of the type " + userSelectedService + ".", 0);
+                                        showNoty("error", "There is already a configured service of the type <b>" + userSelectedService + "</b>.", 0);
                                         return;
                                     }
                                 }
@@ -2195,10 +2109,8 @@ function localizeUserInterface()
 {
     const isDev = require("electron-is-dev");
 
-    var userLang;
-
     // detect user language
-    userLang = navigator.language || navigator.userLanguage;
+    var userLang = navigator.language || navigator.userLanguage;
 
     // if the project is not packaged - overwrite the language ...
     if (isDev)
@@ -2268,7 +2180,11 @@ function localizeUserInterface()
     });
 }
 
-
+/**
+* @name onAfterReadyMainWindow
+* @summary Executed 1 sec after onReady code is executed
+* @description This method is responsible for the second stage of loading & initializing.
+*/
 function onAfterReadyMainWindow()
 {
     // call code here that you want to run after all $(document).ready() calls have run
@@ -2301,6 +2217,39 @@ function onAfterReadyMainWindow()
 }
 
 
+/**
+* @name checkNetworkConnectivityPeriodic
+* @summary Periodically checks if network access exists or not
+* @description Testmethod to inform the user when there is no access to the internet.
+* @param timeInterval - The timeinterval which is used to start re-testing
+*/
+function checkNetworkConnectivityPeriodic(timeInterval)
+{
+    const isOnline = require("is-online"); // for online connectivity checks
+    var continuousErrors = 0;
+    var intervalID = setInterval(function()
+    {
+        (async () => {
+
+        if(await isOnline() === true)
+        {
+            writeLog("info", "checkNetworkConnectivityPeriodic ::: Got access to the internet.");
+            continuousErrors = 0; // reset counter
+        }
+        else
+        {
+            continuousErrors = continuousErrors + 1;
+            if(continuousErrors === 2) // to avoid annoying notifications we report back only if the error happens 2 times in a row
+            {
+                showNoty("error", "Realizing connectivity issues, please troubleshoot your internet connection if this message appears.");
+            }
+            writeLog("warn", "checkNetworkConnectivityPeriodic ::: Got NO access to the internet (" + continuousErrors +").");
+        }
+    })();
+
+    }, timeInterval);
+}
+
 
 /**
 * @name onReadyMainWindow
@@ -2328,52 +2277,21 @@ function onReadyMainWindow()
     localizeUserInterface();
 
     // start periodic network checker
-    checkNetworkConnectivityPeriodic(10000);
-
+    checkNetworkConnectivityPeriodic(15000); // 15.000 milliseconds = 15 seconds
 
     // execute some things later ...
     setTimeout(function()
     {
         onAfterReadyMainWindow();
     }, 1000);
-
-
 }
-
-
-/**
-* @name checkNetworkConnectivityPeriodic
-* @summary Periodically checks if network access exists or not
-* @description Testmethod to inform the user when there is no access to the internet.
-* @param timeInterval - The timeinterval which is used to start re-testing
-*/
-function checkNetworkConnectivityPeriodic(timeInterval)
-{
-    const isOnline = require("is-online"); // for online connectivity checks
-    var intervalID = setInterval(function()
-    {
-        (async () => {
-
-        if(await isOnline() === true)
-        {
-            writeLog("info", "checkNetworkConnectivityPeriodic ::: Got access to the internet.");
-        }
-        else
-        {
-            writeLog("error", "checkNetworkConnectivityPeriodic ::: Got NO access to the internet.");
-            showNoty("error", "No access to the internet (critical) ");
-        }
-    })();
-
-    }, timeInterval);
-}
-
 
 
 
 // ----------------------------------------------------------------------------
 // ipcRenderer things
 // ----------------------------------------------------------------------------
+
 
 // Call from main.js ::: reloadCurrentService
 //
@@ -2384,27 +2302,32 @@ require("electron").ipcRenderer.on("reloadCurrentService", function()
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
     writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
 
-    showNoty("info", "Trying to reload the current service: _" + tabValue + "_.");
-
-    // get configured target url & inject code from config
-    const storage = require("electron-json-storage");
-    storage.get(tabValue, function(error, data)
+    if (tabValue !== "Settings")
     {
-        if (error)
+        showNoty("info", "Trying to reload the current service: <b>" + tabValue + "</b>.");
+
+        // get configured target url & inject code from config
+        const storage = require("electron-json-storage");
+        storage.get(tabValue, function(error, data)
         {
-            throw error;
-        }
+            if (error)
+            {
+                throw error;
+            }
 
-        var url =  data.url;
-        
+            var url =  data.url;
 
-        writeLog("info", "reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
-        document.getElementById( "webview_" + tabValue ).loadURL(url);
+            writeLog("info", "reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
+            document.getElementById( "webview_" + tabValue ).loadURL(url);
 
-        // TODO
-        // inject code
-        //var injectCode = data.injectCode;
-    });
+            // TODO
+            // inject code
+            //var injectCode = data.injectCode;
+        });
+    }
+
+
+    
 });
 
 
@@ -2414,45 +2337,6 @@ require("electron").ipcRenderer.on("showSettings", function()
 {
     writeLog("info", "showSettings ::: Switching to Settings tab");
     switchToService("Settings");
-});
-
-
-
-// FIXME - see #130
-// Call from main.js ::: lockUI
-//
-require("electron").ipcRenderer.on("lockUI", function()
-{
-    writeLog("info", "lockUI ::: Trying to lock ui");
-
-    // TODO
-    // - check if ui is unlocked
-    // - if so - lock it (if a password is defined)
-
-    $("#content").fadeOut(); // keeps the nav available - all other elements are fading out.
-    $("#div_lock").fadeIn();
-
-    isLocked = true;
-});
-
-
-// FIXME - see #130
-// Call from main.js ::: unlockUI
-//
-require("electron").ipcRenderer.on("unlockUI", function()
-{
-    writeLog("info", "unlockUI ::: Trying to unlock ui");
-
-    // TODO
-    // - check if UI is locked
-    // - if so - display an unlock dialog
-    // - if that is validated 
-    // - unlock
-
-    $("#div_lock").fadeOut();
-    $("#content").fadeIn(); // keeps the nav available - all other elements are fading out.
-
-    isLocked = false;
 });
 
 
@@ -2475,7 +2359,7 @@ require("electron").ipcRenderer.on("openDevToolForCurrentService", function()
 
     if(tabValue === "Settings") // This makes no sense on the settings tab
     {
-        showNoty("info", "This function is supposed to be used on a service tab, not the settings tab.");
+        showNoty("info", "This function is supposed to be used on service tabs, not the settings tab.");
     }
     else // default case
     {
@@ -2586,7 +2470,6 @@ require("electron").ipcRenderer.on("previousTab", function()
     writeLog("info", "previousTab ::: Should switch to: " + serviceName + " now.");
     switchToService(serviceName); // jump to previous tab
 });
-
 
 
 // Call from main.js ::: serviceToCreate (in configServiceWindow)

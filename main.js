@@ -12,6 +12,7 @@ const fs = require("fs");
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
+const jquery = require("jquery"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
 
 // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 require("v8-compile-cache");

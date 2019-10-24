@@ -80,7 +80,8 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 | Report issue                               | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   | <kbd>F2</kbd>                   |
 | Changelog                                  | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   | <kbd>F3</kbd>                   |
 | FAQ                                        | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   | <kbd>F4</kbd>                   |
-| Search updates                             | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   |
+| Releases                                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   | <kbd>F5</kbd>                   |
+| Search updates                             | <kbd>F9</kbd>                   | <kbd>F9</kbd>                   | <kbd>F9</kbd>                   |
 | Open developer console for current service | <kbd>F10</kbd>                  | <kbd>F10</kbd>                  | <kbd>F10</kbd>                  |
 | Toggle Fullscreen mode                     | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  | <kbd>F11</kbd>                  |
 | Toggle developer console                   | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  | <kbd>F12</kbd>                  |
