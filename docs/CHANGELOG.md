@@ -29,20 +29,38 @@ The following categories are used:
 ### ttth 1.8.0 (2019xxyy)
 #### ```Added```
 * Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
-  * New: 'Dracula'
-  * New: 'Nord'
+  * New theme: 'Dracula'
+  * New theme: 'Nord'
 * Services:
+  * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
   * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
   * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
   * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
 * Network accessibility: Added a periodic check for network accessibility. See [#136](https://github.com/yafp/ttth/issues/136)
 
 ####  ```Changed```
+* Changed update interval for single services from 5 to 3 seconds.
 * Dependencies
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.5
-  * Updated i18next from 17.2.0 to 17.3.0
+  * Updated i18next from 17.2.0 to 17.3.1
+  * Updated spectron from 8.0.0 to 9.0.0
+  * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
+* Menu: Added a hover background color to the menu and its items. Should be easier now to see what is selected. See [#139](https://github.com/yafp/ttth/issues/139)
+* Services: Enabled the inject files for the following services. See [#141](https://github.com/yafp/ttth/issues/141)
+  * Google Mail
+  * Google Messages
+  * Slack
+  * Telegram
+  * Threema
+  * Xing
+* Notifications: Added more text formating (bold etc.) to notification texts
 
+#### ```Removed```
+* Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
+
+#### ```Fixed```
+* Fixed issue regarding non-existing mainWindow on macOS. See [#134](https://github.com/yafp/ttth/issues/134)
 
 ***
 
