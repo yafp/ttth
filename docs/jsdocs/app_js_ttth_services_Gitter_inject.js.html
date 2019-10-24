@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/WhatsApp_inject.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/Gitter_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp_inject.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/Gitter_inject.js</h1>
 
     
 
@@ -30,47 +30,27 @@
 
 
 /**
-* @name serviceWhatsAppGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service WhatsApp
-* @description Gets the amount of unread messages of the service WhatsApp
+* @name serviceGitterGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Gitter
+* @description Gets the amount of unread messages of the service Gitter
 */
-function serviceWhatsAppGetUnreadMessageCount()
+function serviceGitterGetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
+    console.log("serviceGitterGetUnreadMessageCount ::: Checking unread message count");
 
-    // try to count unread messages
-    //
-    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
-    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
-    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
-    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
-    console.log(elements);
+    var t;
+    var e=document.getElementsByClassName("room-item__unread-indicator"),t=0;for(i=0;i&lt;e.length;i++)t+=isNaN(parseInt(e[i].innerHTML.trim())) ? 0 : parseInt(e[i].innerHTML.trim());
 
-    let count = 0;
-    for (let i = 0; i &lt; elements.length; i++)
-    {
-        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
-        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
-        {
-            count += 1;
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
-        }
-        else
-        {
-            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
-        }
-    }
-    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
+    console.log("serviceGitterGetUnreadMessageCount ::: Total GoogleMail unread messages: " + t);
 
-    // Report back the unread count
-    ipcRenderer.sendToHost(count);
+    // send back from webview to main
+    ipcRenderer.sendToHost(t);
 }
-
 
 
 ipcRenderer.on("request", function()
 {
-    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+    ipcRenderer.sendToHost(serviceGitterGetUnreadMessageCount());
 });
 </code></pre>
         </article>
