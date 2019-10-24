@@ -40,6 +40,16 @@
         "injectCode": ""
     },
     {
+        "id": "gitter",
+        "name": "Gitter",
+        "nameLong": "Gitter",
+        "icon": "fab fa-gitter",
+        "description": "Gitter is a chat and networking platform that helps to manage, grow and connect communities through messaging, content and discovery.",
+        "url": "https://gitter.im/",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/Gitter_inject.js"
+    },
+    {
         "id": "googleCalendar",
         "name": "Calendar",
         "nameLong": "Google Calendar",
@@ -97,7 +107,7 @@
         "description": "Google mail",
         "url": "https://mail.google.com/mail/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/GoogleMail_inject.js"
     },
     {
         "id": "googleMessages",
@@ -107,7 +117,7 @@
         "description": "",
         "url": "https://messages.google.com/web",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/GoogleMessages_inject.js"
     },
     {
         "id": "googlePhotos",
@@ -227,7 +237,7 @@
         "description": "Slack gives your team the power and alignment you need to do your best work.",
         "url": "https://YOURWORKSPACE.slack.com",
         "multiple": true,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Slack_inject.js"
     },
     {
         "id": "steam",
@@ -247,7 +257,7 @@
         "description": "Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.",
         "url": "https://web.telegram.org/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Telegram_inject.js"
     },
     {
         "id": "threema",
@@ -257,7 +267,7 @@
         "description": "The messenger that puts security and privacy first.",
         "url": "https://web.threema.ch/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Threema_inject.js"
     },
     {
         "id": "twitter",
@@ -267,7 +277,7 @@
         "description": "From breaking news and entertainment to sports and politics, from big events to everyday interests.",
         "url": "https://mobile.twitter.com/",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Twitter_inject.js"
     },
     {
         "id": "wechat",
@@ -297,7 +307,7 @@
         "description": "Career-oriented social networking",
         "url": "https://www.xing.com/messages/conversations",
         "multiple": false,
-        "injectCode": ""
+        "injectCode": "./js/ttth/services/Xing_inject.js"
     },
     {
         "id": "custom",
