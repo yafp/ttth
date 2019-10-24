@@ -13,11 +13,15 @@
     <!--
     <script>window.$ = window.jQuery = require('jquery');</script>
     -->
+    <!--
     <script
         src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
         crossorigin="anonymous">
     </script>
+    -->
+    <!-- via npm -->
+    <script>window.$ = window.jQuery = require('jquery');</script>
 
     <!-- Remote: bootstrap -->
     <!-- cdn: 4.3.1 -->
@@ -62,17 +66,6 @@
         </nav>
         <!-- /navigation -->
 
-
-
-
-        <!-- Lock - see #130 -->
-        <div id="div_lock" name="div_lock" style="display:none">
-            <i class="fas fa-lock fa-10x"></i>
-        </div>
-
-
-
-
         <!-- Tab Content -->
         <div class="row flex-fill" id="content" name="content">
 
@@ -83,31 +76,6 @@
                 <div role="tabpanel" class="tab-pane active flex-fill ttth_resizer container-fluid settingsTabBody" id="Settings">
 
                     <div id="allSettings" name="allSettings" class="ttth_nonSelectableText">
-
-
-                        <!-- About -->
-                        <h3 i18n-text="mw_settingsAboutTitle"><!-- About --></h3>
-
-                        <!-- About: Description -->
-                        <div>
-                            <span class="small" i18n-text="mw_settingsAboutAppDescription" id="settingsAppDescription"><!-- Description --></span>
-                            <button type="button" id="bt_aboutShowMore" class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#links" onClick="settingsAboutShowMore();" i18n-text="mw_settingsAboutButtonShowMore"><!-- show more --></button><br>
-                        </div>
-
-                        <div id="links" class="collapse">
-                            <!-- List of buttons with links -->
-                            <div>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonReadme" onclick="openURL('https://github.com/yafp/ttth/blob/master/README.md')" title="https://github.com/yafp/ttth/blob/master/README.md"><!-- Readme --></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonReleases" onclick="openURL('https://github.com/yafp/ttth/releases')" title="https://github.com/yafp/ttth/releases"><!-- Releases --></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonChangelog" onclick="openURL('https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md')" title="https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md"><!-- Changelog --></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonLicense" onclick="openURL('https://github.com/yafp/ttth/blob/master/LICENSE')" title="https://github.com/yafp/ttth/blob/master/LICENSE"><!-- License --></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonGitHub" onclick="openURL('https://github.com/yafp/ttth')" title="https://github.com/yafp/ttth"><!-- GitHub --></a>
-                                <a href="#" class="btn btn-outline-secondary btn-sm" i18n-text="mw_settingsAboutButtonIssues" onclick="openURL('https://github.com/yafp/ttth/issues')" title="https://github.com/yafp/ttth/issues"><!-- Issues --></a>
-                                <a href="#" class="btn btn-outline-danger btn-sm" i18n-text="mw_settingsAboutButtonConsole" onclick="openDevTools();" title="Open DevTools"><!-- Console --></a>
-                            </div>
-                        </div>
-                        <!-- /About -->
-
 
                         <!-- Service Section -->
                         <!-- Adding services -->
@@ -135,10 +103,9 @@
                                 type="button" 
                                 class="btn btn-outline-secondary btn-sm" 
                                 onClick="openUserServicesConfigFolder();" 
-                                i18n-text="mw_settingsServicesButtonTextShowConfigs" 
                                 i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
                                 aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations -->
-                            </button>
+                            <i class="fas fa-folder-open"></i></button>
                         </div>
                         <!-- /Service Section -->
 
@@ -169,8 +136,6 @@
                         <!-- /Option: DefaultView -->
 
 
-
-
                         <!-- Option: Themes-->
                         <div class="input-group input-group-sm mb-1">
                             <div class="input-group-prepend">
@@ -182,7 +147,6 @@
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
                                     <select id="selectTheme" name="selectTheme" class="ttth_select">
-                                        <option value="" disabled selected i18n-text="mw_settingsOptionsSelectTheme"><!-- i18n --></option>
                                         <option value="mainWindow_default.css" i18n-text="mw_settingsOptionsSelectThemeDefault"><!-- i18n --></option>
                                         <option value="mainWindow_dark.css" i18n-text="mw_settingsOptionsSelectThemeDark"><!-- i18n --></option>
                                         <option value="mainWindow_dracula.css" i18n-text="mw_settingsOptionsSelectThemeDracula"><!-- i18n --></option>
@@ -196,9 +160,6 @@
                             </div>
                         </div>
                         <!-- /Option: Themes -->
-
-
-
 
 
                         <!-- Option: Autostart -->
@@ -243,9 +204,9 @@
                                 type="button" 
                                 class="btn btn-outline-secondary btn-sm" 
                                 onClick="openUserSettingsConfigFolder();" 
-                                i18n-text="mw_settingsServicesButtonTextShowConfigs" 
                                 i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
                                 aria-label="Button to open the folder which contains all user settings"><!-- Configurations -->
+                                <i class="fas fa-folder-open"></i>
                             </button>
                         </div>
 
