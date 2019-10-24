@@ -29,8 +29,6 @@ html,body
 }
 
 
-
-
 /* ########################################################################## */
 /* MENU / NAVIGATION */
 /* ########################################################################## */
@@ -42,7 +40,6 @@ html,body
     background-color: var(--color-navigationBackground);
     border-bottom: 2px solid var(--color-navigationBorder);
 }
-
 
 ul
 {
@@ -76,6 +73,7 @@ ul
 .nav>li>a.active
 {
     border: 2px solid var(--color-navigationBorder) !important;
+    border-bottom-style: hidden !important;
 
     background-color: var(--color-bodyBackground)!important;
     color: var(--color-navigationHighlight) !important;
@@ -89,7 +87,6 @@ ul
 {
     padding-bottom: 0px !important;
     padding-right: 0px !important;
-
     background-color: var(--color-bodyBackground);
 }
 
@@ -98,14 +95,11 @@ ul
 {
     padding-left: 0px !important;
     /* padding-right: 0px !important; */
-
 }
 
 .flex-fill
 {
     flex:1 1 auto;
-
-
 }
 
 .ttth_resizer
@@ -115,8 +109,6 @@ ul
 
     padding-left: 0 !important;
     /* padding-right: 0 !important; */
-
-
 }
 
 .row
@@ -129,7 +121,7 @@ ul
 
 
 .settingsTabBody{
-        /* border for borderless-window/content */
+    /* border for borderless-window/content */
     border-left: 1px solid var(--color-inputFormsBorder) !important;
     border-right: 1px solid var(--color-inputFormsBorder) !important;
     border-bottom: 1px solid var(--color-inputFormsBorder) !important;
@@ -158,18 +150,6 @@ h3
     border-bottom: 2px solid var(--color-highlight);
     color: var(--color-bodyText);
 }
-
-
-/* ########################################################################## */
-/* LOCK
-/* ########################################################################## */
-#div_lock{
-    margin: auto;
-    width: 50%;
-    border: 3px solid var(--color-highlight);
-    padding: 10px;
-}
-
 
 
 /* ########################################################################## */
@@ -220,27 +200,32 @@ h3
 /* ########################################################################## */
 /* CUSTOMIZE BOOTSTRAP BUTTONS
 /* ########################################################################## */
-.btn-success{
+.btn-success
+{
     background-color: var(--color-buttonSuccess) !important;
     border-color: var(--color-buttonSuccess) !important;
 }
 
-.btn-secondary{
+.btn-secondary
+{
     background-color: var(--color-buttonSecondary) !important;
     border-color: var(--color-buttonSecondary) !important;
 }
 
-.btn-danger{
+.btn-danger
+{
     background-color: var(--color-buttonDanger) !important;
     border-color: var(--color-buttonDanger) !important;
 }
 
-.btn-dark{
+.btn-dark
+{
     background-color: var(--color-buttonDark) !important;
     border-color: var(--color-buttonDark) !important;
 }
 
-/* Filter */
-.btn:hover{
+/* Filter for all buttons on hover */
+.btn:hover
+{
     filter: brightness(75%);
 }

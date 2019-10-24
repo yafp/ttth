@@ -4,9 +4,4 @@
 
 ## /app/css/ttth/themes/
 
-This folder contains the 2 supported css themes
-
-  * default
-  * dark
-  * dracula
-  * nord
+This folder contains the 2 supported css themes.
