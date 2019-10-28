@@ -612,17 +612,17 @@ function createWindow ()
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            writeLog("info", "Shortcuts: Deleting the global shortcut: CmdOrCtrl+" + i);
+            writeLog("info", "Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
 
-        writeLog("info", "Shortcuts: Finished deleting all global shortcuts (ipcMain)");
+        writeLog("info", "Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
     });
 
 
     // Call from renderer ::: createNewGlobalShortcut
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the tab: _" + targetTab + "_.");
+        writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the service/tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
             writeLog("info", "Shortcut: _" + shortcut + "_ was pressed.");
