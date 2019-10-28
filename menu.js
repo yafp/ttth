@@ -270,25 +270,32 @@ function ()
         {
             type: "separator"
         },
-        // Console current service
+
+
+        // SubMenu Console
         {
-            id: "HelpConsoleCurrentService",
-            label: "Console for current service",
-            click(item, mainWindow) {
-                mainWindow.webContents.send("openDevToolForCurrentService");
-            },
-            enabled: true,
-            accelerator: "F10"
-        },
-        // Console
-        {
-            id: "HelpConsole",
             label: "Console",
-            click(item, mainWindow) {
-                mainWindow.webContents.toggleDevTools();
-            },
-            enabled: true,
-            accelerator: "F12"
+            submenu: [
+            {
+                    id: "HelpConsoleCurrentService",
+                    label: "Console for current service",
+                    click(item, mainWindow) {
+                        mainWindow.webContents.send("openDevToolForCurrentService");
+                    },
+                    enabled: true,
+                    accelerator: "F10"
+                },
+                // Console
+                {
+                    id: "HelpConsole",
+                    label: "Console",
+                    click(item, mainWindow) {
+                        mainWindow.webContents.toggleDevTools();
+                    },
+                    enabled: true,
+                    accelerator: "F12"
+                },
+            ]
         },
         {
             type: "separator"
