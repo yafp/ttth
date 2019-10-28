@@ -4,4 +4,5 @@
 
 ## /app/css/ttth/themes/
 
-This folder contains the 2 supported css themes.
+This folder contains several themes.
+Each theme defines a set of color variables which are used in the main css file in ```app/css/ttth/themes/mainWindow.css```.

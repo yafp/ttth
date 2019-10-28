@@ -31,9 +31,12 @@ The following categories are used:
 * Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
   * New theme: 'Dracula'
   * New theme: 'Nord'
+  * New theme: 'Solarized Dark'
+  * New theme: 'Solarized Light'
 * Services:
   * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
   * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
+  * Added support for 'Wire'. See [#144](https://github.com/yafp/ttth/issues/144)
   * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
   * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
 * Network accessibility: Added a periodic check for network accessibility. See [#136](https://github.com/yafp/ttth/issues/136)
@@ -42,9 +45,10 @@ The following categories are used:
 * Changed update interval for single services from 5 to 3 seconds.
 * Dependencies
   * Updated mocha from 6.2.1 to 6.2.2
-  * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.5
-  * Updated i18next from 17.2.0 to 17.3.1
+  * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
+  * Updated i18next from 17.2.0 to 18.0.1
   * Updated spectron from 8.0.0 to 9.0.0
+  * Updated eslint from 6.5.1 to 6.6.0
   * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
 * Menu: Added a hover background color to the menu and its items. Should be easier now to see what is selected. See [#139](https://github.com/yafp/ttth/issues/139)
 * Services: Enabled the inject files for the following services. See [#141](https://github.com/yafp/ttth/issues/141)
