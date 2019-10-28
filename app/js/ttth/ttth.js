@@ -966,7 +966,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         });
 
         // WebView Event:  ipc-message
-        // TODO: this eventListener seems to breaks with electron 6 (FIXME)
+        // TODO: this eventListener seems to break with electron 6 (FIXME)
         // see #88
         //
         //webview.addEventListener("ipc-message",function(event)
@@ -1231,13 +1231,21 @@ function settingDefaultViewUpdate()
 {
     // get currently selected value from select
     var newDefaultView = $( "#selectDefaultView" ).val();
-    writeLog("info", "settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
 
-    // Store new default view in local storage
-    writeLocalUserSetting("settingDefaultView", newDefaultView);
+    if(newDefaultView !== null)
+    {
+        writeLog("info", "settingDefaultViewUpdate ::: New default view on start is set to: " + newDefaultView);
 
-    // show noty
-    showNoty("success", "Set default view to <b>" + newDefaultView + "</b>.");
+        // Store new default view in local storage
+        writeLocalUserSetting("settingDefaultView", newDefaultView);
+
+        // show noty
+        showNoty("success", "Set default view to <b>" + newDefaultView + "</b>.");
+    }
+    else // user forgot to select a service for new default view
+    {
+        showNoty("warning", "Please <b>choose a service</b> to set a custom <b>default view</b>.");
+    }
 }
 
 
@@ -1394,6 +1402,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "linkedIn":
         case "reddit":
         case "wechat":
+        case "wire":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, false, true);
             break;
@@ -1414,6 +1423,7 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "mattermost":
         case "messenger":
         case "microsoftOutlook":
+        case "microsoftOffice365":
         case "microsoftTeams":
         case "riot":
         case "slack":
@@ -2221,7 +2231,7 @@ function onAfterReadyMainWindow()
 * @name checkNetworkConnectivityPeriodic
 * @summary Periodically checks if network access exists or not
 * @description Testmethod to inform the user when there is no access to the internet.
-* @param timeInterval - The timeinterval which is used to start re-testing
+* @param timeInterval - The time interval which is used to start re-testing
 */
 function checkNetworkConnectivityPeriodic(timeInterval)
 {
@@ -2239,9 +2249,10 @@ function checkNetworkConnectivityPeriodic(timeInterval)
         else
         {
             continuousErrors = continuousErrors + 1;
-            if(continuousErrors === 2) // to avoid annoying notifications we report back only if the error happens 2 times in a row
+            if(continuousErrors === 3) // to avoid annoying notifications we report back only if the error happens X times in a row
             {
                 showNoty("error", "Realizing connectivity issues, please troubleshoot your internet connection if this message appears.");
+                continuousErrors = 0; // reset counter
             }
             writeLog("warn", "checkNetworkConnectivityPeriodic ::: Got NO access to the internet (" + continuousErrors +").");
         }
@@ -2277,7 +2288,7 @@ function onReadyMainWindow()
     localizeUserInterface();
 
     // start periodic network checker
-    checkNetworkConnectivityPeriodic(15000); // 15.000 milliseconds = 15 seconds
+    checkNetworkConnectivityPeriodic(10000); // 10.000 milliseconds = 10 seconds
 
     // execute some things later ...
     setTimeout(function()

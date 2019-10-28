@@ -180,6 +180,16 @@
         "injectCode": "./js/ttth/services/MicrosoftOutlook_inject.js"
     },
     {
+        "id": "microsoftOffice365",
+        "name": "Office365",
+        "nameLong": "Microsoft Office 365",
+        "icon": "fab fa-microsoft",
+        "description": "",
+        "url": "https://outlook.office.___/owa/",
+        "multiple": false,
+        "injectCode": "./js/ttth/services/MicrosoftOffice365_inject.js"
+    },
+    {
         "id": "microsoftTeams",
         "name": "Teams",
         "nameLong": "Microsoft Teams",
@@ -298,6 +308,16 @@
         "url": "https://web.whatsapp.com/",
         "multiple": false,
         "injectCode": "./js/ttth/services/WhatsApp_inject.js"
+    },
+    {
+        "id": "wire",
+        "name": "Wire",
+        "nameLong": "Wire",
+        "icon": "far fa-comment-dots",
+        "description": "",
+        "url": "https://app.wire.com/",
+        "multiple": false,
+        "injectCode": ""
     },
     {
         "id": "xing",
