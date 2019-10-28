@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: app/js/ttth/services/WhatsApp.js</title>
+    <title>JSDoc: Source: app/js/ttth/services/MicrosoftOffice365_inject.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: app/js/ttth/services/WhatsApp.js</h1>
+    <h1 class="page-title">Source: app/js/ttth/services/MicrosoftOffice365_inject.js</h1>
 
     
 
@@ -26,55 +26,32 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @name serviceWhatsAppRegister
-* @summary Register WhatsApp Web sessions
-* @description Flushes the storage data, clears the storage data -> helps running WhatsApp-Web
-*/
-function serviceWhatsAppRegister()
-{
-    // via: https://github.com/meetfranz/franz/issues/1185
-    console.log("serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues");
-
-    const {remote} = require("electron"); //Imports the remote module to use session inside webview
-    const {session} = require("electron");
-
-    var ses = remote.session.defaultSession; //Gets the default session
-    
-    //ses.clearCache();
-    ses.flushStorageData(); // Writes any unwritten DOMStorage data to disk.
-    ses.clearStorageData(
-    {
-        // Clears the storage data for the current session.
-        // Clears the specified storages in the session
-        storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
-    });
-
-    window.navigator.serviceWorker.getRegistrations().then(registrations => {
-        for (let registration of registrations)
-        {
-            registration.unregister(); //Unregisters all the service workers
-        }
-    });
-}
+            <pre class="prettyprint source linenums"><code>const {ipcRenderer} = require("electron");
 
 
 /**
-* @name serviceWhatsAppInit
-* @summary Initializes the WhatsApp Service
-* @description Initializes the WhatsApp Service
+* @name serviceMicrosoftOffice365GetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Outlook
+* @description Gets the amount of unread messages of the service Outlook
 */
-function serviceWhatsAppInit(serviceName, serviceUrl)
+function serviceMicrosoftOffice365GetUnreadMessageCount()
 {
-    console.log("serviceWhatsAppInit ::: Trying to init WhatsApp");
+    /*
+    console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Checking unread message count");
 
-    // re-set the src for the webview
-    //document.getElementById( serviceName + "Webview" ).setAttribute( "src", serviceUrl);
-    document.getElementById( "webview_whatsapp" ).loadURL(serviceUrl);
+    var e=null!==$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span")?$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span").innerText:0;
 
-     // register
-    serviceWhatsAppRegister();
+    console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Total Office 365 unread messages: " + e);
+
+    ipcRenderer.sendToHost(e);
+    */
 }
+
+
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceMicrosoftOffice365GetUnreadMessageCount());
+});
 </code></pre>
         </article>
     </section>
