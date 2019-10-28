@@ -2,6 +2,8 @@
 
     /* body */
     --color-bodyText: #FFFFFF; /* white */
+    --color-bodyHeading: #FFFFFF; /* white */
+    --color-bodyHeadingBorder: #32CD32; /* limegreen */
     --color-bodyBackground: #212121; /* some other dark gray, almost black */
 
     /* navigation */

@@ -18,6 +18,8 @@
     "mw_settingsOptionsSelectThemeDark": "Obscurité",
     "mw_settingsOptionsSelectThemeDracula": "Dracula",
     "mw_settingsOptionsSelectThemeNord": "Nord",
+    "mw_settingsOptionsSelectThemeSolarizedDark": "Solarized Dark",
+    "mw_settingsOptionsSelectThemeSolarizedLight": "Solarized Light",
     "mw_settingsOptionsButtonTextThemeSet": "Définir un thème",
     "mw_settingsOptionsButtonTextThemeReset": "Réinitialisation à la valeur par défaut",
     "mw_settingsOptionsDescAutostart": "Activer le démarrage automatique (lors de la connexion)",

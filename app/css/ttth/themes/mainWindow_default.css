@@ -2,6 +2,8 @@
 
     /* body */
     --color-bodyText: #000000; /* black */
+    --color-bodyHeading: #000000; /* black */
+    --color-bodyHeadingBorder: #32CD32; /* black */
     --color-bodyBackground: #FFFFFF; /* white */
 
     /* navigation */

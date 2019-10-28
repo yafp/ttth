@@ -4,6 +4,8 @@
 
     /* body */
     --color-bodyText: #2e3440; /* polar night: nord0 */
+    --color-bodyHeading: #2e3440; /* polar night: nord0 */
+    --color-bodyHeadingBorder: #5e81ac; /* polar night: nord10 */
     --color-bodyBackground: #eceff4; /* snow storm: nord6 */
 
     /* navigation */

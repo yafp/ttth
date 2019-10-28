@@ -18,6 +18,8 @@
     "mw_settingsOptionsSelectThemeDark": "Dark",
     "mw_settingsOptionsSelectThemeDracula": "Dracula",
     "mw_settingsOptionsSelectThemeNord": "Nord",
+    "mw_settingsOptionsSelectThemeSolarizedDark": "Solarized Dark",
+    "mw_settingsOptionsSelectThemeSolarizedLight": "Solarized Light",
     "mw_settingsOptionsButtonTextThemeSet": "Set a theme",
     "mw_settingsOptionsButtonTextThemeReset": "Reset back to default",
     "mw_settingsOptionsDescAutostart": "Autostart",

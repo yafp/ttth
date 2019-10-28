@@ -147,8 +147,8 @@ h3
     padding-top: 15px;
     font-size: 20px !important;
 
-    border-bottom: 2px solid var(--color-highlight);
-    color: var(--color-bodyText);
+    border-bottom: 2px solid var(--color-bodyHeadingBorder);
+    color: var(--color-bodyHeading);
 }
 
 
