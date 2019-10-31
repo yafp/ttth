@@ -10,12 +10,13 @@ function serviceGoogleMessagesGetUnreadMessageCount()
 {
     console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Checking unread message count");
 
-    var counter = document.querySelectorAll(".tpEAA.yrs5ff").length;
+    var count = document.querySelectorAll(".tpEAA.yrs5ff").length;
     
-    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Total GoogleMessages unread messages: " + counter);
+    console.log("serviceGoogleMessagesGetUnreadMessageCount ::: Total GoogleMessages unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(counter);
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 

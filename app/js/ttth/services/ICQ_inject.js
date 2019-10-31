@@ -18,7 +18,8 @@ function serviceICQGetUnreadMessageCount()
 
     console.log("serviceICQGetUnreadMessageCount ::: Total ICQ unread messages: " + count);
 
-    ipcRenderer.sendToHost(count);
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 

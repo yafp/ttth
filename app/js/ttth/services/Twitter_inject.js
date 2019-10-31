@@ -9,7 +9,6 @@ const {ipcRenderer} = require("electron");
 function serviceTwitterGetUnreadMessageCount()
 {
     console.log("serviceTwitterGetUnreadMessageCount ::: Checking unread message count");
-    
 
     let count = 0;
     const elem = document.querySelector('a[href="/messages"] div div');
@@ -19,10 +18,10 @@ function serviceTwitterGetUnreadMessageCount()
         count = parseInt(elem.innerText, 10);
     }
 
-    ipcRenderer.sendToHost(count);
-
     console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
 
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 

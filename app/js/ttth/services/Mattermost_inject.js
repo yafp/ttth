@@ -23,13 +23,14 @@ function serviceMattermostGetUnreadMessageCount()
     // do the math
     var count = 0;
     count = count + pmUnread + channelsUnread + teamsUnread;
-    console.log("serviceMattermostGetUnreadMessageCount ::: Overall: " + count);
+    //console.log("serviceMattermostGetUnreadMessageCount ::: Overall: " + count);
     //count = channelsUnread + teamsUnread;
 
     console.log("serviceMattermostGetUnreadMessageCount ::: Total Mattermost chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(count);
+    ipcRenderer.sendToHost(count.toString()); // We need to convert the result to string - since moving to electron 6.x
+    return count; // needed, since electron 6.x. Otherwise (without return) the service crashes.
 }
 
 

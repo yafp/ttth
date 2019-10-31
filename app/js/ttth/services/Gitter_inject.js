@@ -21,7 +21,8 @@ function serviceGitterGetUnreadMessageCount()
     console.log("serviceGitterGetUnreadMessageCount ::: Total GoogleMail unread messages: " + t);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(t);
+    ipcRenderer.sendToHost(t.toString());
+    return t;
 }
 
 

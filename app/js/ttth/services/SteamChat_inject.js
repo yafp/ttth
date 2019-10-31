@@ -19,7 +19,8 @@ function serviceSteamChatGetUnreadMessageCount()
 
     console.log("serviceSteamChatGetUnreadMessageCount ::: Total Steam unread messages: " + e);
 
-    ipcRenderer.sendToHost(e);
+    ipcRenderer.sendToHost(e.toString());
+    return e;
 }
 
 

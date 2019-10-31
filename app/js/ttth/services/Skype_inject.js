@@ -30,7 +30,8 @@ function serviceSkypeGetUnreadMessageCount()
     console.log("serviceSkypeGetUnreadMessageCount ::: Total Skype chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(count);
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 

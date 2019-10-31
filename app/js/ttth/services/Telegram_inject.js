@@ -35,7 +35,8 @@ function serviceTelegramGetUnreadMessageCount()
         console.log("serviceTelegramGetUnreadMessageCount ::: Total Telegram chats with unread messages: _" + count + "_." );
 
         // send back from webview to main
-        ipcRenderer.sendToHost(count);
+        ipcRenderer.sendToHost(count.toString());
+        return count;
     }
 }
 

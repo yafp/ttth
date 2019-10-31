@@ -11,11 +11,12 @@ function serviceMicrosoftOffice365GetUnreadMessageCount()
     
     console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Checking unread message count");
 
-    var a=$(".subfolders [role=treeitem]:first .treeNodeRowElement").siblings().last().text();
+    var count=$(".subfolders [role=treeitem]:first .treeNodeRowElement").siblings().last().text();
 
-    console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Total Office 365 unread messages: " + a);
+    console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Total Office 365 unread messages: " + count);
 
-    ipcRenderer.sendToHost(a);
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 

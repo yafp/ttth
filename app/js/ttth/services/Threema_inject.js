@@ -34,7 +34,8 @@ function serviceThreemaGetUnreadMessageCount()
         unreadCount = newUnread;
 
         // send back from webview to main
-        ipcRenderer.sendToHost(unreadCount);
+        ipcRenderer.sendToHost(unreadCount.toString());
+        return unreadCount;
     }
 
     console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);

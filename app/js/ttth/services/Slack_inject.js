@@ -11,7 +11,7 @@ function serviceSlackGetUnreadMessageCount()
     console.log("serviceSlackGetUnreadMessageCount ::: Checking unread message count");
 
     var n;
-    var counter;
+    var count;
     var badge;
 
     var a=document.querySelectorAll(".p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)").length;
@@ -21,12 +21,13 @@ function serviceSlackGetUnreadMessageCount()
     {
         n+=isNaN(parseInt(badge.innerHTML))?0:parseInt(badge.innerHTML);
     }
-    counter=0<n?n:0<a?"\u2022":0,
+    count=0<n?n:0<a?"\u2022":0,
 
-    console.log("serviceSlackGetUnreadMessageCount ::: Total Slack chats with unread messages: " + counter);
+    console.log("serviceSlackGetUnreadMessageCount ::: Total Slack chats with unread messages: " + count);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(counter);
+    ipcRenderer.sendToHost(count.toString());
+    return count;
 }
 
 
