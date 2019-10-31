@@ -77,8 +77,9 @@ function initTitlebar()
     // - "custom-electron-titlebar" is now an archived repo
     // - switched to fork of it "pj-custom-electron-titlebar"
     const customTitlebar = require("pj-custom-electron-titlebar");
+
  
-    new customTitlebar.Titlebar({
+    let myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
         icon: "img/icon/icon.png", 
         drag: true, // whether or not you can drag the window by holding the click on the title bar.
@@ -91,6 +92,17 @@ function initTitlebar()
 
     // change font size of application name in titlebar
     $(".window-title").css("font-size", "13px"); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
+
+
+    // Try to change color of menu
+    //
+    // works - but results in follow error:         myTitlebar.updateBackground("#ff0000");
+    // followerror: titleBackground.isLigher is not a function
+    //myTitlebar.updateBackground("#ff00ff");
+    
+
+    // Trying to update the title
+    //myTitlebar.updateTitle("TTTH");
 }
 
 
@@ -682,8 +694,8 @@ function settingsSelectServiceToAddChanged()
 */
 function showNotyAutostartMinimizedConfirm()
 {
+
     var AutoLaunch = require("auto-launch");
-    
     const Noty = require("noty");
     var n = new Noty(
     {
@@ -692,42 +704,43 @@ function showNotyAutostartMinimizedConfirm()
         type: "information",
         text: "Should autostart enable the minimize mode?",
         buttons: [
-            Noty.button("Yes", "btn btn-success", function ()
-            {
-                // enable start minimized
-                var ttthAutoLauncher = new AutoLaunch({
-                    name: "ttth",
-                    isHidden: true,
-                    useLaunchAgent: true,
-                });
+                Noty.button("Yes", "btn btn-success", function ()
+                {
+                    // enable start minimized
+                    var ttthAutoLauncher = new AutoLaunch({
+                        name: "ttth",
+                        isHidden: true,
+                        useLaunchAgent: true,
+                    });
 
-                ttthAutoLauncher.enable();
-                writeLocalUserSetting("settingAutostart", true);
-                n.close();
-                showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Minimized Autostart (on login)&lt;/u> is now enabled.");
-            },
-            {
-                id: "button1", "data-status": "ok"
-            }),
+                    ttthAutoLauncher.enable();
+                    writeLocalUserSetting("settingAutostart", true);
+                    n.close();
+                    showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Minimized Autostart (on login)&lt;/u> is now enabled.");
+                },
+                {
+                    id: "button1", "data-status": "ok"
+                }),
 
-            Noty.button("No", "btn btn-secondary", function ()
-            {
-                var ttthAutoLauncher = new AutoLaunch({
-                    name: "ttth",
-                    isHidden: false,
-                    useLaunchAgent: true,
-                });
+                Noty.button("No", "btn btn-secondary", function ()
+                {
+                    var ttthAutoLauncher = new AutoLaunch({
+                        name: "ttth",
+                        isHidden: false,
+                        useLaunchAgent: true,
+                    });
 
-                ttthAutoLauncher.enable();
-                writeLocalUserSetting("settingAutostart", true);
-                n.close();
-                showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now enabled.");
-            })
-        ]
+                    ttthAutoLauncher.enable();
+                    writeLocalUserSetting("settingAutostart", true);
+                    n.close();
+                    showNoty("success", "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now enabled.");
+                })
+            ]
     });
 
     // show the noty dialog
     n.show();
+
 }
 
 
@@ -820,7 +833,7 @@ function updateServiceBadge(serviceId, count)
     writeLog("info", "updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
 
     // if count is &lt; 1 - badge should show nothing
-    if( (count === null) || (count === 0) || (count === "null"))
+    if( (count === null) || (count === 0) || (count === "null") || (count === "0") )
     {
         count = "";
     }
@@ -861,7 +874,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     // add a network-connectivity check for each single service?
 
 
-
     // adding general webview events (valid for all services)
     //
     //
@@ -882,9 +894,10 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
     //
-    webview.addEventListener("crashed", function()
+    webview.addEventListener("crashed", function(e)
     {
         writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
+        writeLog("error", e);
         showNoty("error", "Ooops, the service &lt;b>" + serviceId + "&lt;/b> crashed.", 0);
     });
 
@@ -945,65 +958,72 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //});
 
 
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
+
+        // start to spin the service icon in the tabmenu
+        doAnimateServiceIcon(true, serviceId);
+
+        // Triggering search for unread messages
+    webview.send("request");
+    });
+
+
+    // WebView Event: did-finish-load
+    //
+    webview.addEventListener("did-finish-load", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+        // Triggering search for unread messages
+        //webview.send("request");
+    });
+
+
+    // WebView Event: did-stop-loading
+    //
+    webview.addEventListener("did-stop-loading", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+        // Triggering search for unread messages
+        //webview.send("request");
+    });
+
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+            // Triggering search for unread messages
+            //webview.send("request");
+    });
+
 
     // WebView Events for UnreadMessageHandling
     //
     if(enableUnreadMessageHandling === true)
     {
-        // WebView Event: did-start-loading
-        //
-        webview.addEventListener("did-start-loading", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: did-finish-load
-        //
-        webview.addEventListener("did-finish-load", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: dom-ready
-        //
-        webview.addEventListener("dom-ready", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: did-stop-loading
-        //
-        webview.addEventListener("did-stop-loading", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
         // WebView Event:  ipc-message
-        // TODO: this eventListener seems to breaks with electron 6 (FIXME)
-        // see #88
         //
-        //webview.addEventListener("ipc-message",function(event)
-        //{
         webview.addEventListener("ipc-message", (event) => {
             writeLog("info", "eventListenerForSingleService ::: ipc-message for: _" + serviceId + "_.");
 
             // update the badge
-            if(event.channel != null)
+            if(event.channel !== null)
             {
                 updateServiceBadge(serviceId, event.channel);
             }
@@ -1015,22 +1035,50 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     if(enableLinkSupport === true)
     {
-        webview.addEventListener("new-window", function(e)
+        webview.addEventListener("new-window", function(event)
         {
             writeLog("info", "eventListenerForSingleService ::: new-window for: _" + serviceId + "_.");
 
-            //const BrowserWindow = require("electron");
             const shell = require("electron").shell;
             const protocol = require("url").parse(e.url).protocol;
 
             if (protocol === "http:" || protocol === "https:")
             {
-                shell.openExternal(e.url);
+                shell.openExternal(event.url);
             }
         });
     }
 
     writeLog("info", "eventListenerForSingleService ::: End for service: _" + serviceId + "_.");
+}
+
+
+/**
+* @name doAnimateServiceIcon
+* @summary Starts or stops the animation of the service tab icon
+* @description Adds or removes a class to the service icon in the related service tab.
+* @param doOrDont - Boolean. True = enable animation, false = stop the animation.
+* @param serviceId - The id of the related service
+*/
+function doAnimateServiceIcon(doOrDont, serviceId)
+{
+    // Font Awesome: Animating icons:
+    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
+
+    if (doOrDont)
+    {
+        // start to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).addClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Started to animate the icon of the service _" + serviceId + "_.");
+    }
+    else
+    {
+        // stop to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).removeClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Stopped animating the icon of the service _" + serviceId + "_.");
+    }
 }
 
 
@@ -1217,36 +1265,48 @@ function openDevTools()
 */
 function settingToggleAutostart()
 {
-    var AutoLaunch = require("auto-launch"); // auto-launch - via: https://www.npmjs.com/package/auto-launch
-
-    var ttthAutoLauncher = new AutoLaunch({
-        name: "ttth",
-        useLaunchAgent: true,
-    });
-
-    // Handle depending on the checkbox state
-    if($("#checkboxSettingAutostart").prop("checked")) // enabling the autostart
+    const isDev = require("electron-is-dev");
+    if( isDev )
     {
-        showNotyAutostartMinimizedConfirm();
-    }
-    else // disabling the autostart
-    {
-        ttthAutoLauncher.disable();
-        writeLocalUserSetting("settingAutostart", false);
-        writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
-        showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now disabled.");
-    }
+        showNoty("warning", "Configuring autostart is only supported in packaged builds.");
 
-    ttthAutoLauncher.isEnabled()
-    .then(function(isEnabled){
-        if(isEnabled){
-            return;
+        // unselect the autostart checkbox
+        $( "#checkboxSettingAutostart" ).prop( "checked", false );
+    }
+    else
+    {
+        var AutoLaunch = require("auto-launch"); // auto-launch - via: https://www.npmjs.com/package/auto-launch
+
+        var ttthAutoLauncher = new AutoLaunch({
+            name: "ttth",
+            useLaunchAgent: true,
+        });
+
+        // Handle depending on the checkbox state
+        if($("#checkboxSettingAutostart").prop("checked")) // enabling the autostart
+        {
+            showNotyAutostartMinimizedConfirm();
         }
-        ttthAutoLauncher.enable();
-    })
-    .catch(function(err){
-        // handle error
-    });
+        else // disabling the autostart
+        {
+            ttthAutoLauncher.disable();
+            writeLocalUserSetting("settingAutostart", false);
+            writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
+            showNoty("success", "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now disabled.");
+        }
+
+        ttthAutoLauncher.isEnabled()
+        .then(function(isEnabled){
+            if(isEnabled){
+                return;
+            }
+            ttthAutoLauncher.enable();
+        })
+        .catch(function(err){
+            // handle error
+        });
+
+    } 
 }
 
 
@@ -1270,7 +1330,7 @@ function settingDefaultViewUpdate()
         // show noty
         showNoty("success", "Set default view to &lt;b>" + newDefaultView + "&lt;/b>.");
     }
-    else
+    else // user forgot to select a service for new default view
     {
         showNoty("warning", "Please &lt;b>choose a service&lt;/b> to set a custom &lt;b>default view&lt;/b>.");
     }
@@ -1732,7 +1792,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('&lt;li class="nav-item small" id=menu_'+ serviceId +'>&lt;a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab">&lt;i class="' + serviceIcon +'">&lt;/i> ' + serviceName + ' &lt;span id=badge_' + serviceId + ' class="badge badge-success">&lt;/span>&lt;/a>&lt;/li>');
-    $("#myTabs li:eq(" + newTabPosition + ")").after("&lt;li class='nav-item small' id=menu_"+ serviceId +">&lt;a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'>&lt;span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'>&lt;/span> &lt;i class='" + serviceIcon +"'>&lt;/i> " + serviceName + " &lt;span id=badge_" + serviceId + " class='badge badge-success'>&lt;/span>&lt;/a>&lt;/li>");
+    $("#myTabs li:eq(" + newTabPosition + ")").after("&lt;li class='nav-item small' id=menu_"+ serviceId +">&lt;a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'>&lt;span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'>&lt;/span> &lt;i id=icon_"+ serviceId +" class='" + serviceIcon +"'>&lt;/i> " + serviceName + " &lt;span id=badge_" + serviceId + " class='badge badge-success'>&lt;/span>&lt;/a>&lt;/li>");
 
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
@@ -2623,13 +2683,13 @@ require("electron").ipcRenderer.on("showNoConnectivityError", function()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Oct 28 2019 07:35:15 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 31 2019 14:46:22 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
