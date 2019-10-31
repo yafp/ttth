@@ -3,8 +3,8 @@
     /* influcenced by: https://ethanschoonover.com/solarized/ */
 
     /* body */
-    --color-bodyText: #657b83; /*  */
-    --color-bodyHeading: #b58900; /*  */
+    --color-bodyText: #586e75; /* base01 */
+    --color-bodyHeading: #b58900; /* yellow */
     --color-bodyHeadingBorder: #cb4b16; /* orange */
     --color-bodyBackground: #fdf6e3; /* base3 */
 
@@ -18,13 +18,13 @@
     --color-highlight: #cb4b16; /* orange */
 
     /* bootstrap form elements */
-    --color-inputFormsText: #657b83; /*  */
+    --color-inputFormsText: #586e75; /* base01 */
     --color-inputFormsBackground: #eee8d5; /* base2 */
-    --color-inputFormsBorder: #93a1a1; /*  */
+    --color-inputFormsBorder: #93a1a1; /* base1 */
 
     /* bootstrap buttons */
-    --color-buttonSuccess: #859900; /* ; */
-    --color-buttonDanger: #dc322f; /*  */
-    --color-buttonSecondary: #586e75;
-    --color-buttonDark: #002b36;
+    --color-buttonSuccess: #859900; /* green */
+    --color-buttonDanger: #dc322f; /* red */
+    --color-buttonSecondary: #586e75; /* base01 */
+    --color-buttonDark: #002b36; /* base03 */
 }

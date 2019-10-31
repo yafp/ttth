@@ -1,12 +1,12 @@
 :root {
 
-    /* influcenced by: hhttps://ethanschoonover.com/solarized/ */
+    /* influcenced by: https://ethanschoonover.com/solarized/ */
 
     /* body */
-    --color-bodyText: #657b83; /*  */
+    --color-bodyText: #eee8d5; /* base2 */
     --color-bodyHeading: #268bd2; /* blue */
     --color-bodyHeadingBorder: #859900; /* green */
-    --color-bodyBackground: #073642; /*  */
+    --color-bodyBackground: #073642; /* base02 */
 
     /* navigation */
     --color-navigationText: #e5e9f0; /*  */
@@ -18,13 +18,13 @@
     --color-highlight: #859900; /* green */
 
     /* bootstrap form elements */
-    --color-inputFormsText: #657b83; /*  */
-    --color-inputFormsBackground: #002b36; /*  */
-    --color-inputFormsBorder: #93a1a1; /*  */
+    --color-inputFormsText: #eee8d5; /* base2 */
+    --color-inputFormsBackground: #002b36; /* base03 */
+    --color-inputFormsBorder: #93a1a1; /* base1 */
 
     /* bootstrap buttons */
-    --color-buttonSuccess: #859900; /*  */
-    --color-buttonDanger: #dc322f; /* ; */
-    --color-buttonSecondary: #586e75;
-    --color-buttonDark: #002b36;
+    --color-buttonSuccess: #859900; /* green */
+    --color-buttonDanger: #dc322f; /* red */
+    --color-buttonSecondary: #586e75; /* base01 */
+    --color-buttonDark: #002b36; /* base03 */
 }
