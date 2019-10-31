@@ -322,10 +322,10 @@ function createWindow ()
         windowPositionX = data.bounds.x;
         windowPositionY = data.bounds.y;
 
-        writeLog("info", "Got window position and size information from _"+ customUserDataPath +"_.");
+        writeLog("info", "Got window position and size information from _" + customUserDataPath + "_.");
     }
     catch(e) {
-        writeLog("warn", "No window position and size information found in _"+ customUserDataPath +"_. Using fallback values");
+        writeLog("warn", "No window position and size information found in _" + customUserDataPath + "_. Using fallback values");
 
         // set some default values for window size
         windowWidth = 800;
@@ -342,8 +342,7 @@ function createWindow ()
         height: windowHeight,
         minWidth: 800,
         minHeight: 600,
-        center: true, // since 1.7.0
-        //preload: path.join(__dirname, 'sentry.js'),  // sentry - #106
+        center: true, // Show window in the center of the screen. (since 1.7.0)
         backgroundColor: "#ffffff",
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
@@ -640,7 +639,7 @@ function createWindow ()
     //
     configWindow = new BrowserWindow({
         parent: mainWindow,
-        modal: true,
+        modal: true, // Whether this is a modal window. This only works when the window is a child window
         title: "${productName}",
         frame: false, // false results in a borderless window
         show: false, // hide as default

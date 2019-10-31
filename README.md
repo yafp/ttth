@@ -40,7 +40,7 @@
 It is:
 
 * available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
-* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork.
+* inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork and [Ferdi](https://github.com/getferdi/ferdi) as Franz fork.
 * free and open source
 
 
@@ -51,6 +51,8 @@ Please see the supported [services](docs/SERVICES.md) for more details.
 
 
 ## ui
+ttth comes with several themes. The readme shows only exemplary two of them.
+
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 *Default theme*
