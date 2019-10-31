@@ -49,8 +49,9 @@ function initTitlebar()
     // - "custom-electron-titlebar" is now an archived repo
     // - switched to fork of it "pj-custom-electron-titlebar"
     const customTitlebar = require("pj-custom-electron-titlebar");
+
  
-    new customTitlebar.Titlebar({
+    let myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
         icon: "img/icon/icon.png", 
         drag: true, // whether or not you can drag the window by holding the click on the title bar.
@@ -63,6 +64,17 @@ function initTitlebar()
 
     // change font size of application name in titlebar
     $(".window-title").css("font-size", "13px"); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
+
+
+    // Try to change color of menu
+    //
+    // works - but results in follow error:         myTitlebar.updateBackground("#ff0000");
+    // followerror: titleBackground.isLigher is not a function
+    //myTitlebar.updateBackground("#ff00ff");
+    
+
+    // Trying to update the title
+    //myTitlebar.updateTitle("TTTH");
 }
 
 
@@ -654,8 +666,8 @@ function settingsSelectServiceToAddChanged()
 */
 function showNotyAutostartMinimizedConfirm()
 {
+
     var AutoLaunch = require("auto-launch");
-    
     const Noty = require("noty");
     var n = new Noty(
     {
@@ -664,42 +676,43 @@ function showNotyAutostartMinimizedConfirm()
         type: "information",
         text: "Should autostart enable the minimize mode?",
         buttons: [
-            Noty.button("Yes", "btn btn-success", function ()
-            {
-                // enable start minimized
-                var ttthAutoLauncher = new AutoLaunch({
-                    name: "ttth",
-                    isHidden: true,
-                    useLaunchAgent: true,
-                });
+                Noty.button("Yes", "btn btn-success", function ()
+                {
+                    // enable start minimized
+                    var ttthAutoLauncher = new AutoLaunch({
+                        name: "ttth",
+                        isHidden: true,
+                        useLaunchAgent: true,
+                    });
 
-                ttthAutoLauncher.enable();
-                writeLocalUserSetting("settingAutostart", true);
-                n.close();
-                showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Minimized Autostart (on login)</u> is now enabled.");
-            },
-            {
-                id: "button1", "data-status": "ok"
-            }),
+                    ttthAutoLauncher.enable();
+                    writeLocalUserSetting("settingAutostart", true);
+                    n.close();
+                    showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Minimized Autostart (on login)</u> is now enabled.");
+                },
+                {
+                    id: "button1", "data-status": "ok"
+                }),
 
-            Noty.button("No", "btn btn-secondary", function ()
-            {
-                var ttthAutoLauncher = new AutoLaunch({
-                    name: "ttth",
-                    isHidden: false,
-                    useLaunchAgent: true,
-                });
+                Noty.button("No", "btn btn-secondary", function ()
+                {
+                    var ttthAutoLauncher = new AutoLaunch({
+                        name: "ttth",
+                        isHidden: false,
+                        useLaunchAgent: true,
+                    });
 
-                ttthAutoLauncher.enable();
-                writeLocalUserSetting("settingAutostart", true);
-                n.close();
-                showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Autostart (on login)</u> is now enabled.");
-            })
-        ]
+                    ttthAutoLauncher.enable();
+                    writeLocalUserSetting("settingAutostart", true);
+                    n.close();
+                    showNoty("success", "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Autostart (on login)</u> is now enabled.");
+                })
+            ]
     });
 
     // show the noty dialog
     n.show();
+
 }
 
 
@@ -792,7 +805,7 @@ function updateServiceBadge(serviceId, count)
     writeLog("info", "updateServiceBadge ::: New unread count for service _" + serviceId + "_ is: _" + count + "_.");
 
     // if count is < 1 - badge should show nothing
-    if( (count === null) || (count === 0) || (count === "null"))
+    if( (count === null) || (count === 0) || (count === "null") || (count === "0") )
     {
         count = "";
     }
@@ -833,7 +846,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     // add a network-connectivity check for each single service?
 
 
-
     // adding general webview events (valid for all services)
     //
     //
@@ -854,9 +866,10 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
     //
-    webview.addEventListener("crashed", function()
+    webview.addEventListener("crashed", function(e)
     {
         writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
+        writeLog("error", e);
         showNoty("error", "Ooops, the service <b>" + serviceId + "</b> crashed.", 0);
     });
 
@@ -917,65 +930,72 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //});
 
 
+    // WebView Event: did-start-loading
+    //
+    webview.addEventListener("did-start-loading", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
+
+        // start to spin the service icon in the tabmenu
+        doAnimateServiceIcon(true, serviceId);
+
+        // Triggering search for unread messages
+    webview.send("request");
+    });
+
+
+    // WebView Event: did-finish-load
+    //
+    webview.addEventListener("did-finish-load", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+        // Triggering search for unread messages
+        //webview.send("request");
+    });
+
+
+    // WebView Event: did-stop-loading
+    //
+    webview.addEventListener("did-stop-loading", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+        // Triggering search for unread messages
+        //webview.send("request");
+    });
+
+    // WebView Event: dom-ready
+    //
+    webview.addEventListener("dom-ready", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
+            // Triggering search for unread messages
+            //webview.send("request");
+    });
+
 
     // WebView Events for UnreadMessageHandling
     //
     if(enableUnreadMessageHandling === true)
     {
-        // WebView Event: did-start-loading
-        //
-        webview.addEventListener("did-start-loading", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: did-finish-load
-        //
-        webview.addEventListener("did-finish-load", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: dom-ready
-        //
-        webview.addEventListener("dom-ready", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
-
-        // WebView Event: did-stop-loading
-        //
-        webview.addEventListener("did-stop-loading", function()
-        {
-            writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
-
-            // Triggering search for unread messages
-            webview.send("request");
-        });
-
         // WebView Event:  ipc-message
-        // TODO: this eventListener seems to break with electron 6 (FIXME)
-        // see #88
         //
-        //webview.addEventListener("ipc-message",function(event)
-        //{
         webview.addEventListener("ipc-message", (event) => {
             writeLog("info", "eventListenerForSingleService ::: ipc-message for: _" + serviceId + "_.");
 
             // update the badge
-            if(event.channel != null)
+            if(event.channel !== null)
             {
                 updateServiceBadge(serviceId, event.channel);
             }
@@ -987,22 +1007,50 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     if(enableLinkSupport === true)
     {
-        webview.addEventListener("new-window", function(e)
+        webview.addEventListener("new-window", function(event)
         {
             writeLog("info", "eventListenerForSingleService ::: new-window for: _" + serviceId + "_.");
 
-            //const BrowserWindow = require("electron");
             const shell = require("electron").shell;
             const protocol = require("url").parse(e.url).protocol;
 
             if (protocol === "http:" || protocol === "https:")
             {
-                shell.openExternal(e.url);
+                shell.openExternal(event.url);
             }
         });
     }
 
     writeLog("info", "eventListenerForSingleService ::: End for service: _" + serviceId + "_.");
+}
+
+
+/**
+* @name doAnimateServiceIcon
+* @summary Starts or stops the animation of the service tab icon
+* @description Adds or removes a class to the service icon in the related service tab.
+* @param doOrDont - Boolean. True = enable animation, false = stop the animation.
+* @param serviceId - The id of the related service
+*/
+function doAnimateServiceIcon(doOrDont, serviceId)
+{
+    // Font Awesome: Animating icons:
+    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
+
+    if (doOrDont)
+    {
+        // start to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).addClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Started to animate the icon of the service _" + serviceId + "_.");
+    }
+    else
+    {
+        // stop to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).removeClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Stopped animating the icon of the service _" + serviceId + "_.");
+    }
 }
 
 
@@ -1189,36 +1237,48 @@ function openDevTools()
 */
 function settingToggleAutostart()
 {
-    var AutoLaunch = require("auto-launch"); // auto-launch - via: https://www.npmjs.com/package/auto-launch
-
-    var ttthAutoLauncher = new AutoLaunch({
-        name: "ttth",
-        useLaunchAgent: true,
-    });
-
-    // Handle depending on the checkbox state
-    if($("#checkboxSettingAutostart").prop("checked")) // enabling the autostart
+    const isDev = require("electron-is-dev");
+    if( isDev )
     {
-        showNotyAutostartMinimizedConfirm();
-    }
-    else // disabling the autostart
-    {
-        ttthAutoLauncher.disable();
-        writeLocalUserSetting("settingAutostart", false);
-        writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
-        showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Autostart (on login)</u> is now disabled.");
-    }
+        showNoty("warning", "Configuring autostart is only supported in packaged builds.");
 
-    ttthAutoLauncher.isEnabled()
-    .then(function(isEnabled){
-        if(isEnabled){
-            return;
+        // unselect the autostart checkbox
+        $( "#checkboxSettingAutostart" ).prop( "checked", false );
+    }
+    else
+    {
+        var AutoLaunch = require("auto-launch"); // auto-launch - via: https://www.npmjs.com/package/auto-launch
+
+        var ttthAutoLauncher = new AutoLaunch({
+            name: "ttth",
+            useLaunchAgent: true,
+        });
+
+        // Handle depending on the checkbox state
+        if($("#checkboxSettingAutostart").prop("checked")) // enabling the autostart
+        {
+            showNotyAutostartMinimizedConfirm();
         }
-        ttthAutoLauncher.enable();
-    })
-    .catch(function(err){
-        // handle error
-    });
+        else // disabling the autostart
+        {
+            ttthAutoLauncher.disable();
+            writeLocalUserSetting("settingAutostart", false);
+            writeLog("info", "settingToggleAutostart ::: Finished disabling Autostart");
+            showNoty("success", "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Autostart (on login)</u> is now disabled.");
+        }
+
+        ttthAutoLauncher.isEnabled()
+        .then(function(isEnabled){
+            if(isEnabled){
+                return;
+            }
+            ttthAutoLauncher.enable();
+        })
+        .catch(function(err){
+            // handle error
+        });
+
+    } 
 }
 
 
@@ -1704,7 +1764,7 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
-    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'></span> <i class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
+    $("#myTabs li:eq(" + newTabPosition + ")").after("<li class='nav-item small' id=menu_"+ serviceId +"><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId +" href=#" + serviceId + " role='tab' data-toggle='tab'><span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'></span> <i id=icon_"+ serviceId +" class='" + serviceIcon +"'></i> " + serviceName + " <span id=badge_" + serviceId + " class='badge badge-success'></span></a></li>");
 
     writeLog("info", "addServiceTab :::Added the navigation tab for service: _" + serviceId + "_.");
 
@@ -2311,11 +2371,15 @@ require("electron").ipcRenderer.on("reloadCurrentService", function()
     // get href of current active tab
     var tabValue = $(".nav-tabs .active").attr("href");
     tabValue = tabValue.substring(1); // cut the first char ( =  #)
-    writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
 
     if (tabValue !== "Settings")
     {
+        writeLog("info", "reloadCurrentService ::: Current active tab is: " + tabValue);
+
         showNoty("info", "Trying to reload the current service: <b>" + tabValue + "</b>.");
+
+        // Start animating
+        doAnimateServiceIcon(true, tabValue);
 
         // get configured target url & inject code from config
         const storage = require("electron-json-storage");
