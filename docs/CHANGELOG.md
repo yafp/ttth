@@ -28,11 +28,6 @@ The following categories are used:
 
 ### ttth 1.8.0 (2019xxyy)
 #### ```Added```
-* Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
-  * New theme: 'Dracula'
-  * New theme: 'Nord'
-  * New theme: 'Solarized Dark'
-  * New theme: 'Solarized Light'
 * Services:
   * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
   * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
@@ -40,15 +35,27 @@ The following categories are used:
   * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
   * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
 * Network accessibility: Added a periodic check for network accessibility. See [#136](https://github.com/yafp/ttth/issues/136)
+* Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
+  * New theme: 'Dracula'
+  * New theme: 'Nord'
+  * New theme: 'Solarized Dark'
+  * New theme: 'Solarized Light'
+* Added animations to service-tab icons. See [#146](https://github.com/yafp/ttth/issues/146)
 
 ####  ```Changed```
 * Changed update interval for single services from 5 to 3 seconds.
+* Updated electron from 5.0.11 to 6.1.2. See [#88](https://github.com/yafp/ttth/issues/88)
+  * Chrome: 76.0.3809.146
+  * Node: 12.4.0
 * Dependencies
+  * Updated electron-builder from 21.2.0 to 22.1.0
+  * Updated electron-packager from 14.0.6 to 14.1.0
+  * Updated eslint from 6.5.1 to 6.6.0
+  * Updated i18next from 17.2.0 to 19.0.0
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
-  * Updated i18next from 17.2.0 to 18.0.1
+  * Updated sentry from 0.17.4 to 1.0.0
   * Updated spectron from 8.0.0 to 9.0.0
-  * Updated eslint from 6.5.1 to 6.6.0
   * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
 * Menu: Added a hover background color to the menu and its items. Should be easier now to see what is selected. See [#139](https://github.com/yafp/ttth/issues/139)
 * Services: Enabled the inject files for the following services. See [#141](https://github.com/yafp/ttth/issues/141)
@@ -59,12 +66,16 @@ The following categories are used:
   * Threema
   * Xing
 * Notifications: Added more text formating (bold etc.) to notification texts
+* Enabling autostart is no longer possible in non-packaged mode. This should help preventing creating autostart items for electron itself instead of ttth.
 
 #### ```Removed```
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
 
 #### ```Fixed```
 * Fixed issue regarding non-existing mainWindow on macOS. See [#134](https://github.com/yafp/ttth/issues/134)
+
+#### ```Security```
+* Fixed vulnerability in https-proxy-agent by updating sentry. See [#184](https://github.com/getsentry/sentry-electron/issues/184)
 
 ***
 

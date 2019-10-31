@@ -9,6 +9,7 @@ The following services are currently supported:
 * Dropbox
 * Freenode
 * GitHub
+* Gitter
 * Google Calendar
 * Google Contacts
 * Google Duo
@@ -28,9 +29,11 @@ The following services are currently supported:
 * Riot.im
 * Skype
 * Slack
+* Steam Chat
 * Telegram
 * Threema
 * Twitter
 * WeChat
+* Wire
 * WhatsApp
 * Xing
