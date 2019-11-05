@@ -41,12 +41,17 @@ The following categories are used:
   * New theme: 'Solarized Dark'
   * New theme: 'Solarized Light'
 * Added animations to service-tab icons. See [#146](https://github.com/yafp/ttth/issues/146)
+* Added warning to url handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
 
 ####  ```Changed```
 * Changed update interval for single services from 5 to 3 seconds.
-* Updated electron from 5.0.11 to 6.1.2. See [#88](https://github.com/yafp/ttth/issues/88)
-  * Chrome: 76.0.3809.146
-  * Node: 12.4.0
+* electron
+  * Updated electron from 5.0.11 to 6.1.3. See [#88](https://github.com/yafp/ttth/issues/88)
+    * Chrome: 76.0.3809.146
+    * Node: 12.4.0
+  * Updated electron from 6.1.3 to 7.0.1. See [#138](https://github.com/yafp/ttth/issues/138)
+    * Chrome: 76.0.3809.146
+    * Node: 12.4.0
 * Dependencies
   * Updated electron-builder from 21.2.0 to 22.1.0
   * Updated electron-packager from 14.0.6 to 14.1.0
@@ -56,7 +61,10 @@ The following categories are used:
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
   * Updated sentry from 0.17.4 to 1.0.0
   * Updated spectron from 8.0.0 to 9.0.0
+* CDNs vs NPM. See [#113](https://github.com/yafp/ttth/issues/113)
   * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
+  * FontAwesome is now included using npm. Using less cdn's is a good thing. See [#148](https://github.com/yafp/ttth/issues/148)
+  * Bootstrap is now included using npm. Using less cdn's is a good thing. See [#149](https://github.com/yafp/ttth/issues/149)
 * Menu: Added a hover background color to the menu and its items. Should be easier now to see what is selected. See [#139](https://github.com/yafp/ttth/issues/139)
 * Services: Enabled the inject files for the following services. See [#141](https://github.com/yafp/ttth/issues/141)
   * Google Mail
