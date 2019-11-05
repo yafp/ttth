@@ -47,7 +47,7 @@
         "description": "Gitter is a chat and networking platform that helps to manage, grow and connect communities through messaging, content and discovery.",
         "url": "https://gitter.im/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Gitter_inject.js"
+        "injectCode": "./js/ttth/services/gitter/gitter_inject.js"
     },
     {
         "id": "googleCalendar",
@@ -107,7 +107,7 @@
         "description": "Google mail",
         "url": "https://mail.google.com/mail/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/GoogleMail_inject.js"
+        "injectCode": "./js/ttth/services/googleMail/googleMail_inject.js"
     },
     {
         "id": "googleMessages",
@@ -117,7 +117,7 @@
         "description": "",
         "url": "https://messages.google.com/web",
         "multiple": false,
-        "injectCode": "./js/ttth/services/GoogleMessages_inject.js"
+        "injectCode": "./js/ttth/services/googleMessages/googleMessages_inject.js"
     },
     {
         "id": "googlePhotos",
@@ -137,7 +137,7 @@
         "description": "ICQ",
         "url": "https://web.icq.com/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/ICQ_inject.js"
+        "injectCode": "./js/ttth/services/icq/icq_inject.js"
     },
     {
         "id": "linkedIn",
@@ -157,7 +157,7 @@
         "description": "Mattermost is a flexible, open source messaging platform that meets even the most demanding privacy and security standards",
         "url": "https://example.com",
         "multiple": true,
-        "injectCode": "./js/ttth/services/Mattermost_inject.js"
+        "injectCode": "./js/ttth/services/mattermost/mattermost_inject.js"
     },
     {
         "id": "messenger",
@@ -167,7 +167,7 @@
         "description": "",
         "url": "https://www.messenger.com/login/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Messenger_inject.js"
+        "injectCode": "./js/ttth/services/messenger/messenger_inject.js"
     },
     {
         "id": "microsoftOutlook",
@@ -177,7 +177,7 @@
         "description": "",
         "url": "https://outlook.live.com/mail/inbox",
         "multiple": false,
-        "injectCode": "./js/ttth/services/MicrosoftOutlook_inject.js"
+        "injectCode": "./js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js"
     },
     {
         "id": "microsoftOffice365",
@@ -187,7 +187,7 @@
         "description": "",
         "url": "https://outlook.office.___/owa/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/MicrosoftOffice365_inject.js"
+        "injectCode": "./js/ttth/services/microsoftOffice365/microsoftOffice365_inject.js"
     },
     {
         "id": "microsoftTeams",
@@ -197,7 +197,7 @@
         "description": "Microsoft Teams is the chat-based workspace in Office 365 that integrates all the people, content, and tools your team needs to be more engaged and effective.",
         "url": "https://teams.microsoft.com",
         "multiple": false,
-        "injectCode": "./js/ttth/services/MicrosoftTeams_inject.js"
+        "injectCode": "./js/ttth/services/microsoftTeams/microsoftTeams_inject.js"
     },
     {
         "id": "nextcloud",
@@ -227,7 +227,7 @@
         "description": "Riot.im is an open source, free software instant messaging client based on the Matrix protocol",
         "url": "https://riot.im/app/",
         "multiple": true,
-        "injectCode": "./js/ttth/services/Riot_inject.js"
+        "injectCode": "./js/ttth/services/riot/riot_inject.js"
     },
     {
         "id": "skype",
@@ -237,7 +237,7 @@
         "description": "Keep your life easier with Skype online",
         "url": "https://web.skype.com/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Skype_inject.js"
+        "injectCode": "./js/ttth/services/skype/skype_inject.js"
     },
     {
         "id": "slack",
@@ -247,7 +247,7 @@
         "description": "Slack gives your team the power and alignment you need to do your best work.",
         "url": "https://YOURWORKSPACE.slack.com",
         "multiple": true,
-        "injectCode": "./js/ttth/services/Slack_inject.js"
+        "injectCode": "./js/ttth/services/slack/slack_inject.js"
     },
     {
         "id": "steam",
@@ -257,7 +257,7 @@
         "description": "",
         "url": "https://steamcommunity.com/chat",
         "multiple": false,
-        "injectCode": "./js/ttth/services/SteamChat_inject.js"
+        "injectCode": "./js/ttth/services/steam/steam_inject.js"
     },
     {
         "id": "telegram",
@@ -267,7 +267,7 @@
         "description": "Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.",
         "url": "https://web.telegram.org/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Telegram_inject.js"
+        "injectCode": "./js/ttth/services/telegram/telegram_inject.js"
     },
     {
         "id": "threema",
@@ -277,7 +277,7 @@
         "description": "The messenger that puts security and privacy first.",
         "url": "https://web.threema.ch/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Threema_inject.js"
+        "injectCode": "./js/ttth/services/threema/threema_inject.js"
     },
     {
         "id": "twitter",
@@ -287,7 +287,7 @@
         "description": "From breaking news and entertainment to sports and politics, from big events to everyday interests.",
         "url": "https://mobile.twitter.com/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Twitter_inject.js"
+        "injectCode": "./js/ttth/services/twitter/twitter_inject.js"
     },
     {
         "id": "wechat",
@@ -307,7 +307,7 @@
         "description": "With WhatsApp, you'll get fast, simple, secure messaging and calling for free*, available on phones all over the world.",
         "url": "https://web.whatsapp.com/",
         "multiple": false,
-        "injectCode": "./js/ttth/services/WhatsApp_inject.js"
+        "injectCode": "./js/ttth/services/whatsapp/whatsapp_inject.js"
     },
     {
         "id": "wire",
@@ -327,7 +327,7 @@
         "description": "Career-oriented social networking",
         "url": "https://www.xing.com/messages/conversations",
         "multiple": false,
-        "injectCode": "./js/ttth/services/Xing_inject.js"
+        "injectCode": "./js/ttth/services/xing/xing_inject.js"
     },
     {
         "id": "custom",
