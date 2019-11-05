@@ -12,58 +12,34 @@ const fs = require("fs");
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
+
 const jquery = require("jquery"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
+const fontAwesome = require('@fortawesome/fontawesome-free'); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
 
 // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 require("v8-compile-cache");
 
 
-
 // ----------------------------------------------------------------------------
-// Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
-// ----------------------------------------------------------------------------
-//
-crashReporter.start({
-        productName: "ttth",
-        companyName: "yafp",
-        submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
-        uploadToServer: false
-});
-// To simulate a crash - execute: process.crash();
-
-
-// ----------------------------------------------------------------------------
-// Error Handling using: sentry (see #106)
+// Error Handling
 // ----------------------------------------------------------------------------
 //
-// * https://sentry.io/organizations/yafp/
-// * https://docs.sentry.io/platforms/javascript/electron/
-//
-const Sentry = require("@sentry/electron");
-Sentry.init({
-    dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.8.0"
-});
-//
-// simple way to force a crash:
-//myUndefinedFunction();
+require("./app/js/ttth/crashReporting.js")
+//myUndefinedFunctionFromMain();
 
-
-// ----------------------------------------------------------------------------
-// Error Handling using: electron-unhandled
-// ----------------------------------------------------------------------------
-//const unhandled = require("electron-unhandled"); // error handling
-//unhandled();
 
 
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let configWindow;
-let onlineStatusWindow;
+
 
 let verbose;
 verbose = false;
+
+
+
 
 
 // ----------------------------------------------------------------------------
@@ -347,6 +323,10 @@ function createWindow ()
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
+
+            webSecurity: true,
+            experimentalFeatures: false,
+
             webviewTag: true, // # see #37
             devTools: true, // should be possible to open them
             partition: "ttth",
@@ -759,7 +739,6 @@ function forceSingleAppInstance()
 }
 
 
-
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -775,6 +754,7 @@ app.on("ready", function ()
     checkArguments();
     createWindow();
     createTray();
+    
 });
 
 
@@ -887,6 +867,31 @@ app.on("activate", function ()
 });
 
 
+
+// Try to set some values while creating new webviews. See: https://electronjs.org/docs/tutorial/security
+//
+app.on("web-contents-created", (event, contents) => {
+  contents.on("will-attach-webview", (event, webPreferences, params) => {
+    writeLog("info", "app will attach new webview with target url set to: _" + params.src + "_.");
+
+    // Strip away preload scripts if unused or verify their location is legitimate
+    //
+    //delete webPreferences.preload
+    //delete webPreferences.preloadURL
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false;
+
+    // Verify URL being loaded
+    //
+    //if (!params.src.startsWith('https://example.com/')) 
+    //{
+        //event.preventDefault()
+    //}
+  })
+})
+
+
 process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
     process.stderr.fd,
@@ -896,3 +901,4 @@ process.on("uncaughtException", (err, origin) => {
 
   writeLog("error", "UncaughtException - got error: _" + err + "_ with origin: _" + origin + "_.");
 });
+
