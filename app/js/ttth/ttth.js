@@ -1,41 +1,11 @@
 
 // ----------------------------------------------------------------------------
-// Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
+// Error Handling
 // ----------------------------------------------------------------------------
 //
-const { crashReporter } = require("electron");
-crashReporter.start({
-        productName: "ttth",
-        companyName: "yafp",
-        submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
-        uploadToServer: false
-});
-// To simulate a crash - execute: process.crash();
+require("./js/ttth/crashReporting.js")
+//myUndefinedFunctionFromRenderer();
 
-
-// ----------------------------------------------------------------------------
-// Error Handling using: sentry (see #106)
-// ----------------------------------------------------------------------------
-//
-// https://sentry.io/organizations/yafp/
-// https://docs.sentry.io/platforms/javascript/electron/
-//
-const Sentry = require("@sentry/electron");
-Sentry.init({
-    dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940",
-    release: "ttth@1.8.0"
-});
-//
-// simple way to force a crash:
-//myUndefinedFunction();
-
-
-// ----------------------------------------------------------------------------
-// Error Handling using: electron-unhandled (https://github.com/sindresorhus/electron-unhandled)
-// ----------------------------------------------------------------------------
-//
-//const unhandled = require("electron-unhandled");
-//unhandled();
 
 
 /**
@@ -666,7 +636,6 @@ function settingsSelectServiceToAddChanged()
 */
 function showNotyAutostartMinimizedConfirm()
 {
-
     var AutoLaunch = require("auto-launch");
     const Noty = require("noty");
     var n = new Noty(
@@ -850,11 +819,26 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     //
 
+    // WebView Event: load-commit (https://electronjs.org/docs/api/webview-tag#event-load-commit)
+    //
+    webview.addEventListener("load-commit", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: load-commit for: _" + serviceId + "_.");
+
+        // start to spin the service icon in the tabmenu
+        doAnimateServiceIcon(true, serviceId);
+    });
+
+
+
     // WebView Event: did-fail-load (https://electronjs.org/docs/api/webview-tag#event-did-fail-load)
     //
     webview.addEventListener("did-fail-load", function()
     {
         writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
 
         var checkForMicrosoftOutlook = serviceId.startsWith("microsoftOutlook");
         var checkForMicrosoftTeams = serviceId.startsWith("microsoftTeams");
@@ -868,6 +852,9 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     //
     webview.addEventListener("crashed", function(e)
     {
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
+
         writeLog("error", "eventListenerForSingleService ::: crashed for: _" + serviceId + "_.");
         writeLog("error", e);
         showNoty("error", "Ooops, the service <b>" + serviceId + "</b> crashed.", 0);
@@ -953,8 +940,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId);
 
-        // Triggering search for unread messages
-        //webview.send("request");
     });
 
 
@@ -985,6 +970,9 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     });
 
 
+
+
+
     // WebView Events for UnreadMessageHandling
     //
     if(enableUnreadMessageHandling === true)
@@ -1001,6 +989,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
             }
         });
     }
+    // /WebView Events for UnreadMessageHandling
 
 
     // WebView Event: new-window / clicking links
@@ -1012,14 +1001,49 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
             writeLog("info", "eventListenerForSingleService ::: new-window for: _" + serviceId + "_.");
 
             const shell = require("electron").shell;
-            const protocol = require("url").parse(e.url).protocol;
+            const protocol = require("url").parse(event.url).protocol;
 
             if (protocol === "http:" || protocol === "https:")
             {
-                shell.openExternal(event.url);
+                // Display warning for http links - see: https://electronjs.org/docs/tutorial/security
+                if (protocol === "http:")
+                {
+                    const Noty = require("noty");
+                    var n = new Noty(
+                    {
+                        theme: "bootstrap-v4",
+                        layout: "bottom",
+                        type: "information",
+                        text: "Do you really want to open this unsecure (not using https://) link?",
+                        buttons: [
+                                Noty.button("Yes", "btn btn-success", function ()
+                                {
+                                    n.close();
+                                    writeLog("info", "User confirmed to open non-https:// link: _" + event.url + "_.");
+                                    shell.openExternal(event.url);
+                                },
+                                {
+                                    id: "button1", "data-status": "ok"
+                                }),
+
+                                Noty.button("No", "btn btn-secondary", function ()
+                                {
+                                    n.close();
+                                })
+                            ]
+                    });
+
+                    // show the noty dialog
+                    n.show();
+                } // its https://
+                else
+                {
+                    shell.openExternal(event.url);
+                }
             }
         });
     }
+    // /WebView Event: new-window / clicking links
 
     writeLog("info", "eventListenerForSingleService ::: End for service: _" + serviceId + "_.");
 }
@@ -1455,10 +1479,22 @@ function loadServiceSpecificCode(serviceId, serviceName)
     {
         // V1: unread message handler: NO - &&  Link handler: NO
         //
+        case "discord":
+        case "dropbox":
+        case "github":
+        case "googleCalendar":
+        case "googleContacts":
+        case "googleDrive":
+        case "googlePhotos":
+        case "nextcloud":
+            writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
+            eventListenerForSingleService(serviceId, false, false);
+            break;
 
         // V2: unread-message-handler: NO - && - Link-handler: YES
         case "freenode":
         case "googleDuo":
+        case "googleKeep":
         case "linkedIn":
         case "reddit":
         case "wechat":
@@ -1488,7 +1524,9 @@ function loadServiceSpecificCode(serviceId, serviceName)
         case "riot":
         case "slack":
         case "skype":
+        case "steam":
         case "telegram":
+        case "threema":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
             eventListenerForSingleService(serviceId, true, true);
             break;
@@ -2322,15 +2360,205 @@ function checkNetworkConnectivityPeriodic(timeInterval)
 }
 
 
+
+
+
+
+/**
+* @name updateAllUserServiceConfigurations
+* @summary Patches the user service configration files on version changes if needed.
+* @description Patches the user service configration files on version changes if needed.
+*/
+function updateAllUserServiceConfigurations()
+{
+    // changes from 1.7.0 to 1.8.0:
+    // - inject files got re-structured. Path & names are stored in the user-services configuration files
+    //
+    const storage = require("electron-json-storage");
+
+    writeLog("info", "updateAllUserServiceConfigurations ::: Starting to validate all user service configurations");
+
+    // loop over all json files - and see if we need to patch something
+    storage.getAll(function(error, data)
+    {
+        if (error)
+        {
+            throw error;
+        }
+
+        // show object which contains all config files
+        //writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        //console.error(data);
+
+        var shouldConfigBeUpdated = false;
+        var newInjectCodePath;
+
+        // loop over upper object
+        for (var key in data)
+        {
+            if (data.hasOwnProperty(key))
+            {
+                writeLog("info", "updateAllUserServiceConfigurations ::: " + key + " -> " + data[key]);
+
+                if(data[key]["injectCode"] !== "") 
+                {
+                    switch (data[key]["injectCode"]) 
+                    {
+                        // gitter
+                        case "./js/ttth/services/Gitter_inject.js":
+                            newInjectCodePath = "./js/ttth/services/gitter/gitter_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // googleMail
+                        case "./js/ttth/services/GoogleMail_inject.js":
+                            newInjectCodePath = "./js/ttth/services/googleMail/googleMail_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // googleMessages
+                        case "./js/ttth/services/GoogleMessages_inject.js":
+                            newInjectCodePath = "./js/ttth/services/googleMessages/googleMessages_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // icq
+                        case "./js/ttth/services/ICQ_inject.js":
+                            newInjectCodePath = "./js/ttth/services/icq/icq_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // mattermost
+                        case "./js/ttth/services/Mattermost_inject.js":
+                            newInjectCodePath = "./js/ttth/services/mattermost/mattermost_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // messenger
+                        case "./js/ttth/services/Messenger_inject.js":
+                            newInjectCodePath = "./js/ttth/services/messenger/Messenger_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // microsoftOffice365
+                        case "./js/ttth/services/MicrosoftOffice365_inject.js":
+                            newInjectCodePath = "./js/ttth/services/microsoftOffice365/microsoftOffice365_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // microsoftOutlook
+                        case "./js/ttth/services/MicrosoftOutlook_inject.js":
+                            newInjectCodePath = "./js/ttth/services/microsoftOoutlook/microsoftOutlook_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // microsoftTeams
+                        case "./js/ttth/services/MicrosoftTeams_inject.js":
+                            newInjectCodePath = "./js/ttth/services/microsoftTeams/microsoftTeams_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // Riot
+                        case "./js/ttth/services/Riot_inject.js":
+                            newInjectCodePath = "./js/ttth/services/riot/riot_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // skype
+                        case "./js/ttth/services/Skype_inject.js":
+                            newInjectCodePath = "./js/ttth/services/skype/skype_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // slack
+                        case "./js/ttth/services/Slack_inject.js":
+                            newInjectCodePath = "./js/ttth/services/slack/slack_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // steam
+                        case "./js/ttth/services/SteamChat_inject.js":
+                            newInjectCodePath = "./js/ttth/services/steam/steam_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // telegram
+                        case "./js/ttth/services/Telegram_inject.js":
+                            newInjectCodePath = "./js/ttth/services/telegram/telegram_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // threema
+                        case "./js/ttth/services/Threema_inject.js":
+                            newInjectCodePath = "./js/ttth/services/threema/threema_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // twitter
+                        case "./js/ttth/services/Twitter_inject.js":
+                            newInjectCodePath = "./js/ttth/services/twitter/twitter_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                         // whatsapp
+                        case "./js/ttth/services/WhatsApp_inject.js":
+                            newInjectCodePath = "./js/ttth/services/whatsapp/whatsapp_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        // xing
+                        case "./js/ttth/services/Xing.js":
+                            newInjectCodePath = "./js/ttth/services/xing/xing_inject.js";
+                            shouldConfigBeUpdated = true;
+                            break;
+
+                        default:
+                            writeLog("info", "updateAllUserServiceConfigurations ::: Skipping to next service configuration");
+                            newInjectCodePath = "";
+                            shouldConfigBeUpdated = false;
+                            break;
+                    }
+                }
+
+
+                // Update this property - if needed
+                if(shouldConfigBeUpdated === true)
+                {
+                    writeLog("info", "updateAllUserServiceConfigurations ::: Updating config of service: _" + key + "_.");
+
+                    storage.set(key, 
+                    { 
+                        "type": data[key]["type"], // old value
+                        "name": data[key]["name"], // old value
+                        "icon": data[key]["icon"], // old value
+                        "url": data[key]["url"], // old value
+                        "injectCode": newInjectCodePath, // NEW VALUE
+                        "serviceEnableStatus": data[key]["serviceEnableStatus"] // old value
+                    }, function(error) 
+                    {
+                        if (error) throw error;
+                    });
+                }
+            }
+        }
+        writeLog("info", "updateAllUserServiceConfigurations ::: Finished.");
+    });
+}
+
+
+
 /**
 * @name onReadyMainWindow
 * @summary Initialized the application after jquerys ready signal
-* @description launcher for several init methods after jquerys ready signal. Gets called from mwinWindow.html
+* @description launcher for several init methods after jquerys ready signal. Gets called from mainWindow.html
 */
 function onReadyMainWindow()
 {
     // init the custom titlebar - see #115
     initTitlebar();
+
+    // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
+    updateAllUserServiceConfigurations();
 
     // load the configured user services
     loadEnabledUserServices();
@@ -2392,17 +2620,23 @@ require("electron").ipcRenderer.on("reloadCurrentService", function()
 
             var url =  data.url;
 
-            writeLog("info", "reloadCurrentService ::: Set URL of webview to: _" + url + "_.");
-            document.getElementById( "webview_" + tabValue ).loadURL(url);
+            if (typeof url === 'undefined') // Sentry: TTTH-3S
+            {
+                // url is undefined
+                showNoty("error", "Trying to reload service: <b>" + tabValue + "</b> failed, as URL is undefined.", 0);
+                writeLog("error", "reloadCurrentService ::: Reloading current active service: " + tabValue + " failed, as its URL is undefined.");
+            }
+            else
+            {
+                writeLog("info", "reloadCurrentService ::: Set service  _" + tabValue + "_ URL of webview to: _" + url + "_.");
+                document.getElementById( "webview_" + tabValue ).loadURL(url);
+            }
 
             // TODO
             // inject code
             //var injectCode = data.injectCode;
         });
     }
-
-
-    
 });
 
 
