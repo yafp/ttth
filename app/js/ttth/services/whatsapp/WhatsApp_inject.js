@@ -4,19 +4,19 @@ const {ipcRenderer} = require("electron");
 
 
 // adopted from franz:
-window.addEventListener('beforeunload', async () => {
+window.addEventListener("beforeunload", async () => {
   try 
   {
         session.flushStorageData();
         session.clearStorageData({
-            storages: ['appcache', 'serviceworkers', 'cachestorage', 'websql', 'indexdb'],
+            storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
         });
 
         const registrations = await window.navigator.serviceWorker.getRegistrations();
 
         registrations.forEach((r) => {
             r.unregister();
-            console.log('ServiceWorker unregistered');
+            console.log("ServiceWorker unregistered");
         });
   } 
   catch (err) 
@@ -66,7 +66,7 @@ function serviceWhatsAppGetUnreadMessageCount()
     */
 
 
-    const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ');
+    const elements = document.querySelectorAll(".CxUIE, .unread, ._0LqQ");
     let count = 0;
 
     for (let i = 0; i < elements.length; i += 1) 
@@ -81,7 +81,7 @@ function serviceWhatsAppGetUnreadMessageCount()
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Final conversation count with unread messages in WhatsApp is: _" + count + "_.");
 
     ipcRenderer.sendToHost(count.toString()); // We need to convert the result to string - since moving to electron 6.x
-    return count; // needed, since electron 6.x. Otherwise (without return) the service crashes.
+    return count.toString(); // needed, since electron 6.x. Otherwise (without return) the service crashes.
 }
 
 

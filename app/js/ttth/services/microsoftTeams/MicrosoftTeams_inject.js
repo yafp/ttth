@@ -26,7 +26,7 @@ function serviceMicrosoftTeamsGetUnreadMessageCount()
     console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Outlook unread messages: " + count);
 
     ipcRenderer.sendToHost(count.toString());
-    return count;
+    return count.toString();
 }
 
 

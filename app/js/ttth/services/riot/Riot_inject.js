@@ -27,7 +27,7 @@ function serviceRiotGetUnreadMessageCount()
 
 
     ipcRenderer.sendToHost(b.toString()); // We need to convert the result to string - since moving to electron 6.x
-    return b; // needed, since electron 6.x. Otherwise (without return) the service crashes.
+    return b.toString(); // needed, since electron 6.x. Otherwise (without return) the service crashes.
 }
 
 ipcRenderer.on("request", function()

@@ -30,7 +30,7 @@ function serviceMattermostGetUnreadMessageCount()
 
     // send back from webview to main
     ipcRenderer.sendToHost(count.toString()); // We need to convert the result to string - since moving to electron 6.x
-    return count; // needed, since electron 6.x. Otherwise (without return) the service crashes.
+    return count.toString(); // needed, since electron 6.x. Otherwise (without return) the service crashes.
 }
 
 

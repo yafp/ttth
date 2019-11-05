@@ -8,15 +8,16 @@ const {ipcRenderer} = require("electron");
 */
 function serviceMicrosoftOutlookGetUnreadMessageCount()
 {
-    /*
+
     console.log("serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count");
 
-    var e=null!==$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span")?$(".ms-FocusZone [role=tree]:last i[data-icon-name=Inbox]").siblings()[1].querySelector("span span").innerText:0;
+    var e=null!==document.querySelector(".ms-FocusZone i[data-icon-name=Inbox]").parentNode.querySelector("span span")?parseInt(document.querySelector(".ms-FocusZone i[data-icon-name=Inbox]").parentNode.querySelector("span span").innerText):0;
 
     console.log("serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: " + e);
 
-    ipcRenderer.sendToHost(e);
-    */
+    ipcRenderer.sendToHost(e.toString());
+    return e.toString();
+
 }
 
 

@@ -21,7 +21,7 @@ function serviceTwitterGetUnreadMessageCount()
     console.log("serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: " + count);
 
     ipcRenderer.sendToHost(count.toString());
-    return count;
+    return count.toString();
 }
 
 

@@ -22,7 +22,7 @@ function serviceGitterGetUnreadMessageCount()
 
     // send back from webview to main
     ipcRenderer.sendToHost(t.toString());
-    return t;
+    return t.toString();
 }
 
 

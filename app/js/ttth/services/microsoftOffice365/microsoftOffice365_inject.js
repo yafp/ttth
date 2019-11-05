@@ -16,7 +16,7 @@ function serviceMicrosoftOffice365GetUnreadMessageCount()
     console.log("serviceMicrosoftOffice365GetUnreadMessageCount ::: Total Office 365 unread messages: " + count);
 
     ipcRenderer.sendToHost(count.toString());
-    return count;
+    return count.toString();
 }
 
 

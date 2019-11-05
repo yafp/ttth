@@ -21,7 +21,7 @@ function serviceMessengerGetUnreadMessageCount()
 
     // send back from webview to main
     ipcRenderer.sendToHost(count.toString());
-    return count;
+    return count.toString();
 }
 
 
