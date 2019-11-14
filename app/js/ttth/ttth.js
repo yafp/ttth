@@ -3,7 +3,7 @@
 // Error Handling
 // ----------------------------------------------------------------------------
 //
-require("./js/ttth/crashReporting.js")
+require("./js/ttth/crashReporting.js");
 //myUndefinedFunctionFromRenderer();
 
 
@@ -20,10 +20,10 @@ function initTitlebar()
     // - switched to fork of it "pj-custom-electron-titlebar"
     const customTitlebar = require("pj-custom-electron-titlebar");
 
- 
+
     let myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
-        icon: "img/icon/icon.png", 
+        icon: "img/icon/icon.png",
         drag: true, // whether or not you can drag the window by holding the click on the title bar.
         backgroundColor: customTitlebar.Color.fromHex("#171717"),
         minimizable: true,
@@ -41,7 +41,7 @@ function initTitlebar()
     // works - but results in follow error:         myTitlebar.updateBackground("#ff0000");
     // followerror: titleBackground.isLigher is not a function
     //myTitlebar.updateBackground("#ff00ff");
-    
+
 
     // Trying to update the title
     //myTitlebar.updateTitle("TTTH");
@@ -811,7 +811,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     }, 3000); // 3.000 milliseconds = 3 sec
 
 
-    // TODO: 
+    // TODO:
     // add a network-connectivity check for each single service?
 
 
@@ -1302,7 +1302,7 @@ function settingToggleAutostart()
             // handle error
         });
 
-    } 
+    }
 }
 
 
@@ -1505,7 +1505,6 @@ function loadServiceSpecificCode(serviceId, serviceName)
 
         // V3: Unread-message-handler: YES - && - link handler: NO
         case "gitter":
-        case "threema":
         case "twitter":
         case "xing":
             writeLog("info", "loadServiceSpecificCode ::: Executing " + serviceName + " specific things");
@@ -1862,7 +1861,7 @@ function updateGlobalServicesShortcuts()
     //
     // count enabled services:
     numberOfEnabledServices = $("#myTabs li").length;
-    numberOfEnabledServices = numberOfEnabledServices - 1; // as the settings tab doesnt count 
+    numberOfEnabledServices = numberOfEnabledServices - 1; // as the settings tab doesnt count
 
     // if there are configured services so far - delete all existing shortcuts
     if(numberOfEnabledServices > 0)
@@ -2238,7 +2237,7 @@ function localizeUserInterface()
         debug: true, // logs info-level to console output. Helps finding issues with loading not working.
         lng: userLang, // configured user language
         whitelist: ["en", "de", "fr"], // supported languages
-        fallbackLng: "en", // language to use if translations in user language are not available. 
+        fallbackLng: "en", // language to use if translations in user language are not available.
         ns: "translation", // string or array of namespaces to load
         defaultNS: "translation", // default namespace used if not passed to translation function
         updateMissing: false,
@@ -2400,9 +2399,9 @@ function updateAllUserServiceConfigurations()
             {
                 writeLog("info", "updateAllUserServiceConfigurations ::: " + key + " -> " + data[key]);
 
-                if(data[key]["injectCode"] !== "") 
+                if(data[key]["injectCode"] !== "")
                 {
-                    switch (data[key]["injectCode"]) 
+                    switch (data[key]["injectCode"])
                     {
                         // gitter
                         case "./js/ttth/services/Gitter_inject.js":
@@ -2436,7 +2435,7 @@ function updateAllUserServiceConfigurations()
 
                         // messenger
                         case "./js/ttth/services/Messenger_inject.js":
-                            newInjectCodePath = "./js/ttth/services/messenger/Messenger_inject.js";
+                            newInjectCodePath = "./js/ttth/services/messenger/messenger_inject.js";
                             shouldConfigBeUpdated = true;
                             break;
 
@@ -2526,15 +2525,15 @@ function updateAllUserServiceConfigurations()
                 {
                     writeLog("info", "updateAllUserServiceConfigurations ::: Updating config of service: _" + key + "_.");
 
-                    storage.set(key, 
-                    { 
+                    storage.set(key,
+                    {
                         "type": data[key]["type"], // old value
                         "name": data[key]["name"], // old value
                         "icon": data[key]["icon"], // old value
                         "url": data[key]["url"], // old value
                         "injectCode": newInjectCodePath, // NEW VALUE
                         "serviceEnableStatus": data[key]["serviceEnableStatus"] // old value
-                    }, function(error) 
+                    }, function(error)
                     {
                         if (error) throw error;
                     });
@@ -2620,7 +2619,7 @@ require("electron").ipcRenderer.on("reloadCurrentService", function()
 
             var url =  data.url;
 
-            if (typeof url === 'undefined') // Sentry: TTTH-3S
+            if (typeof url === "undefined") // Sentry: TTTH-3S
             {
                 // url is undefined
                 showNoty("error", "Trying to reload service: <b>" + tabValue + "</b> failed, as URL is undefined.", 0);

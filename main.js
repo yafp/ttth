@@ -14,7 +14,8 @@ const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance hand
 const openAboutWindow = require("about-window").default; // for: about-window
 
 const jquery = require("jquery"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
-const fontAwesome = require('@fortawesome/fontawesome-free'); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
+const fontAwesome = require("@fortawesome/fontawesome-free"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
+//const bootstrap = require("bootstrap");  // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
 
 // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 require("v8-compile-cache");
@@ -24,7 +25,7 @@ require("v8-compile-cache");
 // Error Handling
 // ----------------------------------------------------------------------------
 //
-require("./app/js/ttth/crashReporting.js")
+require("./app/js/ttth/crashReporting.js");
 //myUndefinedFunctionFromMain();
 
 
@@ -471,7 +472,7 @@ function createWindow ()
 
         // try to write
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
-            if (err) 
+            if (err)
             {
                 writeLog("error", "storing window-position and -size of mainWindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
                 return console.log(err);
@@ -754,7 +755,7 @@ app.on("ready", function ()
     checkArguments();
     createWindow();
     createTray();
-    
+
 });
 
 
@@ -884,7 +885,7 @@ app.on("web-contents-created", (event, contents) => {
 
     // Verify URL being loaded
     //
-    //if (!params.src.startsWith('https://example.com/')) 
+    //if (!params.src.startsWith('https://example.com/'))
     //{
         //event.preventDefault()
     //}
@@ -901,4 +902,3 @@ process.on("uncaughtException", (err, origin) => {
 
   writeLog("error", "UncaughtException - got error: _" + err + "_ with origin: _" + origin + "_.");
 });
-

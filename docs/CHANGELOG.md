@@ -49,12 +49,14 @@ The following categories are used:
   * Updated electron from 5.0.11 to 6.1.3. See [#88](https://github.com/yafp/ttth/issues/88)
     * Chrome: 76.0.3809.146
     * Node: 12.4.0
-  * Updated electron from 6.1.3 to 7.0.1. See [#138](https://github.com/yafp/ttth/issues/138)
-    * Chrome: 76.0.3809.146
-    * Node: 12.4.0
+  * Updated electron from 6.1.3 to 7.1.1. See [#138](https://github.com/yafp/ttth/issues/138)
+    * Chrome: 78.0.3904.99
+    * Node: 12.8.1
 * Dependencies
+  * Updated about-window from 1.13.1 to 1.13.2
   * Updated electron-builder from 21.2.0 to 22.1.0
   * Updated electron-packager from 14.0.6 to 14.1.0
+  * Updated electron-log from 3.0.8 to 3.0.9
   * Updated eslint from 6.5.1 to 6.6.0
   * Updated i18next from 17.2.0 to 19.0.0
   * Updated mocha from 6.2.1 to 6.2.2
@@ -93,7 +95,7 @@ The following categories are used:
 * Added a first (pretty poor) version of french localication. See [#118](https://github.com/yafp/ttth/issues/118)
 * Added error notification when service url failed to load. See [#119](https://github.com/yafp/ttth/issues/119)
 * Added a menu item to the help menu to open DevTools for the current service. See [#120](https://github.com/yafp/ttth/issues/120)
-* Services: 
+* Services:
   * Added Reddit Chat. See [#121](https://github.com/yafp/ttth/issues/121)
   * Added WeChat. See [#122](https://github.com/yafp/ttth/issues/122)
   * Added Google Duo. See [#123](https://github.com/yafp/ttth/issues/123)
@@ -134,7 +136,7 @@ The following categories are used:
   * Added title descriptions for all user settings.
   * Added a button in settings view to open the folder which contains all user-setting json files.
 * Menubar:
-  * Added a new entry to help menu for quick access to FAQ. See [#111](https://github.com/yafp/ttth/issues/111) 
+  * Added a new entry to help menu for quick access to FAQ. See [#111](https://github.com/yafp/ttth/issues/111)
   * Added a new entry to help menu for quick access to CHANGELOG. See [#112](https://github.com/yafp/ttth/issues/112)
 
 ####  ```Changed```

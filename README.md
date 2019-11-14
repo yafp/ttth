@@ -61,6 +61,8 @@ ttth comes with several themes. The readme shows only exemplary two of them.
 
 *Dark theme*
 
+Please see the [themes list](docs/THEMES.md) for more details.
+
 
 ## changelog
 Please see the [changlog](docs/CHANGELOG.md) for more details.
