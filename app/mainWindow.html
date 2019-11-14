@@ -8,51 +8,22 @@
 
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
-    <!-- Remote: jquery -->
-    <!-- 3.4.1 -->
-    <!--
-    <script>window.$ = window.jQuery = require('jquery');</script>
-    -->
-    <!--
-    <script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous">
-    </script>
-    -->
-    <!-- via npm -->
+    <!-- jquery -->
     <script>window.$ = window.jQuery = require('jquery');</script>
 
-    <!-- Remote: bootstrap -->
-    <!-- cdn: 4.3.1 -->
-    <!--
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script 
-        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" 
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" 
-        crossorigin="anonymous">
-    </script>
-    -->
-    <!-- via npm -->
+    <!-- bootstrap -->
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-
-    <!-- Remote: fontawesome -->
-    <!-- Remote: 5.11.2 -->
-    <!--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js"></script>
-    -->
-    <!-- npm: 5.11.2 -->
+    <!-- fontawesome -->
     <script src="../node_modules/@fortawesome/fontawesome-free/js/all.min.js"></script>
-
 
     <!-- noty -->
     <link rel="stylesheet" href="../node_modules/noty/lib/noty.css" >
     <link rel="stylesheet" href="../node_modules/noty/lib/themes/bootstrap-v4.css">
     <script type="text/javascript" src="../node_modules/noty/lib/noty.min.js" async></script>
 
-    <!-- Local: ttth -->
+    <!-- ttth -->
     <link rel="stylesheet" href="css/ttth/general.css" >
     <link rel="stylesheet" href="css/ttth/mainWindow.css" >
     <script type="text/javascript" src="js/ttth/ttth.js" async></script>
@@ -110,11 +81,11 @@
 
                         <!-- Button: show config folder -->
                         <div class="text-left">
-                            <button 
-                                type="button" 
-                                class="btn btn-outline-secondary btn-sm" 
-                                onClick="openUserServicesConfigFolder();" 
-                                i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                onClick="openUserServicesConfigFolder();"
+                                i18n-title="mw_settingsServicesButtonTitleShowConfigs"
                                 aria-label="Button to open the folder which contains all user configured service configs"><!-- Configurations -->
                             <i class="fas fa-folder-open"></i></button>
                         </div>
@@ -213,11 +184,11 @@
 
                         <!-- Button: show config folder -->
                         <div class="text-left">
-                            <button 
-                                type="button" 
-                                class="btn btn-outline-secondary btn-sm" 
-                                onClick="openUserSettingsConfigFolder();" 
-                                i18n-title="mw_settingsServicesButtonTitleShowConfigs" 
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                onClick="openUserSettingsConfigFolder();"
+                                i18n-title="mw_settingsServicesButtonTitleShowConfigs"
                                 aria-label="Button to open the folder which contains all user settings"><!-- Configurations -->
                                 <i class="fas fa-folder-open"></i>
                             </button>
