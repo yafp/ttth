@@ -20,7 +20,6 @@ function initTitlebar()
     // - switched to fork of it "pj-custom-electron-titlebar"
     const customTitlebar = require("pj-custom-electron-titlebar");
 
-
     let myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: "center", // position of window title
         icon: "img/icon/icon.png",
@@ -35,15 +34,14 @@ function initTitlebar()
     // change font size of application name in titlebar
     $(".window-title").css("font-size", "13px"); // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
 
-
     // Try to change color of menu
     //
     // works - but results in follow error:         myTitlebar.updateBackground("#ff0000");
     // followerror: titleBackground.isLigher is not a function
     //myTitlebar.updateBackground("#ff00ff");
 
-
     // Trying to update the title
+    //
     //myTitlebar.updateTitle("TTTH");
 }
 
@@ -137,12 +135,12 @@ function isMac()
     writeLog("info", "isMac ::: Detected operating system type is: " + os.type());
     if(os.type() === "Darwin")
     {
-        writeLog("info", "isMac ::: Smelling apples");
+        writeLog("info", "isMac ::: true");
         return true;
     }
     else
     {
-        writeLog("info", "isMac ::: No apples here");
+        writeLog("info", "isMac ::: false");
         return false;
     }
 }
@@ -166,12 +164,12 @@ function isLinux()
     writeLog("info", "isLinux ::: Detected operating system type is: " + os.type());
     if(os.type() === "Linux")
     {
-        writeLog("info", "isLinux ::: Smelling penguins");
+        writeLog("info", "isLinux ::: true");
         return true;
     }
     else
     {
-        writeLog("info", "isLinux ::: No penguins here");
+        writeLog("info", "isLinux ::: false");
         return false;
     }
 }
@@ -195,12 +193,12 @@ function isWindows()
     writeLog("info", "isWindows ::: Detected operating system type is: " + os.type());
     if(os.type() === "Windows NT")
     {
-        writeLog("info", "isWindows ::: Looks like Redmond");
+        writeLog("info", "isWindows ::: true");
         return true;
     }
     else
     {
-        writeLog("info", "isWindows ::: There are no windows ... omg");
+        writeLog("info", "isWindows ::: false");
         return false;
     }
 }
@@ -840,9 +838,10 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId);
 
+        var checkForGoogleMessages = serviceId.startsWith("googleMessages");
         var checkForMicrosoftOutlook = serviceId.startsWith("microsoftOutlook");
         var checkForMicrosoftTeams = serviceId.startsWith("microsoftTeams");
-        if( (checkForMicrosoftOutlook === false) && (checkForMicrosoftTeams === false) ) // show noty for all services except microsoftOutlook & microsoftTeams (as it throws tons of errors)
+        if( (checkForGoogleMessages === false) && (checkForMicrosoftOutlook === false) && (checkForMicrosoftTeams === false) ) // show noty for all services except microsoftOutlook & microsoftTeams (as it throws tons of errors)
         {
             showNoty("error", "Failed to load url for service: <b>" + serviceId + "</b>.", 0); // #119
         }
@@ -1368,6 +1367,19 @@ function checkSupportedOperatingSystem()
 
 
 /**
+* @name openReleasesOverview
+* @summary Opens the ttth release page
+* @description Opens the url https://github.com/yafp/ttth/releases in the default browser. Used in searchUpdate().
+*/
+function openReleasesOverview()
+{
+    var url = "https://github.com/yafp/ttth/releases";
+    writeLog("info", "openReleasesOverview ::: Opening _" + url + "_ to show available releases");
+    openURL(url);
+}
+
+
+/**
 * @name searchUpdate
 * @summary Checks if there is a new release available
 * @description Compares the local app version number with the tag of the latest github release. Displays a notification in the settings window if an update is available.
@@ -1375,6 +1387,11 @@ function checkSupportedOperatingSystem()
 */
 function searchUpdate(silent = true)
 {
+    if(silent === false) // when executed manually via menu -> user should see that update-check is running
+    {
+        showNoty("info", "Searching for updates");
+    }
+
     var remoteAppVersionLatest = "0.0.0";
     var localAppVersion = "0.0.0";
     var versions;
@@ -1394,10 +1411,12 @@ function searchUpdate(silent = true)
         });
 
         // get remote version
+        //
         remoteAppVersionLatest = versions[0].name;
         //remoteAppVersionLatest = "66.6.6"; // overwrite variable to simulate available updates
 
         // get local version
+        //
         localAppVersion = require("electron").remote.app.getVersion();
         //localAppVersion = "1.0.0"; // to simulate
 
@@ -1407,7 +1426,34 @@ function searchUpdate(silent = true)
         if( localAppVersion < remoteAppVersionLatest ) // Update available
         {
             writeLog("warn", "searchUpdate ::: Found update, notify user");
-            showNoty("warning", "An update from <b>" + localAppVersion + "</b> to version <b>" + remoteAppVersionLatest + "</b> is available for <a href='https://github.com/yafp/ttth/releases' target='new'>download</a>.", 0);
+
+            // using a confirm dialog - since #150
+            const Noty = require("noty");
+            var n = new Noty(
+            {
+                theme: "bootstrap-v4",
+                layout: "bottom",
+                type: "information",
+                text: "An update from <b>" + localAppVersion + "</b> to version <b>" + remoteAppVersionLatest + "</b> is available. Do you want to visit the release page?",
+                    buttons: [
+                        Noty.button("Yes", "btn btn-success", function ()
+                        {
+                            n.close();
+                            openReleasesOverview();
+                        },
+                        {
+                            id: "button1", "data-status": "ok"
+                        }),
+
+                        Noty.button("No", "btn btn-secondary", function ()
+                        {
+                            n.close();
+                        })
+                        ]
+            });
+
+            // show the noty dialog
+            n.show();
         }
         else // No update available
         {
@@ -1749,6 +1795,7 @@ function getHostName(url)
 * @summary Parsing the Domain From a Url
 * @description Parsing the Domain From a Url
 * @param url
+* @return domain
 */
 function getDomain(url)
 {
@@ -2219,14 +2266,18 @@ function localizeUserInterface()
     // detect user language
     var userLang = navigator.language || navigator.userLanguage;
 
+    writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
+
     // if the project is not packaged - overwrite the language ...
     if (isDev)
     {
         userLang = "en"; // to EN. This is used to ensure the screenshots are in the expected language
         //userLang = "pl"; // to PL. This is used to test unsupported languages
+
+        writeLog("warn", "localizeUserInterface ::: Overwritten user language in dev environment to: " + userLang);
     }
 
-    writeLog("info", "localizeUserInterface ::: Detected user language: " + userLang);
+    
 
     var i18next = require("i18next");
     var Backend = require("i18next-sync-fs-backend");
@@ -2357,10 +2408,6 @@ function checkNetworkConnectivityPeriodic(timeInterval)
 
     }, timeInterval);
 }
-
-
-
-
 
 
 /**
