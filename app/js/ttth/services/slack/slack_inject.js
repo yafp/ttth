@@ -10,24 +10,20 @@ function serviceSlackGetUnreadMessageCount()
 {
     console.log("serviceSlackGetUnreadMessageCount ::: Checking unread message count");
 
-    var n;
-    var count;
-    var badge;
-
-    var a=document.querySelectorAll(".p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)").length;
-    n=0;
-    var b=document.getElementsByClassName("p-channel_sidebar__badge");
-    for(badge of b)
+    // via hamsket: https://github.com/TheGoddessInari/hamsket/commit/d1e29e5a27fc3b18768384a1dfae673a0d7d05df
+    const indirectSelector=".p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)",indirect=document.querySelectorAll(indirectSelector).length;
+    let direct=0;
+    const badges=document.querySelectorAll(indirectSelector+" > .p-channel_sidebar__badge");
+    for(const badge of badges)
     {
-        n+=isNaN(parseInt(badge.innerHTML))?0:parseInt(badge.innerHTML);
+        const i=parseInt(badge.innerHTML);direct+=isNaN(i)?0:i
     }
-    count=0<n?n:0<a?"\u2022":0,
 
-    console.log("serviceSlackGetUnreadMessageCount ::: Total Slack chats with unread messages: " + count);
+    console.log("serviceSlackGetUnreadMessageCount ::: Total Slack chats with unread messages: " + direct);
 
     // send back from webview to main
-    ipcRenderer.sendToHost(count.toString());
-    return count.toString();
+    ipcRenderer.sendToHost(direct.toString());
+    return direct.toString();
 }
 
 
