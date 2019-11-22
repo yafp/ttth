@@ -33,6 +33,7 @@ install:
 
 
 before_script:
+  - npm audit — json >> $TRAVIS_BUILD_DIR/audit/report.json || true
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sleep 3; fi
@@ -51,6 +52,7 @@ script:
   - node --version
   - npm --version
   - npm test
+  - npm run audit:process
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build-linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run build-mac; fi
 
