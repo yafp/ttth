@@ -1,3 +1,8 @@
+// via hamsket
+Object.defineProperty(navigator.serviceWorker,"register",{value:()=>Promise.reject()});
+
+
+
 const {ipcRenderer} = require("electron");
 
 
@@ -23,7 +28,7 @@ function serviceMicrosoftTeamsGetUnreadMessageCount()
         }
     }
 
-    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Outlook unread messages: " + count);
+    console.log("serviceMicrosoftTeamsGetUnreadMessageCount ::: Total Microsoft Teams unread messages: " + count);
 
     ipcRenderer.sendToHost(count.toString());
     return count.toString();
