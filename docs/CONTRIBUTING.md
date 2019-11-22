@@ -45,9 +45,9 @@ Crashreport informations are located [here](https://sentry.io/organizations/yafp
 ##### Run the code with debug logging
 * Execute ```npm run start-debug```
 
-or:
 
-* Execute: ```npm start verbose```
+##### Run the code with verbose output
+* Execute: ```npm start-verbose```
 
 
 ##### Run some basic test

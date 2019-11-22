@@ -20,6 +20,11 @@
   * shows download progress on the application icon, 
   * and (on macOS) bounces the Downloads directory in the dock when complete.
 * Automatic contributors handling: https://allcontributors.org/docs/en/bot/configuration
+* Writing to log: Check if that makes sense https://github.com/sindresorhus/electron-timber
+* Minify / Uglify / similar: 
+  * http://maxgfeller.com/blog/2016/08/30/electron-browserify/
+* Colors in log: https://github.com/Marak/colors.js
+
 
 ### Reminder
 #### Sources for unread message functions

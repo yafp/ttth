@@ -6,7 +6,7 @@
 
 ### Generate jsdoc files
 * Navigate to repository
-* Execute: ```jsdoc --configure jsdoc.json --readme README.md```
+* Execute: ```npm run generate-docs```
 
 
 ### Packaging

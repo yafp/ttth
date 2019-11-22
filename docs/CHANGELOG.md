@@ -44,21 +44,22 @@ The following categories are used:
 * Added warning to url handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
 
 ####  ```Changed```
+* Update check: The download link for new releases now opens in the default browser (previously in a new electron window). See [#150](https://github.com/yafp/ttth/issues/150)
 * Changed update interval for single services from 5 to 3 seconds.
 * electron
   * Updated electron from 5.0.11 to 6.1.3. See [#88](https://github.com/yafp/ttth/issues/88)
     * Chrome: 76.0.3809.146
     * Node: 12.4.0
-  * Updated electron from 6.1.3 to 7.1.1. See [#138](https://github.com/yafp/ttth/issues/138)
-    * Chrome: 78.0.3904.99
+  * Updated electron from 6.1.3 to 7.1.2. See [#138](https://github.com/yafp/ttth/issues/138)
+    * Chrome: 78.0.3904.113
     * Node: 12.8.1
 * Dependencies
   * Updated about-window from 1.13.1 to 1.13.2
   * Updated electron-builder from 21.2.0 to 22.1.0
-  * Updated electron-packager from 14.0.6 to 14.1.0
+  * Updated electron-packager from 14.0.6 to 14.1.1
   * Updated electron-log from 3.0.8 to 3.0.9
   * Updated eslint from 6.5.1 to 6.6.0
-  * Updated i18next from 17.2.0 to 19.0.0
+  * Updated i18next from 17.2.0 to 19.0.1
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
   * Updated sentry from 0.17.4 to 1.0.0
@@ -77,6 +78,7 @@ The following categories are used:
   * Xing
 * Notifications: Added more text formating (bold etc.) to notification texts
 * Enabling autostart is no longer possible in non-packaged mode. This should help preventing creating autostart items for electron itself instead of ttth.
+* JsDOC is now included in the dev environment. Should make doc generation easier for others.
 
 #### ```Removed```
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
