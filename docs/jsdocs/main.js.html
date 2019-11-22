@@ -41,56 +41,30 @@ const defaultUserDataPath = app.getPath("userData"); // for: storing window posi
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
 
-const jquery = require("jquery"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
-const fontAwesome = require('@fortawesome/fontawesome-free'); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
+require("v8-compile-cache"); // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 
-// via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
-require("v8-compile-cache");
-
+// The following requires are not really needed
+// but it mutes 'npm-check' regarding NOTUSED
+//
+require("jquery"); 
+require("@fortawesome/fontawesome-free"); 
+require("popper.js");
+//require('bootstrap'); // this breaks everything
 
 
 // ----------------------------------------------------------------------------
-// Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
+// Error Handling
 // ----------------------------------------------------------------------------
 //
-crashReporter.start({
-        productName: "ttth",
-        companyName: "yafp",
-        submitURL: "https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859",
-        uploadToServer: false
-});
-// To simulate a crash - execute: process.crash();
+require("./app/js/ttth/crashReporting.js");
+//myUndefinedFunctionFromMain();
 
-
-// ----------------------------------------------------------------------------
-// Error Handling using: sentry (see #106)
-// ----------------------------------------------------------------------------
-//
-// * https://sentry.io/organizations/yafp/
-// * https://docs.sentry.io/platforms/javascript/electron/
-//
-const Sentry = require("@sentry/electron");
-Sentry.init({
-    dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940"
-    //release: "ttth@1.8.0"
-});
-//
-// simple way to force a crash:
-//myUndefinedFunction();
-
-
-// ----------------------------------------------------------------------------
-// Error Handling using: electron-unhandled
-// ----------------------------------------------------------------------------
-//const unhandled = require("electron-unhandled"); // error handling
-//unhandled();
 
 
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let configWindow;
-let onlineStatusWindow;
 
 let verbose;
 verbose = false;
@@ -114,7 +88,9 @@ function writeLog(logType, logMessage)
 
     // configure: logging to console (default)
     log.transports.console.level = false;
-    if(verbose === true) // enable output if verbose parameter is given
+
+    // enable output to console if verbose parameter is given
+    if(verbose === true) 
     {
         log.transports.console.level = true;
     }
@@ -188,14 +164,14 @@ function checkArguments()
             switch (process.argv[key])
             {
                 case "verbose":
-                case "debug":
-                    log.info("[M] Enabling verbose/debug mode");
                     verbose = true;
+                    log.info("[M] Enabling verbose/debug mode");
+                    writeLog("info", "checkArguments ::: Enabling verbose mode");
                     break;
 
                 default:
                     // nothing to do here
-                    log.warn("[M] Ignoring unsupported parameter: " + process.argv[key]);
+                    log.warn("[M] Ignoring unsupported parameter: _" + process.argv[key] + "_.");
                     break;
             }
         }
@@ -210,8 +186,9 @@ function checkArguments()
 */
 function createTray()
 {
-    let tray = null;
+    writeLog("info", "createTray ::: Starting to create a tray item");
 
+    let tray = null;
     tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
 
     const contextMenu = Menu.buildFromTemplate([
@@ -284,7 +261,7 @@ function createTray()
     tray.setToolTip("ttth");
     tray.setContextMenu(contextMenu);
 
-    writeLog("info", "Finished creating tray");
+    writeLog("info", "createTray ::: Finished creating tray");
 
     // Call from renderer: Change Tray Icon to UnreadMessages
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
@@ -309,11 +286,11 @@ function createTray()
 
     // Call from renderer: Option: DisableTray
     ipcMain.on("disableTray", function() {
-        writeLog("info", "Disabling tray (ipcMain)");
+        writeLog("info", "createTray ::: Disabling tray (ipcMain)");
         tray.destroy();
         if(tray.isDestroyed() === true)
         {
-            writeLog("info", "Disabling tray was working");
+            writeLog("info", "createTray ::: Disabling tray was working");
         }
         else
         {
@@ -329,8 +306,10 @@ function createTray()
 * @summary Creates the main window  of the app
 * @description Creates the main window, restores window position and size of possible
 */
-function createWindow ()
+function createWindow()
 {
+    writeLog("info", "createWindow ::: Starting to create the application windows");
+
     // Check last window position and size from user data
     var windowWidth;
     var windowHeight;
@@ -352,10 +331,10 @@ function createWindow ()
         windowPositionX = data.bounds.x;
         windowPositionY = data.bounds.y;
 
-        writeLog("info", "Got window position and size information from _" + customUserDataPath + "_.");
+        writeLog("info", "createWindow ::: Got last window position and size information from _" + customUserDataPath + "_.");
     }
     catch(e) {
-        writeLog("warn", "No window position and size information found in _" + customUserDataPath + "_. Using fallback values");
+        writeLog("warn", "createWindow ::: No last window position and size information found in _" + customUserDataPath + "_. Using fallback values");
 
         // set some default values for window size
         windowWidth = 800;
@@ -377,22 +356,29 @@ function createWindow ()
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
+            webSecurity: true, // introduced in 1.8.0
+            experimentalFeatures: false, // introduced in 1.8.0
             webviewTag: true, // # see #37
             devTools: true, // should be possible to open them
             partition: "ttth",
         }
     });
 
+    writeLog("info", "createWindow ::: Finished creating the mainWindow");
+
     // Restore window position if possible
     //
     // requirements: found values in .ttthMainWindowPosSize.json from the previous session
     if ( (typeof windowPositionX !== "undefined") &amp;&amp; (typeof windowPositionY !== "undefined") )
     {
+        writeLog("info", "createWindow ::: Restoring last stored window-position of mainWindow");
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
 
     // and load the html of the app.
-    mainWindow.loadFile("app/mainWindow.html");
+    //mainWindow.loadFile("app/mainWindow.html");
+    mainWindow.loadFile("./app/mainWindow.html");
+    writeLog("info", "createWindow ::: Loading mainWindow.html to mainWindow");
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -402,50 +388,53 @@ function createWindow ()
     {
         mainWindow.show();
         mainWindow.focus();
-        writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
+        writeLog("info", "createWindow ::: mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
 
         // check network access
         checkNetworkConnectivity();
     });
 
-
-    // When dom is ready - set window title
-    mainWindow.webContents.once("dom-ready", () => {
-        writeLog("info", "mainwWindow DOM is now ready (event: dom-ready)");
+    // 
+    mainWindow.on("will-finish-launching", function()
+    {
+        writeLog("info", "createWindow ::: mainWindow will finish launching (event: will-finish-launching)");
     });
 
+    // When dom is ready
+    mainWindow.webContents.once("dom-ready", () => {
+        writeLog("info", "createWindow ::: mainwWindow DOM is now ready (event: dom-ready)");
+    });
 
     // When page title gets changed
     mainWindow.webContents.once("page-title-updated", () => {
-        writeLog("info", "mainWindow got new title (event: page-title-updated)");
+        writeLog("info", "createWindow ::: mainWindow got new title (event: page-title-updated)");
     });
-
 
     // when the app is shown
     mainWindow.on("show", function()
     {
-        writeLog("info", "mainWindow is visible (event: show)");
+        writeLog("info", "createWindow ::: mainWindow is visible (event: show)");
     });
 
 
     // when the app loses focus / aka blur
     mainWindow.on("blur", function()
     {
-        writeLog("info", "mainWindow lost focus (event: blur)");
+        writeLog("info", "createWindow ::: mainWindow lost focus (event: blur)");
     });
 
 
     // when the app gets focus
     mainWindow.on("focus", function()
     {
-        writeLog("info", "mainWindow got focus (event: focus)");
+        writeLog("info", "createWindow ::: mainWindow got focus (event: focus)");
     });
 
 
     // when the app goes fullscreen
     mainWindow.on("enter-full-screen", function()
     {
-        writeLog("info", "mainWindow is now in fullscreen (event: enter-full-screen)");
+        writeLog("info", "createWindow ::: mainWindow is now in fullscreen (event: enter-full-screen)");
     });
 
 
@@ -468,48 +457,48 @@ function createWindow ()
     // when the app gets hidden
     mainWindow.on("hide", function()
     {
-        writeLog("info", "mainWindow is now hidden (event: hide)");
+        writeLog("info", "createWindow ::: mainWindow is now hidden (event: hide)");
     });
 
 
     // when the app gets maximized
     mainWindow.on("maximize", function()
     {
-        writeLog("info", "mainWindow is now maximized (event: maximized)");
+        writeLog("info", "createWindow ::: mainWindow is now maximized (event: maximized)");
     });
 
 
     // when the app gets unmaximized
     mainWindow.on("unmaximize", function()
     {
-        writeLog("info", "mainWindow is now unmaximized (event: unmaximized)");
+        writeLog("info", "createWindow ::: mainWindow is now unmaximized (event: unmaximized)");
     });
 
 
     // when the app gets minimized
     mainWindow.on("minimize", function()
     {
-        writeLog("info", "mainWindow is now minimized (event: minimize)");
+        writeLog("info", "createWindow ::: mainWindow is now minimized (event: minimize)");
     });
 
 
     // when the app gets restored from minimized mode
     mainWindow.on("restore", function()
     {
-        writeLog("info", "mainWindow is now restored (event: restore)");
+        writeLog("info", "createWindow ::: mainWindow is now restored (event: restore)");
     });
 
 
     mainWindow.on("app-command", function()
     {
-        writeLog("info", "mainWindow got app-command (event: app-command)");
+        writeLog("info", "createWindow ::: mainWindow got app-command (event: app-command)");
     });
 
 
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
     {
-        writeLog("info", "mainWindow will close (event: close)");
+        writeLog("info", "createWindow ::: mainWindow will close (event: close)");
 
         // get window position and size
         var data = {
@@ -521,7 +510,7 @@ function createWindow ()
 
         // try to write
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
-            if (err) 
+            if (err)
             {
                 writeLog("error", "storing window-position and -size of mainWindow in  _" + customUserDataPath + "_ failed with error: _" + err + "_ (event: close)");
                 return console.log(err);
@@ -540,14 +529,14 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
 
-        writeLog("info", "mainWindow is now closed (event: closed)");
+        writeLog("info", "createWindow ::: mainWindow is now closed (event: closed)");
     });
 
 
     // When the app is unresponsive
     mainWindow.on("unresponsive", function ()
     {
-        writeLog("error", "mainWindow is now unresponsive (event: unresponsive)");
+        writeLog("error", "createWindow ::: mainWindow is now unresponsive (event: unresponsive)");
 
         // show alert message
         const { dialog } = require("electron");
@@ -569,14 +558,14 @@ function createWindow ()
     // When the app gets responsive again
     mainWindow.on("responsive", function ()
     {
-        writeLog("info", "mainWindow is now responsive (event: responsive)");
+        writeLog("info", "createWindow ::: mainWindow is now responsive (event: responsive)");
     });
 
 
     // When the app is crashed
     mainWindow.webContents.on("crashed", function ()
     {
-        writeLog("info", "mainWindow crashed (event: crashed)");
+        writeLog("info", "createWindow ::: mainWindow crashed (event: crashed)");
 
         // show alert message
         const { dialog } = require("electron");
@@ -598,7 +587,7 @@ function createWindow ()
     // Call from renderer: Reload mainWindow
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
-        writeLog("info", "mainWindow is now reloaded (ipcMain)");
+        writeLog("info", "createWindow ::: mainWindow is now reloaded (ipcMain)");
     });
 
 
@@ -607,11 +596,11 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         if (shell.openItem(customUserDataPath) === true)
         {
-            writeLog("info", "ServiceConfigs: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+            writeLog("info", "createWindow ::: ServiceConfigs: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
         }
         else
         {
-            writeLog("warn", "ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+            writeLog("warn", "createWindow ::: ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
 
@@ -621,11 +610,11 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserSettings");
         if (shell.openItem(customUserDataPath) === true)
         {
-            writeLog("info", "UserSettings: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+            writeLog("info", "createWindow ::: UserSettings: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
         }
         else
         {
-            writeLog("warn", "UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+            writeLog("warn", "createWindow ::: UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
 
@@ -641,17 +630,17 @@ function createWindow ()
         for (i = 1; i &lt;= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            writeLog("info", "Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
+            writeLog("info", "createWindow ::: Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
 
-        writeLog("info", "Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
+        writeLog("info", "createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
     });
 
 
     // Call from renderer ::: createNewGlobalShortcut
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the service/tab: _" + targetTab + "_.");
+        writeLog("info", "createWindow ::: Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the service/tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
             writeLog("info", "Shortcut: _" + shortcut + "_ was pressed.");
@@ -687,12 +676,15 @@ function createWindow ()
         }
     });
 
+    writeLog("info", "createWindow ::: Finished creating configWindow");
+
     // load html form to the window
     configWindow.loadFile("app/configWindow.html");
+    writeLog("info", "createWindow ::: Loaded configWindow.html to configWindow");
 
     // hide menubar
     configWindow.setMenuBarVisibility(false);
-
+    writeLog("info", "createWindow ::: Hiding menubar of configWindow");
 
     // Emitted when the window gets a close event.(close VS closed)
     configWindow.on("close", function (event)
@@ -701,20 +693,17 @@ function createWindow ()
         configWindow.hide(); // just hide it - so it can re-opened
     });
 
-
     // Emitted when the window is ready to be shown
     configWindow.on("ready-to-show", function (event)
     {
         writeLog("info", "configWindow is now ready to show (event: ready-to-show)");
     });
 
-
     // Emitted when the window is shown
     configWindow.on("show", function (event)
     {
         writeLog("info", "configWindow is now shown (event: show)");
     });
-
 
     // Call from renderer: show configure-single-service window for a new service
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
@@ -725,7 +714,6 @@ function createWindow ()
         configWindow.webContents.send("serviceToCreate", arg);
     });
 
-
     // Call from renderer: show configure-single-service window
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
         writeLog("info", "configWindow preparing for service editing (ipcMain)");
@@ -735,19 +723,19 @@ function createWindow ()
         configWindow.webContents.send("serviceToConfigure", arg);
     });
 
-
     // Call from renderer: hide configure-single-service window
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
         configWindow.hide(); // hide window
         writeLog("info", "configWindow is now hidden (ipcMain)");
     });
 
-
     // Tray: RecreateTray - Gets called from renderer
     ipcMain.on("recreateTray", function() {
         writeLog("info", "Recreating tray (ipcMain)");
         createTray();
     });
+
+    writeLog("info", "createWindow ::: Finished creating mainWindow and configWindow");
 }
 
 
@@ -759,8 +747,12 @@ function createWindow ()
 */
 function forceSingleAppInstance()
 {
+    writeLog("info", "forceSingleAppInstance ::: Checking if there is only 1 instance of ttth");
+
     if (!gotTheLock)
     {
+        writeLog("error", "forceSingleAppInstance ::: There is already another instance of tttth");
+
         // quit the second instance
         app.quit();
     }
@@ -789,7 +781,6 @@ function forceSingleAppInstance()
 }
 
 
-
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -800,20 +791,18 @@ function forceSingleAppInstance()
 //
 app.on("ready", function ()
 {
+    checkArguments(); // check input arguments
     writeLog("info", "app got ready signal (event: ready)");
-    forceSingleAppInstance();
-    checkArguments();
-    createWindow();
-    createTray();
+    forceSingleAppInstance(); // check for single instance
+    createWindow(); // create the application UI
+    createTray(); // create the tray
 });
-
 
 // Emitted while app tries to do a basic auth (https://electronjs.org/docs/api/app#event-login)
 app.on("login", function ()
 {
     writeLog("info", "app tries to do basic auth (event: login)");
 });
-
 
 // Emitted before the application starts closing its windows.
 app.on("before-quit", function ()
@@ -916,6 +905,75 @@ app.on("activate", function ()
     }
 });
 
+// Emitted when a new webContents is created.
+// Try to set some values while creating new webviews. See: https://electronjs.org/docs/tutorial/security
+//
+app.on("web-contents-created", (event, contents) => {
+  contents.on("will-attach-webview", (event, webPreferences, params) => {
+    writeLog("info", "app will attach new webview with target url set to: _" + params.src + "_.");
+
+    // Strip away preload scripts if unused or verify their location is legitimate
+    //
+    //delete webPreferences.preload
+    //delete webPreferences.preloadURL
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false;
+
+    // Verify URL being loaded
+    //
+    //if (!params.src.startsWith('https://example.com/'))
+    //{
+        //event.preventDefault()
+    //}
+  })
+});
+
+// Emitted when a new browserWindow is created.
+//
+app.on("browser-window-created", function ()
+{
+    writeLog("info", "app created a browser window (event: browser-window-created)");
+});
+
+// Emitted when the application has finished basic startup. 
+//
+app.on("will-finish-launching", function ()
+{
+    writeLog("info", "app will finish launching (event: will-finish-launching)");
+});
+
+// Emitted when the renderer process of webContents crashes or is killed.
+//
+app.on("renderer-process-crashed", function ()
+{
+    writeLog("error", "app is realizing a crashed renderer process (event: renderer-process-crashed)");
+});
+
+// Emitted when the GPU process crashes or is killed.
+//
+app.on("gpu-process-crashed", function ()
+{
+    writeLog("error", "app is realizing a crashed gpu process (event: gpu-process-crashed)");
+});
+
+// Emitted whenever there is a GPU info update.
+//
+app.on("gpu-info-update", function ()
+{
+    writeLog("info", "app is realizing a GPU info update (event: gpu-info-update)");
+});
+
+// Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior 
+// with event.preventDefault() and call callback(true).
+//
+app.on("certificate-error", function ()
+{
+    writeLog("warn", "app failed to verify the cert (event: certificate-error)");
+});
+
+
+
 
 process.on("uncaughtException", (err, origin) => {
   fs.writeSync(
@@ -936,13 +994,13 @@ process.on("uncaughtException", (err, origin) => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 04 2019 14:49:27 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Nov 22 2019 14:01:38 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: app/js/ttth/services/whatsapp/whatsapp_inject.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: app/js/ttth/services/whatsapp/whatsapp_inject.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {ipcRenderer} = require("electron");
+
+
+
+
+// adopted from franz:
+window.addEventListener("beforeunload", async () => {
+  try 
+  {
+        session.flushStorageData();
+        session.clearStorageData({
+            storages: ["appcache", "serviceworkers", "cachestorage", "websql", "indexdb"],
+        });
+
+        const registrations = await window.navigator.serviceWorker.getRegistrations();
+
+        registrations.forEach((r) => {
+            r.unregister();
+            console.log("ServiceWorker unregistered");
+        });
+  } 
+  catch (err) 
+  {
+        console.err(err);
+  }
+});
+
+
+
+
+/**
+* @name serviceWhatsAppGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service WhatsApp
+* @description Gets the amount of unread messages of the service WhatsApp
+*/
+function serviceWhatsAppGetUnreadMessageCount()
+{
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count");
+
+    // try to count unread messages
+    //
+    //const elements = document.querySelectorAll(".CxUIE, .unread"); // First version
+    //const elements = document.querySelectorAll(".P6z4j, .unread"); // Rambox - currently using
+    //const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ'); // Franz
+    /*
+    const elements = document.querySelectorAll("#pane-side .P6z4j, .unread");
+    console.log(elements);
+
+
+    let count = 0;
+    for (let i = 0; i &lt; elements.length; i++)
+    {
+        //if (elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) // ignore muted
+        if (elements[i].parentNode.parentNode.querySelectorAll("#pane-side *[data-icon='muted']").length === 0) 
+        {
+            count += 1;
+            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found unread message");
+        }
+        else
+        {
+            count += 1;
+            console.log("serviceWhatsAppGetUnreadMessageCount ::: Ignoring unread message message from muted communication");
+        }
+    }
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
+    */
+
+
+    const elements = document.querySelectorAll(".CxUIE, .unread, ._0LqQ");
+    let count = 0;
+
+    for (let i = 0; i &lt; elements.length; i += 1) 
+    {
+        if (elements[i].querySelectorAll('.P6z4j').length === 1 &amp;&amp; elements[i].querySelectorAll('*[data-icon="muted"]').length === 0) 
+        {
+            count += 1;
+            console.log("serviceWhatsAppGetUnreadMessageCount ::: Found conversation with unread messages (current conversation count is now: " + count + ")");
+        }
+    }
+
+    console.log("serviceWhatsAppGetUnreadMessageCount ::: Final conversation count with unread messages in WhatsApp is: _" + count + "_.");
+
+    ipcRenderer.sendToHost(count.toString()); // We need to convert the result to string - since moving to electron 6.x
+    return count.toString(); // needed, since electron 6.x. Otherwise (without return) the service crashes.
+}
+
+
+ipcRenderer.on("request", function()
+{
+    ipcRenderer.sendToHost(serviceWhatsAppGetUnreadMessageCount());
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Nov 22 2019 14:01:38 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
