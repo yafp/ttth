@@ -1,8 +1,5 @@
-
-
-
 language: node_js
-node_js: "8"
+node_js: "12"
 
 env:
   global:
@@ -26,6 +23,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --no-install-recommends -y bsdtar; fi # needed for pacman
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install --no-install-recommends -y rpm; fi # needed for rpm
+  - npm install -g npm@latest
 
 
 install:
@@ -33,7 +31,7 @@ install:
 
 
 before_script:
-  - npm audit — json >> $TRAVIS_BUILD_DIR/audit/report.json || true
+  - npm audit --json >> $TRAVIS_BUILD_DIR/audit/report.json || true
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export DISPLAY=:99.0; fi
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
   #- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sleep 3; fi
