@@ -50,7 +50,7 @@ script:
   - node --version
   - npm --version
   - npm test
-  - npm run audit
+  - npm audit
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run build-linux; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run build-mac; fi
 
