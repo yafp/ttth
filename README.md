@@ -51,15 +51,11 @@ Please see the supported [services](docs/SERVICES.md) for more details.
 
 
 ## ui
-ttth comes with several themes. The readme shows only exemplary two of them.
+ttth comes with several themes. The readme shows only exemplary only the default theme.
 
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
 *Default theme*
-
-![ui_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dark.png)
-
-*Dark theme*
 
 Please see the [themes list](docs/THEMES.md) for more details.
 

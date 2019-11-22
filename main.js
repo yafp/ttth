@@ -13,12 +13,15 @@ const defaultUserDataPath = app.getPath("userData"); // for: storing window posi
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
 
-const jquery = require("jquery"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
-const fontAwesome = require("@fortawesome/fontawesome-free"); // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
-//const bootstrap = require("bootstrap");  // not really needed to require at this spot, but it mutes npm-check regarding NOTUSED
+require("v8-compile-cache"); // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 
-// via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
-require("v8-compile-cache");
+// The following requires are not really needed
+// but it mutes 'npm-check' regarding NOTUSED
+//
+require("jquery"); 
+require("@fortawesome/fontawesome-free"); 
+require("popper.js");
+//require('bootstrap'); // this breaks everything
 
 
 // ----------------------------------------------------------------------------
@@ -35,12 +38,8 @@ require("./app/js/ttth/crashReporting.js");
 let mainWindow;
 let configWindow;
 
-
 let verbose;
 verbose = false;
-
-
-
 
 
 // ----------------------------------------------------------------------------
@@ -61,7 +60,9 @@ function writeLog(logType, logMessage)
 
     // configure: logging to console (default)
     log.transports.console.level = false;
-    if(verbose === true) // enable output if verbose parameter is given
+
+    // enable output to console if verbose parameter is given
+    if(verbose === true) 
     {
         log.transports.console.level = true;
     }
@@ -135,14 +136,14 @@ function checkArguments()
             switch (process.argv[key])
             {
                 case "verbose":
-                case "debug":
-                    log.info("[M] Enabling verbose/debug mode");
                     verbose = true;
+                    log.info("[M] Enabling verbose/debug mode");
+                    writeLog("info", "checkArguments ::: Enabling verbose mode");
                     break;
 
                 default:
                     // nothing to do here
-                    log.warn("[M] Ignoring unsupported parameter: " + process.argv[key]);
+                    log.warn("[M] Ignoring unsupported parameter: _" + process.argv[key] + "_.");
                     break;
             }
         }
@@ -157,8 +158,9 @@ function checkArguments()
 */
 function createTray()
 {
-    let tray = null;
+    writeLog("info", "createTray ::: Starting to create a tray item");
 
+    let tray = null;
     tray = new Tray(path.join(__dirname, "app/img/tray/tray_default.png"));
 
     const contextMenu = Menu.buildFromTemplate([
@@ -231,7 +233,7 @@ function createTray()
     tray.setToolTip("ttth");
     tray.setContextMenu(contextMenu);
 
-    writeLog("info", "Finished creating tray");
+    writeLog("info", "createTray ::: Finished creating tray");
 
     // Call from renderer: Change Tray Icon to UnreadMessages
     ipcMain.on("changeTrayIconToUnreadMessages", function() {
@@ -256,11 +258,11 @@ function createTray()
 
     // Call from renderer: Option: DisableTray
     ipcMain.on("disableTray", function() {
-        writeLog("info", "Disabling tray (ipcMain)");
+        writeLog("info", "createTray ::: Disabling tray (ipcMain)");
         tray.destroy();
         if(tray.isDestroyed() === true)
         {
-            writeLog("info", "Disabling tray was working");
+            writeLog("info", "createTray ::: Disabling tray was working");
         }
         else
         {
@@ -276,8 +278,10 @@ function createTray()
 * @summary Creates the main window  of the app
 * @description Creates the main window, restores window position and size of possible
 */
-function createWindow ()
+function createWindow()
 {
+    writeLog("info", "createWindow ::: Starting to create the application windows");
+
     // Check last window position and size from user data
     var windowWidth;
     var windowHeight;
@@ -299,10 +303,10 @@ function createWindow ()
         windowPositionX = data.bounds.x;
         windowPositionY = data.bounds.y;
 
-        writeLog("info", "Got window position and size information from _" + customUserDataPath + "_.");
+        writeLog("info", "createWindow ::: Got last window position and size information from _" + customUserDataPath + "_.");
     }
     catch(e) {
-        writeLog("warn", "No window position and size information found in _" + customUserDataPath + "_. Using fallback values");
+        writeLog("warn", "createWindow ::: No last window position and size information found in _" + customUserDataPath + "_. Using fallback values");
 
         // set some default values for window size
         windowWidth = 800;
@@ -324,26 +328,29 @@ function createWindow ()
         icon: path.join(__dirname, "app/img/icon/icon.png"),
         webPreferences: {
             nodeIntegration: true,
-
-            webSecurity: true,
-            experimentalFeatures: false,
-
+            webSecurity: true, // introduced in 1.8.0
+            experimentalFeatures: false, // introduced in 1.8.0
             webviewTag: true, // # see #37
             devTools: true, // should be possible to open them
             partition: "ttth",
         }
     });
 
+    writeLog("info", "createWindow ::: Finished creating the mainWindow");
+
     // Restore window position if possible
     //
     // requirements: found values in .ttthMainWindowPosSize.json from the previous session
     if ( (typeof windowPositionX !== "undefined") && (typeof windowPositionY !== "undefined") )
     {
+        writeLog("info", "createWindow ::: Restoring last stored window-position of mainWindow");
         mainWindow.setPosition(windowPositionX, windowPositionY);
     }
 
     // and load the html of the app.
-    mainWindow.loadFile("app/mainWindow.html");
+    //mainWindow.loadFile("app/mainWindow.html");
+    mainWindow.loadFile("./app/mainWindow.html");
+    writeLog("info", "createWindow ::: Loading mainWindow.html to mainWindow");
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -353,50 +360,53 @@ function createWindow ()
     {
         mainWindow.show();
         mainWindow.focus();
-        writeLog("info", "mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
+        writeLog("info", "createWindow ::: mainWindow is now ready, so show it and then focus it (event: ready-to-show)");
 
         // check network access
         checkNetworkConnectivity();
     });
 
-
-    // When dom is ready - set window title
-    mainWindow.webContents.once("dom-ready", () => {
-        writeLog("info", "mainwWindow DOM is now ready (event: dom-ready)");
+    // 
+    mainWindow.on("will-finish-launching", function()
+    {
+        writeLog("info", "createWindow ::: mainWindow will finish launching (event: will-finish-launching)");
     });
 
+    // When dom is ready
+    mainWindow.webContents.once("dom-ready", () => {
+        writeLog("info", "createWindow ::: mainwWindow DOM is now ready (event: dom-ready)");
+    });
 
     // When page title gets changed
     mainWindow.webContents.once("page-title-updated", () => {
-        writeLog("info", "mainWindow got new title (event: page-title-updated)");
+        writeLog("info", "createWindow ::: mainWindow got new title (event: page-title-updated)");
     });
-
 
     // when the app is shown
     mainWindow.on("show", function()
     {
-        writeLog("info", "mainWindow is visible (event: show)");
+        writeLog("info", "createWindow ::: mainWindow is visible (event: show)");
     });
 
 
     // when the app loses focus / aka blur
     mainWindow.on("blur", function()
     {
-        writeLog("info", "mainWindow lost focus (event: blur)");
+        writeLog("info", "createWindow ::: mainWindow lost focus (event: blur)");
     });
 
 
     // when the app gets focus
     mainWindow.on("focus", function()
     {
-        writeLog("info", "mainWindow got focus (event: focus)");
+        writeLog("info", "createWindow ::: mainWindow got focus (event: focus)");
     });
 
 
     // when the app goes fullscreen
     mainWindow.on("enter-full-screen", function()
     {
-        writeLog("info", "mainWindow is now in fullscreen (event: enter-full-screen)");
+        writeLog("info", "createWindow ::: mainWindow is now in fullscreen (event: enter-full-screen)");
     });
 
 
@@ -419,48 +429,48 @@ function createWindow ()
     // when the app gets hidden
     mainWindow.on("hide", function()
     {
-        writeLog("info", "mainWindow is now hidden (event: hide)");
+        writeLog("info", "createWindow ::: mainWindow is now hidden (event: hide)");
     });
 
 
     // when the app gets maximized
     mainWindow.on("maximize", function()
     {
-        writeLog("info", "mainWindow is now maximized (event: maximized)");
+        writeLog("info", "createWindow ::: mainWindow is now maximized (event: maximized)");
     });
 
 
     // when the app gets unmaximized
     mainWindow.on("unmaximize", function()
     {
-        writeLog("info", "mainWindow is now unmaximized (event: unmaximized)");
+        writeLog("info", "createWindow ::: mainWindow is now unmaximized (event: unmaximized)");
     });
 
 
     // when the app gets minimized
     mainWindow.on("minimize", function()
     {
-        writeLog("info", "mainWindow is now minimized (event: minimize)");
+        writeLog("info", "createWindow ::: mainWindow is now minimized (event: minimize)");
     });
 
 
     // when the app gets restored from minimized mode
     mainWindow.on("restore", function()
     {
-        writeLog("info", "mainWindow is now restored (event: restore)");
+        writeLog("info", "createWindow ::: mainWindow is now restored (event: restore)");
     });
 
 
     mainWindow.on("app-command", function()
     {
-        writeLog("info", "mainWindow got app-command (event: app-command)");
+        writeLog("info", "createWindow ::: mainWindow got app-command (event: app-command)");
     });
 
 
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
     {
-        writeLog("info", "mainWindow will close (event: close)");
+        writeLog("info", "createWindow ::: mainWindow will close (event: close)");
 
         // get window position and size
         var data = {
@@ -491,14 +501,14 @@ function createWindow ()
         // when you should delete the corresponding element.
         mainWindow = null;
 
-        writeLog("info", "mainWindow is now closed (event: closed)");
+        writeLog("info", "createWindow ::: mainWindow is now closed (event: closed)");
     });
 
 
     // When the app is unresponsive
     mainWindow.on("unresponsive", function ()
     {
-        writeLog("error", "mainWindow is now unresponsive (event: unresponsive)");
+        writeLog("error", "createWindow ::: mainWindow is now unresponsive (event: unresponsive)");
 
         // show alert message
         const { dialog } = require("electron");
@@ -520,14 +530,14 @@ function createWindow ()
     // When the app gets responsive again
     mainWindow.on("responsive", function ()
     {
-        writeLog("info", "mainWindow is now responsive (event: responsive)");
+        writeLog("info", "createWindow ::: mainWindow is now responsive (event: responsive)");
     });
 
 
     // When the app is crashed
     mainWindow.webContents.on("crashed", function ()
     {
-        writeLog("info", "mainWindow crashed (event: crashed)");
+        writeLog("info", "createWindow ::: mainWindow crashed (event: crashed)");
 
         // show alert message
         const { dialog } = require("electron");
@@ -549,7 +559,7 @@ function createWindow ()
     // Call from renderer: Reload mainWindow
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
-        writeLog("info", "mainWindow is now reloaded (ipcMain)");
+        writeLog("info", "createWindow ::: mainWindow is now reloaded (ipcMain)");
     });
 
 
@@ -558,11 +568,11 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "storage");
         if (shell.openItem(customUserDataPath) === true)
         {
-            writeLog("info", "ServiceConfigs: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+            writeLog("info", "createWindow ::: ServiceConfigs: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
         }
         else
         {
-            writeLog("warn", "ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+            writeLog("warn", "createWindow ::: ServiceConfigs: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
 
@@ -572,11 +582,11 @@ function createWindow ()
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserSettings");
         if (shell.openItem(customUserDataPath) === true)
         {
-            writeLog("info", "UserSettings: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
+            writeLog("info", "createWindow ::: UserSettings: Opened the folder _" + customUserDataPath + "_ which contains all user-configured services (ipcMain)");
         }
         else
         {
-            writeLog("warn", "UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
+            writeLog("warn", "createWindow ::: UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
 
@@ -592,17 +602,17 @@ function createWindow ()
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
-            writeLog("info", "Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
+            writeLog("info", "createWindow ::: Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
 
-        writeLog("info", "Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
+        writeLog("info", "createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
     });
 
 
     // Call from renderer ::: createNewGlobalShortcut
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
-        writeLog("info", "Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the service/tab: _" + targetTab + "_.");
+        writeLog("info", "createWindow ::: Shortcuts: Creating a new shortcut: _" + shortcut + "_ for the service/tab: _" + targetTab + "_.");
 
         const ret = globalShortcut.register(shortcut, () => {
             writeLog("info", "Shortcut: _" + shortcut + "_ was pressed.");
@@ -638,12 +648,15 @@ function createWindow ()
         }
     });
 
+    writeLog("info", "createWindow ::: Finished creating configWindow");
+
     // load html form to the window
     configWindow.loadFile("app/configWindow.html");
+    writeLog("info", "createWindow ::: Loaded configWindow.html to configWindow");
 
     // hide menubar
     configWindow.setMenuBarVisibility(false);
-
+    writeLog("info", "createWindow ::: Hiding menubar of configWindow");
 
     // Emitted when the window gets a close event.(close VS closed)
     configWindow.on("close", function (event)
@@ -652,20 +665,17 @@ function createWindow ()
         configWindow.hide(); // just hide it - so it can re-opened
     });
 
-
     // Emitted when the window is ready to be shown
     configWindow.on("ready-to-show", function (event)
     {
         writeLog("info", "configWindow is now ready to show (event: ready-to-show)");
     });
 
-
     // Emitted when the window is shown
     configWindow.on("show", function (event)
     {
         writeLog("info", "configWindow is now shown (event: show)");
     });
-
 
     // Call from renderer: show configure-single-service window for a new service
     ipcMain.on("showConfigureSingleServiceWindowNew", (event, arg) => {
@@ -676,7 +686,6 @@ function createWindow ()
         configWindow.webContents.send("serviceToCreate", arg);
     });
 
-
     // Call from renderer: show configure-single-service window
     ipcMain.on("showConfigureSingleServiceWindow", (event, arg) => {
         writeLog("info", "configWindow preparing for service editing (ipcMain)");
@@ -686,19 +695,19 @@ function createWindow ()
         configWindow.webContents.send("serviceToConfigure", arg);
     });
 
-
     // Call from renderer: hide configure-single-service window
     ipcMain.on("closeConfigureSingleServiceWindow", (event) => {
         configWindow.hide(); // hide window
         writeLog("info", "configWindow is now hidden (ipcMain)");
     });
 
-
     // Tray: RecreateTray - Gets called from renderer
     ipcMain.on("recreateTray", function() {
         writeLog("info", "Recreating tray (ipcMain)");
         createTray();
     });
+
+    writeLog("info", "createWindow ::: Finished creating mainWindow and configWindow");
 }
 
 
@@ -710,8 +719,12 @@ function createWindow ()
 */
 function forceSingleAppInstance()
 {
+    writeLog("info", "forceSingleAppInstance ::: Checking if there is only 1 instance of ttth");
+
     if (!gotTheLock)
     {
+        writeLog("error", "forceSingleAppInstance ::: There is already another instance of tttth");
+
         // quit the second instance
         app.quit();
     }
@@ -750,21 +763,18 @@ function forceSingleAppInstance()
 //
 app.on("ready", function ()
 {
+    checkArguments(); // check input arguments
     writeLog("info", "app got ready signal (event: ready)");
-    forceSingleAppInstance();
-    checkArguments();
-    createWindow();
-    createTray();
-
+    forceSingleAppInstance(); // check for single instance
+    createWindow(); // create the application UI
+    createTray(); // create the tray
 });
-
 
 // Emitted while app tries to do a basic auth (https://electronjs.org/docs/api/app#event-login)
 app.on("login", function ()
 {
     writeLog("info", "app tries to do basic auth (event: login)");
 });
-
 
 // Emitted before the application starts closing its windows.
 app.on("before-quit", function ()
@@ -867,8 +877,7 @@ app.on("activate", function ()
     }
 });
 
-
-
+// Emitted when a new webContents is created.
 // Try to set some values while creating new webviews. See: https://electronjs.org/docs/tutorial/security
 //
 app.on("web-contents-created", (event, contents) => {
@@ -890,7 +899,52 @@ app.on("web-contents-created", (event, contents) => {
         //event.preventDefault()
     //}
   })
-})
+});
+
+// Emitted when a new browserWindow is created.
+//
+app.on("browser-window-created", function ()
+{
+    writeLog("info", "app created a browser window (event: browser-window-created)");
+});
+
+// Emitted when the application has finished basic startup. 
+//
+app.on("will-finish-launching", function ()
+{
+    writeLog("info", "app will finish launching (event: will-finish-launching)");
+});
+
+// Emitted when the renderer process of webContents crashes or is killed.
+//
+app.on("renderer-process-crashed", function ()
+{
+    writeLog("error", "app is realizing a crashed renderer process (event: renderer-process-crashed)");
+});
+
+// Emitted when the GPU process crashes or is killed.
+//
+app.on("gpu-process-crashed", function ()
+{
+    writeLog("error", "app is realizing a crashed gpu process (event: gpu-process-crashed)");
+});
+
+// Emitted whenever there is a GPU info update.
+//
+app.on("gpu-info-update", function ()
+{
+    writeLog("info", "app is realizing a GPU info update (event: gpu-info-update)");
+});
+
+// Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior 
+// with event.preventDefault() and call callback(true).
+//
+app.on("certificate-error", function ()
+{
+    writeLog("warn", "app failed to verify the cert (event: certificate-error)");
+});
+
+
 
 
 process.on("uncaughtException", (err, origin) => {
