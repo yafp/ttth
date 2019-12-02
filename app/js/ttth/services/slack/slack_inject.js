@@ -16,7 +16,8 @@ function serviceSlackGetUnreadMessageCount()
     const badges=document.querySelectorAll(indirectSelector+" > .p-channel_sidebar__badge");
     for(const badge of badges)
     {
-        const i=parseInt(badge.innerHTML);direct+=isNaN(i)?0:i
+        const i = parseInt(badge.innerHTML);
+        direct+=isNaN(i)?0:i;
     }
 
     console.log("serviceSlackGetUnreadMessageCount ::: Total Slack chats with unread messages: " + direct);
