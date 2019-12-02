@@ -24,11 +24,12 @@ crashReporter.start({
 const Sentry = require("@sentry/electron");
 Sentry.init({
     dsn: "https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940"
-    //release: "ttth@1.8.0"
 });
 //
 // simple way to force a crash:
 //myUndefinedFunction();
+
+Sentry.captureMessage("Init");
 
 
 // ----------------------------------------------------------------------------
@@ -37,3 +38,6 @@ Sentry.init({
 //
 //const unhandled = require("electron-unhandled");
 //unhandled();
+
+
+

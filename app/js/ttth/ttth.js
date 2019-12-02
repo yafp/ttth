@@ -445,7 +445,7 @@ function readLocalUserSetting(key, optional=false)
         {
             writeLog("info", "initSettingsPage ::: Setting Theme is configured to: _" + value + "_.");
 
-            if((value === null) | (value === undefined))
+            if((value === null) | (value === 'undefined'))
             {
                 // fallback to default
                 settingActivateUserColorCss("mainWindow_default.css");
@@ -611,19 +611,6 @@ function settingsSelectServiceToAddChanged()
 
         writeLog("info", "settingsSelectServiceToAddChanged ::: Enabled the add-service button.");
     }
-    /*
-    else // this code should never be triggered - might be deleteable.
-    {
-        // disable the add button
-        $("#bt_addNewService").prop("disabled", true);
-
-        // change button type to success
-        $("#bt_addNewService").removeClass();
-        $("#bt_addNewService").addClass("btn btn-secondary btn-sm");
-
-        writeLog("info", "settingsSelectServiceToAddChanged ::: Disabled the add-service button.");
-    }
-    */
 }
 
 
@@ -759,6 +746,36 @@ function updateTrayIconStatus()
     }
 
 }
+
+
+/**
+* @name doAnimateServiceIcon
+* @summary Starts or stops the animation of the service tab icon
+* @description Adds or removes a class to the service icon in the related service tab.
+* @param doOrDont - Boolean. True = enable animation, false = stop the animation.
+* @param serviceId - The id of the related service
+*/
+function doAnimateServiceIcon(doOrDont, serviceId)
+{
+    // Font Awesome: Animating icons:
+    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
+
+    if (doOrDont)
+    {
+        // start to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).addClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Started to animate the icon of the service _" + serviceId + "_.");
+    }
+    else
+    {
+        // stop to spin the service icon in the tabmenu
+        $( "#icon_" + serviceId ).removeClass( "fa-spin" );
+
+        writeLog("info", "doAnimateServiceIcon ::: Stopped animating the icon of the service _" + serviceId + "_.");
+    }
+}
+
 
 /**
 * @name updateServiceBadge
@@ -1034,8 +1051,8 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
 
                     // show the noty dialog
                     n.show();
-                } // its https://
-                else
+                } 
+                else // its https://
                 {
                     shell.openExternal(event.url);
                 }
@@ -1045,35 +1062,6 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     // /WebView Event: new-window / clicking links
 
     writeLog("info", "eventListenerForSingleService ::: End for service: _" + serviceId + "_.");
-}
-
-
-/**
-* @name doAnimateServiceIcon
-* @summary Starts or stops the animation of the service tab icon
-* @description Adds or removes a class to the service icon in the related service tab.
-* @param doOrDont - Boolean. True = enable animation, false = stop the animation.
-* @param serviceId - The id of the related service
-*/
-function doAnimateServiceIcon(doOrDont, serviceId)
-{
-    // Font Awesome: Animating icons:
-    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
-
-    if (doOrDont)
-    {
-        // start to spin the service icon in the tabmenu
-        $( "#icon_" + serviceId ).addClass( "fa-spin" );
-
-        writeLog("info", "doAnimateServiceIcon ::: Started to animate the icon of the service _" + serviceId + "_.");
-    }
-    else
-    {
-        // stop to spin the service icon in the tabmenu
-        $( "#icon_" + serviceId ).removeClass( "fa-spin" );
-
-        writeLog("info", "doAnimateServiceIcon ::: Stopped animating the icon of the service _" + serviceId + "_.");
-    }
 }
 
 
@@ -1367,6 +1355,20 @@ function checkSupportedOperatingSystem()
 
 
 /**
+* @name openURL
+* @summary Opens an url in browser
+* @description Opens a given url in default browser. This is pretty slow, but got no better solution so far.
+* @param url - URL string which contains the target url
+*/
+function openURL(url)
+{
+    const {shell} = require("electron");
+    writeLog("info", "openURL ::: Trying to open the url: " + url);
+    shell.openExternal(url);
+}
+
+
+/**
 * @name openReleasesOverview
 * @summary Opens the ttth release page
 * @description Opens the url https://github.com/yafp/ttth/releases in the default browser. Used in searchUpdate().
@@ -1495,19 +1497,6 @@ function validateConfiguredDefaultView()
     readLocalUserSetting("settingDefaultView");
 }
 
-
-/**
-* @name openURL
-* @summary Opens an url in browser
-* @description Opens a given url in default browser. This is pretty slow, but got no better solution so far.
-* @param url - URL string which contains the target url
-*/
-function openURL(url)
-{
-    const {shell} = require("electron");
-    writeLog("info", "openURL ::: Trying to open the url: " + url);
-    shell.openExternal(url);
-}
 
 
 /**
@@ -1678,11 +1667,11 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 else // ...even - add to existing row - in col 2
@@ -1692,12 +1681,12 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 serviceCount = serviceCount +1;
@@ -1844,7 +1833,6 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
     // Parsing url and extract domain for Persist-handling of webview
     var serviceDomain = getDomain(serviceUrl);
 
-
     // add new list item to unordner list (tabs/menu)
     //
     //$('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
@@ -1859,22 +1847,23 @@ function addServiceTab(serviceId, serviceType, serviceName, serviceIcon, service
 
     // add webview  to new tab
     //
-    // FIXME: right now all services are using a partition for persistent data - only Whatsapp not - as i get a Chrome 49+ needed error after enabling it.
     if(serviceType === "whatsapp")
     {
-        // using no partition - thats plain stupid...
+        // Whatsapp needs 
+        // - a specific User Agent
+        // - no partition
         $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>" );
     }
     else
     {
-        // Using partition:
         if(serviceInjectCode === "") // no inject code
         {
             $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + "></webview>" );
         }
         else // got injectCode, preload it
         {
-            $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
+            //$( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
+            $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " partition=persist:"+ serviceDomain + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + " ></webview>" );
         }
     }
 
@@ -2011,7 +2000,7 @@ function settingsToggleEnableStatusOfSingleUserService(configuredUserServiceConf
             $("#selectDefaultView").append(new Option(name, configuredUserServiceConfigName));
 
             writeLog("info", "settingsToggleEnableStatusOfSingleUserService ::: Service _" + configuredUserServiceConfigName + "_ is now enabled.");
-            showNoty("success", "Enabled the service " + configuredUserServiceConfigName);
+            showNoty("success", "Enabled the service <b>" + configuredUserServiceConfigName + "</b>.");
         }
 
         // update the config of the configured service (status)
@@ -2277,8 +2266,6 @@ function localizeUserInterface()
         writeLog("warn", "localizeUserInterface ::: Overwritten user language in dev environment to: " + userLang);
     }
 
-    
-
     var i18next = require("i18next");
     var Backend = require("i18next-sync-fs-backend");
 
@@ -2335,42 +2322,6 @@ function localizeUserInterface()
             var node = $(this), key = node.attr("i18n-value");
             node.attr("value", i18next.t(key));
         });
-    });
-}
-
-/**
-* @name onAfterReadyMainWindow
-* @summary Executed 1 sec after onReady code is executed
-* @description This method is responsible for the second stage of loading & initializing.
-*/
-function onAfterReadyMainWindow()
-{
-    // call code here that you want to run after all $(document).ready() calls have run
-    updateGlobalServicesShortcuts();
-
-    // validate default view
-    validateConfiguredDefaultView();
-
-    // Configure click-handler for navigation/tabs
-    $("#myTabs a").click(function (link)
-    {
-        var target = link.currentTarget.innerText;
-
-        // remove leading space
-        if(target.substr(0,1) === " ")
-        {
-            target = target.substr(1);
-        }
-
-        console.log("ready ::: Switched to tab: _" + target + "_.");
-
-        // do page-specific things
-        /*
-        if(target === "Photos")
-        {
-            // needs a reload to display the webview properly
-        }
-        */
     });
 }
 
@@ -2591,6 +2542,27 @@ function updateAllUserServiceConfigurations()
     });
 }
 
+/**
+* @name executeBeforeReady
+* @summary Executed before onReady
+* @description launcher for several init methods before jquerys ready signal. Gets called from mainWindow.html
+*/
+function executeBeforeReady()
+{
+    // check operating system
+    checkSupportedOperatingSystem();
+
+    // init the custom titlebar - see #115
+    initTitlebar();
+
+    // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
+    updateAllUserServiceConfigurations();
+
+    // start periodic network checker
+    checkNetworkConnectivityPeriodic(10000); // 10.000 milliseconds = 10 seconds
+
+    writeLog("info", "executeBeforeReady ::: Finished.");
+}
 
 
 /**
@@ -2601,10 +2573,10 @@ function updateAllUserServiceConfigurations()
 function onReadyMainWindow()
 {
     // init the custom titlebar - see #115
-    initTitlebar();
+    //initTitlebar();
 
     // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
-    updateAllUserServiceConfigurations();
+    //updateAllUserServiceConfigurations();
 
     // load the configured user services
     loadEnabledUserServices();
@@ -2613,22 +2585,59 @@ function onReadyMainWindow()
     initSettingsPage();
 
     // check operating system
-    checkSupportedOperatingSystem();
+    //checkSupportedOperatingSystem();
+
+    // start periodic network checker
+    //checkNetworkConnectivityPeriodic(10000); // 10.000 milliseconds = 10 seconds
 
     // check for updates
-    searchUpdate();
+    //searchUpdate();
 
     // Translate using i18next
     localizeUserInterface();
-
-    // start periodic network checker
-    checkNetworkConnectivityPeriodic(10000); // 10.000 milliseconds = 10 seconds
 
     // execute some things later ...
     setTimeout(function()
     {
         onAfterReadyMainWindow();
     }, 1000);
+
+    writeLog("info", "onReadyMainWindow ::: Finished.");
+}
+
+
+/**
+* @name onAfterReadyMainWindow
+* @summary Executed 1 sec after onReady code is executed
+* @description This method is responsible for the second stage of loading & initializing.
+*/
+function onAfterReadyMainWindow()
+{
+    // update global shortcuts for all loaded / enabled services
+    updateGlobalServicesShortcuts();
+
+    // validate default view
+    validateConfiguredDefaultView();
+
+    // Configure click-handler for navigation/tabs
+    $("#myTabs a").click(function (link)
+    {
+        var target = link.currentTarget.innerText;
+
+        // remove leading space
+        if(target.substr(0,1) === " ")
+        {
+            target = target.substr(1);
+        }
+
+        console.log("ready ::: Switched to tab: _" + target + "_.");
+
+    });
+
+    // check for updates
+    searchUpdate();
+
+    writeLog("info", "onAfterReadyMainWindow ::: Finished.");
 }
 
 
