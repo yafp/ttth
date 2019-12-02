@@ -1,31 +1,31 @@
-// -----------------------------------------------------------------------------
-// DEFINE CONSTANTS AND VARIABLES
-// -----------------------------------------------------------------------------
-const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut, crashReporter } = require("electron");
+// Start measuring startup time
+console.time('init')
 
+
+// -----------------------------------------------------------------------------
+// REQUIRE
+// -----------------------------------------------------------------------------
+const {app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require("electron");
+
+const v8compileCache = require("v8-compile-cache"); // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 const log = require("electron-log"); // for: logging to file
 const shell = require("electron").shell; // for: opening external urls in default browser
 const isOnline = require("is-online"); // for online connectivity checks
-const AutoLaunch = require("auto-launch"); // for autostart
 const path = require("path");
 const fs = require("fs");
-const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
-const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const openAboutWindow = require("about-window").default; // for: about-window
 
-require("v8-compile-cache"); // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
-
-// The following requires are not really needed
-// but it mutes 'npm-check' regarding NOTUSED
-//
+// The following requires are not really needed - but it mutes 'npm-check' regarding NOTUSED
 require("jquery"); 
 require("@fortawesome/fontawesome-free"); 
 require("popper.js");
-//require('bootstrap'); // this breaks everything
+// CAUTION: jquery, fontawesome and popper might cost startup time
+//
+//require('bootstrap'); // this breaks everything, whyever
 
 
 // ----------------------------------------------------------------------------
-// Error Handling
+// ERROR-HANDLING
 // ----------------------------------------------------------------------------
 //
 require("./app/js/ttth/crashReporting.js");
@@ -33,20 +33,33 @@ require("./app/js/ttth/crashReporting.js");
 
 
 
+// -----------------------------------------------------------------------------
+// VARIABLES
+// -----------------------------------------------------------------------------
+
 // Keep a global reference of the window objects,
 // if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-let configWindow;
+let mainWindow = null;
+let configWindow = null;
 
-let verbose;
-verbose = false;
+const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
+const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
+
+let verbose = false;
 
 
-// ----------------------------------------------------------------------------
-// menu.js
-// ----------------------------------------------------------------------------
-require("./menu").createMenu(); // generate the application menu
+// project-urls
+let urlGitHubGeneral = "https://github.com/yafp/ttth";
+let urlGitHubIssues = "https://github.com/yafp/ttth/issues";
+let urlGitHubChangelog = "https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md";
+let urlGitHubFAQ = "https://github.com/yafp/ttth/blob/master/docs/FAQ.md";
+let urlGitHubReleases = "https://github.com/yafp/ttth/releases";
 
+
+
+// -----------------------------------------------------------------------------
+// FUNCTIONS
+// -----------------------------------------------------------------------------
 
 /**
 * @name writeLog
@@ -55,11 +68,10 @@ require("./menu").createMenu(); // generate the application menu
 */
 function writeLog(logType, logMessage)
 {
-    // configure: logging to file
-    log.transports.file.level = true;
-
-    // configure: logging to console (default)
-    log.transports.console.level = false;
+    // configure
+    //
+    log.transports.file.level = true; // logging to file
+    log.transports.console.level = false; // logging to console (default)
 
     // enable output to console if verbose parameter is given
     if(verbose === true) 
@@ -70,6 +82,7 @@ function writeLog(logType, logMessage)
     // add prefix for all logs from [M]ain
     logMessage = "[M] " + logMessage;
 
+    // do log
     switch (logType)
     {
         case "info":
@@ -165,30 +178,6 @@ function createTray()
 
     const contextMenu = Menu.buildFromTemplate([
         {
-            id: "about",
-            label: "About",
-            click: function () {
-                openAboutWindow({
-                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
-                    open_devtools: false,
-                    use_version_info: true,
-                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
-                    {
-                        autoHideMenuBar: true,
-                        titleBarStyle: "hidden",
-                        minimizable: false, // not implemented on linux
-                        maximizable: false, // not implemented on linux
-                        movable: false, // not implemented on linux
-                        resizable: false,
-                        alwaysOnTop: true,
-                        fullscreenable: false,
-                        skipTaskbar: false
-                    }
-                });
-            },
-            enabled: true
-        },
-        {
             // Window focus
             id: "show",
             label: "Show",
@@ -272,7 +261,6 @@ function createTray()
 }
 
 
-
 /**
 * @name createWindow
 * @summary Creates the main window  of the app
@@ -348,12 +336,8 @@ function createWindow()
     }
 
     // and load the html of the app.
-    //mainWindow.loadFile("app/mainWindow.html");
     mainWindow.loadFile("./app/mainWindow.html");
     writeLog("info", "createWindow ::: Loading mainWindow.html to mainWindow");
-
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools()
 
     // show the formerly hidden main window as it is fully ready now
     mainWindow.on("ready-to-show", function()
@@ -364,6 +348,9 @@ function createWindow()
 
         // check network access
         checkNetworkConnectivity();
+
+        // Stop measuring startup time
+        console.timeEnd('init')
     });
 
     // 
@@ -509,21 +496,7 @@ function createWindow()
     mainWindow.on("unresponsive", function ()
     {
         writeLog("error", "createWindow ::: mainWindow is now unresponsive (event: unresponsive)");
-
-        // show alert message
-        const { dialog } = require("electron");
-        const options = {
-            type: "error",
-            buttons: ["OK"],
-            defaultId: 2,
-            title: "Alert",
-            message: "ttth seems unresponsive",
-            detail: "Consider restarting the app",
-        };
-
-        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-            //console.log(response);
-        });
+        showDialog("error", "Alert", "ttth seems unresponsive", "Consider restarting the app");
     });
 
 
@@ -538,21 +511,7 @@ function createWindow()
     mainWindow.webContents.on("crashed", function ()
     {
         writeLog("info", "createWindow ::: mainWindow crashed (event: crashed)");
-
-        // show alert message
-        const { dialog } = require("electron");
-        const options = {
-            type: "error",
-            buttons: ["OK"],
-            defaultId: 2,
-            title: "Alert",
-            message: "ttth just crashed",
-            detail: "Consider reporting this issue",
-        };
-
-        dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-            //console.log(response);
-        });
+        showDialog("error", "Alert", "ttth just crashed", "Consider reporting this issue");
     });
 
 
@@ -595,15 +554,18 @@ function createWindow()
     ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
     {
         // doesnt work - whyever
-        //globalShortcut.unregisterAll();
+        globalShortcut.unregisterAll();
+        writeLog("info", "createWindow ::: Shortcuts: Deleting all global service shortcut at once.");
 
         // delete all global shortcuts
+        /*
         var i;
         for (i = 1; i <= numberOfEnabledServices;  i++)
         {
             globalShortcut.unregister("CmdOrCtrl+" + i);
             writeLog("info", "createWindow ::: Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
+        */
 
         writeLog("info", "createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
     });
@@ -711,6 +673,34 @@ function createWindow()
 }
 
 
+/**
+* @name showDialog
+* @summary Shows a dialog
+* @description Displays a dialog
+* @param dialogType - Can be "none", "info", "error", "question" or "warning"
+* @param dialogTitle - The title text
+* @param dialogMessage - The message of the dialog
+* @param dialogDetail - The detail text
+*/
+function showDialog(dialogType, dialogTitle, dialogMessage, dialogDetail)
+{
+    // https://electronjs.org/docs/api/dialog
+    const { dialog } = require("electron");
+
+    const options = {
+        type: dialogType,
+        buttons: ["OK"],
+        defaultId: 2,
+        title: dialogTitle,
+        message: dialogMessage,
+        detail: dialogDetail,
+    };
+
+    dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+            //console.log(response);
+    });
+}
+
 
 /**
 * @name forceSingleAppInstance
@@ -753,6 +743,373 @@ function forceSingleAppInstance()
 }
 
 
+
+function createMenu()
+{
+    // Create a custom menu
+    var menu = Menu.buildFromTemplate([
+
+    // Menu: File
+    {
+        label: "File",
+        submenu: [
+        // Settings
+        {
+            label: "Settings",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("showSettings");
+            },
+            accelerator: "CmdOrCtrl+,"
+        },
+        // Separator
+        {
+            type: "separator"
+        },
+        // Exit
+        {
+            role: "quit",
+            label: "Exit",
+            click() {
+                app.quit();
+            },
+            accelerator: "CmdOrCtrl+Q"
+        }
+    ]
+    },
+
+    // Menu: Edit
+    {
+        label: "Edit",
+        submenu: [
+        {
+            label: "Undo",
+            accelerator: "CmdOrCtrl+Z",
+            selector: "undo:"
+        },
+        {
+            label: "Redo",
+            accelerator: "Shift+CmdOrCtrl+Z",
+            selector: "redo:"
+        },
+        {
+            type: "separator"
+        },
+        {
+            label: "Cut",
+            accelerator: "CmdOrCtrl+X",
+            selector: "cut:"
+        },
+        {
+            label: "Copy",
+            accelerator: "CmdOrCtrl+C",
+            selector: "copy:"
+        },
+        {
+            label: "Paste",
+            accelerator: "CmdOrCtrl+V",
+            selector: "paste:"
+        },
+        {
+            label: "Select All",
+            accelerator: "CmdOrCtrl+A",
+            selector: "selectAll:"
+        }
+    ]
+    },
+
+    // Menu: View
+    {
+        label: "View",
+        submenu: [
+        {
+            label: "Next Service",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("nextTab");
+            },
+            accelerator: "CmdOrCtrl+right"
+        },
+        {
+            label: "Previous Service",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("previousTab");
+            },
+            accelerator: "CmdOrCtrl+left"
+        },
+        {
+            type: "separator"
+        },
+        {
+            role: "reload",
+            label: "Reload",
+            click(item, mainWindow) {
+                mainWindow.reload();
+            },
+            accelerator: "CmdOrCtrl+R"
+        },
+        {
+            label: "Reload current service",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("reloadCurrentService");
+            },
+            accelerator: "CmdOrCtrl+S",
+            enabled: true
+        }
+    ]
+    },
+
+    // Menu: Window
+    {
+        label: "Window",
+        submenu: [
+        {
+            role: "togglefullscreen",
+            label: "Toggle Fullscreen",
+            click(item, mainWindow) {
+                if(mainWindow.isFullScreen())
+                {
+                    mainWindow.setFullScreen(false);
+                }
+                else
+                {
+                    mainWindow.setFullScreen(true);
+                }
+
+            },
+            accelerator: "F11" // is most likely predefined on osx - doesnt work
+        },
+        {
+            role: "hide",
+            label: "Hide",
+            click(item, mainWindow) {
+                mainWindow.hide();
+                //mainWindow.reload();
+            },
+            accelerator: "CmdOrCtrl+H",
+            enabled: true
+        },
+        {
+            role: "minimize",
+            label: "Minimize",
+            click(item, mainWindow) {
+                if(mainWindow.isMinimized())
+                {
+                    //mainWindow.restore();
+                }
+                else
+                {
+                    mainWindow.minimize();
+                }
+            },
+            accelerator: "CmdOrCtrl+M",
+        },
+        {
+            label: "Maximize",
+            click(item, mainWindow) {
+                if(mainWindow.isMaximized())
+                {
+                    mainWindow.unmaximize();
+                }
+                else
+                {
+                    mainWindow.maximize();
+                }
+            },
+            accelerator: "CmdOrCtrl+K",
+        }
+    ]
+    },
+
+    // Menu: Help
+    {
+        role: "help",
+        label: "Help",
+        submenu: [
+        // About
+        {
+            role: "about",
+            label: "About",
+            click() {
+                openAboutWindow({
+                    icon_path: path.join(__dirname, "app/img/about/icon_about.png"),
+                    open_devtools: false,
+                    use_version_info: true,
+                    win_options:  // https://github.com/electron/electron/blob/master/docs/api/browser-window.md#new-browserwindowoptions
+                    {
+                        autoHideMenuBar: true,
+                        titleBarStyle: "hidden",
+                        minimizable: false, // not implemented on linux
+                        maximizable: false, // not implemented on linux
+                        movable: false, // not implemented on linux
+                        resizable: false,
+                        alwaysOnTop: true,
+                        fullscreenable: false,
+                        skipTaskbar: false
+                    }
+                });
+
+            },
+        },
+        {
+            label: "Homepage",
+            click() {
+                shell.openExternal(urlGitHubGeneral);
+            },
+            accelerator: "F1"
+        },
+        // report issue
+        {
+            label: "Report issue",
+            click() {
+                shell.openExternal(urlGitHubIssues);
+            },
+            accelerator: "F2"
+        },
+        // open changelog
+        {
+            label: "Changelog",
+            click() {
+                shell.openExternal(urlGitHubChangelog);
+            },
+            accelerator: "F3"
+        },
+        // open FAQ
+        {
+            label: "FAQ",
+            click() {
+                shell.openExternal(urlGitHubFAQ);
+            },
+            accelerator: "F4"
+        },
+        // open Releases
+        {
+            label: "Releases",
+            click() {
+                shell.openExternal(urlGitHubReleases);
+            },
+            accelerator: "F5"
+        },
+        {
+            type: "separator"
+        },
+        // Update
+        {
+            label: "Search updates",
+            click(item, mainWindow) {
+                mainWindow.webContents.send("startSearchUpdates");
+            },
+            enabled: true,
+            accelerator: "F9"
+        },
+        {
+            type: "separator"
+        },
+
+
+        // SubMenu Console
+        {
+            label: "Console",
+            submenu: [
+            {
+                    id: "HelpConsoleCurrentService",
+                    label: "Console for current service",
+                    click(item, mainWindow) {
+                        mainWindow.webContents.send("openDevToolForCurrentService");
+                    },
+                    enabled: true,
+                    accelerator: "F10"
+                },
+                // Console
+                {
+                    id: "HelpConsole",
+                    label: "Console",
+                    click(item, mainWindow) {
+                        mainWindow.webContents.toggleDevTools();
+                    },
+                    enabled: true,
+                    accelerator: "F12"
+                },
+            ]
+        },
+        {
+            type: "separator"
+        },
+        // SubMenu of help
+        {
+            label: "Maintenance",
+            submenu: [
+            // Clear cache
+            {
+                id: "ClearCache",
+                label: "Clear cache",
+                click(item, mainWindow) {
+                    var chromeCacheDir = path.join(app.getPath("userData"), "Cache"); 
+                    if(fs.existsSync(chromeCacheDir)) 
+                    {
+                        var files = fs.readdirSync(chromeCacheDir);
+                        for(var i=0; i<files.length; i++) 
+                        {
+                            var filename = path.join(chromeCacheDir, files[i]);
+                            if(fs.existsSync(filename)) 
+                            {
+                                try {
+                                    fs.unlinkSync(filename);
+                                }
+                                catch(e) {
+                                    console.log(e);
+                                }
+                            }
+                        }
+                    }
+
+                    mainWindow.reload();
+                },
+                enabled: true
+            }
+            ]
+        }
+        ]
+    }
+    ]);
+
+
+    // use the menu
+    Menu.setApplicationMenu(menu);
+
+
+    // OPTIONAL & currently not in use:
+    //
+    // Disable some menu-elements - depending on the platform
+    //
+    /*
+    var os = require("os");
+    Menu.getApplicationMenu().items; // all the items
+
+    // macos specific 
+    
+    if(os.platform() === "darwin") 
+    {
+        // see #21 - disable the menuitem Toggle-menubar
+        //var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
+        //item.enabled = false;
+    }
+    
+
+    // linux  specific 
+    if(os.platform() === "linux") 
+    {
+        // nothing to do so far
+    }
+
+    // windows specific 
+    if(os.platform() === "windows") 
+    {
+        // nothing to do so far
+    }
+    */
+
+}
+
+
 // -----------------------------------------------------------------------------
 // LETS GO
 // -----------------------------------------------------------------------------
@@ -767,6 +1124,7 @@ app.on("ready", function ()
     writeLog("info", "app got ready signal (event: ready)");
     forceSingleAppInstance(); // check for single instance
     createWindow(); // create the application UI
+    createMenu(); // create the application menu
     createTray(); // create the tray
 });
 
@@ -898,7 +1256,7 @@ app.on("web-contents-created", (event, contents) => {
     //{
         //event.preventDefault()
     //}
-  })
+  });
 });
 
 // Emitted when a new browserWindow is created.
@@ -943,8 +1301,6 @@ app.on("certificate-error", function ()
 {
     writeLog("warn", "app failed to verify the cert (event: certificate-error)");
 });
-
-
 
 
 process.on("uncaughtException", (err, origin) => {
