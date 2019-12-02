@@ -24,6 +24,10 @@
 * Minify / Uglify / similar: 
   * http://maxgfeller.com/blog/2016/08/30/electron-browserify/
 * Colors in log: https://github.com/Marak/colors.js
+* V8 Snapshots: 
+  * http://peterforgacs.github.io/2018/09/12/How-to-create-a-V8-snapshot-of-your-javascript-file/
+  * https://www.npmjs.com/package/electron-mksnapshot
+  * https://blog.atom.io/2017/04/18/improving-startup-time.html
 
 
 ### Reminder

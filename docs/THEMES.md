@@ -20,13 +20,25 @@ ttth offers a small amount of themes.
 
 
 ### dracula
- * missing
+
+![ui_dracula](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dracula.png)
+
+*Dracula theme*
 
 ### nord
-* missing
+
+![ui_nord](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_nord.png)
+
+*Nord theme*
 
 ### solarized dark
-* missing
+
+![ui_solarized_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_solarized_dark.png)
+
+*Solarized Dark*
 
 ### solarized light
-* missing
+
+![ui_solarized_light](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_solarized_light.png)
+
+*Solarized Light*

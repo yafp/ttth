@@ -41,7 +41,7 @@ The following categories are used:
   * New theme: 'Solarized Dark'
   * New theme: 'Solarized Light'
 * Added animations to service-tab icons. See [#146](https://github.com/yafp/ttth/issues/146)
-* Added warning to url handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
+* Added warning to url click handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
 
 ####  ```Changed```
 * Update check: The download link for new releases now opens in the default browser (previously in a new electron window). See [#150](https://github.com/yafp/ttth/issues/150)
@@ -55,10 +55,12 @@ The following categories are used:
     * Node: 12.8.1
 * Dependencies
   * Updated about-window from 1.13.1 to 1.13.2
-  * Updated electron-builder from 21.2.0 to 22.1.0
+  * Updated bootstrap from 4.3.1 to 4.4.1
+  * Updated electron-builder from 21.2.0 to 22.2.0
   * Updated electron-packager from 14.0.6 to 14.1.1
   * Updated electron-log from 3.0.8 to 3.0.9
-  * Updated eslint from 6.5.1 to 6.6.0
+  * Updated eslint from 6.5.1 to 6.7.2
+  * Updated is-online from 8.2.0 to 8.2.1
   * Updated i18next from 17.2.0 to 19.0.1
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
@@ -82,6 +84,7 @@ The following categories are used:
 
 #### ```Removed```
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
+* Removed the 'about' menuitem from the tray. See [#151](https://github.com/yafp/ttth/issues/151)
 
 #### ```Fixed```
 * Fixed issue regarding non-existing mainWindow on macOS. See [#134](https://github.com/yafp/ttth/issues/134)
