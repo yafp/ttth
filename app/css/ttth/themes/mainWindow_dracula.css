@@ -27,4 +27,7 @@
     --color-buttonDanger: #ff5555; /*  */
     --color-buttonSecondary: #6272a4;
     --color-buttonDark: #282a36;
+
+    /* font awesome icons */
+    --color-fontAwesomeIcons: #f8f8f2;
 }

@@ -25,4 +25,7 @@
     --color-buttonDanger: #d9534f; /* red */
     --color-buttonSecondary: gray;
     --color-buttonDark: #292b2c;
+
+    /* font awesome icons */
+    --color-fontAwesomeIcons: #000000;
 }
