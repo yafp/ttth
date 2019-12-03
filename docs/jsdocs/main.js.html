@@ -27,7 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>// Start measuring startup time
-console.time('init')
+console.time("init");
 
 
 // -----------------------------------------------------------------------------
@@ -189,6 +189,35 @@ function checkArguments()
             }
         }
     }
+}
+
+
+/**
+* @name showDialog
+* @summary Shows a dialog
+* @description Displays a dialog
+* @param dialogType - Can be "none", "info", "error", "question" or "warning"
+* @param dialogTitle - The title text
+* @param dialogMessage - The message of the dialog
+* @param dialogDetail - The detail text
+*/
+function showDialog(dialogType, dialogTitle, dialogMessage, dialogDetail)
+{
+    // https://electronjs.org/docs/api/dialog
+    const { dialog } = require("electron");
+
+    const options = {
+        type: dialogType,
+        buttons: ["OK"],
+        defaultId: 2,
+        title: dialogTitle,
+        message: dialogMessage,
+        detail: dialogDetail,
+    };
+
+    dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+            //console.log(response);
+    });
 }
 
 
@@ -378,10 +407,10 @@ function createWindow()
         checkNetworkConnectivity();
 
         // Stop measuring startup time
-        console.timeEnd('init')
+        console.timeEnd("init");
     });
 
-    // 
+    // Emitted when the application has finished basic startup. 
     mainWindow.on("will-finish-launching", function()
     {
         writeLog("info", "createWindow ::: mainWindow will finish launching (event: will-finish-launching)");
@@ -403,13 +432,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is visible (event: show)");
     });
 
-
     // when the app loses focus / aka blur
     mainWindow.on("blur", function()
     {
         writeLog("info", "createWindow ::: mainWindow lost focus (event: blur)");
     });
-
 
     // when the app gets focus
     mainWindow.on("focus", function()
@@ -417,13 +444,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow got focus (event: focus)");
     });
 
-
     // when the app goes fullscreen
     mainWindow.on("enter-full-screen", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now in fullscreen (event: enter-full-screen)");
     });
-
 
     // when the app goes leaves fullscreen
     mainWindow.on("leave-full-screen", function()
@@ -432,7 +457,6 @@ function createWindow()
         //writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
-
     // when the app gets resized
     mainWindow.on("resize", function()
     {
@@ -440,13 +464,11 @@ function createWindow()
         //writeLog("info", "mainWindow got resized (event: resize)");
     });
 
-
     // when the app gets hidden
     mainWindow.on("hide", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now hidden (event: hide)");
     });
-
 
     // when the app gets maximized
     mainWindow.on("maximize", function()
@@ -454,13 +476,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is now maximized (event: maximized)");
     });
 
-
     // when the app gets unmaximized
     mainWindow.on("unmaximize", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now unmaximized (event: unmaximized)");
     });
-
 
     // when the app gets minimized
     mainWindow.on("minimize", function()
@@ -468,19 +488,16 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is now minimized (event: minimize)");
     });
 
-
     // when the app gets restored from minimized mode
     mainWindow.on("restore", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now restored (event: restore)");
     });
 
-
     mainWindow.on("app-command", function()
     {
         writeLog("info", "createWindow ::: mainWindow got app-command (event: app-command)");
     });
-
 
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
@@ -507,7 +524,6 @@ function createWindow()
         });
     });
 
-
     // Emitted when the window is closed.
     mainWindow.on("closed", function ()
     {
@@ -519,7 +535,6 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is now closed (event: closed)");
     });
 
-
     // When the app is unresponsive
     mainWindow.on("unresponsive", function ()
     {
@@ -527,13 +542,11 @@ function createWindow()
         showDialog("error", "Alert", "ttth seems unresponsive", "Consider restarting the app");
     });
 
-
     // When the app gets responsive again
     mainWindow.on("responsive", function ()
     {
         writeLog("info", "createWindow ::: mainWindow is now responsive (event: responsive)");
     });
-
 
     // When the app is crashed
     mainWindow.webContents.on("crashed", function ()
@@ -691,42 +704,13 @@ function createWindow()
         writeLog("info", "configWindow is now hidden (ipcMain)");
     });
 
-    // Tray: RecreateTray - Gets called from renderer
+    // Call from renderer: Tray: RecreateTray
     ipcMain.on("recreateTray", function() {
         writeLog("info", "Recreating tray (ipcMain)");
         createTray();
     });
 
     writeLog("info", "createWindow ::: Finished creating mainWindow and configWindow");
-}
-
-
-/**
-* @name showDialog
-* @summary Shows a dialog
-* @description Displays a dialog
-* @param dialogType - Can be "none", "info", "error", "question" or "warning"
-* @param dialogTitle - The title text
-* @param dialogMessage - The message of the dialog
-* @param dialogDetail - The detail text
-*/
-function showDialog(dialogType, dialogTitle, dialogMessage, dialogDetail)
-{
-    // https://electronjs.org/docs/api/dialog
-    const { dialog } = require("electron");
-
-    const options = {
-        type: dialogType,
-        buttons: ["OK"],
-        defaultId: 2,
-        title: dialogTitle,
-        message: dialogMessage,
-        detail: dialogDetail,
-    };
-
-    dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-            //console.log(response);
-    });
 }
 
 
@@ -742,9 +726,7 @@ function forceSingleAppInstance()
     if (!gotTheLock)
     {
         writeLog("error", "forceSingleAppInstance ::: There is already another instance of tttth");
-
-        // quit the second instance
-        app.quit();
+        app.quit(); // quit the second instance
     }
     else
     {
@@ -771,7 +753,11 @@ function forceSingleAppInstance()
 }
 
 
-
+/**
+* @name createMenu
+* @summary Creates the application menu
+* @description Creates the application menu
+*/
 function createMenu()
 {
     // Create a custom menu
@@ -903,7 +889,7 @@ function createMenu()
                 }
 
             },
-            accelerator: "F11" // is most likely predefined on osx - doesnt work
+            accelerator: "F11" // is most likely predefined on osx - results in: doesnt work on osx
         },
         {
             role: "hide",
@@ -977,6 +963,7 @@ function createMenu()
 
             },
         },
+        // open homepage
         {
             label: "Homepage",
             click() {
@@ -1032,30 +1019,30 @@ function createMenu()
             type: "separator"
         },
 
-
         // SubMenu Console
         {
             label: "Console",
             submenu: [
+            // console for current service
             {
-                    id: "HelpConsoleCurrentService",
-                    label: "Console for current service",
-                    click(item, mainWindow) {
-                        mainWindow.webContents.send("openDevToolForCurrentService");
-                    },
-                    enabled: true,
-                    accelerator: "F10"
+                id: "HelpConsoleCurrentService",
+                label: "Console for current service",
+                click(item, mainWindow) {
+                    mainWindow.webContents.send("openDevToolForCurrentService");
                 },
-                // Console
-                {
-                    id: "HelpConsole",
-                    label: "Console",
-                    click(item, mainWindow) {
-                        mainWindow.webContents.toggleDevTools();
-                    },
-                    enabled: true,
-                    accelerator: "F12"
+                enabled: true,
+                accelerator: "F10"
+            },
+            // Console
+            {
+                id: "HelpConsole",
+                label: "Console",
+                click(item, mainWindow) {
+                    mainWindow.webContents.toggleDevTools();
                 },
+                enabled: true,
+                accelerator: "F12"
+            },
             ]
         },
         {
@@ -1065,7 +1052,7 @@ function createMenu()
         {
             label: "Maintenance",
             submenu: [
-            // Clear cache
+            // Clear cache in userData
             {
                 id: "ClearCache",
                 label: "Clear cache",
@@ -1154,6 +1141,8 @@ app.on("ready", function ()
     createWindow(); // create the application UI
     createMenu(); // create the application menu
     createTray(); // create the tray
+
+    app.setBadgeCount(999);
 });
 
 // Emitted while app tries to do a basic auth (https://electronjs.org/docs/api/app#event-login)
@@ -1350,13 +1339,13 @@ process.on("uncaughtException", (err, origin) => {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#executeBeforeReady">executeBeforeReady</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showDialog">showDialog</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#executeBeforeReady">executeBeforeReady</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#initTitlebar">initTitlebar</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showDialog">showDialog</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 02 2019 14:15:30 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Dec 03 2019 08:15:21 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
