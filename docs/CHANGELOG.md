@@ -42,6 +42,7 @@ The following categories are used:
   * New theme: 'Solarized Light'
 * Added animations to service-tab icons. See [#146](https://github.com/yafp/ttth/issues/146)
 * Added warning to url click handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
+* Added support for application badge count on macOS. See [#152](https://github.com/yafp/ttth/issues/152)
 
 ####  ```Changed```
 * Update check: The download link for new releases now opens in the default browser (previously in a new electron window). See [#150](https://github.com/yafp/ttth/issues/150)
@@ -50,7 +51,7 @@ The following categories are used:
   * Updated electron from 5.0.11 to 6.1.3. See [#88](https://github.com/yafp/ttth/issues/88)
     * Chrome: 76.0.3809.146
     * Node: 12.4.0
-  * Updated electron from 6.1.3 to 7.1.2. See [#138](https://github.com/yafp/ttth/issues/138)
+  * Updated electron from 6.1.3 to 7.1.3. See [#138](https://github.com/yafp/ttth/issues/138)
     * Chrome: 78.0.3904.113
     * Node: 12.8.1
 * Dependencies

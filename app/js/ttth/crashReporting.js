@@ -12,8 +12,6 @@ crashReporter.start({
 });
 // To simulate a crash - execute: process.crash();
 
-
-
 // ----------------------------------------------------------------------------
 // Error Handling using: sentry (see #106)
 // ----------------------------------------------------------------------------
@@ -31,13 +29,9 @@ Sentry.init({
 
 Sentry.captureMessage("Init");
 
-
 // ----------------------------------------------------------------------------
 // Error Handling using: electron-unhandled (https://github.com/sindresorhus/electron-unhandled)
 // ----------------------------------------------------------------------------
 //
 //const unhandled = require("electron-unhandled");
 //unhandled();
-
-
-

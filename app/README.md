@@ -4,11 +4,4 @@
 
 ## /app/
 
-This folder contains all the app files. This includes:
-
-* CSS
-* Images
-* JavaScripts
-* Translations
-* HTML
-
+This folder contains all the app files.

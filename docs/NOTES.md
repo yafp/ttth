@@ -20,10 +20,8 @@
   * shows download progress on the application icon, 
   * and (on macOS) bounces the Downloads directory in the dock when complete.
 * Automatic contributors handling: https://allcontributors.org/docs/en/bot/configuration
-* Writing to log: Check if that makes sense https://github.com/sindresorhus/electron-timber
 * Minify / Uglify / similar: 
   * http://maxgfeller.com/blog/2016/08/30/electron-browserify/
-* Colors in log: https://github.com/Marak/colors.js
 * V8 Snapshots: 
   * http://peterforgacs.github.io/2018/09/12/How-to-create-a-V8-snapshot-of-your-javascript-file/
   * https://www.npmjs.com/package/electron-mksnapshot
