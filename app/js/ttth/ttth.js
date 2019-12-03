@@ -1,10 +1,9 @@
-
 // ----------------------------------------------------------------------------
 // Error Handling
 // ----------------------------------------------------------------------------
 //
 require("./js/ttth/crashReporting.js");
-//myUndefinedFunctionFromRenderer();
+// myUndefinedFunctionFromRenderer();
 
 
 
@@ -445,7 +444,7 @@ function readLocalUserSetting(key, optional=false)
         {
             writeLog("info", "initSettingsPage ::: Setting Theme is configured to: _" + value + "_.");
 
-            if((value === null) | (value === 'undefined'))
+            if((value === null) | (value === "undefined"))
             {
                 // fallback to default
                 settingActivateUserColorCss("mainWindow_default.css");
@@ -745,6 +744,9 @@ function updateTrayIconStatus()
         readLocalUserSetting("settingUrgentWindow", true);
     }
 
+    // Update the badgeCount of the app. See #152
+    ipcRenderer.send("updateBadgeCount", overallUnreadMessages);
+
 }
 
 
@@ -764,14 +766,12 @@ function doAnimateServiceIcon(doOrDont, serviceId)
     {
         // start to spin the service icon in the tabmenu
         $( "#icon_" + serviceId ).addClass( "fa-spin" );
-
         writeLog("info", "doAnimateServiceIcon ::: Started to animate the icon of the service _" + serviceId + "_.");
     }
     else
     {
         // stop to spin the service icon in the tabmenu
         $( "#icon_" + serviceId ).removeClass( "fa-spin" );
-
         writeLog("info", "doAnimateServiceIcon ::: Stopped animating the icon of the service _" + serviceId + "_.");
     }
 }
@@ -814,7 +814,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
 {
     writeLog("info", "eventListenerForSingleService ::: Adding event listeners for webview: _webview_" + serviceId + "_.");
 
-    // get webview
+    // get webview ( https://electronjs.org/docs/api/webview-tag )
     var webview = document.getElementById("webview_" + serviceId);
 
     // run it periodically
@@ -829,25 +829,23 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     // TODO:
     // add a network-connectivity check for each single service?
 
-
+    // -----------------------------------------
     // adding general webview events (valid for all services)
-    //
-    //
+    // -----------------------------------------
 
     // WebView Event: load-commit (https://electronjs.org/docs/api/webview-tag#event-load-commit)
-    //
+    // Fired when a load has committed. This includes navigation within the current document as well as subframe document-level loads, but does not include asynchronous resource loads.
     webview.addEventListener("load-commit", function()
     {
         writeLog("info", "eventListenerForSingleService ::: load-commit for: _" + serviceId + "_.");
 
         // start to spin the service icon in the tabmenu
-        doAnimateServiceIcon(true, serviceId);
+        //doAnimateServiceIcon(true, serviceId);
     });
 
 
-
     // WebView Event: did-fail-load (https://electronjs.org/docs/api/webview-tag#event-did-fail-load)
-    //
+    // This event is like did-finish-load, but fired when the load failed or was cancelled, e.g. window.stop() is invoked.
     webview.addEventListener("did-fail-load", function()
     {
         writeLog("error", "eventListenerForSingleService ::: did-fail-load for: _" + serviceId + "_.");
@@ -865,7 +863,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     });
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
-    //
+    // Fired when the renderer process is crashed.
     webview.addEventListener("crashed", function(e)
     {
         // stop to spin the service icon in the tabmenu
@@ -877,49 +875,49 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     });
 
     // WebView Event: page-title-updated (https://electronjs.org/docs/api/webview-tag#event-page-title-updated)
-    //
+    // Fired when page title is set during navigation. explicitSet is false when title is synthesized from file url.
     webview.addEventListener("page-title-updated", function()
     {
         writeLog("info", "eventListenerForSingleService ::: page-title-updated for: _" + serviceId + "_.");
     });
 
     // WebView Event: plugin-crashed (https://electronjs.org/docs/api/webview-tag#event-plugin-crashed)
-    //
+    // Fired when a plugin process is crashed.
     webview.addEventListener("plugin-crashed", function()
     {
         writeLog("error", "eventListenerForSingleService ::: plugin-crashed for: _" + serviceId + "_.");
     });
 
     // WebView Event: destroyed (https://electronjs.org/docs/api/webview-tag#event-destroyed)
-    //
+    // Fired when the WebContents is destroyed.
     webview.addEventListener("destroyed", function()
     {
         writeLog("error", "eventListenerForSingleService ::: destroyed for: _" + serviceId + "_.");
     });
 
     // WebView Event: update-target-url (https://electronjs.org/docs/api/webview-tag#event-update-target-url)
-    //
+    // Emitted when mouse moves over a link or the keyboard moves the focus to a link.
     webview.addEventListener("update-target-url", function()
     {
         writeLog("info", "eventListenerForSingleService ::: update-target-url for: _" + serviceId + "_.");
     });
 
     // WebView Event: devtools-opened (htps://electronjs.org/docs/api/webview-tag#event-devtools-opened)
-    //
+    // Emitted when DevTools is opened.
     webview.addEventListener("devtools-opened", function()
     {
         writeLog("info", "eventListenerForSingleService ::: devtools-opened for: _" + serviceId + "_.");
     });
 
     // WebView Event: devtools closed (https://electronjs.org/docs/api/webview-tag#event-devtools-closed)
-    //
-    webview.addEventListener("devtools closed", function()
+    // Emitted when DevTools is closed.
+    webview.addEventListener("devtools-closed", function()
     {
         writeLog("info", "eventListenerForSingleService ::: devtools closed for: _" + serviceId + "_.");
     });
 
     // WebView Event: close (https://electronjs.org/docs/api/webview-tag#event-close)
-    //
+    // Fired when the guest page attempts to close itself.
     webview.addEventListener("close", function()
     {
         writeLog("info", "eventListenerForSingleService ::: close for: _" + serviceId + "_.");
@@ -934,7 +932,7 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
 
 
     // WebView Event: did-start-loading
-    //
+    // Corresponds to the points in time when the spinner of the tab starts spinning.
     webview.addEventListener("did-start-loading", function()
     {
         writeLog("info", "eventListenerForSingleService ::: did-start-loading for: _" + serviceId + "_.");
@@ -943,54 +941,55 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
         doAnimateServiceIcon(true, serviceId);
 
         // Triggering search for unread messages
-    webview.send("request");
+        webview.send("request");
     });
 
 
     // WebView Event: did-finish-load
-    //
+    // Fired when the navigation is done, i.e. the spinner of the tab will stop spinning, and the onload event is dispatched.
     webview.addEventListener("did-finish-load", function()
     {
         writeLog("info", "eventListenerForSingleService ::: did-finish-load for: _" + serviceId + "_.");
 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId);
+    });
 
+    // WebView Event: did-frame-finish-load
+    // Fired when a frame has done navigation.
+    webview.addEventListener("did-frame-finish-load", function()
+    {
+        writeLog("info", "eventListenerForSingleService ::: did-frame-finish-load for: _" + serviceId + "_.");
+
+        // stop to spin the service icon in the tabmenu
+        doAnimateServiceIcon(false, serviceId);
     });
 
 
     // WebView Event: did-stop-loading
-    //
+    // Corresponds to the points in time when the spinner of the tab stops spinning.
     webview.addEventListener("did-stop-loading", function()
     {
         writeLog("info", "eventListenerForSingleService ::: did-stop-loading for: _" + serviceId + "_.");
 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId);
-
-        // Triggering search for unread messages
-        //webview.send("request");
     });
 
     // WebView Event: dom-ready
-    //
+    // Fired when document in the given frame is loaded.
     webview.addEventListener("dom-ready", function()
     {
         writeLog("info", "eventListenerForSingleService ::: DOM-Ready for: _" + serviceId + "_.");
 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId);
-
-            // Triggering search for unread messages
-            //webview.send("request");
     });
 
 
-
-
-
-    // WebView Events for UnreadMessageHandling
-    //
+    // -----------------------------------------
+    // Specific WebView Events for UnreadMessageHandling
+    // -----------------------------------------
     if(enableUnreadMessageHandling === true)
     {
         // WebView Event:  ipc-message
@@ -1008,8 +1007,9 @@ function eventListenerForSingleService(serviceId, enableUnreadMessageHandling = 
     // /WebView Events for UnreadMessageHandling
 
 
-    // WebView Event: new-window / clicking links
-    //
+    // -----------------------------------------
+    // Specific WebView Event: new-window / clicking links
+    // -----------------------------------------
     if(enableLinkSupport === true)
     {
         webview.addEventListener("new-window", function(event)
@@ -1667,11 +1667,11 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="ttthServiceIcon ' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] + ' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + serviceCount ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="ttthServiceIcon ' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 else // ...even - add to existing row - in col 2
@@ -1681,12 +1681,12 @@ function loadConfiguredUserServices()
 
                     if(data[key]["serviceEnableStatus"] === true) // show enabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="ttthServiceIcon ' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"]+' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_'+ key +'" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
 
                     }
                     else // show disabled configured service
                     {
-                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
+                        $( "#conf_" + rowReference  ).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key]["type"] + '" class="ttthServiceIcon ' + data[key]["icon"] +'"></i></div></div><input type="text" class="form-control" id="label_' + data[key]["url"] + '" aria-label="Text input with checkbox" value='+ data[key]["name"] +' title=' + data[key]["url"] + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_'+ key +'" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\''  + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_'+ key +'" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\''  + key + '\');"><i id=statusIconService_'+ key +' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete'+ key +'" title="delete" onClick="deleteConfiguredService(\''  + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>');
                     }
                 }
                 serviceCount = serviceCount +1;
@@ -2566,6 +2566,41 @@ function executeBeforeReady()
 
 
 /**
+* @name onAfterReadyMainWindow
+* @summary Executed 1 sec after onReady code is executed
+* @description This method is responsible for the second stage of loading & initializing.
+*/
+function onAfterReadyMainWindow()
+{
+    // update global shortcuts for all loaded / enabled services
+    updateGlobalServicesShortcuts();
+
+    // validate default view
+    validateConfiguredDefaultView();
+
+    // Configure click-handler for navigation/tabs
+    $("#myTabs a").click(function (link)
+    {
+        var target = link.currentTarget.innerText;
+
+        // remove leading space
+        if(target.substr(0,1) === " ")
+        {
+            target = target.substr(1);
+        }
+
+        console.log("ready ::: Switched to tab: _" + target + "_.");
+
+    });
+
+    // check for updates
+    searchUpdate();
+
+    writeLog("info", "onAfterReadyMainWindow ::: Finished.");
+}
+
+
+/**
 * @name onReadyMainWindow
 * @summary Initialized the application after jquerys ready signal
 * @description launcher for several init methods after jquerys ready signal. Gets called from mainWindow.html
@@ -2605,40 +2640,6 @@ function onReadyMainWindow()
     writeLog("info", "onReadyMainWindow ::: Finished.");
 }
 
-
-/**
-* @name onAfterReadyMainWindow
-* @summary Executed 1 sec after onReady code is executed
-* @description This method is responsible for the second stage of loading & initializing.
-*/
-function onAfterReadyMainWindow()
-{
-    // update global shortcuts for all loaded / enabled services
-    updateGlobalServicesShortcuts();
-
-    // validate default view
-    validateConfiguredDefaultView();
-
-    // Configure click-handler for navigation/tabs
-    $("#myTabs a").click(function (link)
-    {
-        var target = link.currentTarget.innerText;
-
-        // remove leading space
-        if(target.substr(0,1) === " ")
-        {
-            target = target.substr(1);
-        }
-
-        console.log("ready ::: Switched to tab: _" + target + "_.");
-
-    });
-
-    // check for updates
-    searchUpdate();
-
-    writeLog("info", "onAfterReadyMainWindow ::: Finished.");
-}
 
 
 

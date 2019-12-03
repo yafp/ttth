@@ -1,6 +1,5 @@
 // Start measuring startup time
-console.time('init')
-
+console.time("init");
 
 // -----------------------------------------------------------------------------
 // REQUIRE
@@ -13,6 +12,7 @@ const shell = require("electron").shell; // for: opening external urls in defaul
 const isOnline = require("is-online"); // for online connectivity checks
 const path = require("path");
 const fs = require("fs");
+const os = require("os"); // for: check os.platform()
 const openAboutWindow = require("about-window").default; // for: about-window
 
 // The following requires are not really needed - but it mutes 'npm-check' regarding NOTUSED
@@ -23,15 +23,12 @@ require("popper.js");
 //
 //require('bootstrap'); // this breaks everything, whyever
 
-
 // ----------------------------------------------------------------------------
 // ERROR-HANDLING
 // ----------------------------------------------------------------------------
 //
 require("./app/js/ttth/crashReporting.js");
 //myUndefinedFunctionFromMain();
-
-
 
 // -----------------------------------------------------------------------------
 // VARIABLES
@@ -44,9 +41,9 @@ let configWindow = null;
 
 const gotTheLock = app.requestSingleInstanceLock(); // for: single-instance handling
 const defaultUserDataPath = app.getPath("userData"); // for: storing window position and size
+const userOSPlatform = os.platform(); // for BadgeCount support - see #152
 
 let verbose = false;
-
 
 // project-urls
 let urlGitHubGeneral = "https://github.com/yafp/ttth";
@@ -54,8 +51,6 @@ let urlGitHubIssues = "https://github.com/yafp/ttth/issues";
 let urlGitHubChangelog = "https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md";
 let urlGitHubFAQ = "https://github.com/yafp/ttth/blob/master/docs/FAQ.md";
 let urlGitHubReleases = "https://github.com/yafp/ttth/releases";
-
-
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS
@@ -102,7 +97,6 @@ function writeLog(logType, logMessage)
     }
 }
 
-
 /**
 * @name checkNetworkConnectivity
 * @summary Checks if internet is accessible
@@ -125,7 +119,6 @@ function checkNetworkConnectivity()
         }
     })();
 }
-
 
 /**
 * @name checkArguments
@@ -163,6 +156,33 @@ function checkArguments()
     }
 }
 
+/**
+* @name showDialog
+* @summary Shows a dialog
+* @description Displays a dialog
+* @param dialogType - Can be "none", "info", "error", "question" or "warning"
+* @param dialogTitle - The title text
+* @param dialogMessage - The message of the dialog
+* @param dialogDetail - The detail text
+*/
+function showDialog(dialogType, dialogTitle, dialogMessage, dialogDetail)
+{
+    // https://electronjs.org/docs/api/dialog
+    const { dialog } = require("electron");
+
+    const options = {
+        type: dialogType,
+        buttons: ["OK"],
+        defaultId: 2,
+        title: dialogTitle,
+        message: dialogMessage,
+        detail: dialogDetail,
+    };
+
+    dialog.showMessageBox(null, options, (response, checkboxChecked) => {
+            //console.log(response);
+    });
+}
 
 /**
 * @name createTray
@@ -260,7 +280,6 @@ function createTray()
     });
 }
 
-
 /**
 * @name createWindow
 * @summary Creates the main window  of the app
@@ -350,10 +369,10 @@ function createWindow()
         checkNetworkConnectivity();
 
         // Stop measuring startup time
-        console.timeEnd('init')
+        console.timeEnd("init");
     });
 
-    // 
+    // Emitted when the application has finished basic startup. 
     mainWindow.on("will-finish-launching", function()
     {
         writeLog("info", "createWindow ::: mainWindow will finish launching (event: will-finish-launching)");
@@ -375,13 +394,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is visible (event: show)");
     });
 
-
     // when the app loses focus / aka blur
     mainWindow.on("blur", function()
     {
         writeLog("info", "createWindow ::: mainWindow lost focus (event: blur)");
     });
-
 
     // when the app gets focus
     mainWindow.on("focus", function()
@@ -389,13 +406,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow got focus (event: focus)");
     });
 
-
     // when the app goes fullscreen
     mainWindow.on("enter-full-screen", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now in fullscreen (event: enter-full-screen)");
     });
-
 
     // when the app goes leaves fullscreen
     mainWindow.on("leave-full-screen", function()
@@ -404,7 +419,6 @@ function createWindow()
         //writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     });
 
-
     // when the app gets resized
     mainWindow.on("resize", function()
     {
@@ -412,13 +426,11 @@ function createWindow()
         //writeLog("info", "mainWindow got resized (event: resize)");
     });
 
-
     // when the app gets hidden
     mainWindow.on("hide", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now hidden (event: hide)");
     });
-
 
     // when the app gets maximized
     mainWindow.on("maximize", function()
@@ -426,13 +438,11 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is now maximized (event: maximized)");
     });
 
-
     // when the app gets unmaximized
     mainWindow.on("unmaximize", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now unmaximized (event: unmaximized)");
     });
-
 
     // when the app gets minimized
     mainWindow.on("minimize", function()
@@ -440,19 +450,16 @@ function createWindow()
         writeLog("info", "createWindow ::: mainWindow is now minimized (event: minimize)");
     });
 
-
     // when the app gets restored from minimized mode
     mainWindow.on("restore", function()
     {
         writeLog("info", "createWindow ::: mainWindow is now restored (event: restore)");
     });
 
-
     mainWindow.on("app-command", function()
     {
         writeLog("info", "createWindow ::: mainWindow got app-command (event: app-command)");
     });
-
 
     // Emitted before the window is closed.
     mainWindow.on("close", function ()
@@ -479,7 +486,6 @@ function createWindow()
         });
     });
 
-
     // Emitted when the window is closed.
     mainWindow.on("closed", function ()
     {
@@ -487,10 +493,8 @@ function createWindow()
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
-
         writeLog("info", "createWindow ::: mainWindow is now closed (event: closed)");
     });
-
 
     // When the app is unresponsive
     mainWindow.on("unresponsive", function ()
@@ -499,13 +503,11 @@ function createWindow()
         showDialog("error", "Alert", "ttth seems unresponsive", "Consider restarting the app");
     });
 
-
     // When the app gets responsive again
     mainWindow.on("responsive", function ()
     {
         writeLog("info", "createWindow ::: mainWindow is now responsive (event: responsive)");
     });
-
 
     // When the app is crashed
     mainWindow.webContents.on("crashed", function ()
@@ -514,13 +516,11 @@ function createWindow()
         showDialog("error", "Alert", "ttth just crashed", "Consider reporting this issue");
     });
 
-
     // Call from renderer: Reload mainWindow
     ipcMain.on("reloadMainWindow", (event) => {
         mainWindow.reload();
         writeLog("info", "createWindow ::: mainWindow is now reloaded (ipcMain)");
     });
-
 
     // Call from renderer: Open folder with user configured services
     ipcMain.on("openUserServicesConfigFolder", (event) => {
@@ -535,7 +535,6 @@ function createWindow()
         }
     });
 
-
     // Call from renderer: Open folder with user settings
     ipcMain.on("openUserSettingsConfigFolder", (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, "ttthUserSettings");
@@ -548,7 +547,6 @@ function createWindow()
             writeLog("warn", "createWindow ::: UserSettings: Failed to open the folder _" + customUserDataPath + "_ (which contains all user-configured services). (ipcMain)");
         }
     });
-
 
     // Call from renderer ::: deleteAllGlobalServicesShortcut
     ipcMain.on("deleteAllGlobalServicesShortcut", function( arg1, numberOfEnabledServices)
@@ -570,7 +568,6 @@ function createWindow()
         writeLog("info", "createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)");
     });
 
-
     // Call from renderer ::: createNewGlobalShortcut
     ipcMain.on("createNewGlobalShortcut", function(arg1, shortcut, targetTab)
     {
@@ -584,7 +581,51 @@ function createWindow()
         });
     });
 
+    // Call from renderer: should update apps badge count
+    ipcMain.on("updateBadgeCount", (event, arg) => {
 
+        var environmentSupported = false;
+
+        switch(userOSPlatform) // Possible values are 'aix', 'darwin', 'freebsd', 'linux', 'openbsd', 'sunos', and 'win32'.
+        {
+            case "darwin":
+                environmentSupported = true;
+                break;
+
+            case "linux":
+                var checkForUnity = app.isUnityRunning();
+                if(checkForUnity === true)
+                {
+                    environmentSupported = true;
+                }
+                break;
+              
+            default:
+                // do nothing
+        }
+
+        // if the environment supports BadgeCount
+        if(environmentSupported === true)
+        {
+            // check current badge count
+            currentBadgeCount = app.getBadgeCount(); // FIXME: deprecated - Please use 'badgeCount property' instead.
+
+            // if badge count has to be updated - try to update it
+            if(currentBadgeCount !== arg)
+            {
+                didUpdateBadgeCount = app.setBadgeCount(arg); // FIXME: deprecated.- Please use 'badgeCount property' instead.
+                if(didUpdateBadgeCount === true) // updating badge count worked
+                {
+                    writeLog("info", "createWindow ::: Updating application badge count to _" + arg + "_.");
+                }
+                else // updating badge count failed
+                {
+                    writeLog("warn", "createWindow ::: Updating application badge count to _" + arg + "_ failed.");
+                }
+
+            }
+        }
+    });
 
     // *****************************************************************
     // modal window: to allow creating and configuring a single service
@@ -663,7 +704,7 @@ function createWindow()
         writeLog("info", "configWindow is now hidden (ipcMain)");
     });
 
-    // Tray: RecreateTray - Gets called from renderer
+    // Call from renderer: Tray: RecreateTray
     ipcMain.on("recreateTray", function() {
         writeLog("info", "Recreating tray (ipcMain)");
         createTray();
@@ -671,36 +712,6 @@ function createWindow()
 
     writeLog("info", "createWindow ::: Finished creating mainWindow and configWindow");
 }
-
-
-/**
-* @name showDialog
-* @summary Shows a dialog
-* @description Displays a dialog
-* @param dialogType - Can be "none", "info", "error", "question" or "warning"
-* @param dialogTitle - The title text
-* @param dialogMessage - The message of the dialog
-* @param dialogDetail - The detail text
-*/
-function showDialog(dialogType, dialogTitle, dialogMessage, dialogDetail)
-{
-    // https://electronjs.org/docs/api/dialog
-    const { dialog } = require("electron");
-
-    const options = {
-        type: dialogType,
-        buttons: ["OK"],
-        defaultId: 2,
-        title: dialogTitle,
-        message: dialogMessage,
-        detail: dialogDetail,
-    };
-
-    dialog.showMessageBox(null, options, (response, checkboxChecked) => {
-            //console.log(response);
-    });
-}
-
 
 /**
 * @name forceSingleAppInstance
@@ -714,9 +725,7 @@ function forceSingleAppInstance()
     if (!gotTheLock)
     {
         writeLog("error", "forceSingleAppInstance ::: There is already another instance of tttth");
-
-        // quit the second instance
-        app.quit();
+        app.quit(); // quit the second instance
     }
     else
     {
@@ -742,8 +751,11 @@ function forceSingleAppInstance()
     }
 }
 
-
-
+/**
+* @name createMenu
+* @summary Creates the application menu
+* @description Creates the application menu
+*/
 function createMenu()
 {
     // Create a custom menu
@@ -875,7 +887,7 @@ function createMenu()
                 }
 
             },
-            accelerator: "F11" // is most likely predefined on osx - doesnt work
+            accelerator: "F11" // is most likely predefined on osx - results in: doesnt work on osx
         },
         {
             role: "hide",
@@ -949,6 +961,7 @@ function createMenu()
 
             },
         },
+        // open homepage
         {
             label: "Homepage",
             click() {
@@ -1004,30 +1017,30 @@ function createMenu()
             type: "separator"
         },
 
-
         // SubMenu Console
         {
             label: "Console",
             submenu: [
+            // console for current service
             {
-                    id: "HelpConsoleCurrentService",
-                    label: "Console for current service",
-                    click(item, mainWindow) {
-                        mainWindow.webContents.send("openDevToolForCurrentService");
-                    },
-                    enabled: true,
-                    accelerator: "F10"
+                id: "HelpConsoleCurrentService",
+                label: "Console for current service",
+                click(item, mainWindow) {
+                    mainWindow.webContents.send("openDevToolForCurrentService");
                 },
-                // Console
-                {
-                    id: "HelpConsole",
-                    label: "Console",
-                    click(item, mainWindow) {
-                        mainWindow.webContents.toggleDevTools();
-                    },
-                    enabled: true,
-                    accelerator: "F12"
+                enabled: true,
+                accelerator: "F10"
+            },
+            // Console
+            {
+                id: "HelpConsole",
+                label: "Console",
+                click(item, mainWindow) {
+                    mainWindow.webContents.toggleDevTools();
                 },
+                enabled: true,
+                accelerator: "F12"
+            },
             ]
         },
         {
@@ -1037,7 +1050,7 @@ function createMenu()
         {
             label: "Maintenance",
             submenu: [
-            // Clear cache
+            // Clear cache in userData
             {
                 id: "ClearCache",
                 label: "Clear cache",
@@ -1071,10 +1084,8 @@ function createMenu()
     }
     ]);
 
-
     // use the menu
     Menu.setApplicationMenu(menu);
-
 
     // OPTIONAL & currently not in use:
     //
@@ -1084,9 +1095,9 @@ function createMenu()
     var os = require("os");
     Menu.getApplicationMenu().items; // all the items
 
-    // macos specific 
-    
-    if(os.platform() === "darwin") 
+    // macos specific
+
+    if(os.platform() === "darwin")
     {
         // see #21 - disable the menuitem Toggle-menubar
         //var item = Menu.getApplicationMenu().getMenuItemById("ViewToggleMenubar");
@@ -1094,21 +1105,19 @@ function createMenu()
     }
     
 
-    // linux  specific 
-    if(os.platform() === "linux") 
+    // linux  specific
+    if(os.platform() === "linux")
     {
         // nothing to do so far
     }
 
-    // windows specific 
-    if(os.platform() === "windows") 
+    // windows specific
+    if(os.platform() === "windows")
     {
         // nothing to do so far
     }
     */
-
 }
-
 
 // -----------------------------------------------------------------------------
 // LETS GO
@@ -1294,7 +1303,7 @@ app.on("gpu-info-update", function ()
     writeLog("info", "app is realizing a GPU info update (event: gpu-info-update)");
 });
 
-// Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior 
+// Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior
 // with event.preventDefault() and call callback(true).
 //
 app.on("certificate-error", function ()
@@ -1302,13 +1311,12 @@ app.on("certificate-error", function ()
     writeLog("warn", "app failed to verify the cert (event: certificate-error)");
 });
 
-
 process.on("uncaughtException", (err, origin) => {
-  fs.writeSync(
-    process.stderr.fd,
-    `Caught exception: ${err}\n` +
-    `Exception origin: ${origin}`
-  );
+    fs.writeSync(
+        process.stderr.fd,
+        `Caught exception: ${err}\n` +
+        `Exception origin: ${origin}`
+    );
 
-  writeLog("error", "UncaughtException - got error: _" + err + "_ with origin: _" + origin + "_.");
+    writeLog("error", "UncaughtException - got error: _" + err + "_ with origin: _" + origin + "_.");
 });
