@@ -229,3 +229,12 @@ h3
 {
     filter: brightness(75%);
 }
+
+
+/* ########################################################################## */
+/* CUSTOMIZE FONTAWESOME ICON COLOR
+/* ########################################################################## */
+.ttthServiceIcon
+{
+    color: var(--color-fontAwesomeIcons) !important;
+}
