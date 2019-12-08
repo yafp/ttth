@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://wexond.net"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
+</p>
+
+<div align="center">
+  <h1>ttth</h1>
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true)](https://ci.appveyor.com/project/yafp/ttth)
 [![Build Status](https://travis-ci.org/yafp/ttth.svg?branch=master)](https://travis-ci.org/yafp/ttth)
@@ -10,10 +17,8 @@
 [![Merged PRs](https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs)](https://github.com/yafp/ttth/pulls?q=is:pr+is:merged)
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 
+</div>
 
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
-
-# ttth
 
 ## table of contents
 

@@ -16,29 +16,29 @@ ttth offers a small amount of themes.
 
 ![ui_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dark.png)
 
-*Dark theme*
+*Dark theme (introduced in 1.5.0)*
 
 
 ### dracula
 
 ![ui_dracula](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_dracula.png)
 
-*Dracula theme*
+*Dracula theme (introduced in 1.8.0)*
 
 ### nord
 
 ![ui_nord](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_nord.png)
 
-*Nord theme*
+*Nord theme (introduced in 1.8.0)*
 
 ### solarized dark
 
 ![ui_solarized_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_solarized_dark.png)
 
-*Solarized Dark*
+*Solarized Dark (introduced in 1.8.0)*
 
 ### solarized light
 
 ![ui_solarized_light](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_solarized_light.png)
 
-*Solarized Light*
+*Solarized Light (introduced in 1.8.0)*
