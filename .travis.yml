@@ -60,7 +60,7 @@ after_success:
 after_failure:
 
 
-before deploy:
+before_deploy:
 
 
 deploy:
