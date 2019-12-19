@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://wexond.net"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
+  <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
 </p>
 
 <div align="center">

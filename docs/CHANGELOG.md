@@ -26,7 +26,7 @@ The following categories are used:
 
 ***
 
-### ttth 1.8.0 (2019xxyy)
+### ttth 1.8.0 (20191219)
 #### ```Added```
 * Services:
   * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
@@ -51,7 +51,7 @@ The following categories are used:
   * Updated electron from 5.0.11 to 6.1.3. See [#88](https://github.com/yafp/ttth/issues/88)
     * Chrome: 76.0.3809.146
     * Node: 12.4.0
-  * Updated electron from 6.1.3 to 7.1.3. See [#138](https://github.com/yafp/ttth/issues/138)
+  * Updated electron from 6.1.3 to 7.1.6. See [#138](https://github.com/yafp/ttth/issues/138)
     * Chrome: 78.0.3904.113
     * Node: 12.8.1
 * Dependencies
@@ -59,13 +59,13 @@ The following categories are used:
   * Updated bootstrap from 4.3.1 to 4.4.1
   * Updated electron-builder from 21.2.0 to 22.2.0
   * Updated electron-packager from 14.0.6 to 14.1.1
-  * Updated electron-log from 3.0.8 to 3.0.9
+  * Updated electron-log from 3.0.8 to 4.0.0
   * Updated eslint from 6.5.1 to 6.7.2
   * Updated is-online from 8.2.0 to 8.2.1
-  * Updated i18next from 17.2.0 to 19.0.1
+  * Updated i18next from 17.2.0 to 19.0.2
   * Updated mocha from 6.2.1 to 6.2.2
   * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
-  * Updated sentry from 0.17.4 to 1.0.0
+  * Updated sentry from 0.17.4 to 1.1.0
   * Updated spectron from 8.0.0 to 9.0.0
 * CDNs vs NPM. See [#113](https://github.com/yafp/ttth/issues/113)
   * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
@@ -82,10 +82,13 @@ The following categories are used:
 * Notifications: Added more text formating (bold etc.) to notification texts
 * Enabling autostart is no longer possible in non-packaged mode. This should help preventing creating autostart items for electron itself instead of ttth.
 * JsDOC is now included in the dev environment. Should make doc generation easier for others.
+* Javascript: Changed to Standard Javascript style. Using standardx to check the code.
 
 #### ```Removed```
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
 * Removed the 'about' menuitem from the tray. See [#151](https://github.com/yafp/ttth/issues/151)
+* Removed several un-used event listeners for all service-webviews. Slightly reducing the memory footprint 
+* Builds: No more .zip Builds for macOS
 
 #### ```Fixed```
 * Fixed issue regarding non-existing mainWindow on macOS. See [#134](https://github.com/yafp/ttth/issues/134)
