@@ -1,48 +1,38 @@
-const {ipcRenderer} = require("electron");
-
+const { ipcRenderer } = require('electron')
 
 /**
 * @name serviceThreemaGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Threema
 * @description Gets the amount of unread messages of the service Threema
 */
-function serviceThreemaGetUnreadMessageCount()
-{
-    console.log("serviceThreemaGetUnreadMessageCount ::: Checking unread message count");
+function serviceThreemaGetUnreadMessageCount () {
+    console.log('serviceThreemaGetUnreadMessageCount ::: Checking unread message count')
 
-    var unreadCount;
+    var unreadCount
 
-    let newUnread = 0;
-    try
-    {
-        //let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
-        let webClientService = angular.element(document.documentElement).injector().get("WebClientService");
-        let conversations = webClientService.conversations.conversations;
-        conversations.forEach(function(conversation)
-        {
-            newUnread += conversation.unreadCount;
-        });
+    let newUnread = 0
+    try {
+        // let webClientService = angular.element(document.documentElement).injector().get(\'WebClientService\');
+        const webClientService = angular.element(document.documentElement).injector().get('WebClientService')
+        const conversations = webClientService.conversations.conversations
+        conversations.forEach(function (conversation) {
+            newUnread += conversation.unreadCount
+        })
+    } catch (e) {
+        console.log('serviceThreemaGetUnreadMessageCount ::: Catch')
     }
-    catch (e)
-    {
-         console.log("serviceThreemaGetUnreadMessageCount ::: Catch");
-    }
-    
 
-    if (newUnread !== unreadCount)
-    {
-        unreadCount = newUnread;
+    if (newUnread !== unreadCount) {
+        unreadCount = newUnread
 
         // send back from webview to main
-        ipcRenderer.sendToHost(unreadCount.toString());
-        return unreadCount.toString();
+        ipcRenderer.sendToHost(unreadCount.toString())
+        return unreadCount.toString()
     }
 
-    console.log("serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: " + unreadCount);
+    console.log('serviceThreemaGetUnreadMessageCount ::: Total Threema chats with unread messages: ' + unreadCount)
 }
 
-
-ipcRenderer.on("request", function()
-{
-    ipcRenderer.sendToHost(serviceThreemaGetUnreadMessageCount());
-});
+ipcRenderer.on('request', function () {
+    ipcRenderer.sendToHost(serviceThreemaGetUnreadMessageCount())
+})
