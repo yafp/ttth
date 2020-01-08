@@ -1,0 +1,48 @@
+:root {
+    /* 
+        Influenced:                             https://github.com/sindresorhus/hyper-snazzy
+        Color descriptions:                     https://www.colorhexa.com/;
+
+        FOREGROUND
+            Very soft yellow                    #f3f99d
+            Light blue                          #57c7ff
+            Light red                           #ff5c57
+            Soft cyan - lime green              #5af78e
+            Light grayish yellow                #eff0eb
+
+        BACKGROUND:
+            Very dark (mostly black) blue       #1a1c24
+            Very dark grayish blue              #282a36
+            Very dark gray                      #4e4e4e
+    */
+
+    /* body */
+    --color-bodyText: #eff0eb;
+    --color-bodyHeading: #eff0eb; 
+    --color-bodyHeadingBorder: #57c7ff; 
+    --color-bodyBackground: #282a36; 
+
+    /* navigation */
+    --color-navigationText: #eff0eb;
+    --color-navigationBackground: #1a1c24; 
+    --color-navigationBorder: #4e4e4e; 
+    --color-navigationHighlight: #57c7ff;
+    --color-navigationCurrentActive: #57c7ff;
+
+    /* highlight */
+    --color-highlight: #57c7ff;
+
+    /* bootstrap form elements */
+    --color-inputFormsText: #eff0eb; 
+    --color-inputFormsBackground: #1a1c24;
+    --color-inputFormsBorder: #4e4e4e; 
+
+    /* bootstrap buttons */
+    --color-buttonSuccess: #5af78e;
+    --color-buttonDanger: #ff5c57;
+    --color-buttonSecondary: #4e4e4e;
+    --color-buttonDark: #57c7ff;
+
+    /* font awesome icons */
+    --color-fontAwesomeIcons: #eff0eb;
+}
