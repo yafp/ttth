@@ -529,8 +529,8 @@ function createWindow () {
     ipcMain.on('updateBadgeCount', (event, arg) => {
         var environmentSupported = false
 
-        switch (userOSPlatform) // Possible values are 'aix', 'darwin', 'freebsd', 'linux', 'openbsd', 'sunos', and 'win32'.
-        {
+        // Possible values are 'aix', 'darwin', 'freebsd', 'linux', 'openbsd', 'sunos', and 'win32'.
+        switch (userOSPlatform) {
         case 'darwin':
             environmentSupported = true
             break
@@ -578,9 +578,9 @@ function createWindow () {
         titleBarStyle: 'hidden',
         resizable: false,
         width: 600,
-        height: 580,
+        height: 650,
         minWidth: 600,
-        minHeight: 580,
+        minHeight: 650,
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, 'app/img/icon/icon.png'),
         webPreferences: {

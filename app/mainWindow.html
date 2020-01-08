@@ -105,13 +105,15 @@
                             <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="mw_settingsOptionsDescDefaultView" i18n-title="mw_settingsOptionsDescDefaultViewDescription" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <select id="selectDefaultView" name="selectDefaultView" class="ttth_select">
+                                    <select id="selectDefaultView" name="selectDefaultView" class="ttth_select" onchange="settingDefaultViewUpdate()">
                                         <option value="" disabled selected i18n-text="mw_settingsOptionsSelectDefaultView"><!-- i18n --></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="input-group-prepend">
+                                <!--
                                 <button type="button" class="btn btn-success btn-sm" id="bt_updateDefaultView" title="" i18n-title="mw_settingsOptionsButtonTextDefaultViewSet" onClick="settingDefaultViewUpdate();"><i class="fas fa-save"></i></button>
+                                -->
                                 <button type="button" class="btn btn-danger btn-sm" id="bt_resetDefaultView" title="" i18n-title="mw_settingsOptionsButtonTextDefaultViewReset" onClick="settingDefaultViewReset();"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
@@ -128,18 +130,22 @@
                             <input type="text" class="form-control" aria-label="Disabled text input which describes the selectDefaultView option" value="" i18n-value="mw_settingsOptionsDescTheme" i18n-title="mw_settingsOptionsDescThemeDescription" disabled>
                             <div class="input-group-prepend">
                                 <div class="input-group-text">
-                                    <select id="selectTheme" name="selectTheme" class="ttth_select">
+                                    <select id="selectTheme" name="selectTheme" class="ttth_select" onchange="settingThemeUpdate()">
                                         <option value="mainWindow_default.css" i18n-text="mw_settingsOptionsSelectThemeDefault"><!-- i18n --></option>
                                         <option value="mainWindow_dark.css" i18n-text="mw_settingsOptionsSelectThemeDark"><!-- i18n --></option>
                                         <option value="mainWindow_dracula.css" i18n-text="mw_settingsOptionsSelectThemeDracula"><!-- i18n --></option>
                                         <option value="mainWindow_nord.css" i18n-text="mw_settingsOptionsSelectThemeNord"><!-- i18n --></option>
+                                        <option value="mainWindow_snazzy.css" i18n-text="mw_settingsOptionsSelectThemeSnazzy"><!-- i18n --></option>
                                         <option value="mainWindow_solarized_dark.css" i18n-text="mw_settingsOptionsSelectThemeSolarizedDark"><!-- i18n --></option>
                                         <option value="mainWindow_solarized_light.css" i18n-text="mw_settingsOptionsSelectThemeSolarizedLight"><!-- i18n --></option>
+                                        
                                     </select>
                                 </div>
                             </div>
                             <div class="input-group-prepend">
+                                <!--
                                 <button type="button" class="btn btn-success btn-sm" id="bt_updateTheme" title="" i18n-title="mw_settingsOptionsButtonTextThemeSet" onClick="settingThemeUpdate();"><i class="fas fa-save"></i></button>
+                                -->
                                 <button type="button" class="btn btn-danger btn-sm" id="bt_resetTheme" title="" i18n-title="mw_settingsOptionsButtonTextThemeReset" onClick="settingThemeReset();"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
@@ -210,7 +216,6 @@
 
 
 
-
 <script>
 
 // execute instantly
@@ -222,6 +227,5 @@ $( document ).ready(function()
     console.log( "mainWindow.html ::: ready" );
     onReadyMainWindow();
 });
-
 
 </script>

@@ -26,6 +26,9 @@
     <link rel="stylesheet" href="../node_modules/noty/lib/noty.css" >
     <link rel="stylesheet" href="../node_modules/noty/lib/themes/bootstrap-v4.css">
     <script type="text/javascript" src="../node_modules/noty/lib/noty.min.js" async defer></script>
+
+    <!-- ttth -->
+    <script type="text/javascript" src="js/ttth/modules/ttthUtils.js" async defer></script>
 </head>
 
 <body>
@@ -49,7 +52,7 @@
                 <input type="text" class="form-control form-control-sm" id="input_serviceId" aria-describedby="emailHelp" placeholder="Service ID" disabled>
             </div>
 
-            <!-- Service type -->
+            <!-- HIDDEN: Service type -->
             <div class="form-group row" hidden>
                 <label for="input_serviceType" class="col-form-label col-form-label-sm">Service type</label>
                 <input type="text" class="form-control form-control-sm" id="input_serviceType" aria-describedby="emailHelp" placeholder="Service Type" disabled>
@@ -59,7 +62,6 @@
             <div class="form-group row">
                 <label for="input_serviceName" class="col-form-label col-form-label-sm" i18n-text="cw_labelName"><!-- Name --></label>
                 <input type="text" class="form-control form-control-sm" id="input_serviceName" aria-describedby="emailHelp" placeholder="Service name" required>
-                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelNameHelp"><!-- The name is used for the service tab.--></small>
             </div>
 
             <!-- service icon -->
@@ -74,14 +76,24 @@
                         <button type="button" class="btn btn-secondary btn-sm" onclick="openURL('https://fontawesome.com/icons?d=gallery&m=free')" i18n-text="cw_buttonShowIcons" formnovalidate><!-- Show icons --></button>
                     </div>
                 </div>
-                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelIconHelp"><!--The actual url for the service. --></small>
             </div>
 
             <!-- Service url -->
             <div class="form-group row">
                 <label for="input_serviceUrl" class="col-form-label col-form-label-sm" i18n-text="cw_labelUrl">URL</label>
                 <input type="url" class="form-control form-control-sm" id="input_serviceUrl" aria-describedby="emailHelp" placeholder="https://example.com" required>
-                <small id="emailHelp" class="form-text text-muted" i18n-text="cw_labelUrlHelp"><!--The actual url for the service. --></small>
+            </div>
+
+            <!-- user agent default -->
+            <div class="form-group row">
+                <label for="input_userAgentDefault" class="col-form-label col-form-label-sm" i18n-text="cw_labelUserAgentDefault">UserAgent Default</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceUserAgentDefault" aria-describedby="emailHelp" placeholder="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0" disabled>
+            </div>
+
+            <!-- user agent custom -->
+            <div class="form-group row">
+                <label for="input_userAgentCustom" class="col-form-label col-form-label-sm" i18n-text="cw_labelUserAgentCustom">UserAgent Custom</label>
+                <input type="text" class="form-control form-control-sm" id="input_serviceUserAgentCustom" aria-describedby="emailHelp" placeholder="" >
             </div>
 
             <!-- Hidden: Service inject code -->
@@ -124,8 +136,6 @@
 $( document ).ready(function()
 {
     console.log( "configWindow.html ::: ready!" );
-
-    // Translate using i18next
-    localizeUserInterface();
+    localizeUserInterface(); // Translate using i18next
 });
 </script>

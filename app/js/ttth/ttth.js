@@ -1,44 +1,72 @@
+'use strict'
+
 // ----------------------------------------------------------------------------
-// Error Handling
+// IMPORT
+// ----------------------------------------------------------------------------
+const utils = require('./js/ttth/modules/ttthUtils.js')
+
+// ----------------------------------------------------------------------------
+// ERROR HANDLING
 // ----------------------------------------------------------------------------
 //
 require('./js/ttth/crashReporting.js')
 // myUndefinedFunctionFromRenderer();
 
+// ----------------------------------------------------------------------------
+// VARIABLES
+// ----------------------------------------------------------------------------
+//
+let myTitlebar
+
 /**
-* @name initTitlebar
+* @name titlebarInit
 * @summary Init the titlebar for the frameless mainWindow
 * @description Creates a custom titlebar for the mainWindow using custom-electron-titlebar (https://github.com/AlexTorresSk/custom-electron-titlebar).
 */
-function initTitlebar () {
+function titlebarInit () {
     // NOTE:
-    // - "custom-electron-titlebar" is now an archived repo
-    // - switched to fork of it "pj-custom-electron-titlebar"
-    const customTitlebar = require('pj-custom-electron-titlebar')
+    // - "custom-electron-titlebar" VS
+    // - "pj-custom-electron-titlebar"
+    //
+    var customTitlebar = require('custom-electron-titlebar')
+    // var customTitlebar = require('pj-custom-electron-titlebar')
 
-    const myTitlebar = new customTitlebar.Titlebar({
+    myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: 'center', // position of window title
-        icon: 'img/icon/icon.png',
+        icon: 'img/titlebar/icon_titlebar.png',
         drag: true, // whether or not you can drag the window by holding the click on the title bar.
         backgroundColor: customTitlebar.Color.fromHex('#171717'),
+        // backgroundColor: customTitlebar.Color.fromHex(newColor),
         minimizable: true,
         maximizable: true,
         closeable: true,
         itemBackgroundColor: customTitlebar.Color.fromHex('#525252') // hover color
     })
 
-    // change font size of application name in titlebar
-    $('.window-title').css('font-size', '13px') // https://github.com/AlexTorresSk/custom-electron-titlebar/issues/24
+    // font size of custom-titlebar is set in /app/css/ttth/mainWindow.css
+}
 
-    // Try to change color of menu
-    //
-    // works - but results in follow error:         myTitlebar.updateBackground("#ff0000");
-    // followerror: titleBackground.isLigher is not a function
-    // myTitlebar.updateBackground("#ff00ff");
+/**
+* @name titlebarUpdateBackground
+* @summary Update the color of the custom titlebar
+* @description Update the color of the custom titlebar
+* @param newColor - A hex color string
+*/
+function titlebarUpdateBackground (newColor) {
+    const customTitlebar = require('pj-custom-electron-titlebar')
+    myTitlebar.updateBackground(customTitlebar.Color.fromHex(newColor))
 
-    // Trying to update the title
-    //
-    // myTitlebar.updateTitle("TTTH");
+    writeLog('info', 'titlebarUpdateBackground ::: Updated the titlebar background')
+}
+
+/**
+* @name titlebarDispose
+* @summary Removes the custom titlbar
+* @description Removes the custom titlbar. Shouldnt be used - as the UI looks broken then.
+*/
+function titlebarDispose () {
+    myTitlebar.dispose()
+    writeLog('warn', 'titlebarDispose ::: Disposed the entire titlebar')
 }
 
 /**
@@ -185,9 +213,7 @@ function isWindows () {
 * @param serviceName - Name of the service
 */
 function switchToService (serviceName) {
-    // activate the related tab
-    $('#target_' + serviceName).trigger('click')
-
+    $('#target_' + serviceName).trigger('click') // activate the related tab
     writeLog('info', 'switchToService ::: Switched to tab: _' + serviceName + '_.')
 }
 
@@ -204,22 +230,18 @@ function writeLocalUserSetting (key, value) {
     const app = remote.app
     const path = require('path')
 
-    // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
-
-    // set new path for userUsettings
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings')
+    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
+    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // set new path for userUsettings
     storage.setDataPath(userSettingsPath)
 
     // write the user setting
     storage.set(key, { setting: value }, function (error) {
         if (error) {
+            writeLog('error', 'writeLocalUserSetting ::: Got an error while trying to write a user setting with key: _' + key + '_ and value: _' + value + '_. Error: ' + error)
             throw error
         }
         writeLog('info', 'writeLocalUserSetting ::: key: _' + key + '_ - new value: _' + value + '_')
-
-        // revert:
-        storage.setDataPath(defaultDataPath)
+        storage.setDataPath(defaultDataPath) // revert to default path
     })
 }
 
@@ -240,10 +262,7 @@ function loadDefaultView (newDefaultView) {
 */
 function settingDefaultViewReset () {
     writeLocalUserSetting('settingDefaultView', false)
-
-    // reset the selection of the select item
-    $('#selectDefaultView').prop('selectedIndex', 0)
-
+    $('#selectDefaultView').prop('selectedIndex', 0) // reset the selection of the select item
     writeLog('info', 'settingDefaultViewReset ::: Did reset the default view')
 }
 
@@ -254,14 +273,53 @@ function settingDefaultViewReset () {
 * @param cssStyleName - Name of the css file
 */
 function settingActivateUserColorCss (cssFile) {
-    console.log('settingActivateUserColorCss ::: Loading css file: _' + cssFile + '_.')
+    writeLog('info', 'settingActivateUserColorCss ::: Loading css file: _' + cssFile + '_.')
 
     // load custom css file
+    //
     $('<link/>', {
         rel: 'stylesheet',
         type: 'text/css',
         href: 'css/ttth/themes/' + cssFile
     }).appendTo('head')
+
+    // update color of custom-titlebar - see #156
+    //
+    var titlebarBackGroundColor
+    switch (cssFile) {
+    case 'mainWindow_dark.css':
+        titlebarBackGroundColor = '#171717'
+        break
+
+    case 'mainWindow_default.css':
+        titlebarBackGroundColor = '#171717'
+        break
+
+    case 'mainWindow_dracula.css':
+        titlebarBackGroundColor = '#282a36'
+        break
+
+    case 'mainWindow_nord.css':
+        titlebarBackGroundColor = '#5e81ac'
+        break
+
+    case 'mainWindow_snazzy.css':
+        titlebarBackGroundColor = '#1a1c24'
+        break
+
+    case 'mainWindow_solarized_dark.css':
+        titlebarBackGroundColor = '#002b36'
+        break
+
+    case 'mainWindow_solarized_light.css':
+        titlebarBackGroundColor = '#eee8d5'
+        break
+
+    default:
+        titlebarBackGroundColor = '#171717'
+    }
+
+    titlebarUpdateBackground(titlebarBackGroundColor) // update the titlebar
 }
 
 /**
@@ -271,20 +329,13 @@ function settingActivateUserColorCss (cssFile) {
 */
 function settingThemeUpdate () {
     // get values from theme select
-    var currentSelectedTheme = $('#selectTheme').val() // displayed theme css name
+    var currentSelectedTheme = $('#selectTheme').val() // id of selected theme
     var currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
 
-    // activate the theme
-    settingActivateUserColorCss(currentSelectedTheme)
-
-    // write Setting
-    writeLocalUserSetting('settingTheme', currentSelectedTheme)
-
-    // noty
-    showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Theme</u> changed to " + currentSelectedThemeDisplayName + '.')
-
-    // log
-    console.log('settingThemeUpdate ::: Updating user selected css file to: _' + currentSelectedTheme + '_.')
+    settingActivateUserColorCss(currentSelectedTheme) // activate the theme
+    writeLocalUserSetting('settingTheme', currentSelectedTheme) // write Setting
+    showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Theme</u> changed to " + currentSelectedThemeDisplayName + '.') // noty
+    writeLog('info', 'settingThemeUpdate ::: Updating user selected css file to: _' + currentSelectedTheme + '_.') // log
 }
 
 /**
@@ -293,22 +344,13 @@ function settingThemeUpdate () {
 * @description Sets the new theme and activates a css style / theme
 */
 function settingThemeReset () {
-    // reset the selection of the select item
-    $('#selectTheme').prop('selectedIndex', 0)
-
+    $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item back to default
     var currentSelectedTheme = 'mainWindow_default.css'
 
-    // load default theme
-    settingActivateUserColorCss(currentSelectedTheme)
-
-    // write setting
-    writeLocalUserSetting('settingTheme', currentSelectedTheme)
-
-    // noty
-    showNoty('success', "<i class='fas fa-toggle-on'></i> Changed <b>Option:</b> <u>Theme</u> back to default.")
-
-    // log
-    console.log('settingThemeReset ::: Resetting user selected css file back to default: _' + currentSelectedTheme + '_.')
+    settingActivateUserColorCss(currentSelectedTheme) // load default theme
+    writeLocalUserSetting('settingTheme', currentSelectedTheme) // write setting
+    showNoty('success', "<i class='fas fa-toggle-on'></i> Changed <b>Option:</b> <u>Theme</u> back to default.") // noty
+    writeLog('info', 'settingThemeReset ::: Resetting user selected css file back to default: _' + currentSelectedTheme + '_.') // log
 }
 
 /**
@@ -326,25 +368,21 @@ function readLocalUserSetting (key, optional = false) {
 
     writeLog('info', 'readLocalUserSetting ::: Trying to read value of key: ' + key)
 
-    // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
-
-    // change path for userSettings
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings')
+    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
+    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // change path for userSettings
     storage.setDataPath(userSettingsPath)
 
     // read the json file
     storage.get(key, function (error, data) {
         if (error) {
+            writeLog('error', 'readLocalUserSetting ::: Got error while reading a json file with the name: _' + key + '_. Error: ' + error )
             throw error
         }
 
-        var value = data.setting
+        var value = data.setting // store the read value in a variable
 
         writeLog('info', 'readLocalUserSetting ::: key: _' + key + '_ - got value: _' + value + '_')
-
-        // revert storage path
-        storage.setDataPath(defaultDataPath)
+        storage.setDataPath(defaultDataPath) // revert storage path
 
         // setting DefaultView
         if (key === 'settingDefaultView') {
@@ -355,10 +393,8 @@ function readLocalUserSetting (key, optional = false) {
                 writeLog('info', 'validateConfiguredDefaultView ::: Found configured default view: ' + value)
 
                 // check if the configured service is enabled or not
-                writeLog('info', 'validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not')
-
                 var exists = false
-
+                writeLog('info', 'validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not')
                 // Check if Dropdown contains the defined default view as enabled service
                 $('#selectDefaultView option').each(function () {
                     if (this.value === value) {
@@ -367,22 +403,15 @@ function readLocalUserSetting (key, optional = false) {
                     }
                 })
 
+                // if it exists
                 if (exists) {
                     writeLog('info', 'validateConfiguredDefaultView ::: Configured default view is valid')
-
-                    // Update select
-                    $('#selectDefaultView').val(value)
-
-                    // load the default view
-                    loadDefaultView(value)
+                    $('#selectDefaultView').val(value) // Update UI select
+                    loadDefaultView(value) // load the default view
                 } else {
                     writeLog('warning', 'validateConfiguredDefaultView ::: Fallback to default (setting-view)')
-
-                    // reset the selection of the select item
-                    $('#selectDefaultView').prop('selectedIndex', 0)
-
-                    // delete the localstorage entry for defaultview
-                    settingDefaultViewReset()
+                    $('#selectDefaultView').prop('selectedIndex', 0) // reset the selection of the select item
+                    settingDefaultViewReset() // delete the localstorage entry for defaultview
                 }
             }
         }
@@ -392,14 +421,13 @@ function readLocalUserSetting (key, optional = false) {
         if (key === 'settingTheme') {
             writeLog('info', 'initSettingsPage ::: Setting Theme is configured to: _' + value + '_.')
 
-            if ((value === null) | (value === 'undefined')) {
-                // fallback to default
-                settingActivateUserColorCss('mainWindow_default.css')
+            if ((value === null) | (value === 'undefined') | (value === undefined)) { // see #154
+                writeLog('warn', 'initSettingsPage ::: Setting Theme is undefined - going to fallback to default theme.')
+                writeLocalUserSetting('settingTheme', 'mainWindow_default.css') // introduced with #154
+                settingActivateUserColorCss('mainWindow_default.css') // fallback to default
             } else {
                 settingActivateUserColorCss(value)
-
-                // Update select
-                $('#selectTheme').val(value)
+                $('#selectTheme').val(value) // Update UI select
             }
         }
         // End: Theme
@@ -423,7 +451,6 @@ function readLocalUserSetting (key, optional = false) {
             if (isLinux()) {
                 if (value === true) {
                     const { ipcRenderer } = require('electron')
-
                     writeLog('info', 'initSettingsPage ::: Setting DisableTray is configured')
                     $('#checkboxSettingDisableTray').prop('checked', true)
                     ipcRenderer.send('disableTray')
@@ -439,13 +466,10 @@ function readLocalUserSetting (key, optional = false) {
         if (key === 'settingUrgentWindow') {
             if (value === true) {
                 const { ipcRenderer } = require('electron')
-
                 $('#checkboxSettingUrgentWindow').prop('checked', true)
-
                 if (optional === true) {
                     ipcRenderer.send('makeWindowUrgent')
                 }
-
                 writeLog('info', 'initSettingsPage ::: Setting UrgentWindow is enabled')
             }
         }
@@ -459,11 +483,8 @@ function readLocalUserSetting (key, optional = false) {
 * @description Reads the content of the icon field and tries to show/preview the resulting FontAwesome icon
 */
 function previewIcon () {
-    // get content of field
-    var currentIconCode = $('#input_serviceIcon').val()
-
-    // try to load font-awesome icon
-    $('#previewIcon').html("<i class='" + currentIconCode + " fa-lg'></i>")
+    var currentIconCode = $('#input_serviceIcon').val() // get content of field
+    $('#previewIcon').html("<i class='" + currentIconCode + " fa-lg'></i>") // try to load font-awesome icon
 }
 
 /**
@@ -516,8 +537,7 @@ function settingsSelectServiceToAddChanged () {
     writeLog('info', 'settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _' + currentSelectedServiceTemplate + '_.')
 
     if (currentSelectedServiceTemplate !== '') {
-        // enable the add button
-        $('#bt_addNewService').prop('disabled', false)
+        $('#bt_addNewService').prop('disabled', false) // enable the add button
 
         // change button type to success
         $('#bt_addNewService').removeClass()
@@ -559,7 +579,7 @@ function showNotyAutostartMinimizedConfirm () {
                     id: 'button1', 'data-status': 'ok'
                 }),
 
-                Noty.button('No', 'btn btn-secondary', function () {
+                Noty.button('No', 'btn btn-secondary float-right', function () {
                     var ttthAutoLauncher = new AutoLaunch({
                         name: 'ttth',
                         isHidden: false,
@@ -624,10 +644,8 @@ function updateTrayIconStatus () {
 
             // if the current service has a significant unread message count -> log it and add it to overall counter
             if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== '') && (curServiceUnreadMessageCount !== null)) {
-                // increase the overall counter
-                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount
+                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount // increase the overall counter
             }
-
             writeLog('info', 'updateTrayIconStatus ::: Unread messages count of _' + currentTabId + '_ is: ' + curServiceUnreadMessageCount)
         }
     })
@@ -636,8 +654,7 @@ function updateTrayIconStatus () {
 
     const { ipcRenderer } = require('electron')
     if ((overallUnreadMessages === '0') || (overallUnreadMessages === 0)) {
-        // tray should show the default icon
-        ipcRenderer.send('changeTrayIconToDefault')
+        ipcRenderer.send('changeTrayIconToDefault') // tray should show the default icon
     } else {
         // tray should show that we got unread messages
         ipcRenderer.send('changeTrayIconToUnreadMessages')
@@ -651,21 +668,16 @@ function updateTrayIconStatus () {
 /**
 * @name doAnimateServiceIcon
 * @summary Starts or stops the animation of the service tab icon
-* @description Adds or removes a class to the service icon in the related service tab.
+* @description Adds or removes a class to the service icon in the related service tab. FontAwesome Animating icons: https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
 * @param doOrDont - Boolean. True = enable animation, false = stop the animation.
 * @param serviceId - The id of the related service
 */
 function doAnimateServiceIcon (doOrDont, serviceId) {
-    // Font Awesome: Animating icons:
-    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
-
-    if (doOrDont) {
-        // start to spin the service icon in the tabmenu
-        $('#icon_' + serviceId).addClass('fa-spin')
+    if (doOrDont === true) {
+        $('#icon_' + serviceId).addClass('fa-spin') // start to spin the service icon in the tabmenu
         writeLog('info', 'doAnimateServiceIcon ::: Started to animate the icon of the service _' + serviceId + '_.')
     } else {
-        // stop to spin the service icon in the tabmenu
-        $('#icon_' + serviceId).removeClass('fa-spin')
+        $('#icon_' + serviceId).removeClass('fa-spin') // stop to spin the service icon in the tabmenu
         writeLog('info', 'doAnimateServiceIcon ::: Stopped animating the icon of the service _' + serviceId + '_.')
     }
 }
@@ -685,11 +697,8 @@ function updateServiceBadge (serviceId, count) {
         count = ''
     }
 
-    // update the badge
-    $('#badge_' + serviceId).html(count)
-
-    // Update tray icon status if needed
-    updateTrayIconStatus()
+    $('#badge_' + serviceId).html(count) // update the badge
+    updateTrayIconStatus() // Update tray icon status if needed
 }
 
 /**
@@ -703,8 +712,7 @@ function updateServiceBadge (serviceId, count) {
 function eventListenerForSingleService (serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false) {
     writeLog('info', 'eventListenerForSingleService ::: Adding event listeners for webview: _webview_' + serviceId + '_.')
 
-    // get webview ( https://electronjs.org/docs/api/webview-tag )
-    var webview = document.getElementById('webview_' + serviceId)
+    var webview = document.getElementById('webview_' + serviceId) // get webview ( https://electronjs.org/docs/api/webview-tag )
 
     // run it periodically
     //
@@ -739,6 +747,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId)
 
+        /*
         var checkForGoogleMessages = serviceId.startsWith('googleMessages')
         var checkForMicrosoftOutlook = serviceId.startsWith('microsoftOutlook')
         var checkForMicrosoftTeams = serviceId.startsWith('microsoftTeams')
@@ -746,6 +755,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
             // show noty for all services except microsoftOutlook & microsoftTeams (as it throws tons of errors)
             showNoty('error', 'Failed to load url for service: <b>' + serviceId + '</b>.', 0) // #119
         }
+        */
     })
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
@@ -884,7 +894,6 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
 
             const shell = require('electron').shell
             const protocol = require('url').parse(event.url).protocol
-
             if (protocol === 'http:' || protocol === 'https:') {
                 // Display warning for http links - see: https://electronjs.org/docs/tutorial/security
                 if (protocol === 'http:') {
@@ -894,9 +903,9 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
                             theme: 'bootstrap-v4',
                             layout: 'bottom',
                             type: 'information',
-                            text: 'Do you really want to open this unsecure (not using https://) link?',
+                            text: 'Do you really want to open this unsecure link (not using https://) ?',
                             buttons: [
-                                Noty.button('Yes', 'btn btn-success', function () {
+                                Noty.button('Yes', 'btn btn-danger', function () {
                                     n.close()
                                     writeLog('info', 'User confirmed to open non-https:// link: _' + event.url + '_.')
                                     shell.openExternal(event.url)
@@ -905,7 +914,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
                                     id: 'button1', 'data-status': 'ok'
                                 }),
 
-                                Noty.button('No', 'btn btn-secondary', function () {
+                                Noty.button('No', 'btn btn-success float-right', function () {
                                     n.close()
                                 })
                             ]
@@ -961,9 +970,8 @@ function validateConfigSingleServiceForm (serviceName, serviceIcon, serviceUrl) 
 * @description Fetches the input values from the single-service-configuration popup window and creates a related service config
 */
 function createSingleServiceConfiguration () {
-    writeLog('info', 'updateSingleServiceConfiguration ::: Starting to create a new service config')
-
     const storage = require('electron-json-storage')
+    writeLog('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
 
     // get values from configServiceWindow
     var serviceId = $('#input_serviceId').val()
@@ -972,6 +980,8 @@ function createSingleServiceConfiguration () {
     var serviceIcon = $('#input_serviceIcon').val()
     var serviceUrl = $('#input_serviceUrl').val()
     var serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
+    var serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
+    var serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
     var serviceEnableStatus = true
 
     var isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
@@ -983,18 +993,18 @@ function createSingleServiceConfiguration () {
             icon: serviceIcon,
             url: serviceUrl,
             injectCode: serviceInjectCode,
-            serviceEnableStatus: serviceEnableStatus
+            serviceEnableStatus: serviceEnableStatus,
+            userAgentDefault: serviceUserAgentDefault,
+            userAgentCustom: serviceUserAgentCustom
         },
         function (error) {
-            // reload the main window
             const { ipcRenderer } = require('electron')
-            ipcRenderer.send('reloadMainWindow')
-
-            closeSingleServiceConfiguratationWindow()
-
+            ipcRenderer.send('reloadMainWindow') // reload the main window
+            closeSingleServiceConfiguratationWindow() // close aka hide the configWindow
             writeLog('info', 'createSingleServiceConfiguration ::: Created a new service config for: _' + serviceId + '_.')
 
             if (error) {
+                writeLog('error', 'createSingleServiceConfiguration ::: Error: ' + error)
                 throw error
             }
         })
@@ -1017,8 +1027,11 @@ function updateSingleServiceConfiguration () {
     var serviceName = $('#input_serviceName').val()
     var serviceIcon = $('#input_serviceIcon').val()
     var serviceUrl = $('#input_serviceUrl').val()
+    var serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
+    var serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
     var serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
     var serviceEnableStatus = $('#input_serviceEnableStatus').val() // hidden
+
     if (serviceEnableStatus === 'true') {
         serviceEnableStatus = true
     } else {
@@ -1034,17 +1047,17 @@ function updateSingleServiceConfiguration () {
             icon: serviceIcon,
             url: serviceUrl,
             injectCode: serviceInjectCode,
-            serviceEnableStatus: serviceEnableStatus
+            serviceEnableStatus: serviceEnableStatus,
+            userAgentDefault: serviceUserAgentDefault,
+            userAgentCustom: serviceUserAgentCustom
         }, function (error) {
-            // reload the main window
             const { ipcRenderer } = require('electron')
-            ipcRenderer.send('reloadMainWindow')
-
-            closeSingleServiceConfiguratationWindow()
-
+            ipcRenderer.send('reloadMainWindow') // reload the main window
+            closeSingleServiceConfiguratationWindow() // close aka hide the configWindow
             writeLog('info', 'updateSingleServiceConfiguration ::: Updating service config: _' + serviceId + '_.')
 
             if (error) {
+                writeLog('error', 'updateSingleServiceConfiguration ::: Error: ' + error)
                 throw error
             }
         })
@@ -1058,11 +1071,9 @@ function updateSingleServiceConfiguration () {
 * @param serviceId - id of the service
 */
 function configureSingleUserService (serviceId) {
-    writeLog('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
-
-    // send ipc to show service-configuration window
     const { ipcRenderer } = require('electron')
-    ipcRenderer.send('showConfigureSingleServiceWindow', serviceId)
+    writeLog('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
+    ipcRenderer.send('showConfigureSingleServiceWindow', serviceId) // send ipc to show service-configuration window
 }
 
 /**
@@ -1071,9 +1082,8 @@ function configureSingleUserService (serviceId) {
 * @description Opens or closes the Developer Console inside the app. Gets called from mainWindow.html
 */
 function openDevTools () {
-    writeLog('info', 'openDevTools ::: Opening Developer Console')
-
     const remote = require('electron').remote
+    writeLog('info', 'openDevTools ::: Opening Developer Console')
     remote.getCurrentWindow().toggleDevTools()
 }
 
@@ -1086,9 +1096,7 @@ function settingToggleAutostart () {
     const isDev = require('electron-is-dev')
     if (isDev) {
         showNoty('warning', 'Configuring autostart is only supported in packaged builds.')
-
-        // unselect the autostart checkbox
-        $('#checkboxSettingAutostart').prop('checked', false)
+        $('#checkboxSettingAutostart').prop('checked', false) // unselect the autostart checkbox
     } else {
         var AutoLaunch = require('auto-launch') // auto-launch - via: https://www.npmjs.com/package/auto-launch
 
@@ -1102,8 +1110,7 @@ function settingToggleAutostart () {
         if ($('#checkboxSettingAutostart').prop('checked')) {
             showNotyAutostartMinimizedConfirm()
         } else {
-            // disabling the autostart
-            ttthAutoLauncher.disable()
+            ttthAutoLauncher.disable() // disabling the autostart
             writeLocalUserSetting('settingAutostart', false)
             writeLog('info', 'settingToggleAutostart ::: Finished disabling Autostart')
             showNoty('success', "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Autostart (on login)</u> is now disabled.")
@@ -1117,7 +1124,7 @@ function settingToggleAutostart () {
                 ttthAutoLauncher.enable()
             })
             .catch(function (err) {
-                // handle error
+                writeLog('error', 'settingToggleAutostart ::: Error: ' + err)
                 throw err
             })
     }
@@ -1129,20 +1136,14 @@ function settingToggleAutostart () {
 * @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
 */
 function settingDefaultViewUpdate () {
-    // get currently selected value from select
-    var newDefaultView = $('#selectDefaultView').val()
+    var newDefaultView = $('#selectDefaultView').val() // get currently selected value from select
 
     if (newDefaultView !== null) {
         writeLog('info', 'settingDefaultViewUpdate ::: New default view on start is set to: ' + newDefaultView)
-
-        // Store new default view in local storage
-        writeLocalUserSetting('settingDefaultView', newDefaultView)
-
-        // show noty
-        showNoty('success', 'Set default view to <b>' + newDefaultView + '</b>.')
+        writeLocalUserSetting('settingDefaultView', newDefaultView) // Store new default view in local storage
+        showNoty('success', 'Set default view to <b>' + newDefaultView + '</b>.') // show noty
     } else {
-        // user forgot to select a service for new default view
-        showNoty('warning', 'Please <b>choose a service</b> to set a custom <b>default view</b>.')
+        showNoty('warning', 'Please <b>choose a service</b> to set a custom <b>default view</b>.') // user forgot to select a service for new default view
     }
 }
 
@@ -1154,7 +1155,6 @@ function settingDefaultViewUpdate () {
 function checkSupportedOperatingSystem () {
     var supportedOperatingSystemMessage = ''
     var userPlatform = process.platform // process.platform (works without require) vs os.platform
-
     writeLog('info', 'checkSupportedOperatingSystem ::: Detected operating system as: ' + userPlatform)
 
     switch (userPlatform) {
@@ -1167,26 +1167,11 @@ function checkSupportedOperatingSystem () {
         break
 
     default:
-        // could be: sunos
-
-        // define message
-        supportedOperatingSystemMessage = userPlatform + ' is currently not supported. Please contact devs.'
-
+        // could be: sunos or whatever else
+        supportedOperatingSystemMessage = userPlatform + ' is currently not supported. Please contact devs.' // define message
         showNoty('warning', supportedOperatingSystemMessage, 0)
         writeLog('error', 'checkSupportedOperatingSystem ::: ' + supportedOperatingSystemMessage)
     }
-}
-
-/**
-* @name openURL
-* @summary Opens an url in browser
-* @description Opens a given url in default browser. This is pretty slow, but got no better solution so far.
-* @param url - URL string which contains the target url
-*/
-function openURL (url) {
-    const { shell } = require('electron')
-    writeLog('info', 'openURL ::: Trying to open the url: ' + url)
-    shell.openExternal(url)
 }
 
 /**
@@ -1195,9 +1180,9 @@ function openURL (url) {
 * @description Opens the url https://github.com/yafp/ttth/releases in the default browser. Used in searchUpdate().
 */
 function openReleasesOverview () {
-    var url = 'https://github.com/yafp/ttth/releases'
-    writeLog('info', 'openReleasesOverview ::: Opening _' + url + '_ to show available releases')
-    openURL(url)
+    const { urlGitHubReleases } = require('./js/ttth/modules/ttthGithubUrls.js')
+    writeLog('info', 'openReleasesOverview ::: Opening _' + urlGitHubReleases + '_ to show available releases')
+    utils.openURL(urlGitHubReleases)
 }
 
 /**
@@ -1207,6 +1192,8 @@ function openReleasesOverview () {
 * @param silent - Boolean with default value. Shows a feedback in case of no available updates If "silent" = false. Special handling for manually triggered update search
 */
 function searchUpdate (silent = true) {
+    const { urlGitHubRepoTags } = require('./js/ttth/modules/ttthGithubUrls.js')
+
     // when executed manually via menu -> user should see that update-check is running
     if (silent === false) {
         showNoty('info', 'Searching for updates')
@@ -1215,12 +1202,10 @@ function searchUpdate (silent = true) {
     var remoteAppVersionLatest = '0.0.0'
     var localAppVersion = '0.0.0'
     var versions
-    var gitHubPath = 'yafp/ttth' // user/repo
-    var url = 'https://api.github.com/repos/' + gitHubPath + '/tags'
 
-    writeLog('info', 'searchUpdate ::: Start checking _' + url + '_ for available releases')
+    writeLog('info', 'searchUpdate ::: Start checking _' + urlGitHubRepoTags + '_ for available releases')
 
-    var updateStatus = $.get(url, function (data) {
+    var updateStatus = $.get(urlGitHubRepoTags, function (data) {
         3000 // in milliseconds
 
         // success
@@ -1231,7 +1216,7 @@ function searchUpdate (silent = true) {
         // get remote version
         //
         remoteAppVersionLatest = versions[0].name
-        // remoteAppVersionLatest = "66.6.6"; // overwrite variable to simulate available updates
+        // remoteAppVersionLatest = '66.6.6' // overwrite variable to simulate available updates
 
         // get local version
         //
@@ -1252,7 +1237,7 @@ function searchUpdate (silent = true) {
                     theme: 'bootstrap-v4',
                     layout: 'bottom',
                     type: 'information',
-                    text: 'An update from <b>' + localAppVersion + '</b> to version <b>' + remoteAppVersionLatest + '</b> is available. Do you want to visit the release page?',
+                    text: 'An update from <b>' + localAppVersion + '</b> to version <b>' + remoteAppVersionLatest + '</b> is available. Do you want to visit the <b>ttth</b> release page?',
                     buttons: [
                         Noty.button('Yes', 'btn btn-success', function () {
                             n.close()
@@ -1262,7 +1247,7 @@ function searchUpdate (silent = true) {
                             id: 'button1', 'data-status': 'ok'
                         }),
 
-                        Noty.button('No', 'btn btn-secondary', function () {
+                        Noty.button('No', 'btn btn-danger float-right', function () {
                             n.close()
                         })
                     ]
@@ -1280,19 +1265,19 @@ function searchUpdate (silent = true) {
             }
         }
 
-        writeLog('info', 'searchUpdate ::: Successfully checked ' + url + ' for available releases')
+        writeLog('info', 'searchUpdate ::: Successfully checked ' + urlGitHubRepoTags + ' for available releases')
     })
         .done(function () {
         // writeLog("info", "searchUpdate ::: Successfully checked " + url + " for available releases");
         })
 
         .fail(function () {
-            writeLog('error', 'searchUpdate ::: Checking ' + url + ' for available releases failed.')
-            showNoty('error', 'Checking <b>' + url + '</b> for available releases failed. Please troubleshoot your network connection.')
+            writeLog('error', 'searchUpdate ::: Checking ' + urlGitHubRepoTags + ' for available releases failed.')
+            showNoty('error', 'Checking <b>' + urlGitHubRepoTags + '</b> for available releases failed. Please troubleshoot your network connection.')
         })
 
         .always(function () {
-            writeLog('info', 'searchUpdate ::: Finished checking ' + url + ' for available releases')
+            writeLog('info', 'searchUpdate ::: Finished checking ' + urlGitHubRepoTags + ' for available releases')
         })
 }
 
@@ -1391,26 +1376,18 @@ function initAvailableServicesSelection () {
     writeLog('info', 'initAvailableServicesSelection ::: Reload settings select with all supported service definitions')
 
     var counterSupportedServices = 0
-
-    // get reference to select which contains all supported service type definitions
-    const dropdown = $('#select_availableServices')
-
-    // select the first entry
-    dropdown.prop('selectedIndex', 0)
+    const dropdown = $('#select_availableServices') // get reference to select which contains all supported service type definitions
+    dropdown.prop('selectedIndex', 0) // select the first entry
 
     // url to service definitions
-    //const url = __dirname + '/js/ttth/services.json'
     const path = require('path')
     const url = path.join(__dirname, '/js/ttth/services.json')
 
     // Populate select with list of provinces
     $.getJSON(url, function (data) {
         $.each(data, function (key, entry) {
-            // add option to select
-            dropdown.append($('<option></option>').attr('value', entry.id).text(entry.nameLong))
-
-            // count services
-            counterSupportedServices = counterSupportedServices + 1
+            dropdown.append($('<option></option>').attr('value', entry.id).text(entry.nameLong)) // add option to select
+            counterSupportedServices = counterSupportedServices + 1 // count services
         })
 
         writeLog('info', 'initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _' + counterSupportedServices + '_ service types.')
@@ -1428,8 +1405,7 @@ function loadConfiguredUserServices () {
     const app = remote.app
     const path = require('path')
 
-    // empty the div
-    $('#settingsServicesConfigured').empty()
+    $('#settingsServicesConfigured').empty() // empty the div
 
     // ensure we are reading from the correct location
     const defaultUserDataPath = app.getPath('userData')
@@ -1439,6 +1415,7 @@ function loadConfiguredUserServices () {
     // read all user service configuration files
     storage.getAll(function (error, data) {
         if (error) {
+            // FIXME
             throw error
         }
 
@@ -1496,7 +1473,6 @@ function loadConfiguredUserServices () {
 */
 function initSettingsPage () {
     // Start checking each single option
-    //
     readLocalUserSetting('settingAutostart') // Option: Autostart
     readLocalUserSetting('settingTheme') // Option: Theme
     readLocalUserSetting('settingDisableTray') // Option: DisableTray (Linux only)
@@ -1546,46 +1522,6 @@ function removeServiceTab (tabId) {
 }
 
 /**
-* @name getHostName
-* @summary Parsing the Hostname From a Url
-* @description Parsing the Hostname From a Url
-* @param url
-*/
-function getHostName (url) {
-    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i)
-    if (match != null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
-        return match[2]
-    } else {
-        return null
-    }
-}
-
-/**
-* @name getDomain
-* @summary Parsing the Domain From a Url
-* @description Parsing the Domain From a Url
-* @param url
-* @return domain
-*/
-function getDomain (url) {
-    var hostName = getHostName(url)
-    var domain = hostName
-
-    if (hostName != null) {
-        var parts = hostName.split('.').reverse()
-
-        if (parts != null && parts.length > 1) {
-            domain = parts[1] + '.' + parts[0]
-
-            if (hostName.toLowerCase().indexOf('.co.uk') !== -1 && parts.length > 2) {
-                domain = parts[2] + '.' + domain
-            }
-        }
-    }
-    return domain
-}
-
-/**
 * @name addServiceTab
 * @summary Add a single tab to UI
 * @description Add the li item to tab menu, adds the tab itself
@@ -1595,18 +1531,27 @@ function getDomain (url) {
 * @param serviceIcon
 * @param serviceUrl
 * @param serviceInjectCode
+* @param serviceUserAgentDefault
+* @param serviceUserAgentCustom
 */
-function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, serviceUrl, serviceInjectCode) {
+function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, serviceUrl, serviceInjectCode, serviceUserAgentDefault, serviceUserAgentCustom) {
     writeLog('info', 'addServiceTab ::: Starting to add the tab: _' + serviceId + '_.')
 
-    // get amount of tabs
-    var existingTabs = $('#myTabs li').length
+    // tab-position
+    var existingTabs = $('#myTabs li').length // get amount of tabs
+    var newTabPosition = existingTabs - 1 // calculate new tab position
 
-    // calculate new tab position
-    var newTabPosition = existingTabs - 1
+    // choose the right userAgent
+    var userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0' // setting a project wide default
+    if (serviceUserAgentDefault !== '') {
+        userAgent = serviceUserAgentDefault // overwrite with service-specific default, if set
+    }
+    if (serviceUserAgentCustom !== '') {
+        userAgent = serviceUserAgentCustom // overwrite with service-specific custom, if set
+    }
 
     // Parsing url and extract domain for Persist-handling of webview
-    var serviceDomain = getDomain(serviceUrl)
+    var serviceDomain = utils.getDomain(serviceUrl)
 
     // add new list item to unordner list (tabs/menu)
     //
@@ -1626,26 +1571,25 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
         // Whatsapp needs
         // - a specific User Agent
         // - no partition
-        $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>")
+        //
+        // $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>")
+
+        $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='" + userAgent + "'></webview>")
     } else {
         if (serviceInjectCode === '') {
             // no inject code
-            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + '></webview>')
+            // $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + '></webview>')
+            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent=' + userAgent + '></webview>')
         } else {
             // got injectCode, preload it
 
             // $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
-            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' ></webview>')
+            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent=' + userAgent + ' ></webview>')
         }
     }
 
-    // writeLog("info", "addServiceTab ::: Added the webview to the tab pane for service: _" + serviceId + "_.");
-
     writeLog('info', 'addServiceTab ::: Finished adding the tab: _' + serviceId + '_.')
-
-    // add service to select for DefaultView
-    $('#selectDefaultView').append(new Option(serviceName, serviceId))
-
+    $('#selectDefaultView').append(new Option(serviceName, serviceId)) // add service to select for DefaultView
     loadServiceSpecificCode(serviceId, serviceType)
 }
 
@@ -1720,6 +1664,8 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
         var icon = data.icon
         var url = data.url
         var injectCode = data.injectCode
+        var userAgentDefault = data.userAgentDefault
+        var userAgentCustom = data.userAgentCustom
 
         // get status of enable/disable button:
         if ($('#bt_' + configuredUserServiceConfigName).attr('title') === 'enabled') {
@@ -1758,7 +1704,7 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
             serviceEnableStatus = true
 
             // add tab for this enabled service
-            addServiceTab(configuredUserServiceConfigName, type, name, icon, url, injectCode)
+            addServiceTab(configuredUserServiceConfigName, type, name, icon, url, injectCode, userAgentDefault, userAgentCustom)
 
             // add service to selectDefaultView
             $('#selectDefaultView').append(new Option(name, configuredUserServiceConfigName))
@@ -1817,7 +1763,7 @@ function loadEnabledUserServices () {
                 // show enabled configured service
                 if (data[key].serviceEnableStatus === true) {
                     writeLog('info', 'loadEnabledUserServices ::: Trying to add the enabled service: _' + key + '_.')
-                    addServiceTab(key, data[key].type, data[key].name, data[key].icon, data[key].url, data[key].injectCode)
+                    addServiceTab(key, data[key].type, data[key].name, data[key].icon, data[key].url, data[key].injectCode, data[key].userAgentDefault, data[key].userAgentCustom)
                 } else {
                     writeLog('info', 'loadEnabledUserServices ::: Skipped service: _' + key + '_, as it not enabled.')
                 }
@@ -1880,8 +1826,6 @@ function deleteConfiguredService (serviceId) {
 function settingsUserAddNewService () {
     writeLog('info', 'settingsUserAddNewService ::: Starting to add a new user configured service.')
 
-    // const os = require("os");
-    // const dataPath = storage.getDataPath();
     const storage = require('electron-json-storage')
 
     // get selected option from #select_availableServices
@@ -1895,7 +1839,7 @@ function settingsUserAddNewService () {
         writeLog('info', 'settingsUserAddNewService ::: Checking if the service: _' + userSelectedService + '_ allows multiple instances')
 
         // Parse service template
-        //const url = __dirname + '/js/ttth/services.json'
+        // const url = __dirname + '/js/ttth/services.json'
         const path = require('path')
         const url = path.join(__dirname, '/js/ttth/services.json')
 
@@ -1970,9 +1914,7 @@ function generateNewRandomServiceID (serviceType) {
     }
 
     newServiceId = serviceType + '_' + randomString
-
     writeLog('info', 'generateNewRandomServiceID ::: Generated a new service ID: _' + newServiceId + '_.')
-
     return newServiceId
 }
 
@@ -2086,16 +2028,30 @@ function checkNetworkConnectivityPeriodic (timeInterval) {
 * @description Patches the user service configration files on version changes if needed.
 */
 function updateAllUserServiceConfigurations () {
+    // updates needed since 1.8.0
+    updateAllUserServiceConfigurationsSince_1_8_0()
+
+    // updates needed since 1.9.0
+    updateAllUserServiceConfigurationsSince_1_9_0()
+}
+
+/**
+* @name updateAllUserServiceConfigurationsSince_1_8_0
+* @summary Patches the user service configration files on version changes if needed.
+* @description Patches the user service configration files on version changes if needed.
+*/
+function updateAllUserServiceConfigurationsSince_1_8_0 () {
     // changes from 1.7.0 to 1.8.0:
     // - inject files got re-structured. Path & names are stored in the user-services configuration files
     //
     const storage = require('electron-json-storage')
 
-    writeLog('info', 'updateAllUserServiceConfigurations ::: Starting to validate all user service configurations')
+    writeLog('info', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: Starting to validate all user service configurations')
 
     // loop over all json files - and see if we need to patch something
     storage.getAll(function (error, data) {
         if (error) {
+            writeLog('error', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: Got error while trying to fetch all service configs. Error: ' + error)
             throw error
         }
 
@@ -2109,7 +2065,7 @@ function updateAllUserServiceConfigurations () {
         // loop over upper object
         for (var key in data) {
             if (data.hasOwnProperty(key)) {
-                writeLog('info', 'updateAllUserServiceConfigurations ::: ' + key + ' -> ' + data[key])
+                writeLog('info', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: ' + key + ' -> ' + data[key])
 
                 if (data[key].injectCode !== '') {
                     switch (data[key].injectCode) {
@@ -2222,7 +2178,7 @@ function updateAllUserServiceConfigurations () {
                         break
 
                     default:
-                        writeLog('info', 'updateAllUserServiceConfigurations ::: Skipping to next service configuration')
+                        writeLog('info', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: Skipping to next service configuration')
                         newInjectCodePath = ''
                         shouldConfigBeUpdated = false
                         break
@@ -2231,7 +2187,7 @@ function updateAllUserServiceConfigurations () {
 
                 // Update this property - if needed
                 if (shouldConfigBeUpdated === true) {
-                    writeLog('info', 'updateAllUserServiceConfigurations ::: Updating config of service: _' + key + '_.')
+                    writeLog('info', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: Updating config of service: _' + key + '_.')
 
                     storage.set(key,
                         {
@@ -2247,7 +2203,89 @@ function updateAllUserServiceConfigurations () {
                 }
             }
         }
-        writeLog('info', 'updateAllUserServiceConfigurations ::: Finished.')
+        writeLog('info', 'updateAllUserServiceConfigurationsSince_1_8_0 ::: Finished.')
+    })
+}
+
+/**
+* @name updateAllUserServiceConfigurationsSince_1_9_0
+* @summary Patches the user service configration files on version changes if needed.
+* @description Patches the user service configration files on version changes if needed.
+*/
+function updateAllUserServiceConfigurationsSince_1_9_0 () {
+    // 1.9.0 introduced userAgents per service. See #158
+    // TODO:
+    // patch all user-services:
+    // add: userAgentDefault
+
+    const storage = require('electron-json-storage')
+
+    writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Starting to validate all user service configurations')
+
+    // loop over all json files - and see if we need to patch something
+    storage.getAll(function (error, data) {
+        if (error) {
+            writeLog('error', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Got error while trying to fetch all service configs. Error: ' + error)
+            throw error
+        }
+
+        // show object which contains all config files
+        // writeLog("info", "loadEnabledUserServices ::: Object: " + data);
+        // console.error(data);
+
+        var userAgentDefaultMissing
+        var newUserAgentDefaultString
+        var userAgentCustomMissing
+        var userUserAgentCustomString
+
+        // loop over upper object
+        for (var key in data) {
+            userAgentDefaultMissing = false
+            newUserAgentDefaultString = ''
+            userAgentCustomMissing = false
+            userUserAgentCustomString = ''
+
+            writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Current service: _' + key + '_.') // key = name of json file
+
+            if (data.hasOwnProperty(key)) {
+                // check if userAgentDefault exists
+                if (data[key].userAgentDefault === undefined) {
+                    writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
+                    userAgentDefaultMissing = true
+                }
+
+                // check if userAgentCustom exists
+                if (data[key].userAgentCustom === undefined) {
+                    writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
+                    userAgentCustomMissing = true
+                }
+            }
+
+            // some services (all google services) already need a new userAgentDefault
+            if (data[key].type.startsWith('google')) {
+                newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+            }
+
+            // update config if needed
+            if ((userAgentDefaultMissing === true) || (userAgentCustomMissing === true)) {
+                writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Updating config of service: _' + key + '_.')
+
+                storage.set(key,
+                    {
+                        type: data[key].type, // old value
+                        name: data[key].name, // old value
+                        icon: data[key].icon, // old value
+                        url: data[key].url, // old value
+                        injectCode: data[key].injectCode, // NEW VALUE
+                        serviceEnableStatus: data[key].serviceEnableStatus, // old value
+                        userAgentDefault: newUserAgentDefaultString,
+                        userAgentCustom: userUserAgentCustomString
+                    }, function (error) {
+                        if (error) throw error
+                    })
+            }
+        }
+        writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Finished.')
     })
 }
 
@@ -2257,18 +2295,10 @@ function updateAllUserServiceConfigurations () {
 * @description launcher for several init methods before jquerys ready signal. Gets called from mainWindow.html
 */
 function executeBeforeReady () {
-    // check operating system
-    checkSupportedOperatingSystem()
-
-    // init the custom titlebar - see #115
-    initTitlebar()
-
-    // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
-    updateAllUserServiceConfigurations()
-
-    // start periodic network checker
-    checkNetworkConnectivityPeriodic(10000) // 10.000 milliseconds = 10 seconds
-
+    checkSupportedOperatingSystem() // check operating system
+    titlebarInit() // init the custom titlebar - see #115
+    updateAllUserServiceConfigurations() // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
+    checkNetworkConnectivityPeriodic(10000) // start periodic network checker - 10.000 milliseconds = 10 seconds
     writeLog('info', 'executeBeforeReady ::: Finished.')
 }
 
@@ -2296,9 +2326,7 @@ function onAfterReadyMainWindow () {
         console.log('ready ::: Switched to tab: _' + target + '_.')
     })
 
-    // check for updates
-    searchUpdate()
-
+    searchUpdate() // check for updates
     writeLog('info', 'onAfterReadyMainWindow ::: Finished.')
 }
 
@@ -2412,12 +2440,8 @@ require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
     } else {
         // default case
         writeLog('info', 'openDevToolForCurrentService ::: Trying to open DevTools for current service: _' + tabValue + '_.')
-
-        // get webview
-        var webview = document.getElementById('webview_' + tabValue)
-
-        // Open devTools
-        webview.openDevTools()
+        var webview = document.getElementById('webview_' + tabValue) // get webview
+        webview.openDevTools() // Open devTools
     }
 })
 
@@ -2509,11 +2533,9 @@ require('electron').ipcRenderer.on('serviceToCreate', function (event, serviceId
     writeLog('info', 'serviceToCreate ::: Should create a new service of type: _' + serviceId + '_.')
     writeLog('info', 'serviceToCreate ::: Loading default values from service definition')
 
-    // generate id for new service
-    var newServiceId = generateNewRandomServiceID(serviceId)
+    var newServiceId = generateNewRandomServiceID(serviceId) // generate id for new service
 
     // read json file
-    //const url = __dirname + '/js/ttth/services.json'
     const path = require('path')
     const url = path.join(__dirname, '/js/ttth/services.json')
 
@@ -2528,12 +2550,12 @@ require('electron').ipcRenderer.on('serviceToCreate', function (event, serviceId
                 $('#input_serviceUrl').val(entry.url)
                 $('#input_serviceInjectCode').val(entry.injectCode)
                 $('#input_serviceEnableStatus').val(true)
+                $('#input_serviceUserAgentDefault').val(entry.userAgentDefault)
+                $('#input_serviceUserAgentCustom').val('')
 
-                // hide save buttons
-                $('#bt_saveExistingService').hide()
-
-                // show the add-new-service button
-                $('#bt_addNewService').show()
+                // button visibility
+                $('#bt_saveExistingService').hide() // hide save buttons (only used for editing existing services)
+                $('#bt_addNewService').show() // show the add-new-service button
 
                 previewIcon() // preview the icon
                 writeLog('info', 'serviceToCreate ::: Loaded default values for this service-type to UI')
@@ -2552,33 +2574,26 @@ require('electron').ipcRenderer.on('serviceToConfigure', function (event, servic
 
     storage.get(serviceId, function (error, data) {
         if (error) {
+            writeLog('error', 'serviceToConfigure ::: Error while trying to load service data for the service: ' + serviceId + '. Error: ' + error)
             throw error
         }
 
-        var type = data.type
-        var name = data.name
-        var icon = data.icon
-        var url = data.url
-        var injectCode = data.injectCode
-        var status = data.serviceEnableStatus
-
         // update UI of second window
         $('#input_serviceId').val(serviceId)
-        $('#input_serviceType').val(type)
-        $('#input_serviceName').val(name)
-        $('#input_serviceIcon').val(icon)
-        $('#input_serviceUrl').val(url)
-        $('#input_serviceInjectCode').val(injectCode)
-        $('#input_serviceEnableStatus').val(status)
+        $('#input_serviceType').val(data.type)
+        $('#input_serviceName').val(data.name)
+        $('#input_serviceIcon').val(data.icon)
+        $('#input_serviceUrl').val(data.url)
+        $('#input_serviceInjectCode').val(data.injectCode)
+        $('#input_serviceEnableStatus').val(data.serviceEnableStatus)
+        $('#input_serviceUserAgentDefault').val(data.userAgentDefault)
+        $('#input_serviceUserAgentCustom').val(data.userAgentCustom)
 
-        // hide Add-new-service button
-        $('#bt_addNewService').hide()
-
-        // show the edit service  button
-        $('#bt_saveExistingService').show()
+        // button visibility
+        $('#bt_addNewService').hide() // hide Add-new-service button
+        $('#bt_saveExistingService').show() // show the edit service  button
 
         previewIcon() // preview the icon
-
         writeLog('info', 'serviceToConfigure ::: Loaded current values for this service to UI')
     })
 })
