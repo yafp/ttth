@@ -26,6 +26,35 @@ The following categories are used:
 
 ***
 
+### ttth 1.9.0 (20xxyyzz)
+#### ```Added```
+* Settings
+  * Added a new theme 'snazzy'. See [#157](https://github.com/yafp/ttth/issues/157)
+  * Added theme support for application titlebar and service-tabs. See [#156](https://github.com/yafp/ttth/issues/156)
+  * Added support for service-specific userAgents. See [#158](https://github.com/yafp/ttth/issues/158)
+
+####  ```Changed```
+* Settings: Reduced amount of buttons for the following options
+  * Default view
+  * theme
+* Javascript Code: Moved some functions to app/js/ttth/modules/ttthUtils.js
+* Dependencies
+  * Updating electron from 7.1.6 to 7.1.7
+  * Updating electron-log from 4.0.0 to 4.0.2
+  * Updating eslint from 6.7.2 to 6.8.0
+  * Updating mocha from 6.2.2 to 7.0.0
+  * Updating i18next from 19.0.2 to 19.0.3
+  * Updating sentry from 1.1.0 to 1.2.0
+  * Switched back from pj-custom-electron-titlebar to custom-electron-titlebar (3.2.1)
+* Noty confirm dialogs: changed button positions.
+* Improved logging (added console messages for several existing error cases)
+
+#### ```Fixed```
+* Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)
+
+
+***
+
 ### ttth 1.8.0 (20191219)
 #### ```Added```
 * Services:
@@ -87,7 +116,7 @@ The following categories are used:
 #### ```Removed```
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
 * Removed the 'about' menuitem from the tray. See [#151](https://github.com/yafp/ttth/issues/151)
-* Removed several un-used event listeners for all service-webviews. Slightly reducing the memory footprint 
+* Removed several un-used event listeners for all service-webviews. Slightly reducing the memory footprint
 * Builds: No more .zip Builds for macOS
 
 #### ```Fixed```

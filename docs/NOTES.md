@@ -26,6 +26,7 @@
   * http://peterforgacs.github.io/2018/09/12/How-to-create-a-V8-snapshot-of-your-javascript-file/
   * https://www.npmjs.com/package/electron-mksnapshot
   * https://blog.atom.io/2017/04/18/improving-startup-time.html
+* Insert css to service-webview: https://github.com/electron/electron/issues/1190
 
 
 ### Reminder
