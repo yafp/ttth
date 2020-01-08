@@ -10,7 +10,8 @@
     --color-navigationText: #FFFFFF; /* white */
     --color-navigationBackground: #171717; /*almost black */
     --color-navigationBorder: #32CD32; /* limegreen */
-    --color-navigationHighlight: #000000; /* black */;
+    --color-navigationHighlight: #32CD32; /* black */
+    --color-navigationCurrentActive: #32CD32;
 
     /* highlight */
     --color-highlight: #32CD32; /* limegreen */

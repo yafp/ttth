@@ -11,10 +11,6 @@ html,body {
     margin-left: 0;
     margin-right: 0;
 
-    /* border */
-    border-color: coral;
-    border: 2px solid var(--color-navigationBackground);
-
     height: 100%;
 
     background-color: var(--color-bodyBackground);

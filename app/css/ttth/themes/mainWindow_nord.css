@@ -10,9 +10,10 @@
 
     /* navigation */
     --color-navigationText: #e5e9f0; /* snow storm: nord5; */
-    --color-navigationBackground: #171717; /*almost black */
+    --color-navigationBackground: #5e81ac; /*almost black */
     --color-navigationBorder: #5e81ac; /* frost: nord10 */
-    --color-navigationHighlight: #5e81ac; /* frost: nord10 */;
+    --color-navigationHighlight: #e5e9f0; /* frost: nord10 */
+    --color-navigationCurrentActive: #5e81ac;
 
     /* highlight */
     --color-highlight: #5e81ac; /* frost: nord10 */

@@ -9,18 +9,19 @@
     --color-bodyBackground: #44475a; /*  */
 
     /* navigation */
-    --color-navigationText: #FFFFFF; /*  */
-    --color-navigationBackground: #171717; /*  */
+    --color-navigationText: #f8f8f2; /*  */
+    --color-navigationBackground: #282a36; /*  */
     --color-navigationBorder: #4e4e4e; /*  */
-    --color-navigationHighlight: #ff79c6; /*  */;
+    --color-navigationHighlight: #ff79c6; /*  */
+    --color-navigationCurrentActive: #ff79c6;
 
     /* highlight */
     --color-highlight: #ff79c6; /*  */
 
     /* bootstrap form elements */
     --color-inputFormsText: #f8f8f2; /* */
-    --color-inputFormsBackground: #282a36  ; /*  */
-    --color-inputFormsBorder: #6272a4  ; /* */
+    --color-inputFormsBackground: #282a36; /*  */
+    --color-inputFormsBorder: #6272a4 ; /* */
 
     /* bootstrap buttons */
     --color-buttonSuccess: #50fa7b; /*  */

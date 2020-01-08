@@ -9,10 +9,11 @@
     --color-bodyBackground: #fdf6e3; /* base3 */
 
     /* navigation */
-    --color-navigationText: #fdf6e3; /* base3 */
-    --color-navigationBackground: #171717; /* almost black */
+    --color-navigationText: #586e75; /* base3 */
+    --color-navigationBackground: #eee8d5; /* almost black */
     --color-navigationBorder: #cb4b16; /* orange  */
     --color-navigationHighlight: #cb4b16; /* orange */
+    --color-navigationCurrentActive: #859900;
 
     /* highlight */
     --color-highlight: #cb4b16; /* orange */

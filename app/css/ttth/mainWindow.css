@@ -1,8 +1,7 @@
 /* ########################################################################## */
 /* HTML/BODY/CONTAINER */
 /* ########################################################################## */
-html,body
-{
+html,body {
     /* height */
     height:100%;
 
@@ -19,21 +18,22 @@ html,body
 
 
 /* ########################################################################## */
-/* TITLEBAR */
+/* CUSTOM TITLEBAR */
 /* ########################################################################## */
 .titlebar, .titlebar > * {
-    /* font-family: Roboto, sans-serif; */
-    /*font-family: caption; */
     font-family: Arial;
     /* font-size: 20px; */
+    color: var(--color-navigationText);
 }
 
+.window-title{
+    font-size: 13px !important;
+}
 
 /* ########################################################################## */
 /* MENU / NAVIGATION */
 /* ########################################################################## */
-#tabBar
-{
+#tabBar {
     /* height */
     height: 30px; /* 30, default: 40px */
 
@@ -41,69 +41,60 @@ html,body
     border-bottom: 2px solid var(--color-navigationBorder);
 }
 
-ul
-{
+ul {
     margin-left: 10px;
     margin-right: 10px;
 }
 
-.nav-item
-{
+.nav-item {
     /* margin */
     margin-left: 0px;
     margin-right: 3px;
 }
 
-.nav-link
-{
+.nav-link {
     color: var(--color-navigationText);
 }
 
-.nav-link:hover
-{
-    color: var(--color-highlight);
+.nav-link:hover {
+    /* color: var(--color-highlight); */
+    color: var(--color-navigationHighlight);
 }
 
-.nav>li>a
-{
+.nav>li>a {
     padding: 5px 10px; /*  top/bottom left/right */
 }
 
 /* the active tab */
-.nav>li>a.active
-{
+.nav>li>a.active {
     border: 2px solid var(--color-navigationBorder) !important;
     border-bottom-style: hidden !important;
 
     background-color: var(--color-bodyBackground)!important;
-    color: var(--color-navigationHighlight) !important;
+    color: var(--color-navigationCurrentActive) !important;
 }
 
 
 /* ########################################################################## */
 /* CONTENT */
 /* ########################################################################## */
-.container-fluid
-{
+.container-fluid {
     padding-bottom: 0px !important;
     padding-right: 0px !important;
     background-color: var(--color-bodyBackground);
 }
 
 
-.fuya
-{
+.fuya {
     padding-left: 0px !important;
     /* padding-right: 0px !important; */
 }
 
-.flex-fill
-{
+.flex-fill {
     flex:1 1 auto;
 }
 
-.ttth_resizer
-{
+.ttth_resizer {
     height: 100%;
     min-height: 100%;
 
@@ -111,15 +102,15 @@ ul
     /* padding-right: 0 !important; */
 }
 
-.row
-{
+.row {
     /* ugly - attempt to fight with grid.scss  - see #60*/
     margin-left: -15px !important;
     margin-right:  0px !important;
 }
 
-
-
+/* ########################################################################## */
+/* SETTINGS
+/* ########################################################################## */
 .settingsTabBody{
     /* border for borderless-window/content */
     border-left: 1px solid var(--color-inputFormsBorder) !important;
@@ -127,23 +118,16 @@ ul
     border-bottom: 1px solid var(--color-inputFormsBorder) !important;
 }
 
-
-/* ########################################################################## */
-/* SETTINGS
-/* ########################################################################## */
-.ttthServiceRow
-{
+.ttthServiceRow {
     margin-right:  0px !important;
 }
 
-#allSettings
-{
+#allSettings {
     margin-left: 10px !important;
     margin-right: 10px !important;
 }
 
-h3
-{
+h3 {
     padding-top: 15px;
     font-size: 20px !important;
 
@@ -155,29 +139,33 @@ h3
 /* ########################################################################## */
 /* CUSTOMIZE BOOTSTRAP FORM ITEMS
 /* ########################################################################## */
-.custom-select
-{
-    color: var(--color-inputFormsTextd);
+.custom-select {
+    color: var(--color-inputFormsText);
     background-color: var(--color-inputFormsBackground);
     border-color: var(--color-inputFormsBorder);
 }
 
-.input-group-text
-{
+.input-group-text {
     color: var(--color-inputFormsTextd) !important;
     background-color: var(--color-inputFormsBackground)!important;
-    border-color: var(--color-inputFormsBorder);
+    border-color: var(--color-inputFormsBorder) !important;
 }
 
-.form-control 
-{
+input {
+    border-color: var(--color-inputFormsBorder) !important;
+}
+
+input[type="checkbox"] {
+    /* border-color: var(--color-inputFormsBorder) !important; */
+}
+
+.form-control {
     color: var(--color-inputFormsText) !important;
     background-color: var(--color-inputFormsBackground) !important;
     border-color: var(--color-inputFormsBorder);
 }
 
-.ttth_select
-{
+.ttth_select {
     min-width: 200px;
     color: var(--color-inputFormsText) !important;
     background-color: var(--color-inputFormsBackground) !important;
@@ -185,48 +173,40 @@ h3
     outline-color: var(--color-highlight);
 }
 
-.ttth_select:focus
-{
+.ttth_select:focus {
     border-color: var(--color-highlight) !important;
 }
 
-.ttth_select:hover
-{
+.ttth_select:hover {
     border-color: var(--color-highlight) !important;
 }
-
 
 
 /* ########################################################################## */
 /* CUSTOMIZE BOOTSTRAP BUTTONS
 /* ########################################################################## */
-.btn-success
-{
+.btn-success {
     background-color: var(--color-buttonSuccess) !important;
     border-color: var(--color-buttonSuccess) !important;
 }
 
-.btn-secondary
-{
+.btn-secondary {
     background-color: var(--color-buttonSecondary) !important;
     border-color: var(--color-buttonSecondary) !important;
 }
 
-.btn-danger
-{
+.btn-danger {
     background-color: var(--color-buttonDanger) !important;
     border-color: var(--color-buttonDanger) !important;
 }
 
-.btn-dark
-{
+.btn-dark {
     background-color: var(--color-buttonDark) !important;
     border-color: var(--color-buttonDark) !important;
 }
 
 /* Filter for all buttons on hover */
-.btn:hover
-{
+.btn:hover {
     filter: brightness(75%);
 }
 
@@ -234,7 +214,6 @@ h3
 /* ########################################################################## */
 /* CUSTOMIZE FONTAWESOME ICON COLOR
 /* ########################################################################## */
-.ttthServiceIcon
-{
+.ttthServiceIcon {
     color: var(--color-fontAwesomeIcons) !important;
 }

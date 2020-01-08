@@ -9,10 +9,11 @@
     --color-bodyBackground: #073642; /* base02 */
 
     /* navigation */
-    --color-navigationText: #e5e9f0; /*  */
-    --color-navigationBackground: #171717; /*  */
+    --color-navigationText: #eee8d5; /*  */
+    --color-navigationBackground: #002b36; /*  */
     --color-navigationBorder: #859900; /*  */
-    --color-navigationHighlight: #859900; /*  */;
+    --color-navigationHighlight: #859900; /*  */
+    --color-navigationCurrentActive: #859900;
 
     /* highlight */
     --color-highlight: #859900; /* green */
