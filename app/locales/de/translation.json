@@ -20,6 +20,7 @@
     "mw_settingsOptionsSelectThemeNord": "Nord",
     "mw_settingsOptionsSelectThemeSolarizedDark": "Solarized Dark",
     "mw_settingsOptionsSelectThemeSolarizedLight": "Solarized Light",
+    "mw_settingsOptionsSelectThemeSnazzy": "Snazzy",
     "mw_settingsOptionsButtonTextThemeSet": "Aktiviert das Theme",
     "mw_settingsOptionsButtonTextThemeReset": "Setzt die Theme Wahl zurück",
     "mw_settingsOptionsDescAutostart": "Autostart",
@@ -38,6 +39,8 @@
     "cw_labelIconHelp": "FontAwesome Symbol Code",
     "cw_labelUrl": "URL",
     "cw_labelUrlHelp": "Die URL des Dienstes",
+    "cw_labelUserAgentDefault": "Standard User Agent ",
+    "cw_labelUserAgentCustom": "Benutzerspezifischer User Agent",
     "cw_buttonAddService": "Anlegen",
     "cw_buttonEditService": "Speichern",
     "cw_buttonCancel": "Abbrechen"
