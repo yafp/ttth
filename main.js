@@ -1,5 +1,10 @@
+// ----------------------------------------------------------------------------
+// IMPORT
+// ----------------------------------------------------------------------------
+const urls = require('./app/js/ttth/modules/ttthGithubUrls.js')
+
 // Start measuring startup time
-console.time('init')
+// console.time('init')
 
 // -----------------------------------------------------------------------------
 // REQUIRE
@@ -35,7 +40,8 @@ require('./app/js/ttth/crashReporting.js')
 // -----------------------------------------------------------------------------
 
 // Keep a global reference of the window objects,
-// if you don't, the window will be closed automatically when the JavaScript object is garbage collected.
+// if you don't, the window will be closed automatically
+// when the JavaScript object is garbage collected.
 let mainWindow = null
 let configWindow = null
 
@@ -45,12 +51,8 @@ const userOSPlatform = os.platform() // for BadgeCount support - see #152
 
 let verbose = false
 
-// project-urls
-const urlGitHubGeneral = 'https://github.com/yafp/ttth'
-const urlGitHubIssues = 'https://github.com/yafp/ttth/issues'
-const urlGitHubChangelog = 'https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md'
-const urlGitHubFAQ = 'https://github.com/yafp/ttth/blob/master/docs/FAQ.md'
-const urlGitHubReleases = 'https://github.com/yafp/ttth/releases'
+var defaultMainWindowWidth = 800
+var defaultMainWindowHeight = 600
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS
@@ -63,7 +65,6 @@ const urlGitHubReleases = 'https://github.com/yafp/ttth/releases'
 */
 function writeLog (logType, logMessage) {
     // configure
-    //
     log.transports.file.level = true // logging to file
     log.transports.console.level = false // logging to console (default)
 
@@ -72,8 +73,7 @@ function writeLog (logType, logMessage) {
         log.transports.console.level = true
     }
 
-    // add prefix for all logs from [M]ain
-    logMessage = '[M] ' + logMessage
+    logMessage = '[M] ' + logMessage // add prefix for all logs from [M]ain
 
     // do log
     switch (logType) {
@@ -136,8 +136,7 @@ function checkArguments () {
                 break
 
             default:
-                // nothing to do here
-                log.warn('[M] Ignoring unsupported parameter: _' + process.argv[key] + '_.')
+                log.warn('[M] Ignoring unsupported parameter: _' + process.argv[key] + '_.') // nothing to do here
                 break
             }
         }
@@ -147,16 +146,14 @@ function checkArguments () {
 /**
 * @name showDialog
 * @summary Shows a dialog
-* @description Displays a dialog
+* @description Displays a dialog - see https://electronjs.org/docs/api/dialog
 * @param dialogType - Can be "none", "info", "error", "question" or "warning"
 * @param dialogTitle - The title text
 * @param dialogMessage - The message of the dialog
 * @param dialogDetail - The detail text
 */
 function showDialog (dialogType, dialogTitle, dialogMessage, dialogDetail) {
-    // https://electronjs.org/docs/api/dialog
     const { dialog } = require('electron')
-
     const options = {
         type: dialogType,
         buttons: ['OK'],
@@ -196,8 +193,7 @@ function createTray () {
                     if (mainWindow.isMinimized()) {
                         mainWindow.restore()
                     } else {
-                        // is not minimized
-                        // was maybe: hidden via hide()
+                        // is not minimized. Was maybe: hidden via hide()
                         mainWindow.show()
                     }
                     mainWindow.focus()
@@ -264,13 +260,13 @@ function createTray () {
 function createWindow () {
     writeLog('info', 'createWindow ::: Starting to create the application windows')
 
-    // Check last window position and size from user data
+    // Variables for window position and size
     var windowWidth
     var windowHeight
     var windowPositionX
     var windowPositionY
 
-    // Read a local config file
+    // Try to read stored last window position and size
     var customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
     var data
     try {
@@ -289,8 +285,8 @@ function createWindow () {
         writeLog('warn', 'createWindow ::: No last window position and size information found in _' + customUserDataPath + '_. Using fallback values')
 
         // set some default values for window size
-        windowWidth = 800
-        windowHeight = 600
+        windowWidth = defaultMainWindowWidth
+        windowHeight = defaultMainWindowHeight
     }
 
     // Create the browser window.
@@ -301,8 +297,8 @@ function createWindow () {
         titleBarStyle: 'hidden', // needed for custom-electron-titlebar
         width: windowWidth,
         height: windowHeight,
-        minWidth: 800,
-        minHeight: 600,
+        minWidth: defaultMainWindowWidth,
+        minHeight: defaultMainWindowHeight,
         center: true, // Show window in the center of the screen. (since 1.7.0)
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, 'app/img/icon/icon.png'),
@@ -319,14 +315,14 @@ function createWindow () {
     writeLog('info', 'createWindow ::: Finished creating the mainWindow')
 
     // Restore window position if possible
-    //
     // requirements: found values in .ttthMainWindowPosSize.json from the previous session
+    //
     if ((typeof windowPositionX !== 'undefined') && (typeof windowPositionY !== 'undefined')) {
         writeLog('info', 'createWindow ::: Restoring last stored window-position of mainWindow')
         mainWindow.setPosition(windowPositionX, windowPositionY)
     }
 
-    // and load the html of the app.
+    // Load the UI (mainWindow.html) of the app.
     mainWindow.loadFile('./app/mainWindow.html')
     writeLog('info', 'createWindow ::: Loading mainWindow.html to mainWindow')
 
@@ -336,11 +332,8 @@ function createWindow () {
         mainWindow.focus()
         writeLog('info', 'createWindow ::: mainWindow is now ready, so show it and then focus it (event: ready-to-show)')
 
-        // check network access
-        checkNetworkConnectivity()
-
-        // Stop measuring startup time
-        console.timeEnd('init')
+        checkNetworkConnectivity() // check network access
+        // console.timeEnd('init') // Stop measuring startup time
     })
 
     // Emitted when the application has finished basic startup.
@@ -423,15 +416,15 @@ function createWindow () {
     mainWindow.on('close', function () {
         writeLog('info', 'createWindow ::: mainWindow will close (event: close)')
 
-        // get window position and size
+        // get current window position and size
         var data = {
             bounds: mainWindow.getBounds()
         }
 
-        // define target path (in user data)
+        // define target path (in user data) to store rthe values
         var customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
 
-        // try to write
+        // try to write the window position and size to preference file
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
             if (err) {
                 writeLog('error', 'storing window-position and -size of mainWindow in  _' + customUserDataPath + '_ failed with error: _' + err + '_ (event: close)')
@@ -496,11 +489,10 @@ function createWindow () {
 
     // Call from renderer ::: deleteAllGlobalServicesShortcut
     ipcMain.on('deleteAllGlobalServicesShortcut', function (arg1, numberOfEnabledServices) {
-        // doesnt work - whyever
-        globalShortcut.unregisterAll()
+        globalShortcut.unregisterAll() // doesnt work - whyever
         writeLog('info', 'createWindow ::: Shortcuts: Deleting all global service shortcut at once.')
 
-        // delete all global shortcuts
+        // delete all global shortcuts manually
         /*
         var i;
         for (i = 1; i <= numberOfEnabledServices;  i++)
@@ -509,7 +501,6 @@ function createWindow () {
             writeLog("info", "createWindow ::: Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
         */
-
         writeLog('info', 'createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)')
     })
 
@@ -520,12 +511,12 @@ function createWindow () {
         const ret = globalShortcut.register(shortcut, () => {
             writeLog('info', 'Shortcut: _' + shortcut + '_ was pressed.')
 
-            // activate the related tab:
-            mainWindow.webContents.send('switchToTab', targetTab)
+            mainWindow.webContents.send('switchToTab', targetTab) // activate the related tab
         })
     })
 
-    // Call from renderer: should update apps badge count
+    // Call from renderer: should ttth update the app badge count
+    // is supported for macOS & Linux (running Unity)
     ipcMain.on('updateBadgeCount', (event, arg) => {
         var environmentSupported = false
 
@@ -546,7 +537,7 @@ function createWindow () {
                 // do nothing
         }
 
-        // if the environment supports BadgeCount
+        // if the environment supports BadgeCount - update it
         if (environmentSupported === true) {
             // check current badge count
             var currentBadgeCount = app.getBadgeCount() // FIXME: deprecated - Please use 'badgeCount property' instead.
@@ -555,11 +546,9 @@ function createWindow () {
             if (currentBadgeCount !== arg) {
                 var didUpdateBadgeCount = app.setBadgeCount(arg) // FIXME: deprecated.- Please use 'badgeCount property' instead.
                 if (didUpdateBadgeCount === true) {
-                    // updating badge count worked
-                    writeLog('info', 'createWindow ::: Updating application badge count to _' + arg + '_.')
+                    writeLog('info', 'createWindow ::: Updating application badge count to _' + arg + '_.') // updating badge count worked
                 } else {
-                    // updating badge count failed
-                    writeLog('warn', 'createWindow ::: Updating application badge count to _' + arg + '_ failed.')
+                    writeLog('warn', 'createWindow ::: Updating application badge count to _' + arg + '_ failed.') // updating badge count failed
                 }
             }
         }
@@ -880,7 +869,7 @@ function createMenu () {
                 {
                     label: 'Homepage',
                     click () {
-                        shell.openExternal(urlGitHubGeneral)
+                        shell.openExternal(urls.urlGitHubGeneral)
                     },
                     accelerator: 'F1'
                 },
@@ -888,7 +877,7 @@ function createMenu () {
                 {
                     label: 'Report issue',
                     click () {
-                        shell.openExternal(urlGitHubIssues)
+                        shell.openExternal(urls.urlGitHubIssues)
                     },
                     accelerator: 'F2'
                 },
@@ -896,7 +885,7 @@ function createMenu () {
                 {
                     label: 'Changelog',
                     click () {
-                        shell.openExternal(urlGitHubChangelog)
+                        shell.openExternal(urls.urlGitHubChangelog)
                     },
                     accelerator: 'F3'
                 },
@@ -904,7 +893,7 @@ function createMenu () {
                 {
                     label: 'FAQ',
                     click () {
-                        shell.openExternal(urlGitHubFAQ)
+                        shell.openExternal(urls.urlGitHubFAQ)
                     },
                     accelerator: 'F4'
                 },
@@ -912,7 +901,7 @@ function createMenu () {
                 {
                     label: 'Releases',
                     click () {
-                        shell.openExternal(urlGitHubReleases)
+                        shell.openExternal(urls.urlGitHubReleases)
                     },
                     accelerator: 'F5'
                 },
@@ -1126,7 +1115,6 @@ app.on('window-all-closed', function () {
 // activate = macOS only:
 // Emitted when the application is activated. Various actions can trigger this event, such as launching the application for the first time,
 // attempting to re-launch the application when it's already running, or clicking on the application's dock or taskbar icon.
-//
 app.on('activate', function () {
     writeLog('info', 'app got activate event (event: activate)')
 
@@ -1139,7 +1127,6 @@ app.on('activate', function () {
 
 // Emitted when a new webContents is created.
 // Try to set some values while creating new webviews. See: https://electronjs.org/docs/tutorial/security
-//
 app.on('web-contents-created', (event, contents) => {
     contents.on('will-attach-webview', (event, webPreferences, params) => {
         writeLog('info', 'app will attach new webview with target url set to: _' + params.src + '_.')
@@ -1162,38 +1149,32 @@ app.on('web-contents-created', (event, contents) => {
 })
 
 // Emitted when a new browserWindow is created.
-//
 app.on('browser-window-created', function () {
     writeLog('info', 'app created a browser window (event: browser-window-created)')
 })
 
 // Emitted when the application has finished basic startup.
-//
 app.on('will-finish-launching', function () {
     writeLog('info', 'app will finish launching (event: will-finish-launching)')
 })
 
 // Emitted when the renderer process of webContents crashes or is killed.
-//
 app.on('renderer-process-crashed', function () {
     writeLog('error', 'app is realizing a crashed renderer process (event: renderer-process-crashed)')
 })
 
 // Emitted when the GPU process crashes or is killed.
-//
 app.on('gpu-process-crashed', function () {
     writeLog('error', 'app is realizing a crashed gpu process (event: gpu-process-crashed)')
 })
 
 // Emitted whenever there is a GPU info update.
-//
 app.on('gpu-info-update', function () {
     writeLog('info', 'app is realizing a GPU info update (event: gpu-info-update)')
 })
 
 // Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior
 // with event.preventDefault() and call callback(true).
-//
 app.on('certificate-error', function () {
     writeLog('warn', 'app failed to verify the cert (event: certificate-error)')
 })

@@ -34,12 +34,15 @@ The following categories are used:
   * Added support for service-specific userAgents. See [#158](https://github.com/yafp/ttth/issues/158)
 
 ####  ```Changed```
-* Settings: Reduced amount of buttons for the following options
+* Settings: Reduced amount of buttons for the following 'Options'
   * Default view
-  * theme
-* Javascript Code: Moved some functions to app/js/ttth/modules/ttthUtils.js
+  * Theme
+* Settings: Reduced right gap for 'configured services' by improving the css mess.
+* Javascript Code: Moved some functions to modules
+  * app/js/ttth/modules/ttthUtils.js
+  * app/js/ttth/modules/ttthGithubUrls.js
 * Dependencies
-  * Updating electron from 7.1.6 to 7.1.7
+  * Updating electron from 7.1.6 to 7.1.8
   * Updating electron-log from 4.0.0 to 4.0.2
   * Updating eslint from 6.7.2 to 6.8.0
   * Updating mocha from 6.2.2 to 7.0.0
@@ -51,6 +54,8 @@ The following categories are used:
 
 #### ```Fixed```
 * Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)
+* Fixed login to google services. See [#155](https://github.com/yafp/ttth/issues/155)
+* Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
 
 
 ***
