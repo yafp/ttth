@@ -17,6 +17,7 @@ require('./js/ttth/crashReporting.js')
 // ----------------------------------------------------------------------------
 //
 let myTitlebar
+const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
 
 /**
 * @name titlebarInit
@@ -375,7 +376,7 @@ function readLocalUserSetting (key, optional = false) {
     // read the json file
     storage.get(key, function (error, data) {
         if (error) {
-            writeLog('error', 'readLocalUserSetting ::: Got error while reading a json file with the name: _' + key + '_. Error: ' + error )
+            writeLog('error', 'readLocalUserSetting ::: Got error while reading a json file with the name: _' + key + '_. Error: ' + error)
             throw error
         }
 
@@ -1542,7 +1543,7 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     var newTabPosition = existingTabs - 1 // calculate new tab position
 
     // choose the right userAgent
-    var userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0' // setting a project wide default
+    var userAgent = appWideUserAgentDefault // setting a project wide default
     if (serviceUserAgentDefault !== '') {
         userAgent = serviceUserAgentDefault // overwrite with service-specific default, if set
     }
@@ -1550,7 +1551,7 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
         userAgent = serviceUserAgentCustom // overwrite with service-specific custom, if set
     }
 
-    // Parsing url and extract domain for Persist-handling of webview
+    // Parsing url and extract domain for persist-handling of webview
     var serviceDomain = utils.getDomain(serviceUrl)
 
     // add new list item to unordner list (tabs/menu)
@@ -1568,12 +1569,9 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     // add webview  to new tab
     //
     if (serviceType === 'whatsapp') {
-        // Whatsapp needs
-        // - a specific User Agent
-        // - no partition
+        // Whatsapp needs: - no partition
         //
         // $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>")
-
         $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='" + userAgent + "'></webview>")
     } else {
         if (serviceInjectCode === '') {
@@ -1582,7 +1580,6 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
             $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent=' + userAgent + '></webview>')
         } else {
             // got injectCode, preload it
-
             // $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
             $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent=' + userAgent + ' ></webview>')
         }
@@ -1733,6 +1730,18 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
 
     writeLog('info', 'settingsToggleEnableStatusOfSingleUserService ::: Service _' + configuredUserServiceConfigName + '_ config file is now updated (status)')
 }
+
+
+/**
+* @name loadEnabledUserServices
+* @summary Reads all user configured service files and adds the enabled services as tabs
+* @description Reads all user configured service files and adds the enabled services as tabs
+*/
+function fontAwesomeShowIconGallery () {
+    utils.openURL('https://fontawesome.com/icons?d=gallery&m=free')
+}
+
+
 
 /**
 * @name loadEnabledUserServices
