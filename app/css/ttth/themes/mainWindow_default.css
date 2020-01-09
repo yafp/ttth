@@ -1,30 +1,50 @@
 :root {
 
+    /* 
+        Influenced:                             none
+        Color descriptions:                     https://www.colorhexa.com/;
+
+        FOREGROUND
+            Black                               #000000
+            Strong lime green                   #32CD32
+            Light gray                          #D3D3D3
+            Moderate lime green                 #5cb85c
+            Soft red                            #d9534f
+            Dark gray                           #808080
+            Very dark (mostly black) blue       #292b2c
+
+        BACKGROUND:
+            White                               #FFFFFF
+            Very dark gray (mostly black)       #171717
+            Very light gray (mostly white)      #F8F8F8
+            
+    */
+
     /* body */
-    --color-bodyText: #000000; /* black */
-    --color-bodyHeading: #000000; /* black */
-    --color-bodyHeadingBorder: #32CD32; /* black */
-    --color-bodyBackground: #FFFFFF; /* white */
+    --color-bodyText: #000000;
+    --color-bodyHeading: #000000;
+    --color-bodyHeadingBorder: #32CD32;
+    --color-bodyBackground: #FFFFFF;
 
     /* navigation */
-    --color-navigationText: #FFFFFF; /* white */
-    --color-navigationBackground: #171717; /*almost black */
-    --color-navigationBorder: #32CD32; /* limegreen */
-    --color-navigationHighlight: #32CD32; /* black */
+    --color-navigationText: #FFFFFF;
+    --color-navigationBackground: #171717;
+    --color-navigationBorder: #32CD32;
+    --color-navigationHighlight: #32CD32;
     --color-navigationCurrentActive: #32CD32;
 
     /* highlight */
-    --color-highlight: #32CD32; /* limegreen */
+    --color-highlight: #32CD32;
 
     /* bootstrap form elements */
-    --color-inputFormsText: #000000; /* black */
-    --color-inputFormsBackground: #F8F8F8; /* almost white */
-    --color-inputFormsBorder: #D3D3D3; /* lightgray */
+    --color-inputFormsText: #000000;
+    --color-inputFormsBackground: #F8F8F8;
+    --color-inputFormsBorder: #D3D3D3;
 
     /* bootstrap buttons */
-    --color-buttonSuccess: #5cb85c; /* limegreen */
-    --color-buttonDanger: #d9534f; /* red */
-    --color-buttonSecondary: gray;
+    --color-buttonSuccess: #5cb85c;
+    --color-buttonDanger: #d9534f;
+    --color-buttonSecondary: #808080;
     --color-buttonDark: #292b2c;
 
     /* font awesome icons */

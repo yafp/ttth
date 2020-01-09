@@ -1,33 +1,50 @@
 :root {
 
-    /* influcenced by: https://ethanschoonover.com/solarized/ */
+    /* 
+        Influenced:                             https://ethanschoonover.com/solarized/
+        Color descriptions:                     https://www.colorhexa.com/;
+
+        FOREGROUND
+            Dark grayish cyan                   #586e75
+            Strong yellow                       #b58900
+            Strong orange                       #cb4b16
+            Dark yellow [Olive tone]            #859900
+            Dark grayish cyan                   #93a1a1
+            bright red                          #dc322f
+            Very dark cyan                      #002b36
+
+        BACKGROUND:
+           Light grayish orange                 #fdf6e3
+           Light grayish yellow                 #eee8d5
+    */
+
 
     /* body */
-    --color-bodyText: #586e75; /* base01 */
-    --color-bodyHeading: #b58900; /* yellow */
-    --color-bodyHeadingBorder: #cb4b16; /* orange */
-    --color-bodyBackground: #fdf6e3; /* base3 */
+    --color-bodyText: #586e75;
+    --color-bodyHeading: #b58900;
+    --color-bodyHeadingBorder: #cb4b16;
+    --color-bodyBackground: #fdf6e3;
 
     /* navigation */
-    --color-navigationText: #586e75; /* base3 */
-    --color-navigationBackground: #eee8d5; /* almost black */
-    --color-navigationBorder: #cb4b16; /* orange  */
-    --color-navigationHighlight: #cb4b16; /* orange */
+    --color-navigationText: #586e75;
+    --color-navigationBackground: #eee8d5;
+    --color-navigationBorder: #cb4b16;
+    --color-navigationHighlight: #cb4b16;
     --color-navigationCurrentActive: #859900;
 
     /* highlight */
-    --color-highlight: #cb4b16; /* orange */
+    --color-highlight: #cb4b16;
 
     /* bootstrap form elements */
-    --color-inputFormsText: #586e75; /* base01 */
-    --color-inputFormsBackground: #eee8d5; /* base2 */
-    --color-inputFormsBorder: #93a1a1; /* base1 */
+    --color-inputFormsText: #586e75;
+    --color-inputFormsBackground: #eee8d5;
+    --color-inputFormsBorder: #93a1a1;
 
     /* bootstrap buttons */
-    --color-buttonSuccess: #859900; /* green */
-    --color-buttonDanger: #dc322f; /* red */
-    --color-buttonSecondary: #586e75; /* base01 */
-    --color-buttonDark: #002b36; /* base03 */
+    --color-buttonSuccess: #859900;
+    --color-buttonDanger: #dc322f;
+    --color-buttonSecondary: #586e75;
+    --color-buttonDark: #002b36;
 
     /* font awesome icons */
     --color-fontAwesomeIcons: #586e75;

@@ -1,31 +1,46 @@
 :root {
 
-    /* influcenced by: https://github.com/dracula/dracula-theme */
+    /* 
+        Influenced:                             https://github.com/dracula/dracula-theme
+        Color descriptions:                     https://www.colorhexa.com/;
+
+        FOREGROUND
+            Light grayish yellow                #f8f8f2
+            Very light pink                     #ff79c6
+            Soft cyan - lime green              #50fa7b
+            Light red                           #ff5555
+
+        BACKGROUND:
+            Very dark grayish blue.             #44475a
+            Very dark grayish blue              #282a36
+            Mostly desaturated dark blue.       #6272a4
+    */
+
 
     /* body */
-    --color-bodyText: #f8f8f2; /*  */
-    --color-bodyHeading: #f8f8f2; /*  */
-    --color-bodyHeadingBorder: #ff79c6; /*  */
-    --color-bodyBackground: #44475a; /*  */
+    --color-bodyText: #f8f8f2; 
+    --color-bodyHeading: #f8f8f2; 
+    --color-bodyHeadingBorder: #ff79c6; 
+    --color-bodyBackground: #44475a; 
 
     /* navigation */
-    --color-navigationText: #f8f8f2; /*  */
-    --color-navigationBackground: #282a36; /*  */
-    --color-navigationBorder: #4e4e4e; /*  */
-    --color-navigationHighlight: #ff79c6; /*  */
+    --color-navigationText: #f8f8f2;
+    --color-navigationBackground: #282a36; 
+    --color-navigationBorder: #ff79c6; 
+    --color-navigationHighlight: #ff79c6; 
     --color-navigationCurrentActive: #ff79c6;
 
     /* highlight */
-    --color-highlight: #ff79c6; /*  */
+    --color-highlight: #ff79c6;
 
     /* bootstrap form elements */
-    --color-inputFormsText: #f8f8f2; /* */
-    --color-inputFormsBackground: #282a36; /*  */
-    --color-inputFormsBorder: #6272a4 ; /* */
+    --color-inputFormsText: #f8f8f2;
+    --color-inputFormsBackground: #282a36;
+    --color-inputFormsBorder: #6272a4 ;
 
     /* bootstrap buttons */
-    --color-buttonSuccess: #50fa7b; /*  */
-    --color-buttonDanger: #ff5555; /*  */
+    --color-buttonSuccess: #50fa7b; 
+    --color-buttonDanger: #ff5555;
     --color-buttonSecondary: #6272a4;
     --color-buttonDark: #282a36;
 
