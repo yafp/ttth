@@ -51,10 +51,10 @@ let myTitlebar
 * @summary Init the titlebar for the frameless mainWindow
 * @description Creates a custom titlebar for the mainWindow using custom-electron-titlebar (https://github.com/AlexTorresSk/custom-electron-titlebar).
 */
-function titlebarInit (dispose = false) {
+function titlebarInit () {
     // NOTE:
-    // - "custom-electron-titlebar" is now an archived repo
-    // - switched to fork of it "pj-custom-electron-titlebar"
+    // - "custom-electron-titlebar" VS
+    // - "pj-custom-electron-titlebar"
     //
     var customTitlebar = require('custom-electron-titlebar')
     // var customTitlebar = require('pj-custom-electron-titlebar')
@@ -258,22 +258,18 @@ function writeLocalUserSetting (key, value) {
     const app = remote.app
     const path = require('path')
 
-    // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
-
-    // set new path for userUsettings
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings')
+    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
+    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // set new path for userUsettings
     storage.setDataPath(userSettingsPath)
 
     // write the user setting
     storage.set(key, { setting: value }, function (error) {
         if (error) {
+            writeLog('error', 'writeLocalUserSetting ::: Got an error while trying to write a user setting with key: _' + key + '_ and value: _' + value + '_. Error: ' + error)
             throw error
         }
         writeLog('info', 'writeLocalUserSetting ::: key: _' + key + '_ - new value: _' + value + '_')
-
-        // revert
-        storage.setDataPath(defaultDataPath)
+        storage.setDataPath(defaultDataPath) // revert to default path
     })
 }
 
@@ -305,9 +301,10 @@ function settingDefaultViewReset () {
 * @param cssStyleName - Name of the css file
 */
 function settingActivateUserColorCss (cssFile) {
-    console.log('settingActivateUserColorCss ::: Loading css file: _' + cssFile + '_.')
+    writeLog('info', 'settingActivateUserColorCss ::: Loading css file: _' + cssFile + '_.')
 
     // load custom css file
+    //
     $('&lt;link/>', {
         rel: 'stylesheet',
         type: 'text/css',
@@ -360,7 +357,7 @@ function settingActivateUserColorCss (cssFile) {
 */
 function settingThemeUpdate () {
     // get values from theme select
-    var currentSelectedTheme = $('#selectTheme').val() // displayed theme css name
+    var currentSelectedTheme = $('#selectTheme').val() // id of selected theme
     var currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
 
     settingActivateUserColorCss(currentSelectedTheme) // activate the theme
@@ -375,7 +372,7 @@ function settingThemeUpdate () {
 * @description Sets the new theme and activates a css style / theme
 */
 function settingThemeReset () {
-    $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item
+    $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item back to default
     var currentSelectedTheme = 'mainWindow_default.css'
 
     settingActivateUserColorCss(currentSelectedTheme) // load default theme
@@ -399,25 +396,21 @@ function readLocalUserSetting (key, optional = false) {
 
     writeLog('info', 'readLocalUserSetting ::: Trying to read value of key: ' + key)
 
-    // get default storage path
-    const defaultDataPath = storage.getDefaultDataPath()
-
-    // change path for userSettings
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings')
+    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
+    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // change path for userSettings
     storage.setDataPath(userSettingsPath)
 
     // read the json file
     storage.get(key, function (error, data) {
         if (error) {
+            writeLog('error', 'readLocalUserSetting ::: Got error while reading a json file with the name: _' + key + '_. Error: ' + error)
             throw error
         }
 
-        var value = data.setting
+        var value = data.setting // store the read value in a variable
 
         writeLog('info', 'readLocalUserSetting ::: key: _' + key + '_ - got value: _' + value + '_')
-
-        // revert storage path
-        storage.setDataPath(defaultDataPath)
+        storage.setDataPath(defaultDataPath) // revert storage path
 
         // setting DefaultView
         if (key === 'settingDefaultView') {
@@ -428,10 +421,8 @@ function readLocalUserSetting (key, optional = false) {
                 writeLog('info', 'validateConfiguredDefaultView ::: Found configured default view: ' + value)
 
                 // check if the configured service is enabled or not
-                writeLog('info', 'validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not')
-
                 var exists = false
-
+                writeLog('info', 'validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not')
                 // Check if Dropdown contains the defined default view as enabled service
                 $('#selectDefaultView option').each(function () {
                     if (this.value === value) {
@@ -440,22 +431,15 @@ function readLocalUserSetting (key, optional = false) {
                     }
                 })
 
+                // if it exists
                 if (exists) {
                     writeLog('info', 'validateConfiguredDefaultView ::: Configured default view is valid')
-
-                    // Update select
-                    $('#selectDefaultView').val(value)
-
-                    // load the default view
-                    loadDefaultView(value)
+                    $('#selectDefaultView').val(value) // Update UI select
+                    loadDefaultView(value) // load the default view
                 } else {
                     writeLog('warning', 'validateConfiguredDefaultView ::: Fallback to default (setting-view)')
-
-                    // reset the selection of the select item
-                    $('#selectDefaultView').prop('selectedIndex', 0)
-
-                    // delete the localstorage entry for defaultview
-                    settingDefaultViewReset()
+                    $('#selectDefaultView').prop('selectedIndex', 0) // reset the selection of the select item
+                    settingDefaultViewReset() // delete the localstorage entry for defaultview
                 }
             }
         }
@@ -495,7 +479,6 @@ function readLocalUserSetting (key, optional = false) {
             if (isLinux()) {
                 if (value === true) {
                     const { ipcRenderer } = require('electron')
-
                     writeLog('info', 'initSettingsPage ::: Setting DisableTray is configured')
                     $('#checkboxSettingDisableTray').prop('checked', true)
                     ipcRenderer.send('disableTray')
@@ -511,13 +494,10 @@ function readLocalUserSetting (key, optional = false) {
         if (key === 'settingUrgentWindow') {
             if (value === true) {
                 const { ipcRenderer } = require('electron')
-
                 $('#checkboxSettingUrgentWindow').prop('checked', true)
-
                 if (optional === true) {
                     ipcRenderer.send('makeWindowUrgent')
                 }
-
                 writeLog('info', 'initSettingsPage ::: Setting UrgentWindow is enabled')
             }
         }
@@ -531,11 +511,8 @@ function readLocalUserSetting (key, optional = false) {
 * @description Reads the content of the icon field and tries to show/preview the resulting FontAwesome icon
 */
 function previewIcon () {
-    // get content of field
-    var currentIconCode = $('#input_serviceIcon').val()
-
-    // try to load font-awesome icon
-    $('#previewIcon').html("&lt;i class='" + currentIconCode + " fa-lg'>&lt;/i>")
+    var currentIconCode = $('#input_serviceIcon').val() // get content of field
+    $('#previewIcon').html("&lt;i class='" + currentIconCode + " fa-lg'>&lt;/i>") // try to load font-awesome icon
 }
 
 /**
@@ -588,8 +565,7 @@ function settingsSelectServiceToAddChanged () {
     writeLog('info', 'settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _' + currentSelectedServiceTemplate + '_.')
 
     if (currentSelectedServiceTemplate !== '') {
-        // enable the add button
-        $('#bt_addNewService').prop('disabled', false)
+        $('#bt_addNewService').prop('disabled', false) // enable the add button
 
         // change button type to success
         $('#bt_addNewService').removeClass()
@@ -696,10 +672,8 @@ function updateTrayIconStatus () {
 
             // if the current service has a significant unread message count -> log it and add it to overall counter
             if ((curServiceUnreadMessageCount !== 0) &amp;&amp; (curServiceUnreadMessageCount !== '') &amp;&amp; (curServiceUnreadMessageCount !== null)) {
-                // increase the overall counter
-                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount
+                overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount // increase the overall counter
             }
-
             writeLog('info', 'updateTrayIconStatus ::: Unread messages count of _' + currentTabId + '_ is: ' + curServiceUnreadMessageCount)
         }
     })
@@ -708,8 +682,7 @@ function updateTrayIconStatus () {
 
     const { ipcRenderer } = require('electron')
     if ((overallUnreadMessages === '0') || (overallUnreadMessages === 0)) {
-        // tray should show the default icon
-        ipcRenderer.send('changeTrayIconToDefault')
+        ipcRenderer.send('changeTrayIconToDefault') // tray should show the default icon
     } else {
         // tray should show that we got unread messages
         ipcRenderer.send('changeTrayIconToUnreadMessages')
@@ -723,21 +696,16 @@ function updateTrayIconStatus () {
 /**
 * @name doAnimateServiceIcon
 * @summary Starts or stops the animation of the service tab icon
-* @description Adds or removes a class to the service icon in the related service tab.
+* @description Adds or removes a class to the service icon in the related service tab. FontAwesome Animating icons: https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
 * @param doOrDont - Boolean. True = enable animation, false = stop the animation.
 * @param serviceId - The id of the related service
 */
 function doAnimateServiceIcon (doOrDont, serviceId) {
-    // Font Awesome: Animating icons:
-    // https://fontawesome.com/how-to-use/on-the-web/styling/animating-icons
-
-    if (doOrDont) {
-        // start to spin the service icon in the tabmenu
-        $('#icon_' + serviceId).addClass('fa-spin')
+    if (doOrDont === true) {
+        $('#icon_' + serviceId).addClass('fa-spin') // start to spin the service icon in the tabmenu
         writeLog('info', 'doAnimateServiceIcon ::: Started to animate the icon of the service _' + serviceId + '_.')
     } else {
-        // stop to spin the service icon in the tabmenu
-        $('#icon_' + serviceId).removeClass('fa-spin')
+        $('#icon_' + serviceId).removeClass('fa-spin') // stop to spin the service icon in the tabmenu
         writeLog('info', 'doAnimateServiceIcon ::: Stopped animating the icon of the service _' + serviceId + '_.')
     }
 }
@@ -757,11 +725,8 @@ function updateServiceBadge (serviceId, count) {
         count = ''
     }
 
-    // update the badge
-    $('#badge_' + serviceId).html(count)
-
-    // Update tray icon status if needed
-    updateTrayIconStatus()
+    $('#badge_' + serviceId).html(count) // update the badge
+    updateTrayIconStatus() // Update tray icon status if needed
 }
 
 /**
@@ -775,8 +740,7 @@ function updateServiceBadge (serviceId, count) {
 function eventListenerForSingleService (serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false) {
     writeLog('info', 'eventListenerForSingleService ::: Adding event listeners for webview: _webview_' + serviceId + '_.')
 
-    // get webview ( https://electronjs.org/docs/api/webview-tag )
-    var webview = document.getElementById('webview_' + serviceId)
+    var webview = document.getElementById('webview_' + serviceId) // get webview ( https://electronjs.org/docs/api/webview-tag )
 
     // run it periodically
     //
@@ -1034,9 +998,8 @@ function validateConfigSingleServiceForm (serviceName, serviceIcon, serviceUrl) 
 * @description Fetches the input values from the single-service-configuration popup window and creates a related service config
 */
 function createSingleServiceConfiguration () {
-    writeLog('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
-
     const storage = require('electron-json-storage')
+    writeLog('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
 
     // get values from configServiceWindow
     var serviceId = $('#input_serviceId').val()
@@ -1063,15 +1026,13 @@ function createSingleServiceConfiguration () {
             userAgentCustom: serviceUserAgentCustom
         },
         function (error) {
-            // reload the main window
             const { ipcRenderer } = require('electron')
-            ipcRenderer.send('reloadMainWindow')
-
-            closeSingleServiceConfiguratationWindow()
-
+            ipcRenderer.send('reloadMainWindow') // reload the main window
+            closeSingleServiceConfiguratationWindow() // close aka hide the configWindow
             writeLog('info', 'createSingleServiceConfiguration ::: Created a new service config for: _' + serviceId + '_.')
 
             if (error) {
+                writeLog('error', 'createSingleServiceConfiguration ::: Error: ' + error)
                 throw error
             }
         })
@@ -1118,15 +1079,13 @@ function updateSingleServiceConfiguration () {
             userAgentDefault: serviceUserAgentDefault,
             userAgentCustom: serviceUserAgentCustom
         }, function (error) {
-            // reload the main window
             const { ipcRenderer } = require('electron')
-            ipcRenderer.send('reloadMainWindow')
-
-            closeSingleServiceConfiguratationWindow()
-
+            ipcRenderer.send('reloadMainWindow') // reload the main window
+            closeSingleServiceConfiguratationWindow() // close aka hide the configWindow
             writeLog('info', 'updateSingleServiceConfiguration ::: Updating service config: _' + serviceId + '_.')
 
             if (error) {
+                writeLog('error', 'updateSingleServiceConfiguration ::: Error: ' + error)
                 throw error
             }
         })
@@ -1140,11 +1099,9 @@ function updateSingleServiceConfiguration () {
 * @param serviceId - id of the service
 */
 function configureSingleUserService (serviceId) {
-    writeLog('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
-
-    // send ipc to show service-configuration window
     const { ipcRenderer } = require('electron')
-    ipcRenderer.send('showConfigureSingleServiceWindow', serviceId)
+    writeLog('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
+    ipcRenderer.send('showConfigureSingleServiceWindow', serviceId) // send ipc to show service-configuration window
 }
 
 /**
@@ -1153,9 +1110,8 @@ function configureSingleUserService (serviceId) {
 * @description Opens or closes the Developer Console inside the app. Gets called from mainWindow.html
 */
 function openDevTools () {
-    writeLog('info', 'openDevTools ::: Opening Developer Console')
-
     const remote = require('electron').remote
+    writeLog('info', 'openDevTools ::: Opening Developer Console')
     remote.getCurrentWindow().toggleDevTools()
 }
 
@@ -1168,9 +1124,7 @@ function settingToggleAutostart () {
     const isDev = require('electron-is-dev')
     if (isDev) {
         showNoty('warning', 'Configuring autostart is only supported in packaged builds.')
-
-        // unselect the autostart checkbox
-        $('#checkboxSettingAutostart').prop('checked', false)
+        $('#checkboxSettingAutostart').prop('checked', false) // unselect the autostart checkbox
     } else {
         var AutoLaunch = require('auto-launch') // auto-launch - via: https://www.npmjs.com/package/auto-launch
 
@@ -1184,8 +1138,7 @@ function settingToggleAutostart () {
         if ($('#checkboxSettingAutostart').prop('checked')) {
             showNotyAutostartMinimizedConfirm()
         } else {
-            // disabling the autostart
-            ttthAutoLauncher.disable()
+            ttthAutoLauncher.disable() // disabling the autostart
             writeLocalUserSetting('settingAutostart', false)
             writeLog('info', 'settingToggleAutostart ::: Finished disabling Autostart')
             showNoty('success', "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Autostart (on login)&lt;/u> is now disabled.")
@@ -1199,7 +1152,7 @@ function settingToggleAutostart () {
                 ttthAutoLauncher.enable()
             })
             .catch(function (err) {
-                // handle error
+                writeLog('error', 'settingToggleAutostart ::: Error: ' + err)
                 throw err
             })
     }
@@ -1211,20 +1164,14 @@ function settingToggleAutostart () {
 * @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
 */
 function settingDefaultViewUpdate () {
-    // get currently selected value from select
-    var newDefaultView = $('#selectDefaultView').val()
+    var newDefaultView = $('#selectDefaultView').val() // get currently selected value from select
 
     if (newDefaultView !== null) {
         writeLog('info', 'settingDefaultViewUpdate ::: New default view on start is set to: ' + newDefaultView)
-
-        // Store new default view in local storage
-        writeLocalUserSetting('settingDefaultView', newDefaultView)
-
-        // show noty
-        showNoty('success', 'Set default view to &lt;b>' + newDefaultView + '&lt;/b>.')
+        writeLocalUserSetting('settingDefaultView', newDefaultView) // Store new default view in local storage
+        showNoty('success', 'Set default view to &lt;b>' + newDefaultView + '&lt;/b>.') // show noty
     } else {
-        // user forgot to select a service for new default view
-        showNoty('warning', 'Please &lt;b>choose a service&lt;/b> to set a custom &lt;b>default view&lt;/b>.')
+        showNoty('warning', 'Please &lt;b>choose a service&lt;/b> to set a custom &lt;b>default view&lt;/b>.') // user forgot to select a service for new default view
     }
 }
 
@@ -1236,7 +1183,6 @@ function settingDefaultViewUpdate () {
 function checkSupportedOperatingSystem () {
     var supportedOperatingSystemMessage = ''
     var userPlatform = process.platform // process.platform (works without require) vs os.platform
-
     writeLog('info', 'checkSupportedOperatingSystem ::: Detected operating system as: ' + userPlatform)
 
     switch (userPlatform) {
@@ -1249,11 +1195,8 @@ function checkSupportedOperatingSystem () {
         break
 
     default:
-        // could be: sunos
-
-        // define message
-        supportedOperatingSystemMessage = userPlatform + ' is currently not supported. Please contact devs.'
-
+        // could be: sunos or whatever else
+        supportedOperatingSystemMessage = userPlatform + ' is currently not supported. Please contact devs.' // define message
         showNoty('warning', supportedOperatingSystemMessage, 0)
         writeLog('error', 'checkSupportedOperatingSystem ::: ' + supportedOperatingSystemMessage)
     }
@@ -1461,26 +1404,18 @@ function initAvailableServicesSelection () {
     writeLog('info', 'initAvailableServicesSelection ::: Reload settings select with all supported service definitions')
 
     var counterSupportedServices = 0
-
-    // get reference to select which contains all supported service type definitions
-    const dropdown = $('#select_availableServices')
-
-    // select the first entry
-    dropdown.prop('selectedIndex', 0)
+    const dropdown = $('#select_availableServices') // get reference to select which contains all supported service type definitions
+    dropdown.prop('selectedIndex', 0) // select the first entry
 
     // url to service definitions
-    // const url = __dirname + '/js/ttth/services.json'
     const path = require('path')
     const url = path.join(__dirname, '/js/ttth/services.json')
 
     // Populate select with list of provinces
     $.getJSON(url, function (data) {
         $.each(data, function (key, entry) {
-            // add option to select
-            dropdown.append($('&lt;option>&lt;/option>').attr('value', entry.id).text(entry.nameLong))
-
-            // count services
-            counterSupportedServices = counterSupportedServices + 1
+            dropdown.append($('&lt;option>&lt;/option>').attr('value', entry.id).text(entry.nameLong)) // add option to select
+            counterSupportedServices = counterSupportedServices + 1 // count services
         })
 
         writeLog('info', 'initAvailableServicesSelection ::: Finished reloading settings select with all supported service definitions. Found _' + counterSupportedServices + '_ service types.')
@@ -1498,8 +1433,7 @@ function loadConfiguredUserServices () {
     const app = remote.app
     const path = require('path')
 
-    // empty the div
-    $('#settingsServicesConfigured').empty()
+    $('#settingsServicesConfigured').empty() // empty the div
 
     // ensure we are reading from the correct location
     const defaultUserDataPath = app.getPath('userData')
@@ -1509,6 +1443,7 @@ function loadConfiguredUserServices () {
     // read all user service configuration files
     storage.getAll(function (error, data) {
         if (error) {
+            // FIXME
             throw error
         }
 
@@ -2720,7 +2655,7 @@ require('electron').ipcRenderer.on('showNoConnectivityError', function () {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Wed Jan 08 2020 14:45:36 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Jan 09 2020 07:44:00 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>
