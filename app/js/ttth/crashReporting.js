@@ -1,4 +1,3 @@
-
 // ----------------------------------------------------------------------------
 // Error Handling using: crashReporter (https://electronjs.org/docs/api/crash-reporter)
 // ----------------------------------------------------------------------------
@@ -21,7 +20,8 @@ crashReporter.start({
 //
 const Sentry = require('@sentry/electron')
 Sentry.init({
-    dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940'
+    dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940',
+    debug: true
 })
 //
 // simple way to force a crash:
@@ -30,6 +30,16 @@ Sentry.init({
 // ----------------------------------------------------------------------------
 // Error Handling using: electron-unhandled (https://github.com/sindresorhus/electron-unhandled)
 // ----------------------------------------------------------------------------
-//
-// const unhandled = require("electron-unhandled");
-// unhandled();
+const unhandled = require('electron-unhandled')
+const {openNewGitHubIssue, debugInfo} = require('electron-util')
+
+unhandled({
+    showDialog: true,
+    reportButton: error => {
+        openNewGitHubIssue({
+            user: 'yafp',
+            repo: 'ttth',
+            body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+        });
+    }
+});

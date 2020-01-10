@@ -32,8 +32,10 @@ The following categories are used:
   * Added a new theme 'snazzy'. See [#157](https://github.com/yafp/ttth/issues/157)
   * Added theme support for application titlebar and service-tabs. See [#156](https://github.com/yafp/ttth/issues/156)
   * Added support for service-specific userAgents. See [#158](https://github.com/yafp/ttth/issues/158)
+  * Added eror handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
 
 ####  ```Changed```
+* Error-Reporting: Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
 * Settings: Reduced amount of buttons for the following 'Options'
   * Default view
   * Theme
@@ -43,7 +45,7 @@ The following categories are used:
   * app/js/ttth/modules/ttthGithubUrls.js
 * Dependencies
   * Updating electron from 7.1.6 to 7.1.8
-  * Updating electron-log from 4.0.0 to 4.0.2
+  * Updating electron-log from 4.0.0 to 4.0.3
   * Updating eslint from 6.7.2 to 6.8.0
   * Updating mocha from 6.2.2 to 7.0.0
   * Updating i18next from 19.0.2 to 19.0.3
