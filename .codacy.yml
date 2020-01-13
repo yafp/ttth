@@ -1,5 +1,6 @@
 ---
 exclude_paths:
+  - 'app/css/ttth/themes/**'    
   - 'docs/**'
   - 'docs/**/*'
   - 'docs/jsdocs/**/*'
