@@ -45,6 +45,8 @@ require('./js/ttth/crashReporting.js')
 // ----------------------------------------------------------------------------
 //
 let myTitlebar
+// const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ttth Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36'
 
 /**
 * @name titlebarInit
@@ -502,6 +504,25 @@ function readLocalUserSetting (key, optional = false) {
             }
         }
         // End: Urgent Window
+
+        // Setting: ErrorReporting
+        if (key === 'settingEnableErrorReporting') {
+            if (value === false) {
+                $('#checkboxSettingErrorReporting').prop('checked', false)
+                disableSentry()
+                writeLog('info', 'initSettingsPage ::: Setting ErrorReporting is disabled')
+            } else {
+                $('#checkboxSettingErrorReporting').prop('checked', true)
+                enableSentry()
+                writeLog('info', 'initSettingsPage ::: Setting ErrorReporting is enabled')
+            }
+
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingEnableErrorReporting', true)
+            }
+        }
+        // End: ErrorReporting
     })
 }
 
@@ -1505,6 +1526,7 @@ function initSettingsPage () {
     readLocalUserSetting('settingTheme') // Option: Theme
     readLocalUserSetting('settingDisableTray') // Option: DisableTray (Linux only)
     readLocalUserSetting('settingUrgentWindow') // Option: Urgent Window
+    readLocalUserSetting('settingEnableErrorReporting') // Option: Urgent Window
 
     // load all supported services to drop-down-list (used for adding new services)
     initAvailableServicesSelection()
@@ -1570,7 +1592,7 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     var newTabPosition = existingTabs - 1 // calculate new tab position
 
     // choose the right userAgent
-    var userAgent = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0' // setting a project wide default
+    var userAgent = appWideUserAgentDefault // setting a project wide default
     if (serviceUserAgentDefault !== '') {
         userAgent = serviceUserAgentDefault // overwrite with service-specific default, if set
     }
@@ -1578,7 +1600,7 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
         userAgent = serviceUserAgentCustom // overwrite with service-specific custom, if set
     }
 
-    // Parsing url and extract domain for Persist-handling of webview
+    // Parsing url and extract domain for persist-handling of webview
     var serviceDomain = utils.getDomain(serviceUrl)
 
     // add new list item to unordner list (tabs/menu)
@@ -1596,22 +1618,14 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     // add webview  to new tab
     //
     if (serviceType === 'whatsapp') {
-        // Whatsapp needs
-        // - a specific User Agent
-        // - no partition
-        //
-        // $('#' + serviceId).append('&lt;webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'>&lt;/webview>")
-
+        // Whatsapp needs: - no partition
         $('#' + serviceId).append('&lt;webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='" + userAgent + "'>&lt;/webview>")
     } else {
         if (serviceInjectCode === '') {
             // no inject code
-            // $('#' + serviceId).append('&lt;webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + '>&lt;/webview>')
             $('#' + serviceId).append('&lt;webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent=' + userAgent + '>&lt;/webview>')
         } else {
             // got injectCode, preload it
-
-            // $( "#"+ serviceId ).append( "&lt;webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + ">&lt;/webview>" );
             $('#' + serviceId).append('&lt;webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent=' + userAgent + ' >&lt;/webview>')
         }
     }
@@ -1760,6 +1774,65 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
     })
 
     writeLog('info', 'settingsToggleEnableStatusOfSingleUserService ::: Service _' + configuredUserServiceConfigName + '_ config file is now updated (status)')
+}
+
+/**
+* @name settingsToggleErrorReporting
+* @summary Enables or disabled the error reporting function
+* @description Enables or disabled the error reporting function
+*/
+function settingsToggleErrorReporting () {
+    if ($('#checkboxSettingErrorReporting').is(':checked')) {
+        writeLog('info', 'settingsToggleErrorReporting ::: Error reporting is now enabled')
+        writeLocalUserSetting('settingEnableErrorReporting', true)
+        enableSentry()
+        showNoty('success', "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Error Reporting&lt;/u> is now enabled.")
+        // myUndefinedFunctionFromRendererAfterEnable()
+    } else {
+        // ask if user really wants to disable error-reporting
+        // using a confirm dialog
+        const Noty = require('noty')
+        var n = new Noty(
+            {
+                theme: 'bootstrap-v4',
+                layout: 'bottom',
+                type: 'info',
+                closeWith: [''], // to prevent closing the confirm-dialog by clicking something other then a confirm-dialog-button
+                text: 'Do you really want to disable error-reporting?&lt;br>&lt;br>* We don\'t track users&lt;br>* We do collect error reports&lt;br>&lt;br>This helps us finding and fixing bugs in ttth',
+                buttons: [
+                    Noty.button('Yes', 'btn btn-success', function () {
+                        n.close()
+                        writeLog('warn', 'settingsToggleErrorReporting ::: Error reporting is now disabled')
+                        writeLocalUserSetting('settingEnableErrorReporting', false)
+                        disableSentry()
+                        showNoty('success', "&lt;i class='fas fa-toggle-off'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Error Reporting&lt;/u> is now disabled.")
+                    },
+                    {
+                        id: 'button1', 'data-status': 'ok'
+                    }),
+
+                    Noty.button('No', 'btn btn-secondary mediaDupes_btnDownloadActionWidth float-right', function () {
+                        n.close()
+                        $('#checkboxSettingErrorReporting').prop('checked', true) // revert state of checkbox
+                        showNoty('success', '&lt;b>Thanks&lt;/b> for supporting ttth development with your error reports.')
+                        writeLog('warn', 'settingsToggleErrorReporting ::: User cancelled disabling of error-reporting')
+                        showNoty('success', "&lt;i class='fas fa-toggle-on'>&lt;/i> &lt;b>Option:&lt;/b> &lt;u>Error Reporting&lt;/u> is now enabled.")
+                    })
+                ]
+            })
+
+        // show the noty dialog
+        n.show()
+    }
+}
+
+/**
+* @name loadEnabledUserServices
+* @summary Reads all user configured service files and adds the enabled services as tabs
+* @description Reads all user configured service files and adds the enabled services as tabs
+*/
+function fontAwesomeShowIconGallery () {
+    utils.openURL('https://fontawesome.com/icons?d=gallery&amp;m=free')
 }
 
 /**
@@ -2276,6 +2349,10 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
             writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Current service: _' + key + '_.') // key = name of json file
 
             if (data.hasOwnProperty(key)) {
+                if (data[key].type.startsWith('google')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                }
+
                 // check if userAgentDefault exists
                 if (data[key].userAgentDefault === undefined) {
                     writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
@@ -2287,11 +2364,6 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
                     writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
                     userAgentCustomMissing = true
                 }
-            }
-
-            // some services (all google services) already need a new userAgentDefault
-            if (data[key].type.startsWith('google')) {
-                newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
             }
 
             // update config if needed
@@ -2309,7 +2381,10 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
                         userAgentDefault: newUserAgentDefaultString,
                         userAgentCustom: userUserAgentCustomString
                     }, function (error) {
-                        if (error) throw error
+                        if (error) {
+                            showNoty('error', 'Failed to update a user service configuration to 1.9.0 format.')
+                            throw error
+                        }
                     })
             }
         }
@@ -2649,13 +2724,13 @@ require('electron').ipcRenderer.on('showNoConnectivityError', function () {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#executeBeforeReady">executeBeforeReady</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showDialog">showDialog</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#titlebarDispose">titlebarDispose</a></li><li><a href="global.html#titlebarInit">titlebarInit</a></li><li><a href="global.html#titlebarUpdateBackground">titlebarUpdateBackground</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateAllUserServiceConfigurationsSince_1_8_0">updateAllUserServiceConfigurationsSince_1_8_0</a></li><li><a href="global.html#updateAllUserServiceConfigurationsSince_1_9_0">updateAllUserServiceConfigurationsSince_1_9_0</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#addServiceTab">addServiceTab</a></li><li><a href="global.html#checkArguments">checkArguments</a></li><li><a href="global.html#checkNetworkConnectivity">checkNetworkConnectivity</a></li><li><a href="global.html#checkNetworkConnectivityPeriodic">checkNetworkConnectivityPeriodic</a></li><li><a href="global.html#checkSupportedOperatingSystem">checkSupportedOperatingSystem</a></li><li><a href="global.html#closeSingleServiceConfiguratationWindow">closeSingleServiceConfiguratationWindow</a></li><li><a href="global.html#configureSingleUserService">configureSingleUserService</a></li><li><a href="global.html#createMenu">createMenu</a></li><li><a href="global.html#createSingleServiceConfiguration">createSingleServiceConfiguration</a></li><li><a href="global.html#createTray">createTray</a></li><li><a href="global.html#createWindow">createWindow</a></li><li><a href="global.html#deleteConfiguredService">deleteConfiguredService</a></li><li><a href="global.html#doAnimateServiceIcon">doAnimateServiceIcon</a></li><li><a href="global.html#eventListenerForSingleService">eventListenerForSingleService</a></li><li><a href="global.html#executeBeforeReady">executeBeforeReady</a></li><li><a href="global.html#forceSingleAppInstance">forceSingleAppInstance</a></li><li><a href="global.html#generateNewRandomServiceID">generateNewRandomServiceID</a></li><li><a href="global.html#getDomain">getDomain</a></li><li><a href="global.html#getHostName">getHostName</a></li><li><a href="global.html#initAvailableServicesSelection">initAvailableServicesSelection</a></li><li><a href="global.html#initSettingsPage">initSettingsPage</a></li><li><a href="global.html#isLinux">isLinux</a></li><li><a href="global.html#isMac">isMac</a></li><li><a href="global.html#isWindows">isWindows</a></li><li><a href="global.html#loadConfiguredUserServices">loadConfiguredUserServices</a></li><li><a href="global.html#loadDefaultView">loadDefaultView</a></li><li><a href="global.html#loadEnabledUserServices">loadEnabledUserServices</a></li><li><a href="global.html#loadServiceSpecificCode">loadServiceSpecificCode</a></li><li><a href="global.html#localizeUserInterface">localizeUserInterface</a></li><li><a href="global.html#onAfterReadyMainWindow">onAfterReadyMainWindow</a></li><li><a href="global.html#onReadyMainWindow">onReadyMainWindow</a></li><li><a href="global.html#openDevTools">openDevTools</a></li><li><a href="global.html#openReleasesOverview">openReleasesOverview</a></li><li><a href="global.html#openURL">openURL</a></li><li><a href="global.html#openUserServicesConfigFolder">openUserServicesConfigFolder</a></li><li><a href="global.html#openUserSettingsConfigFolder">openUserSettingsConfigFolder</a></li><li><a href="global.html#previewIcon">previewIcon</a></li><li><a href="global.html#readLocalUserSetting">readLocalUserSetting</a></li><li><a href="global.html#removeServiceTab">removeServiceTab</a></li><li><a href="global.html#searchUpdate">searchUpdate</a></li><li><a href="global.html#serviceGitterGetUnreadMessageCount">serviceGitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMailGetUnreadMessageCount">serviceGoogleMailGetUnreadMessageCount</a></li><li><a href="global.html#serviceGoogleMessagesGetUnreadMessageCount">serviceGoogleMessagesGetUnreadMessageCount</a></li><li><a href="global.html#serviceICQGetUnreadMessageCount">serviceICQGetUnreadMessageCount</a></li><li><a href="global.html#serviceMattermostGetUnreadMessageCount">serviceMattermostGetUnreadMessageCount</a></li><li><a href="global.html#serviceMessengerGetUnreadMessageCount">serviceMessengerGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOffice365GetUnreadMessageCount">serviceMicrosoftOffice365GetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftOutlookGetUnreadMessageCount">serviceMicrosoftOutlookGetUnreadMessageCount</a></li><li><a href="global.html#serviceMicrosoftTeamsGetUnreadMessageCount">serviceMicrosoftTeamsGetUnreadMessageCount</a></li><li><a href="global.html#serviceRiotGetUnreadMessageCount">serviceRiotGetUnreadMessageCount</a></li><li><a href="global.html#serviceSkypeGetUnreadMessageCount">serviceSkypeGetUnreadMessageCount</a></li><li><a href="global.html#serviceSlackGetUnreadMessageCount">serviceSlackGetUnreadMessageCount</a></li><li><a href="global.html#serviceSteamChatGetUnreadMessageCount">serviceSteamChatGetUnreadMessageCount</a></li><li><a href="global.html#serviceTelegramGetUnreadMessageCount">serviceTelegramGetUnreadMessageCount</a></li><li><a href="global.html#serviceThreemaGetUnreadMessageCount">serviceThreemaGetUnreadMessageCount</a></li><li><a href="global.html#serviceTwitterGetUnreadMessageCount">serviceTwitterGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppGetUnreadMessageCount">serviceWhatsAppGetUnreadMessageCount</a></li><li><a href="global.html#serviceWhatsAppInit">serviceWhatsAppInit</a></li><li><a href="global.html#serviceWhatsAppRegister">serviceWhatsAppRegister</a></li><li><a href="global.html#serviceXingGetUnreadMessageCount">serviceXingGetUnreadMessageCount</a></li><li><a href="global.html#settingActivateUserColorCss">settingActivateUserColorCss</a></li><li><a href="global.html#settingDefaultViewReset">settingDefaultViewReset</a></li><li><a href="global.html#settingDefaultViewUpdate">settingDefaultViewUpdate</a></li><li><a href="global.html#settingsSelectServiceToAddChanged">settingsSelectServiceToAddChanged</a></li><li><a href="global.html#settingsToggleEnableStatusOfSingleUserService">settingsToggleEnableStatusOfSingleUserService</a></li><li><a href="global.html#settingsToggleErrorReporting">settingsToggleErrorReporting</a></li><li><a href="global.html#settingsUserAddNewService">settingsUserAddNewService</a></li><li><a href="global.html#settingThemeReset">settingThemeReset</a></li><li><a href="global.html#settingThemeUpdate">settingThemeUpdate</a></li><li><a href="global.html#settingToggleAutostart">settingToggleAutostart</a></li><li><a href="global.html#settingToggleDisableTray">settingToggleDisableTray</a></li><li><a href="global.html#settingToggleUrgentWindow">settingToggleUrgentWindow</a></li><li><a href="global.html#showDialog">showDialog</a></li><li><a href="global.html#showNoty">showNoty</a></li><li><a href="global.html#showNotyAutostartMinimizedConfirm">showNotyAutostartMinimizedConfirm</a></li><li><a href="global.html#switchToService">switchToService</a></li><li><a href="global.html#titlebarDispose">titlebarDispose</a></li><li><a href="global.html#titlebarInit">titlebarInit</a></li><li><a href="global.html#titlebarUpdateBackground">titlebarUpdateBackground</a></li><li><a href="global.html#updateAllUserServiceConfigurations">updateAllUserServiceConfigurations</a></li><li><a href="global.html#updateAllUserServiceConfigurationsSince_1_8_0">updateAllUserServiceConfigurationsSince_1_8_0</a></li><li><a href="global.html#updateAllUserServiceConfigurationsSince_1_9_0">updateAllUserServiceConfigurationsSince_1_9_0</a></li><li><a href="global.html#updateGlobalServicesShortcuts">updateGlobalServicesShortcuts</a></li><li><a href="global.html#updateServiceBadge">updateServiceBadge</a></li><li><a href="global.html#updateSingleServiceConfiguration">updateSingleServiceConfiguration</a></li><li><a href="global.html#updateTrayIconStatus">updateTrayIconStatus</a></li><li><a href="global.html#validateConfigSingleServiceForm">validateConfigSingleServiceForm</a></li><li><a href="global.html#validateConfiguredDefaultView">validateConfiguredDefaultView</a></li><li><a href="global.html#writeLocalUserSetting">writeLocalUserSetting</a></li><li><a href="global.html#writeLog">writeLog</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Thu Jan 09 2020 07:44:00 GMT+0100 (CET)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Jan 13 2020 20:15:38 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>
