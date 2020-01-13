@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/ttth/general.css" >
     <link rel="stylesheet" href="css/ttth/mainWindow.css" >
     <script type="text/javascript" src="js/ttth/ttth.js"></script>
+    <script type="text/javascript" src="js/ttth/crashReporting.js"></script>
     <script type="text/javascript" src="js/ttth/services/whatsapp/whatsapp.js" defer></script>
 
     <!-- bootstrap -->
@@ -138,7 +139,7 @@
                                         <option value="mainWindow_snazzy.css" i18n-text="mw_settingsOptionsSelectThemeSnazzy"><!-- i18n --></option>
                                         <option value="mainWindow_solarized_dark.css" i18n-text="mw_settingsOptionsSelectThemeSolarizedDark"><!-- i18n --></option>
                                         <option value="mainWindow_solarized_light.css" i18n-text="mw_settingsOptionsSelectThemeSolarizedLight"><!-- i18n --></option>
-                                        
+
                                     </select>
                                 </div>
                             </div>
@@ -175,8 +176,6 @@
                         </div>
                         <!-- /Option: DisableTray -->
 
-
-
                         <!-- Option: UrgentWindow -->
                         <div class="input-group input-group-sm mb-1" id="settingsSectionUrgentWindow">
                             <div class="input-group-prepend">
@@ -187,6 +186,18 @@
                             <input type="text" class="form-control" aria-label="Disabled text input which describes the urgent window option" value="" i18n-value="mw_settingsOptionsUrgentWindow"  i18n-title="mw_settingsOptionsUrgentWindowDescription" disabled>
                         </div>
                         <!-- /Option: UrgentWindow -->
+
+                        <!-- Option: DisableErrorReporting -->
+                        <div class="input-group input-group-sm mb-1" id="settingsErrorReporting">
+                            <div class="input-group-prepend">
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="checkboxSettingErrorReporting" aria-label="Checkbox for error reporting" onClick="settingsToggleErrorReporting();">
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" aria-label="Disabled text input which describes the error reporting option" value="" i18n-value="mw_settingsOptionsErrorReporting"  i18n-title="mw_settingsOptionsErrorReportingDescription" disabled>
+                        </div>
+                        <!-- /Option: DisableErrorReporting -->
+
 
                         <!-- Button: show config folder -->
                         <div class="text-left">

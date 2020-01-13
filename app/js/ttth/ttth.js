@@ -17,7 +17,8 @@ require('./js/ttth/crashReporting.js')
 // ----------------------------------------------------------------------------
 //
 let myTitlebar
-const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+// const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ttth Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36'
 
 /**
 * @name titlebarInit
@@ -475,6 +476,25 @@ function readLocalUserSetting (key, optional = false) {
             }
         }
         // End: Urgent Window
+
+        // Setting: ErrorReporting
+        if (key === 'settingEnableErrorReporting') {
+            if (value === false) {
+                $('#checkboxSettingErrorReporting').prop('checked', false)
+                disableSentry()
+                writeLog('info', 'initSettingsPage ::: Setting ErrorReporting is disabled')
+            } else {
+                $('#checkboxSettingErrorReporting').prop('checked', true)
+                enableSentry()
+                writeLog('info', 'initSettingsPage ::: Setting ErrorReporting is enabled')
+            }
+
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingEnableErrorReporting', true)
+            }
+        }
+        // End: ErrorReporting
     })
 }
 
@@ -1478,6 +1498,7 @@ function initSettingsPage () {
     readLocalUserSetting('settingTheme') // Option: Theme
     readLocalUserSetting('settingDisableTray') // Option: DisableTray (Linux only)
     readLocalUserSetting('settingUrgentWindow') // Option: Urgent Window
+    readLocalUserSetting('settingEnableErrorReporting') // Option: Urgent Window
 
     // load all supported services to drop-down-list (used for adding new services)
     initAvailableServicesSelection()
@@ -1570,17 +1591,13 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     //
     if (serviceType === 'whatsapp') {
         // Whatsapp needs: - no partition
-        //
-        // $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'></webview>")
         $('#' + serviceId).append('<webview id=webview_' + serviceId + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + " userAgent='" + userAgent + "'></webview>")
     } else {
         if (serviceInjectCode === '') {
             // no inject code
-            // $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + '></webview>')
             $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent=' + userAgent + '></webview>')
         } else {
             // got injectCode, preload it
-            // $( "#"+ serviceId ).append( "<webview id=webview_" + serviceId + " class='ttth_resizer' src=" + serviceUrl + " preload="+ serviceInjectCode + "></webview>" );
             $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent=' + userAgent + ' ></webview>')
         }
     }
@@ -1731,6 +1748,55 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
     writeLog('info', 'settingsToggleEnableStatusOfSingleUserService ::: Service _' + configuredUserServiceConfigName + '_ config file is now updated (status)')
 }
 
+/**
+* @name settingsToggleErrorReporting
+* @summary Enables or disabled the error reporting function
+* @description Enables or disabled the error reporting function
+*/
+function settingsToggleErrorReporting () {
+    if ($('#checkboxSettingErrorReporting').is(':checked')) {
+        writeLog('info', 'settingsToggleErrorReporting ::: Error reporting is now enabled')
+        writeLocalUserSetting('settingEnableErrorReporting', true)
+        enableSentry()
+        showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Error Reporting</u> is now enabled.")
+        // myUndefinedFunctionFromRendererAfterEnable()
+    } else {
+        // ask if user really wants to disable error-reporting
+        // using a confirm dialog
+        const Noty = require('noty')
+        var n = new Noty(
+            {
+                theme: 'bootstrap-v4',
+                layout: 'bottom',
+                type: 'info',
+                closeWith: [''], // to prevent closing the confirm-dialog by clicking something other then a confirm-dialog-button
+                text: 'Do you really want to disable error-reporting?<br><br>* We don\'t track users<br>* We do collect error reports<br><br>This helps us finding and fixing bugs in ttth',
+                buttons: [
+                    Noty.button('Yes', 'btn btn-success', function () {
+                        n.close()
+                        writeLog('warn', 'settingsToggleErrorReporting ::: Error reporting is now disabled')
+                        writeLocalUserSetting('settingEnableErrorReporting', false)
+                        disableSentry()
+                        showNoty('success', "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Error Reporting</u> is now disabled.")
+                    },
+                    {
+                        id: 'button1', 'data-status': 'ok'
+                    }),
+
+                    Noty.button('No', 'btn btn-secondary mediaDupes_btnDownloadActionWidth float-right', function () {
+                        n.close()
+                        $('#checkboxSettingErrorReporting').prop('checked', true) // revert state of checkbox
+                        showNoty('success', '<b>Thanks</b> for supporting ttth development with your error reports.')
+                        writeLog('warn', 'settingsToggleErrorReporting ::: User cancelled disabling of error-reporting')
+                        showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Error Reporting</u> is now enabled.")
+                    })
+                ]
+            })
+
+        // show the noty dialog
+        n.show()
+    }
+}
 
 /**
 * @name loadEnabledUserServices
@@ -1740,8 +1806,6 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
 function fontAwesomeShowIconGallery () {
     utils.openURL('https://fontawesome.com/icons?d=gallery&m=free')
 }
-
-
 
 /**
 * @name loadEnabledUserServices
@@ -2257,6 +2321,10 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
             writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Current service: _' + key + '_.') // key = name of json file
 
             if (data.hasOwnProperty(key)) {
+                if (data[key].type.startsWith('google')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                }
+
                 // check if userAgentDefault exists
                 if (data[key].userAgentDefault === undefined) {
                     writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
@@ -2268,11 +2336,6 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
                     writeLog('warn', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
                     userAgentCustomMissing = true
                 }
-            }
-
-            // some services (all google services) already need a new userAgentDefault
-            if (data[key].type.startsWith('google')) {
-                newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
             }
 
             // update config if needed
@@ -2290,7 +2353,10 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
                         userAgentDefault: newUserAgentDefaultString,
                         userAgentCustom: userUserAgentCustomString
                     }, function (error) {
-                        if (error) throw error
+                        if (error) {
+                            showNoty('error', 'Failed to update a user service configuration to 1.9.0 format.')
+                            throw error
+                        }
                     })
             }
         }

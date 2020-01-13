@@ -26,7 +26,7 @@ The following categories are used:
 
 ***
 
-### ttth 1.9.0 (20xxyyzz)
+### ttth 1.9.0 (2020yyzz)
 #### ```Added```
 * Settings
   * Added a new theme 'snazzy'. See [#157](https://github.com/yafp/ttth/issues/157)
@@ -35,6 +35,7 @@ The following categories are used:
   * Added eror handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
 
 ####  ```Changed```
+* Error-Reporting: This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
 * Error-Reporting: Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
 * Settings: Reduced amount of buttons for the following 'Options'
   * Default view
