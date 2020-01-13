@@ -2321,7 +2321,12 @@ function updateAllUserServiceConfigurationsSince_1_9_0 () {
             writeLog('info', 'updateAllUserServiceConfigurationsSince_1_9_0 ::: Current service: _' + key + '_.') // key = name of json file
 
             if (data.hasOwnProperty(key)) {
+
                 if (data[key].type.startsWith('google')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                }
+
+                if (data[key].type.startsWith('whatsapp')) {
                     newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
                 }
 
