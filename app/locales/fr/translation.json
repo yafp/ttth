@@ -29,6 +29,8 @@
     "mw_settingsOptionsDescDisableTrayDescription": "Disables the application tray icon",
     "mw_settingsOptionsUrgentWindow": "Activer le mode fenêtre urgente",
     "mw_settingsOptionsUrgentWindowDescription": "Commence à clignoter la fenêtre pour attirer l'attention de l'utilisateur sur les messages non lus.",
+    "mw_settingsOptionsErrorReporting": "Error Reporting",
+    "mw_settingsOptionsErrorReportingDescription": "Enable or disable the error reporting to the developers.",
 
     "cw_windowName": "Configuration du service",
     "cw_labelId": "ID",

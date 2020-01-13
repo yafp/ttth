@@ -26,9 +26,11 @@
     "mw_settingsOptionsDescAutostart": "Autostart",
     "mw_settingsOptionsDescAutostartDescription": "Aktiviere den Autostart für ttth",
     "mw_settingsOptionsDescDisableTray": "Deaktiviere Tray",
-    "mw_settingsOptionsDescDisableTrayDescription": "Deaktiviert das Tray Symbol des Programmes",   
+    "mw_settingsOptionsDescDisableTrayDescription": "Deaktiviert das Tray Symbol des Programmes",
     "mw_settingsOptionsUrgentWindow": "Fenster-Aktivitätshinweise",
     "mw_settingsOptionsUrgentWindowDescription": "Aktiviere Fenster-Aktivitätshinweise, um die Aufmerksamkeit des Benutzers auf ungelesene Nachrichten zu lenken",
+    "mw_settingsOptionsErrorReporting": "Fehler Reporting",
+    "mw_settingsOptionsErrorReportingDescription": "Aktiviere oder deaktiviere die Meldung von Programm-Fehlern an die Entwickler",
 
     "cw_windowName": "Dienst konfigurieren",
     "cw_labelId": "ID",

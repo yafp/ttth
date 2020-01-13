@@ -29,6 +29,8 @@
     "mw_settingsOptionsDescDisableTrayDescription": "Disables the application tray icon",
     "mw_settingsOptionsUrgentWindow": "Urgent window mode",
     "mw_settingsOptionsUrgentWindowDescription": "Starts flashing the window to attract user's attention for unread messages.",
+    "mw_settingsOptionsErrorReporting": "Error Reporting",
+    "mw_settingsOptionsErrorReportingDescription": "Enable or disable the error reporting to the developers.",
 
     "cw_windowName": "Service configuration",
     "cw_labelId": "ID",
