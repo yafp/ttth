@@ -31,6 +31,13 @@ ttth offers a small amount of themes.
 
 *Nord theme (introduced in 1.8.0)*
 
+
+### snazzy
+
+![ui_snazzy](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_snazzy.png)
+
+*Snazzy (introduced in 1.9.0)*
+
 ### solarized dark
 
 ![ui_solarized_dark](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest_solarized_dark.png)

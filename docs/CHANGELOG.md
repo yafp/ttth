@@ -35,25 +35,43 @@ The following categories are used:
   * Added eror handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
 
 ####  ```Changed```
-* Error-Reporting: This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
-* Error-Reporting: Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
+* Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
+* Titlebar: Removed unfocus effect. No color difference between focus and no-focus. See  [#165](https://github.com/yafp/ttth/issues/165)
+* Error-Reporting:
+  * This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
+  * Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
 * Settings: Reduced amount of buttons for the following 'Options'
   * Default view
   * Theme
 * Settings: Reduced right gap for 'configured services' by improving the css mess.
 * Javascript Code: Moved some functions to modules
-  * app/js/ttth/modules/ttthUtils.js
-  * app/js/ttth/modules/ttthGithubUrls.js
-* Dependencies
-  * Updating electron from 7.1.6 to 7.1.8
-  * Updating electron-log from 4.0.0 to 4.0.3
-  * Updating eslint from 6.7.2 to 6.8.0
-  * Updating mocha from 6.2.2 to 7.0.0
-  * Updating i18next from 19.0.2 to 19.0.3
-  * Updating sentry from 1.1.0 to 1.2.0
-  * Switched back from pj-custom-electron-titlebar to custom-electron-titlebar (3.2.1)
-* Noty confirm dialogs: changed button positions.
+  * app/js/ttth/modules/utils.js
+  * app/js/ttth/modules/urlsGithub.js
+  * app/js/ttth/modules/userServiceConfigUpdater.js
+* Noty confirm dialogs
+  * changed button positions.
+  * Preventing confirming the dialog without clicking a button
 * Improved logging (added console messages for several existing error cases)
+* Added logging to several on error cases
+* Update search is now only executed on app start, not on earch UI reload anymore.
+* jsdoc is now using ```docdash```
+* Dependencies
+  * Updating ```electron``` from 7.1.6 to 7.1.11
+  * Updating ```electron-packager``` from 14.1.1 to 14.2.0
+  * Updating ```electron-builder``` from 22.2.0 to 22.3.2
+  * Updating ```electron-log``` from 4.0.0 to 4.0.4
+  * Updating ```eslint``` from 6.7.2 to 6.8.0
+  * Updating ```mocha``` from 6.2.2 to 7.0.1
+  * Updating ```i18next``` from 19.0.2 to 19.1.0
+  * Updating ```sentry``` from 1.1.0 to 1.2.0
+  * Updating ```popper.js``` from 1.16.0 to 1.16.1
+  * Updating ```spectron``` from 9.0.0 to 10.0.0
+  * Updating ```docdash``` from 1.1.1 to 1.2.0
+  * Updating ```rimraf``` from 3.0.0 to 3.0.1
+  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (3.2.2)
+
+#### ```Removed```
+* Removed ```npx``` from project
 
 #### ```Fixed```
 * Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)

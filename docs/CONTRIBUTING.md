@@ -58,7 +58,7 @@ Crashreport informations are located [here](https://sentry.io/organizations/yafp
 
 ##### adding a new service
 * Edit ```app/js/ttth/services.json``` and add the new service
-* Check the function ```loadServiceSpecificCode``` in ```/app/js/ttth/ttth.js```
+* Check the function ```loadServiceSpecificCode``` in ```/app/js/ttth/renderer.js```
 
 ##### other modification or changes
 * ....
