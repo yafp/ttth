@@ -19,18 +19,18 @@
     /* body */
     --color-bodyText: #eff0eb;
     --color-bodyHeading: #eff0eb; 
-    --color-bodyHeadingBorder: #57c7ff; 
+    --color-bodyHeadingBorder: #5af78e; 
     --color-bodyBackground: #282a36; 
 
     /* navigation */
     --color-navigationText: #eff0eb;
     --color-navigationBackground: #1a1c24; 
-    --color-navigationBorder: #57c7ff; 
-    --color-navigationHighlight: #57c7ff;
-    --color-navigationCurrentActive: #57c7ff;
+    --color-navigationBorder: #5af78e; 
+    --color-navigationHighlight: #5af78e;
+    --color-navigationCurrentActive: #5af78e;
 
     /* highlight */
-    --color-highlight: #57c7ff;
+    --color-highlight: #5af78e;
 
     /* bootstrap form elements */
     --color-inputFormsText: #eff0eb; 
