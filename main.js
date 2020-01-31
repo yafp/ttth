@@ -1,17 +1,24 @@
-// ----------------------------------------------------------------------------
-// IMPORT
-// ----------------------------------------------------------------------------
-const urls = require('./app/js/ttth/modules/ttthGithubUrls.js')
+/**
+* @file Contains all main code
+* @author yafp
+* @namespace main
+*/
 
-// Start measuring startup time
-// console.time('init')
+'use strict'
+
+// ----------------------------------------------------------------------------
+// IMPORT TTTH MODULES
+// ----------------------------------------------------------------------------
+const urls = require('./app/js/ttth/modules/urlsGithub.js')
+// const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
+const sentry = require('./app/js/ttth/modules/sentry.js') // sentry
+const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unhandled
 
 // -----------------------------------------------------------------------------
 // REQUIRE
 // -----------------------------------------------------------------------------
-const { app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require('electron')
-
-const v8compileCache = require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
+// const { app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require('electron')
+const { app, BrowserWindow, Menu, Tray, ipcMain, globalShortcut } = require('electron')
 const log = require('electron-log') // for: logging to file
 const shell = require('electron').shell // for: opening external urls in default browser
 const isOnline = require('is-online') // for online connectivity checks
@@ -19,31 +26,18 @@ const path = require('path')
 const fs = require('fs')
 const os = require('os') // for: check os.platform()
 const openAboutWindow = require('about-window').default // for: about-window
+require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 
-// The following requires are not really needed - but it mutes 'npm-check' regarding NOTUSED
-require('jquery')
-require('@fortawesome/fontawesome-free')
-require('popper.js')
-// CAUTION: jquery, fontawesome and popper might cost startup time
-//
-// require('bootstrap'); // this breaks everything, whyever
-
-// ----------------------------------------------------------------------------
-// ERROR-HANDLING
-// ----------------------------------------------------------------------------
-//
-require('./app/js/ttth/crashReporting.js')
-// myUndefinedFunctionFromMain();
 
 // -----------------------------------------------------------------------------
 // VARIABLES
 // -----------------------------------------------------------------------------
 
-// Keep a global reference of the window objects,
-// if you don't, the window will be closed automatically
-// when the JavaScript object is garbage collected.
+// Keep a global reference of the window objects, if you don't, the window
+// will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
 let configWindow = null
+let windowConfig = null
 
 const gotTheLock = app.requestSingleInstanceLock() // for: single-instance handling
 const defaultUserDataPath = app.getPath('userData') // for: storing window position and size
@@ -54,14 +48,24 @@ let verbose = false
 var defaultMainWindowWidth = 800
 var defaultMainWindowHeight = 600
 
+// ----------------------------------------------------------------------------
+// ERROR-HANDLING:
+// ----------------------------------------------------------------------------
+// crash.initCrashReporter()
+// unhandled.initUnhandled()
+
+// Test by calling a not existing function
+// myUndefinedFunctionFromMain()
+
 // -----------------------------------------------------------------------------
 // FUNCTIONS
 // -----------------------------------------------------------------------------
 
 /**
-* @name writeLog
+* @function writeLog
 * @summary Writes to log file (and if verbose parameter is given as well to console)
 * @description Writes to log file (and if verbose parameter is given as well to console)
+* @memberof main
 */
 function writeLog (logType, logMessage) {
     // configure
@@ -73,7 +77,7 @@ function writeLog (logType, logMessage) {
         log.transports.console.level = true
     }
 
-    logMessage = '[M] ' + logMessage // add prefix for all logs from [M]ain
+    logMessage = '[   Main   ] ' + logMessage // add prefix for all logs from [M]ain
 
     // do log
     switch (logType) {
@@ -95,9 +99,10 @@ function writeLog (logType, logMessage) {
 }
 
 /**
-* @name checkNetworkConnectivity
+* @function checkNetworkConnectivity
 * @summary Checks if internet is accessible
 * @description Checks if the internet is accessible, if not triggers an error in the mainWindow
+* @memberof main
 */
 function checkNetworkConnectivity () {
     (async () => {
@@ -105,17 +110,16 @@ function checkNetworkConnectivity () {
             writeLog('info', 'checkNetworkConnectivity ::: Got access to the internet.')
         } else {
             writeLog('error', 'checkNetworkConnectivity ::: Got NO access to the internet.')
-
-            // app should show an error
-            mainWindow.webContents.send('showNoConnectivityError')
+            mainWindow.webContents.send('showNoConnectivityError') // app should show an error
         }
     })()
 }
 
 /**
-* @name checkArguments
+* @function checkArguments
 * @summary Parses the supplied parameters
 * @description Parses the supplied parameters
+* @memberof main
 */
 function checkArguments () {
     // using https://www.npmjs.com/package/minimist could improve handling
@@ -144,13 +148,14 @@ function checkArguments () {
 }
 
 /**
-* @name showDialog
+* @function showDialog
 * @summary Shows a dialog
 * @description Displays a dialog - see https://electronjs.org/docs/api/dialog
-* @param dialogType - Can be "none", "info", "error", "question" or "warning"
-* @param dialogTitle - The title text
-* @param dialogMessage - The message of the dialog
-* @param dialogDetail - The detail text
+* @memberof main
+* @param {string} dialogType - Can be "none", "info", "error", "question" or "warning"
+* @param {string} dialogTitle - The title text
+* @param {string} dialogMessage - The message of the dialog
+* @param {string} dialogDetail - The detail text
 */
 function showDialog (dialogType, dialogTitle, dialogMessage, dialogDetail) {
     const { dialog } = require('electron')
@@ -169,9 +174,10 @@ function showDialog (dialogType, dialogTitle, dialogMessage, dialogDetail) {
 }
 
 /**
-* @name createTray
+* @function createTray
 * @summary Creates the tray of the app
 * @description Creates the tray and the related menu.
+* @memberof main
 */
 function createTray () {
     writeLog('info', 'createTray ::: Starting to create a tray item')
@@ -252,10 +258,76 @@ function createTray () {
     })
 }
 
+
 /**
-* @name createWindow
+* @function createWindowConfig
+* @summary Creates the config window  of the app
+* @description Creates the config window
+* @memberof main
+*/
+function createWindowConfig() {
+    writeLog('info', 'createWindow ::: Starting to create the application windows')
+
+    // Create the browser window.
+    windowConfig = new BrowserWindow({
+        // parent: mainWindow,
+        modal: true,
+        frame: true, // false results in a borderless window. Needed for custom titlebar
+        titleBarStyle: 'default', // needed for custom-electron-titlebar. See: https://electronjs.org/docs/api/frameless-window
+        backgroundColor: '#ffffff', 
+        show: true,
+        center: true, // Show window in the center of the screen
+        width: 800,
+        minWidth: 800,
+        // resizable: false, // this conflickts with opening dev tools
+        minimizable: false, // not implemented on linux
+        maximizable: false, // not implemented on linux
+        height: 700,
+        minHeight: 700,
+        icon: path.join(__dirname, 'app/img/icon/icon.png'),
+        webPreferences: {
+            nodeIntegration: true,
+            webSecurity: true // introduced in 0.3.0
+        }
+    })
+
+    // and load the setting.html of the app.
+    windowConfig.loadFile('app/configWindow.html')
+
+    // window needs no menu
+    windowConfig.removeMenu()
+
+    // Call from renderer: Settings UI - toggle dev tools
+    /*
+    ipcMain.on('settingsToggleDevTools', function () {
+        settingsWindow.webContents.toggleDevTools()
+    })
+    */
+
+    // Emitted before the window is closed.
+    settingsWindow.on('close', function () {
+        doLog('info', 'createWindowConfig ::: windowConfig will close (event: close)')
+    })
+
+    // Emitted when the window is closed.
+    settingsWindow.on('closed', function (event) {
+        doLog('info', 'createWindowConfig ::: windowConfig is closed (event: closed)')
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        windowConfig = null
+
+        // unblur main UI
+        mainWindow.webContents.send('unblurMainUI')
+    })
+}
+
+
+/**
+* @function createWindow
 * @summary Creates the main window  of the app
 * @description Creates the main window, restores window position and size of possible
+* @memberof main
 */
 function createWindow () {
     writeLog('info', 'createWindow ::: Starting to create the application windows')
@@ -291,7 +363,7 @@ function createWindow () {
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        title: '${productName}',
+        // title: '${productName}',
         frame: false, // false results in a borderless window
         show: false, // hide until: ready-to-show
         titleBarStyle: 'hidden', // needed for custom-electron-titlebar
@@ -333,7 +405,6 @@ function createWindow () {
         writeLog('info', 'createWindow ::: mainWindow is now ready, so show it and then focus it (event: ready-to-show)')
 
         checkNetworkConnectivity() // check network access
-        // console.timeEnd('init') // Stop measuring startup time
     })
 
     // Emitted when the application has finished basic startup.
@@ -508,8 +579,9 @@ function createWindow () {
     ipcMain.on('createNewGlobalShortcut', function (arg1, shortcut, targetTab) {
         writeLog('info', 'createWindow ::: Shortcuts: Creating a new shortcut: _' + shortcut + '_ for the service/tab: _' + targetTab + '_.')
 
-        const ret = globalShortcut.register(shortcut, () => {
-            writeLog('info', 'Shortcut: _' + shortcut + '_ was pressed.')
+        // const ret = globalShortcut.register(shortcut, () => {
+        globalShortcut.register(shortcut, () => {
+            writeLog('error', 'Shortcut: _' + shortcut + '_ was pressed.')
 
             mainWindow.webContents.send('switchToTab', targetTab) // activate the related tab
         })
@@ -561,7 +633,7 @@ function createWindow () {
     configWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true, // Whether this is a modal window. This only works when the window is a child window
-        title: '${productName}',
+        // title: '${productName}',
         frame: false, // false results in a borderless window
         show: false, // hide as default
         titleBarStyle: 'hidden',
@@ -597,6 +669,9 @@ function createWindow () {
     // Emitted when the window is ready to be shown
     configWindow.on('ready-to-show', function (event) {
         writeLog('info', 'configWindow is now ready to show (event: ready-to-show)')
+
+        // do some checks & routines once at start of the application
+        mainWindow.webContents.send('startSearchUpdatesSilent') // search silently for ttth updates
     })
 
     // Emitted when the window is shown
@@ -638,9 +713,10 @@ function createWindow () {
 }
 
 /**
-* @name forceSingleAppInstance
+* @function forceSingleAppInstance
 * @summary Takes care that there is only 1 instance of this app running
 * @description Takes care that there is only 1 instance of this app running
+* @memberof main
 */
 function forceSingleAppInstance () {
     writeLog('info', 'forceSingleAppInstance ::: Checking if there is only 1 instance of ttth')
@@ -668,9 +744,10 @@ function forceSingleAppInstance () {
 }
 
 /**
-* @name createMenu
+* @function createMenu
 * @summary Creates the application menu
 * @description Creates the application menu
+* @memberof main
 */
 function createMenu () {
     // Create a custom menu

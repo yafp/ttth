@@ -32,7 +32,7 @@
 - [privacy](#privacy)
 - [faq](#faq)
 - [known-issues](#known-issues)
-- [support](#support)
+- [discussion](#discussion)
 - [build](#build)
 - [contributing](#contributing)
 - [license](#license)
@@ -123,8 +123,11 @@ Please see the [FAQ](docs/FAQ.md) for more details.
 Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
 
-## support
-There is a public #ttth riot.im room available on matrix.org. Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join.
+## discussion
+
+* Github: using the issue function
+* Discord: Click [here](https://discord.gg/xHmUNBf)
+* Riot: Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join the public #ttth riot.im room available on matrix.org.
 
 
 ## build
