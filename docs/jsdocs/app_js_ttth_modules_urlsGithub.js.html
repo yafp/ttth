@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js - ttth documentation</title>
+    <title>app/js/ttth/modules/urlsGithub.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,7 +40,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js</h1>
+    <h1 class="page-title">app/js/ttth/modules/urlsGithub.js</h1>
     
 
     
@@ -51,34 +51,31 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @file microsoftOutlook_inject.js
-* @fileOverview This module contains the inject code for the service microsoft Outlook
+* @file urlsGithub.js
+* @fileOverview This module contains all static github urls of this project
 * @author yafp
-* @namespace services
+* @module urlsGithub
 */
 
-const { ipcRenderer } = require('electron')
+'use strict'
 
-/**
-* @function serviceMicrosoftOutlookGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Outlook
-* @description Gets the amount of unread messages of the service Outlook
-* @memberof services
-*/
-function serviceMicrosoftOutlookGetUnreadMessageCount () {
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count')
+// Define github url constants
+//
+const urlGitHubGeneral = 'https://github.com/yafp/ttth' // the general repo url
+const urlGitHubIssues = 'https://github.com/yafp/ttth/issues' // the issue url
+const urlGitHubChangelog = 'https://github.com/yafp/ttth/blob/master/docs/CHANGELOG.md' // the changelog url
+const urlGitHubFAQ = 'https://github.com/yafp/ttth/blob/master/docs/FAQ.md' // the faq
+const urlGitHubReleases = 'https://github.com/yafp/ttth/releases' // the releases url
+const urlGitHubRepoTags = 'https://api.github.com/repos/yafp/ttth/tags' // the tags api url
 
-    var e = document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span') !== null ? parseInt(document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span').innerText) : 0
-
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: ' + e)
-
-    ipcRenderer.sendToHost(e.toString())
-    return e.toString()
-}
-
-ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount())
-})
+// Define exports
+//
+exports.urlGitHubGeneral = urlGitHubGeneral
+exports.urlGitHubIssues = urlGitHubIssues
+exports.urlGitHubChangelog = urlGitHubChangelog
+exports.urlGitHubFAQ = urlGitHubFAQ
+exports.urlGitHubReleases = urlGitHubReleases
+exports.urlGitHubRepoTags = urlGitHubRepoTags
 </code></pre>
         </article>
     </section>

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js - ttth documentation</title>
+    <title>app/js/ttth/modules/unhandled.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,7 +40,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js</h1>
+    <h1 class="page-title">app/js/ttth/modules/unhandled.js</h1>
     
 
     
@@ -51,34 +51,56 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @file microsoftOutlook_inject.js
-* @fileOverview This module contains the inject code for the service microsoft Outlook
+* @file unhandled.js
+* @fileOverview This module contains all unhandled functions, See: https://github.com/sindresorhus/electron-unhandled
 * @author yafp
-* @namespace services
+* @module unhandled
 */
 
-const { ipcRenderer } = require('electron')
+'use strict'
+
+// const utils = require('./utils.js')
+
+const unhandled = require('electron-unhandled')
+const { openNewGitHubIssue, debugInfo } = require('electron-util')
+
+unhandled({
+    showDialog: true,
+    reportButton: error => {
+        openNewGitHubIssue({
+            user: 'yafp',
+            repo: 'ttth',
+            body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+        })
+    }
+})
 
 /**
-* @function serviceMicrosoftOutlookGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Outlook
-* @description Gets the amount of unread messages of the service Outlook
-* @memberof services
+* @function initUnhandled
+* @summary Initializes electron-unhandled
+* @description Initializes electron-unhandled. Is used in main and renderer
 */
-function serviceMicrosoftOutlookGetUnreadMessageCount () {
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count')
+function initUnhandled () {
+    const unhandled = require('electron-unhandled')
+    const { openNewGitHubIssue, debugInfo } = require('electron-util')
 
-    var e = document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span') !== null ? parseInt(document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span').innerText) : 0
+    unhandled({
+        showDialog: true,
+        reportButton: error => {
+            openNewGitHubIssue({
+                user: 'yafp',
+                repo: 'ttth',
+                body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+            })
+        }
+    })
 
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: ' + e)
-
-    ipcRenderer.sendToHost(e.toString())
-    return e.toString()
+    // utils.writeConsoleMsg('error', 'initUnhandled ::: electron-unhandled is now initialized')
 }
 
-ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount())
-})
+// export the functions
+//
+module.exports.initUnhandled = initUnhandled
 </code></pre>
         </article>
     </section>

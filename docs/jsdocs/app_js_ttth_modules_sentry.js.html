@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js - ttth documentation</title>
+    <title>app/js/ttth/modules/sentry.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,7 +40,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js</h1>
+    <h1 class="page-title">app/js/ttth/modules/sentry.js</h1>
     
 
     
@@ -51,34 +51,59 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @file microsoftOutlook_inject.js
-* @fileOverview This module contains the inject code for the service microsoft Outlook
+* @file sentry.js
+* @fileOverview This module contains all sentry functions
 * @author yafp
-* @namespace services
+* @module sentry
+* @exports enableSentry
+* @exports disableSentry
 */
 
-const { ipcRenderer } = require('electron')
+'use strict'
+
+const utils = require('./utils.js')
+
+// ----------------------------------------------------------------------------
+// Error Handling using: sentry (see #106)
+// ----------------------------------------------------------------------------
+//
+// https://sentry.io/organizations/yafp/
+// https://docs.sentry.io/platforms/javascript/electron/
+//
+const Sentry = require('@sentry/electron')
+Sentry.init({
+    dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940',
+    debug: true
+})
+
+// simple way to force a crash:
+// myUndefinedFunction();
+
 
 /**
-* @function serviceMicrosoftOutlookGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Outlook
-* @description Gets the amount of unread messages of the service Outlook
-* @memberof services
+* @name enableSentry
+* @summary Enables Sentry
+* @description Enables Sentry. Is is enabled by default.
 */
-function serviceMicrosoftOutlookGetUnreadMessageCount () {
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count')
-
-    var e = document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span') !== null ? parseInt(document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span').innerText) : 0
-
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: ' + e)
-
-    ipcRenderer.sendToHost(e.toString())
-    return e.toString()
+function enableSentry () {
+    Sentry.getCurrentHub().getClient().getOptions().enabled = true
+    utils.writeConsoleMsg('info', 'enableSentry ::: Sentry is now enabled')
 }
 
-ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount())
-})
+/**
+* @name disableSentry
+* @summary Disable Sentry
+* @description Disable Sentry. Is is enabled by default.
+*/
+function disableSentry () {
+    Sentry.getCurrentHub().getClient().getOptions().enabled = false
+    utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now enabled')
+}
+
+// export both functions
+//
+module.exports.enableSentry = enableSentry
+module.exports.disableSentry = disableSentry
 </code></pre>
         </article>
     </section>

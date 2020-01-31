@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js - ttth documentation</title>
+    <title>urlsGithub - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,48 +40,143 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js</h1>
+    <h1 class="page-title">urlsGithub</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>/**
-* @file microsoftOutlook_inject.js
-* @fileOverview This module contains the inject code for the service microsoft Outlook
-* @author yafp
-* @namespace services
-*/
+        
+            
+        
+    
+</header>
 
-const { ipcRenderer } = require('electron')
+<article>
+    
+        <div class="container-overview">
+        
+            
+                <div class="description usertext"><p>This module contains all static github urls of this project</p></div>
+            
 
-/**
-* @function serviceMicrosoftOutlookGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Outlook
-* @description Gets the amount of unread messages of the service Outlook
-* @memberof services
-*/
-function serviceMicrosoftOutlookGetUnreadMessageCount () {
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count')
+            
+                
 
-    var e = document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span') !== null ? parseInt(document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span').innerText) : 0
 
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: ' + e)
 
-    ipcRenderer.sendToHost(e.toString())
-    return e.toString()
-}
 
-ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount())
-})
-</code></pre>
-        </article>
-    </section>
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="app_js_ttth_modules_urlsGithub.js.html">app/js/ttth/modules/urlsGithub.js</a>, <a href="app_js_ttth_modules_urlsGithub.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>yafp</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js - ttth documentation</title>
+    <title>app/js/ttth/modules/crashReporter.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,7 +40,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/microsoftOutlook/microsoftOutlook_inject.js</h1>
+    <h1 class="page-title">app/js/ttth/modules/crashReporter.js</h1>
     
 
     
@@ -51,34 +51,37 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @file microsoftOutlook_inject.js
-* @fileOverview This module contains the inject code for the service microsoft Outlook
+* @file crashReporter.js
+* @fileOverview This module contains all crashReporter functions, See: https://electronjs.org/docs/api/crash-reporter
 * @author yafp
-* @namespace services
+* @module crashReporter
 */
 
-const { ipcRenderer } = require('electron')
+'use strict'
+
+const utils = require('./utils.js')
 
 /**
-* @function serviceMicrosoftOutlookGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Outlook
-* @description Gets the amount of unread messages of the service Outlook
-* @memberof services
+* @name initCrashReporter
+* @summary Initialized the crashReporter
+* @description Initialized the crashReporter. See: https://electronjs.org/docs/api/crash-reporter
 */
-function serviceMicrosoftOutlookGetUnreadMessageCount () {
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Checking unread message count')
+function initCrashReporter () {
+    const { crashReporter } = require('electron')
+    crashReporter.start({
+        productName: 'ttth',
+        companyName: 'yafp',
+        submitURL: 'https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859',
+        uploadToServer: false
+    })
+    utils.writeConsoleMsg('info', 'initCrashReporter ::: crashReporter is now initialized')
 
-    var e = document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span') !== null ? parseInt(document.querySelector('.ms-FocusZone i[data-icon-name=Inbox]').parentNode.querySelector('span span').innerText) : 0
-
-    console.log('serviceMicrosoftOutlookGetUnreadMessageCount ::: Total Outlook unread messages: ' + e)
-
-    ipcRenderer.sendToHost(e.toString())
-    return e.toString()
+    // To simulate a crash - execute: process.crash();
 }
 
-ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceMicrosoftOutlookGetUnreadMessageCount())
-})
+// export functions
+//
+module.exports.initCrashReporter = initCrashReporter
 </code></pre>
         </article>
     </section>
