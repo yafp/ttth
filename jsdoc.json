@@ -20,9 +20,42 @@
         "monospaceLinks": false
     },
     "opts": {
-        "template": "templates/default",
+        "template": "node_modules/docdash",
         "encoding": "utf8",
         "destination": "./docs/jsdocs",
         "recurse": true
+    },
+    "docdash": {
+        "static": [true],
+        "sort": [true],
+        "sectionOrder": [
+             "Classes",
+             "Modules",
+             "Externals",
+             "Events",
+             "Namespaces",
+             "Mixins",
+             "Tutorials",
+             "Interfaces"
+        ],
+        "meta": {
+            "title": "ttth documentation",
+            "description": "a simple jsdoc based documentation for ttth",
+            "keyword": "ttth"
+        },
+        "search": [true], 
+        "collapse": [false],
+        "wrap": [true], 
+        "typedefs": [true],
+        "navLevel": [10],
+        "private": [true],
+        "menu": {
+            "github.com/yafp/ttth": {
+                "href":"https://github.com/yafp/ttth",
+                "target":"_blank",
+                "class":"menu-item",
+                "id":"website_link"
+            }
+        }
     }
 }
