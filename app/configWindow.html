@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="css/ttth/general.css" >
     <link rel="stylesheet" href="css/ttth/configWindow.css">
     <link rel="stylesheet" href="css/ttth/themes/mainWindow_default.css"> <!-- themes arent dynamicly changed on configWindow -->
-    <script type="text/javascript" src="js/ttth/ttth.js"></script>
+    <script type="text/javascript" src="js/ttth/renderer.js"></script>
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css"/>
@@ -133,6 +133,6 @@
 $( document ).ready(function()
 {
     console.log( "configWindow.html ::: ready!" );
-    localizeUserInterface(); // Translate using i18next
+    localizeUserInterface('configWindow.html'); // Translate using i18next
 });
 </script>
