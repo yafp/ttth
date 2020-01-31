@@ -1,7 +1,15 @@
 /**
-* @name serviceWhatsAppRegister
+* @file whatsapp.js
+* @fileOverview This module contains the code for the service whatsapp
+* @author yafp
+* @namespace services
+*/
+
+/**
+* @function serviceWhatsAppRegister
 * @summary Register WhatsApp Web sessions
 * @description Flushes the storage data, clears the storage data -> helps running WhatsApp-Web
+* @memberof services
 */
 function serviceWhatsAppRegister () {
     // via: https://github.com/meetfranz/franz/issues/1185
@@ -29,9 +37,10 @@ function serviceWhatsAppRegister () {
 }
 
 /**
-* @name serviceWhatsAppInit
+* @function serviceWhatsAppInit
 * @summary Initializes the WhatsApp Service
 * @description Initializes the WhatsApp Service
+* @memberof services
 */
 function serviceWhatsAppInit (serviceName, serviceUrl) {
     console.log('serviceWhatsAppInit ::: Trying to init WhatsApp')

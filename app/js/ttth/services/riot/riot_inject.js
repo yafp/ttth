@@ -1,9 +1,17 @@
+/**
+* @file riot_inject.js
+* @fileOverview This module contains the inject code for the service riot
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceRiotGetUnreadMessageCount
+* @function serviceRiotGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Riot.im
 * @description Gets the amount of unread messages of the service Riot.im
+* @memberof services
 */
 function serviceRiotGetUnreadMessageCount () {
     console.log('serviceRiotGetUnreadMessageCount ::: Checking unread message count')

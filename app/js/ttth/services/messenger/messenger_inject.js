@@ -1,9 +1,17 @@
+/**
+* @file messenger_inject.js
+* @fileOverview This module contains the inject code for the service messenger
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceMessengerGetUnreadMessageCount
+* @function serviceMessengerGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Messenger
 * @description Gets the amount of unread messages of the service Messenger
+* @memberof services
 */
 function serviceMessengerGetUnreadMessageCount () {
     console.log('serviceMessengerGetUnreadMessageCount ::: Checking unread message count')

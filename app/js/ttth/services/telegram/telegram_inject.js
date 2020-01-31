@@ -1,9 +1,17 @@
+/**
+* @file telegram_inject.js
+* @fileOverview This module contains the inject code for the service telegram
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceTelegramGetUnreadMessageCount
+* @function serviceTelegramGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Telegram
 * @description Gets the amount of unread messages of the service Telegram
+* @memberof services
 */
 function serviceTelegramGetUnreadMessageCount () {
     console.log('serviceTelegramGetUnreadMessageCount ::: Checking unread message count')

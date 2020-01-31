@@ -1,9 +1,17 @@
+/**
+* @file googleMessages_inject.js
+* @fileOverview This module contains the inject code for the service googleMessages
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceGoogleMessagesGetUnreadMessageCount
+* @function serviceGoogleMessagesGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service googleMessages
 * @description Gets the amount of unread messages of the service googleMessages
+* @memberof services
 */
 function serviceGoogleMessagesGetUnreadMessageCount () {
     console.log('serviceGoogleMessagesGetUnreadMessageCount ::: Checking unread message count')

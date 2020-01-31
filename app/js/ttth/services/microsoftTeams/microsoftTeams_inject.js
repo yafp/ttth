@@ -1,12 +1,20 @@
+/**
+* @file microsoftTeams_inject.js
+* @fileOverview This module contains the inject code for the service microsoftTeams
+* @author yafp
+* @namespace services
+*/
+
 // via hamsket
 Object.defineProperty(navigator.serviceWorker, 'register', { value: () => Promise.reject() })
 
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceMicrosoftTeamsGetUnreadMessageCount
+* @function serviceMicrosoftTeamsGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Teams
 * @description Gets the amount of unread messages of the service Teams
+* @memberof services
 */
 function serviceMicrosoftTeamsGetUnreadMessageCount () {
     console.log('serviceMicrosoftTeamsGetUnreadMessageCount ::: Checking unread message count')

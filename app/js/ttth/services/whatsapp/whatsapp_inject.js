@@ -1,3 +1,10 @@
+/**
+* @file whatsapp_inject.js
+* @fileOverview This module contains the inject code for the service whatsapp
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 // adopted from franz:
@@ -20,9 +27,10 @@ window.addEventListener('beforeunload', async () => {
 })
 
 /**
-* @name serviceWhatsAppGetUnreadMessageCount
+* @function serviceWhatsAppGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service WhatsApp
 * @description Gets the amount of unread messages of the service WhatsApp
+* @memberof services
 */
 function serviceWhatsAppGetUnreadMessageCount () {
     console.log('serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count')

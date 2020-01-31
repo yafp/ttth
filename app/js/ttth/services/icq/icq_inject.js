@@ -1,9 +1,17 @@
+/**
+* @file icq_inject.js
+* @fileOverview This module contains the inject code for the service icq
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceICQGetUnreadMessageCount
+* @function serviceICQGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service ICQ
 * @description Gets the amount of unread messages of the service ICQ
+* @memberof services
 */
 function serviceICQGetUnreadMessageCount () {
     console.log('serviceICQGetUnreadMessageCount ::: Checking unread message count')

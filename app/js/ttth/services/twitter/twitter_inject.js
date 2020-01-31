@@ -1,9 +1,17 @@
+/**
+* @file twitter_inject.js
+* @fileOverview This module contains the inject code for the service twitter
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceTwitterGetUnreadMessageCount
+* @function serviceTwitterGetUnreadMessageCount
 * @summary Gets the amount of unread DMs of the service Twitter
 * @description Gets the amount of unread DMs of the service Twitter
+* @memberof services
 */
 function serviceTwitterGetUnreadMessageCount () {
     console.log('serviceTwitterGetUnreadMessageCount ::: Checking unread message count')

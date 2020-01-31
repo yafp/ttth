@@ -1,9 +1,17 @@
+/**
+* @file microsoftOffice365_inject.js
+* @fileOverview This module contains the inject code for the service microsoftOffice365
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceMicrosoftOffice365GetUnreadMessageCount
+* @function serviceMicrosoftOffice365GetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Outlook
 * @description Gets the amount of unread messages of the service Outlook
+* @memberof services
 */
 function serviceMicrosoftOffice365GetUnreadMessageCount () {
     console.log('serviceMicrosoftOffice365GetUnreadMessageCount ::: Checking unread message count')

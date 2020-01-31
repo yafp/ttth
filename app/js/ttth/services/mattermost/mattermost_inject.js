@@ -1,9 +1,17 @@
+/**
+* @file mattermost_inject.js
+* @fileOverview This module contains the inject code for the service mattermost
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceMattermostGetUnreadMessageCount
+* @function serviceMattermostGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Mattermost
 * @description Gets the amount of unread messages of the service Mattermost
+* @memberof services
 */
 function serviceMattermostGetUnreadMessageCount () {
     console.log('serviceMattermostGetUnreadMessageCount ::: Checking unread message count')

@@ -1,9 +1,17 @@
+/**
+* @file gitter_inject.js
+* @fileOverview This script contains the inject code for the service gitter
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceGitterGetUnreadMessageCount
+* @function serviceGitterGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Gitter
 * @description Gets the amount of unread messages of the service Gitter
+* @memberof services
 */
 function serviceGitterGetUnreadMessageCount () {
     console.log('serviceGitterGetUnreadMessageCount ::: Checking unread message count')

@@ -1,9 +1,17 @@
+/**
+* @file threema_inject.js
+* @fileOverview This module contains the inject code for the service threema
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceThreemaGetUnreadMessageCount
+* @function serviceThreemaGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Threema
 * @description Gets the amount of unread messages of the service Threema
+* @memberof services
 */
 function serviceThreemaGetUnreadMessageCount () {
     console.log('serviceThreemaGetUnreadMessageCount ::: Checking unread message count')

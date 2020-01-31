@@ -1,9 +1,17 @@
+/**
+* @file xing_inject.js
+* @fileOverview This module contains the inject code for the service xing
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceXingGetUnreadMessageCount
+* @function serviceXingGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Xing
 * @description Gets the amount of unread messages of the service Xing
+* @memberof services
 */
 function serviceXingGetUnreadMessageCount () {
     console.log('serviceXingGetUnreadMessageCount ::: Checking unread message count')

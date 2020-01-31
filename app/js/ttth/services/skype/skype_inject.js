@@ -1,9 +1,17 @@
+/**
+* @file skype_inject.js
+* @fileOverview This module contains the inject code for the service skype
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceSkypeGetUnreadMessageCount
+* @function serviceSkypeGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Skype
 * @description Gets the amount of unread messages of the service Skype
+* @memberof services
 */
 function serviceSkypeGetUnreadMessageCount () {
     console.log('serviceSkypeGetUnreadMessageCount ::: Checking unread message count')

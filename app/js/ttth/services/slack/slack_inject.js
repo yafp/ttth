@@ -1,9 +1,17 @@
+/**
+* @file slack.js
+* @fileOverview This module contains the inject code for the service slack
+* @author yafp
+* @namespace services
+*/
+
 const { ipcRenderer } = require('electron')
 
 /**
-* @name serviceSlackGetUnreadMessageCount
+* @function serviceSlackGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service Slack
 * @description Gets the amount of unread messages of the service Slack
+* @memberof services
 */
 function serviceSlackGetUnreadMessageCount () {
     console.log('serviceSlackGetUnreadMessageCount ::: Checking unread message count')
