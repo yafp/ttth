@@ -1,3 +1,12 @@
+/**
+* @file urlsGithub.js
+* @fileOverview This module contains all static github urls of this project
+* @author yafp
+* @module urlsGithub
+*/
+
+'use strict'
+
 // Define github url constants
 //
 const urlGitHubGeneral = 'https://github.com/yafp/ttth' // the general repo url
