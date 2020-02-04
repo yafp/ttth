@@ -28,7 +28,6 @@ const os = require('os') // for: check os.platform()
 const openAboutWindow = require('about-window').default // for: about-window
 require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 
-
 // -----------------------------------------------------------------------------
 // VARIABLES
 // -----------------------------------------------------------------------------
@@ -56,6 +55,9 @@ var defaultMainWindowHeight = 600
 
 // Test by calling a not existing function
 // myUndefinedFunctionFromMain()
+sentry.enableSentry()
+
+
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS
@@ -258,14 +260,13 @@ function createTray () {
     })
 }
 
-
 /**
 * @function createWindowConfig
 * @summary Creates the config window  of the app
 * @description Creates the config window
 * @memberof main
 */
-function createWindowConfig() {
+function createWindowConfig () {
     writeLog('info', 'createWindow ::: Starting to create the application windows')
 
     // Create the browser window.
@@ -274,7 +275,7 @@ function createWindowConfig() {
         modal: true,
         frame: true, // false results in a borderless window. Needed for custom titlebar
         titleBarStyle: 'default', // needed for custom-electron-titlebar. See: https://electronjs.org/docs/api/frameless-window
-        backgroundColor: '#ffffff', 
+        backgroundColor: '#ffffff',
         show: true,
         center: true, // Show window in the center of the screen
         width: 800,
@@ -305,13 +306,13 @@ function createWindowConfig() {
     */
 
     // Emitted before the window is closed.
-    settingsWindow.on('close', function () {
-        doLog('info', 'createWindowConfig ::: windowConfig will close (event: close)')
+    windowConfig.on('close', function () {
+        writeLog('info', 'createWindowConfig ::: windowConfig will close (event: close)')
     })
 
     // Emitted when the window is closed.
-    settingsWindow.on('closed', function (event) {
-        doLog('info', 'createWindowConfig ::: windowConfig is closed (event: closed)')
+    windowConfig.on('closed', function (event) {
+        writeLog('info', 'createWindowConfig ::: windowConfig is closed (event: closed)')
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
@@ -321,7 +322,6 @@ function createWindowConfig() {
         mainWindow.webContents.send('unblurMainUI')
     })
 }
-
 
 /**
 * @function createWindow
@@ -393,6 +393,50 @@ function createWindow () {
         writeLog('info', 'createWindow ::: Restoring last stored window-position of mainWindow')
         mainWindow.setPosition(windowPositionX, windowPositionY)
     }
+
+
+
+
+
+
+
+
+
+    // Call from renderer: Update property from globalObj
+    ipcMain.on('globalObjectSet', function (event, property, value) {
+        writeLog('info', 'Set property _' + property + '_ to new value: _' + value + '_')
+        global.sharedObj[property] = value
+        console.warn(global.sharedObj)
+    })
+
+    // Global object
+    //
+    // Settings Tab
+    var settingDefaultView = ''
+    var settingTheme = 'default'
+    var settingAutostart = ''
+    var settingDisableTray = false
+    var settingUrgentWindow = false
+    var settingEnableErrorReporting = true
+    var settingEnablePrereleases = false
+
+
+    global.sharedObj = {
+        settingDefaultView: settingDefaultView,
+        settingTheme: settingTheme,
+        settingAutostart: settingAutostart,
+        settingDisableTray: settingDisableTray,
+        settingUrgentWindow: settingUrgentWindow,
+        settingEnableErrorReporting: settingEnableErrorReporting,
+        settingEnablePrereleases: settingEnablePrereleases
+    }
+
+
+
+
+
+
+
 
     // Load the UI (mainWindow.html) of the app.
     mainWindow.loadFile('./app/mainWindow.html')
