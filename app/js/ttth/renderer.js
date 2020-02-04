@@ -22,7 +22,8 @@ let myTitlebar
 var customTitlebar = require('custom-electron-titlebar')
 
 // const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
-const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ttth Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36' // default agent
+// const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ttth Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36' // default agent
+const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36' // default agent
 
 // ----------------------------------------------------------------------------
 // INIT ERROR HANDLING
@@ -33,10 +34,12 @@ const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537
 // Test by calling a not existing function
 // myUndefinedFunctionFromRenderer()
 
-// myUndefinedFunctionFromRenderer();
-
 // -----------------------------------------------------------------------------
 // FUNCTIONS
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+// FUNCTIONS - TITLEBAR
 // -----------------------------------------------------------------------------
 
 /**
@@ -46,19 +49,18 @@ const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537
 * @memberof renderer
 */
 function titlebarInit () {
-    //var customTitlebar = require('custom-electron-titlebar')
+    // var customTitlebar = require('custom-electron-titlebar')
 
     myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: 'center', // position of window title
         icon: 'img/titlebar/icon_titlebar.png',
         drag: true, // whether or not you can drag the window by holding the click on the title bar.
-        backgroundColor: customTitlebar.Color.fromHex('#171717'),
-        // backgroundColor: customTitlebar.Color.fromHex(newColor),
+        backgroundColor: customTitlebar.Color.fromHex('#171717'), // changes with each team
         minimizable: true,
         maximizable: true,
         closeable: true,
         unfocusEffect: false,
-        itemBackgroundColor: customTitlebar.Color.fromHex('#525252') // hover color
+        itemBackgroundColor: customTitlebar.Color.fromHex('#525252') // hover color - changes with each theme
     })
 
     // font size of custom-titlebar is set in /app/css/ttth/mainWindow.css
@@ -76,7 +78,6 @@ function titlebarUpdateBackground (newColor) {
     utils.writeConsoleMsg('info', 'titlebarUpdateBackground ::: Updated the titlebar background')
 }
 
-
 /**
 * @function titlebarUpdateItemBackGroundOnHover
 * @summary Update the item background color of the custom titlebar
@@ -84,7 +85,7 @@ function titlebarUpdateBackground (newColor) {
 * @memberof renderer
 * @param {string} newColor - A hex color string
 */
-function titlebarUpdateItemBackgroundOnHover(newColor) {
+function titlebarUpdateItemBackgroundOnHover (newColor) {
     myTitlebar.updateItemBGColor(customTitlebar.Color.fromHex(newColor))
     utils.writeConsoleMsg('info', 'titlebarUpdateItemBackgroundOnHover ::: Updated the item background on hover')
 }
@@ -99,6 +100,10 @@ function titlebarDispose () {
     myTitlebar.dispose()
     utils.writeConsoleMsg('warn', 'titlebarDispose ::: Disposed the entire titlebar')
 }
+
+// -----------------------------------------------------------------------------
+// FUNCTIONS - ....
+// -----------------------------------------------------------------------------
 
 /**
 * @function switchToService
@@ -137,8 +142,15 @@ function writeLocalUserSetting (key, value) {
             throw error
         }
         utils.writeConsoleMsg('info', 'writeLocalUserSetting ::: key: _' + key + '_ - new value: _' + value + '_')
+
+        // Update the global object
+        utils.globalObjectSet(key, value)
+
         storage.setDataPath(defaultDataPath) // revert to default path
     })
+
+
+
 }
 
 /**
@@ -195,12 +207,12 @@ function settingActivateUserColorCss (cssFile) {
 
     case 'mainWindow_default.css':
         titlebarBackGroundColor = '#171717'
-        titlebarItemBackGroundColor = '#FFFFFF'
+        titlebarItemBackGroundColor = '#32CD32'
         break
 
     case 'mainWindow_dracula.css':
         titlebarBackGroundColor = '#282a36'
-        titlebarItemBackGroundColor = '#FFFFFF'
+        titlebarItemBackGroundColor = '#ff79c6'
         break
 
     case 'mainWindow_nord.css':
@@ -210,7 +222,7 @@ function settingActivateUserColorCss (cssFile) {
 
     case 'mainWindow_snazzy.css':
         titlebarBackGroundColor = '#1a1c24'
-        titlebarItemBackGroundColor = '#FFFFFF'
+        titlebarItemBackGroundColor = '#5af78e'
         break
 
     case 'mainWindow_solarized_dark.css':
@@ -229,7 +241,7 @@ function settingActivateUserColorCss (cssFile) {
     }
 
     titlebarUpdateBackground(titlebarBackGroundColor) // update the titlebar
-    //titlebarUpdateItemBackgroundOnHover(titlebarItemBackGroundColor) // update the hover color for menu-items
+    titlebarUpdateItemBackgroundOnHover(titlebarItemBackGroundColor) // update the hover color for menu-items
 }
 
 /**
@@ -297,17 +309,17 @@ function readLocalUserSetting (key, optional = false) {
         utils.writeConsoleMsg('info', 'readLocalUserSetting ::: key: _' + key + '_ - got value: _' + value + '_')
         storage.setDataPath(defaultDataPath) // revert storage path
 
-        // setting DefaultView
+        // setting DefaultView (FIXME)
         if (key === 'settingDefaultView') {
             // no default view configured
             if (value === null) {
-                utils.writeConsoleMsg('info', 'validateConfiguredDefaultView ::: No default configured - Stay on settings-view')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: No default configured - Stay on settings-view')
             } else {
-                utils.writeConsoleMsg('info', 'validateConfiguredDefaultView ::: Found configured default view: ' + value)
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Found configured default view: ' + value)
 
                 // check if the configured service is enabled or not
                 var exists = false
-                utils.writeConsoleMsg('info', 'validateConfiguredDefaultView ::: Check if configured default view is an enabled service or not')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Check if configured default view is an enabled service or not')
                 // Check if Dropdown contains the defined default view as enabled service
                 $('#selectDefaultView option').each(function () {
                     if (this.value === value) {
@@ -318,24 +330,24 @@ function readLocalUserSetting (key, optional = false) {
 
                 // if it exists
                 if (exists) {
-                    utils.writeConsoleMsg('info', 'validateConfiguredDefaultView ::: Configured default view is valid')
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Configured default view is valid')
                     $('#selectDefaultView').val(value) // Update UI select
                     loadDefaultView(value) // load the default view
                 } else {
-                    utils.writeConsoleMsg('warning', 'validateConfiguredDefaultView ::: Fallback to default (setting-view)')
+                    utils.writeConsoleMsg('warning', 'readLocalUserSetting ::: Fallback to default (setting-view)')
                     $('#selectDefaultView').prop('selectedIndex', 0) // reset the selection of the select item
                     settingDefaultViewReset() // delete the localstorage entry for defaultview
                 }
             }
         }
 
-        // Setting Theme
+        // Setting Theme (FIXME)
         //
         if (key === 'settingTheme') {
             utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting Theme is configured to: _' + value + '_.')
 
             if ((value === null) | (value === 'undefined') | (value === undefined)) { // see #154
-                utils.writeConsoleMsg('warn', 'initSettingsPage ::: Setting Theme is undefined - going to fallback to default theme.')
+                utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting Theme is undefined - going to fallback to default theme.')
                 writeLocalUserSetting('settingTheme', 'mainWindow_default.css') // introduced with #154
                 settingActivateUserColorCss('mainWindow_default.css') // fallback to default
             } else {
@@ -345,26 +357,26 @@ function readLocalUserSetting (key, optional = false) {
         }
         // End: Theme
 
-        // Setting Autostart
+        // Setting Autostart (FIXME)
         //
         if (key === 'settingAutostart') {
             if (value === true) {
-                utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting Autostart is configured')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is configured')
                 $('#checkboxSettingAutostart').prop('checked', true)
             } else {
-                utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting Autostart is not configured')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is not configured')
                 $('#checkboxSettingAutostart').prop('checked', false)
             }
         }
         // End: Autostart
 
-        // Setting DisableTray
+        // Setting DisableTray (FIXME)
         //
         if (key === 'settingDisableTray') {
             if (utils.isLinux()) {
                 if (value === true) {
                     const { ipcRenderer } = require('electron')
-                    utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting DisableTray is configured')
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting DisableTray is configured')
                     $('#checkboxSettingDisableTray').prop('checked', true)
                     ipcRenderer.send('disableTray')
                 }
@@ -375,7 +387,7 @@ function readLocalUserSetting (key, optional = false) {
         }
         // End DisableTRay
 
-        // Setting Urgent Window - #110
+        // Setting Urgent Window - #110  (FIXME)
         if (key === 'settingUrgentWindow') {
             if (value === true) {
                 const { ipcRenderer } = require('electron')
@@ -383,21 +395,21 @@ function readLocalUserSetting (key, optional = false) {
                 if (optional === true) {
                     ipcRenderer.send('makeWindowUrgent')
                 }
-                utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting UrgentWindow is enabled')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting UrgentWindow is enabled')
             }
         }
         // End: Urgent Window
 
-        // Setting: ErrorReporting
+        // Setting: ErrorReporting (FIXME)
         if (key === 'settingEnableErrorReporting') {
             if (value === false) {
                 $('#checkboxSettingErrorReporting').prop('checked', false)
                 sentry.disableSentry()
-                utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting ErrorReporting is disabled')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is disabled')
             } else {
                 $('#checkboxSettingErrorReporting').prop('checked', true)
                 sentry.enableSentry()
-                utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting ErrorReporting is enabled')
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is enabled')
             }
 
             // there is no config yet - create one
@@ -406,6 +418,28 @@ function readLocalUserSetting (key, optional = false) {
             }
         }
         // End: ErrorReporting
+
+
+
+        // Setting: EnablePrereleases
+        if (key === 'settingEnablePrereleases') {
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingEnablePrereleases', false)
+            } else {
+                if (value === false) {
+                    $('#checkboxSettingEnablePrereleases').prop('checked', false)
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting EnablePrereleases is disabled')
+                } else {
+                    $('#checkboxSettingEnablePrereleases').prop('checked', true)
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting EnablePrereleases is enabled')
+                }
+
+                utils.globalObjectSet('settingEnablePrereleases', value) // update the global object
+            }
+        }
+        // End: EnablePrereleases
+
     })
 }
 
@@ -781,6 +815,11 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
         utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: did-start-loading for: _' + serviceId + '_.')
         doAnimateServiceIcon(true, serviceId) // start to spin the service icon in the tabmenu
         webview.send('request') // Triggering search for unread messages
+
+        // show the useragent of this webview
+        //
+        // var userAgent = webview.getUserAgent()
+        // utils.writeConsoleMsg('warn', 'UserAgent of service _'+ serviceId + '_ is set to _' + userAgent + '_.')
     })
 
     // WebView Event: did-finish-load
@@ -1023,9 +1062,6 @@ function configureSingleUserService (serviceId) {
     const { ipcRenderer } = require('electron')
     utils.writeConsoleMsg('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
     ipcRenderer.send('showConfigureSingleServiceWindow', serviceId) // send ipc to show service-configuration window
-
-
-
 }
 
 /**
@@ -1142,6 +1178,13 @@ function openReleasesOverview () {
     utils.openURL(urlGitHubReleases)
 }
 
+
+
+
+
+
+
+
 /**
 * @function searchUpdate
 * @summary Checks if there is a new release available
@@ -1150,9 +1193,136 @@ function openReleasesOverview () {
 * @memberof renderer
 */
 function searchUpdate (silent = true) {
-    const { urlGitHubRepoTags } = require('./js/ttth/modules/urlsGithub.js')
 
     // when executed manually via menu -> user should see that update-check is running
+    if (silent === false) {
+        utils.showNoty('info', 'Searching for updates')
+    }
+
+
+    //const { urlGitHubRepoTags } = require('./js/ttth/modules/urlsGithub.js') // old
+    const { urlGithubApiReleases } = require('./js/ttth/modules/urlsGithub.js')
+
+    // get setting
+    var curSettingEnablePrereleases = utils.globalObjectGet('settingEnablePrereleases')
+    utils.writeConsoleMsg('info', 'searchUpdate ::: Setting enablePrereleases is set to _' + curSettingEnablePrereleases + '_.')
+
+    var remoteAppVersionLatest = '0.0.0'
+    var remoteAppVersionLatestPrerelease = false
+    var localAppVersion = '0.0.0'
+    var versions
+
+    // get local version
+    //
+    localAppVersion = require('electron').remote.app.getVersion()
+    // localAppVersion = '0.0.1'; //  overwrite variable to simulate
+
+    var updateStatus = $.get(urlGithubApiReleases, function (data) {
+        3000 // in milliseconds
+
+        // success
+        versions = data.sort(function (v1, v2) {
+            // return semver.compare(v2.tag_name, v1.tag_name);
+            // console.error(v1.tag_name)
+            // console.error(v2.tag_name)
+        })
+
+        if (curSettingEnablePrereleases === true) {
+            // user wants the latest release - ignoring if it is a prerelease or an official one
+            utils.writeConsoleMsg('info', 'searchUpdate ::: Including pre-releases in update search')
+            remoteAppVersionLatest = versions[0].tag_name // Example: 0.4.2
+            remoteAppVersionLatestPrerelease = versions[0].prerelease // boolean
+        } else {
+            // user wants official releases only
+            utils.writeConsoleMsg('info', 'searchUpdate ::: Ignoring pre-releases in update search')
+            // find the latest non pre-release build
+            // loop over the versions array to find the latest non-pre-release
+            var latestOfficialRelease
+            for (var i = 0; i < versions.length; i++) {
+                if (versions[i].prerelease === false) {
+                    latestOfficialRelease = i
+                    break
+                }
+            }
+
+            remoteAppVersionLatest = versions[i].tag_name // Example: 0.4.2
+            //remoteAppVersionLatest = '66.6.6' // overwrite variable to simulate available updates
+            remoteAppVersionLatestPrerelease = versions[i].prerelease // boolean
+        }
+
+        utils.writeConsoleMsg('info', 'searchUpdate ::: Local ttth version: ' + localAppVersion)
+        utils.writeConsoleMsg('info', 'searchUpdate ::: Latest ttth version: ' + remoteAppVersionLatest)
+
+        // If a stable (not a prelease) update is available - see #73
+        if (localAppVersion < remoteAppVersionLatest) {
+            utils.writeConsoleMsg('info', 'searchUpdate ::: Found update, notify user')
+
+            // ask user using a noty confirm dialog
+            const Noty = require('noty')
+            var n = new Noty(
+                {
+                    theme: 'bootstrap-v4',
+                    layout: 'bottom',
+                    type: 'info',
+                    closeWith: [''], // to prevent closing the confirm-dialog by clicking something other then a confirm-dialog-button
+                    text: 'A <b>ttth</b> update from <b>' + localAppVersion + '</b> to version <b>' + remoteAppVersionLatest + '</b> is available. Do you want to visit the release page?',
+                    buttons: [
+                        Noty.button('Yes', 'btn btn-success', function () {
+                            n.close()
+                            openReleasesOverview()
+                        },
+                        {
+                            id: 'button1', 'data-status': 'ok'
+                        }),
+
+                        Noty.button('No', 'btn btn-secondary float-right', function () {
+                            n.close()
+                        })
+                    ]
+                })
+
+            // show the noty dialog
+            n.show()
+        } else {
+            utils.writeConsoleMsg('info', 'searchUpdate ::: No newer version of ttth found.')
+
+            // when executed manually via menu -> user should see result of this search
+            if (silent === false) {
+                utils.showNoty('success', 'No <b>ttth</b> updates available')
+            }
+        }
+
+        utils.writeConsoleMsg('info', 'searchUpdate ::: Successfully checked ' + urlGithubApiReleases + ' for available releases')
+    })
+        .done(function () {
+        // utils.writeConsoleMsg('info', 'searchUpdate ::: Successfully checked ' + urlGithubApiReleases + ' for available releases');
+        })
+
+        .fail(function () {
+            utils.writeConsoleMsg('info', 'searchUpdate ::: Checking ' + urlGithubApiReleases + ' for available releases failed.')
+            utils.showNoty('error', 'Checking <b>' + urlGithubApiReleases + '</b> for available ttth releases failed. Please troubleshoot your network connection.', 0)
+        })
+
+        .always(function () {
+            utils.writeConsoleMsg('info', 'searchUpdate ::: Finished checking ' + urlGithubApiReleases + ' for available releases')
+        })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // when executed manually via menu -> user should see that update-check is running
+    /*
     if (silent === false) {
         utils.showNoty('info', 'Searching for updates')
     }
@@ -1238,6 +1408,8 @@ function searchUpdate (silent = true) {
         .always(function () {
             utils.writeConsoleMsg('info', 'searchUpdate ::: Finished checking ' + urlGitHubRepoTags + ' for available releases')
         })
+
+        */
 }
 
 /**
@@ -1442,6 +1614,7 @@ function initSettingsPage () {
     readLocalUserSetting('settingDisableTray') // Option: DisableTray (Linux only)
     readLocalUserSetting('settingUrgentWindow') // Option: Urgent Window
     readLocalUserSetting('settingEnableErrorReporting') // Option: Urgent Window
+    readLocalUserSetting('settingEnablePrereleases') // Option: Urgent Window
 
     // load all supported services to drop-down-list (used for adding new services)
     initAvailableServicesSelection()
@@ -1540,10 +1713,10 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     } else {
         if (serviceInjectCode === '') {
             // no inject code
-            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent=' + userAgent + '></webview>')
+            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' userAgent="' + userAgent + '"></webview>')
         } else {
             // got injectCode, preload it
-            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent=' + userAgent + ' ></webview>')
+            $('#' + serviceId).append('<webview id=webview_' + serviceId + ' partition=persist:' + serviceDomain + " class='ttth_resizer' src=" + serviceUrl + ' preload=' + serviceInjectCode + ' userAgent="' + userAgent + '"></webview>')
         }
     }
 
@@ -1747,30 +1920,26 @@ function settingsToggleErrorReporting () {
     }
 }
 
-
-
-
 /**
 * @function settingsToggleEnablePrereleases
 * @summary Handles toggling the checkbox for the setting/option enable-preleases
 * @description Handles toggling the checkbox for the setting/option enable-preleases
 * @memberof renderer
 */
-function settingsToggleEnablePrereleases() {
-    utils.writeConsoleMsg('error', 'settingsToggleEnablePrereleases ::: Option EnablePrereleases was clicked.')
-
+function settingsToggleEnablePrereleases () {
+    var newSettingEnablePrereleases
     if ($('#checkboxSettingEnablePrereleases').is(':checked')) {
+        newSettingEnablePrereleases = true
         utils.writeConsoleMsg('info', 'settingsToggleEnablePrereleases ::: Pre-Releases is now enabled')
-        writeLocalUserSetting('settingEnablePrereleases', true)
         utils.showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Enable Prereleases</u> is now enabled.")
+        writeLocalUserSetting('settingEnablePrereleases', newSettingEnablePrereleases)
     } else {
+        newSettingEnablePrereleases = true
         utils.writeConsoleMsg('info', 'settingsToggleEnablePrereleases ::: Pre-Releases is now disabled')
-        writeLocalUserSetting('settingEnablePrereleases', false)
         utils.showNoty('success', "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Enable Prereleases</u> is now disabled.")
+        writeLocalUserSetting('settingEnablePrereleases', newSettingEnablePrereleases)
     }
 }
-
-
 
 /**
 * @function fontAwesomeShowIconGallery
