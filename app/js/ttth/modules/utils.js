@@ -187,6 +187,32 @@ function getDomain (url) {
     return domain
 }
 
+/**
+* @function globalObjectGet
+* @summary Gets a value of a single property from the global object in main.js
+* @description Gets a value of a single property from the global object in main.js
+* @param {String} property - Name of the property
+* @return {string} value - Value of the property
+*/
+function globalObjectGet (property) {
+    const { remote } = require('electron')
+    var value = remote.getGlobal('sharedObj')[property]
+    writeConsoleMsg('info', 'globalObjectGet ::: Property: _' + property + '_ has the value: _' + value + '_.')
+    return value
+}
+
+/**
+* @function globalObjectSet
+* @summary Updates the value of a single property from the global object in main.js
+* @description Updates the value of a single property from the global object in main.js
+* @param {String} property - Name of the property
+* @param {String} value - The new value of the property
+*/
+function globalObjectSet (property, value) {
+    const { ipcRenderer } = require('electron')
+    ipcRenderer.send('globalObjectSet', property, value)
+}
+
 // Exporting all functions
 //
 module.exports.writeConsoleMsg = writeConsoleMsg
@@ -197,3 +223,5 @@ module.exports.isWindows = isWindows
 module.exports.openURL = openURL
 module.exports.getHostName = getHostName
 module.exports.getDomain = getDomain
+module.exports.globalObjectGet = globalObjectGet
+module.exports.globalObjectSet = globalObjectSet

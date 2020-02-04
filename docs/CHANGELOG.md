@@ -13,7 +13,6 @@ This project is using [Semantic Versioning](https://semver.org/).
 * ```MINOR``` version (adding functionality)
 * ```PATCH``` version (bug fixes)
 
-
 The following categories are used:
 
 * ```Added```: for new features
@@ -36,7 +35,9 @@ The following categories are used:
 
 ####  ```Changed```
 * Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
-* Titlebar: Removed unfocus effect. No color difference between focus and no-focus. See  [#165](https://github.com/yafp/ttth/issues/165)
+* Titlebar:
+  * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
+  * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
 * Error-Reporting:
   * This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
   * Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
@@ -59,7 +60,7 @@ The following categories are used:
   * Updating ```electron``` from 7.1.6 to 7.1.11
   * Updating ```electron-packager``` from 14.1.1 to 14.2.0
   * Updating ```electron-builder``` from 22.2.0 to 22.3.2
-  * Updating ```electron-log``` from 4.0.0 to 4.0.4
+  * Updating ```electron-log``` from 4.0.0 to 4.0.5
   * Updating ```eslint``` from 6.7.2 to 6.8.0
   * Updating ```mocha``` from 6.2.2 to 7.0.1
   * Updating ```i18next``` from 19.0.2 to 19.1.0
@@ -68,7 +69,7 @@ The following categories are used:
   * Updating ```spectron``` from 9.0.0 to 10.0.0
   * Updating ```docdash``` from 1.1.1 to 1.2.0
   * Updating ```rimraf``` from 3.0.0 to 3.0.1
-  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (3.2.2)
+  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (3.2.2-hotfix62)
 
 #### ```Removed```
 * Removed ```npx``` from project

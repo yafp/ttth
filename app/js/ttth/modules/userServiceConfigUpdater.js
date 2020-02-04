@@ -4,7 +4,6 @@
 * @author yafp
 * @module userServiceConfigUpdater
 */
-
 'use strict'
 
 const utils = require('./utils.js')
@@ -245,6 +244,12 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
                 // service: whatsapp
                 if ((data[key].type.startsWith('whatsapp')) && (data[key].userAgentDefault === '')) {
                     newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                    userAgentDefaultMissing = true
+                }
+
+                // service: slack
+                if ((data[key].type.startsWith('slack')) && (data[key].userAgentDefault === '')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
                     userAgentDefaultMissing = true
                 }
 

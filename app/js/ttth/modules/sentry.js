@@ -27,7 +27,6 @@ Sentry.init({
 // simple way to force a crash:
 // myUndefinedFunction();
 
-
 /**
 * @name enableSentry
 * @summary Enables Sentry
@@ -45,7 +44,7 @@ function enableSentry () {
 */
 function disableSentry () {
     Sentry.getCurrentHub().getClient().getOptions().enabled = false
-    utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now enabled')
+    utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now disabled')
 }
 
 // export both functions

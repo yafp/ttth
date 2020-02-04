@@ -1,5 +1,5 @@
 /**
-* @file slack.js
+* @file slack_inject.js
 * @fileOverview This module contains the inject code for the service slack
 * @author yafp
 * @namespace services

@@ -15,6 +15,7 @@ const urlGitHubChangelog = 'https://github.com/yafp/ttth/blob/master/docs/CHANGE
 const urlGitHubFAQ = 'https://github.com/yafp/ttth/blob/master/docs/FAQ.md' // the faq
 const urlGitHubReleases = 'https://github.com/yafp/ttth/releases' // the releases url
 const urlGitHubRepoTags = 'https://api.github.com/repos/yafp/ttth/tags' // the tags api url
+const urlGithubApiReleases = 'https://api.github.com/repos/yafp/ttth/releases' // the release api
 
 // Define exports
 //
@@ -24,3 +25,4 @@ exports.urlGitHubChangelog = urlGitHubChangelog
 exports.urlGitHubFAQ = urlGitHubFAQ
 exports.urlGitHubReleases = urlGitHubReleases
 exports.urlGitHubRepoTags = urlGitHubRepoTags
+exports.urlGithubApiReleases = urlGithubApiReleases
