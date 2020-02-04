@@ -29,8 +29,10 @@
     "mw_settingsOptionsDescDisableTrayDescription": "Disables the application tray icon",
     "mw_settingsOptionsUrgentWindow": "Activer le mode fenêtre urgente",
     "mw_settingsOptionsUrgentWindowDescription": "Commence à clignoter la fenêtre pour attirer l'attention de l'utilisateur sur les messages non lus.",
-    "mw_settingsOptionsErrorReporting": "Error Reporting",
-    "mw_settingsOptionsErrorReportingDescription": "Enable or disable the error reporting to the developers.",
+    "mw_settingsOptionsErrorReporting": "Signalement des erreurs",
+    "mw_settingsOptionsErrorReportingDescription": "Activez ou désactivez la notification des erreurs aux développeurs.",
+    "mw_settingsOptionsEnablePrereleases": "Mise à jour de la politique de recherche : inclure les pré-livraisons",
+    "mw_settingsOptionsEnablePrereleasesDescription": "Si elle est activée, des pré-livraisons de tth seront également proposées",
 
     "cw_windowName": "Configuration du service",
     "cw_labelId": "ID",

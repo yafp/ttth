@@ -31,8 +31,8 @@
     "mw_settingsOptionsUrgentWindowDescription": "Starts flashing the window to attract user's attention for unread messages.",
     "mw_settingsOptionsErrorReporting": "Error Reporting",
     "mw_settingsOptionsErrorReportingDescription": "Enable or disable the error reporting to the developers.",
-    "mw_settingsOptionsEnablePrereleases": "Searches for pre-releases as well",
-    "mw_settingsOptionsEnablePrereleasesDescription": "Betrachtet auch Pre-Releases bei der Suche nach neuen Software-Versionen",
+    "mw_settingsOptionsEnablePrereleases": "Update search policy: include pre-releases",
+    "mw_settingsOptionsEnablePrereleasesDescription": "If enabled pre-releases of ttth will be offered as well",
 
     "cw_windowName": "Service configuration",
     "cw_labelId": "ID",
