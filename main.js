@@ -7,17 +7,16 @@
 'use strict'
 
 // ----------------------------------------------------------------------------
-// IMPORT TTTH MODULES
+// REQUIRE: TTTH MODULES
 // ----------------------------------------------------------------------------
 const urls = require('./app/js/ttth/modules/urlsGithub.js')
-// const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
+const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
 const sentry = require('./app/js/ttth/modules/sentry.js') // sentry
 const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unhandled
 
 // -----------------------------------------------------------------------------
-// REQUIRE
+// REQUIRE: 3rd PARTY
 // -----------------------------------------------------------------------------
-// const { app, BrowserWindow, Menu, Tray, ipcMain, electron, globalShortcut } = require('electron')
 const { app, BrowserWindow, Menu, Tray, ipcMain, globalShortcut } = require('electron')
 const log = require('electron-log') // for: logging to file
 const shell = require('electron').shell // for: opening external urls in default browser
@@ -28,6 +27,13 @@ const os = require('os') // for: check os.platform()
 const openAboutWindow = require('about-window').default // for: about-window
 require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
 
+// ----------------------------------------------------------------------------
+// ERROR-HANDLING:
+// ----------------------------------------------------------------------------
+crash.initCrashReporter()
+unhandled.initUnhandled()
+sentry.enableSentry() // sentry is enabled by default
+
 // -----------------------------------------------------------------------------
 // VARIABLES
 // -----------------------------------------------------------------------------
@@ -36,7 +42,7 @@ require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-elec
 // will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
 let configWindow = null
-let windowConfig = null
+let windowConfig = null // gonna implement this in 1.10.0
 
 const gotTheLock = app.requestSingleInstanceLock() // for: single-instance handling
 const defaultUserDataPath = app.getPath('userData') // for: storing window position and size
@@ -46,18 +52,6 @@ let verbose = false
 
 var defaultMainWindowWidth = 800
 var defaultMainWindowHeight = 600
-
-// ----------------------------------------------------------------------------
-// ERROR-HANDLING:
-// ----------------------------------------------------------------------------
-// crash.initCrashReporter()
-// unhandled.initUnhandled()
-
-// Test by calling a not existing function
-// myUndefinedFunctionFromMain()
-sentry.enableSentry()
-
-
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS
@@ -394,14 +388,6 @@ function createWindow () {
         mainWindow.setPosition(windowPositionX, windowPositionY)
     }
 
-
-
-
-
-
-
-
-
     // Call from renderer: Update property from globalObj
     ipcMain.on('globalObjectSet', function (event, property, value) {
         writeLog('info', 'Set property _' + property + '_ to new value: _' + value + '_')
@@ -420,7 +406,6 @@ function createWindow () {
     var settingEnableErrorReporting = true
     var settingEnablePrereleases = false
 
-
     global.sharedObj = {
         settingDefaultView: settingDefaultView,
         settingTheme: settingTheme,
@@ -430,13 +415,6 @@ function createWindow () {
         settingEnableErrorReporting: settingEnableErrorReporting,
         settingEnablePrereleases: settingEnablePrereleases
     }
-
-
-
-
-
-
-
 
     // Load the UI (mainWindow.html) of the app.
     mainWindow.loadFile('./app/mainWindow.html')

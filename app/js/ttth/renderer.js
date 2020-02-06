@@ -7,36 +7,32 @@
 'use strict'
 
 // ----------------------------------------------------------------------------
-// IMPORT TTTH MODULES
+// REQUIRE: TTTH MODULES
 // ----------------------------------------------------------------------------
 const utils = require('./js/ttth/modules/utils.js')
 const uscu = require('./js/ttth/modules/userServiceConfigUpdater.js')
-// const crash = require('./js/ttth/modules/crashReporter.js') // crashReporter
+const crash = require('./js/ttth/modules/crashReporter.js') // crashReporter
 const sentry = require('./js/ttth/modules/sentry.js') // sentry
 const unhandled = require('./js/ttth/modules/unhandled.js') // electron-unhandled
+
+// ----------------------------------------------------------------------------
+// REQUIRE: 3rd PARTY
+// ----------------------------------------------------------------------------
+const customTitlebar = require('custom-electron-titlebar')
 
 // ----------------------------------------------------------------------------
 // VARIABLES
 // ----------------------------------------------------------------------------
 let myTitlebar
-var customTitlebar = require('custom-electron-titlebar')
 
-// const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
 // const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) ttth Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36' // default agent
 const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.130 Electron/7.1.8 Safari/537.36' // default agent
 
 // ----------------------------------------------------------------------------
-// INIT ERROR HANDLING
+// ERROR HANDLING
 // ----------------------------------------------------------------------------
-// crash.initCrashReporter()
-// unhandled.initUnhandled()
-
-// Test by calling a not existing function
-// myUndefinedFunctionFromRenderer()
-
-// -----------------------------------------------------------------------------
-// FUNCTIONS
-// -----------------------------------------------------------------------------
+crash.initCrashReporter()
+unhandled.initUnhandled()
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS - TITLEBAR
@@ -49,8 +45,6 @@ const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537
 * @memberof renderer
 */
 function titlebarInit () {
-    // var customTitlebar = require('custom-electron-titlebar')
-
     myTitlebar = new customTitlebar.Titlebar({
         titleHorizontalAlignment: 'center', // position of window title
         icon: 'img/titlebar/icon_titlebar.png',
@@ -102,7 +96,7 @@ function titlebarDispose () {
 }
 
 // -----------------------------------------------------------------------------
-// FUNCTIONS - ....
+// FUNCTIONS
 // -----------------------------------------------------------------------------
 
 /**
@@ -127,13 +121,7 @@ function switchToService (serviceName) {
 */
 function writeLocalUserSetting (key, value) {
     const storage = require('electron-json-storage')
-    const remote = require('electron').remote
-    const app = remote.app
-    const path = require('path')
-
-    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // set new path for userUsettings
-    storage.setDataPath(userSettingsPath)
+    utils.jsonStoragePathSet('Settings')
 
     // write the user setting
     storage.set(key, { setting: value }, function (error) {
@@ -142,15 +130,8 @@ function writeLocalUserSetting (key, value) {
             throw error
         }
         utils.writeConsoleMsg('info', 'writeLocalUserSetting ::: key: _' + key + '_ - new value: _' + value + '_')
-
-        // Update the global object
-        utils.globalObjectSet(key, value)
-
-        storage.setDataPath(defaultDataPath) // revert to default path
+        utils.globalObjectSet(key, value) // Update the global object (to be in sync)
     })
-
-
-
 }
 
 /**
@@ -287,15 +268,8 @@ function settingThemeReset () {
 */
 function readLocalUserSetting (key, optional = false) {
     const storage = require('electron-json-storage')
-    const remote = require('electron').remote
-    const app = remote.app
-    const path = require('path')
-
+    utils.jsonStoragePathSet('Settings')
     utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Trying to read value of key: ' + key)
-
-    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
-    const userSettingsPath = path.join(app.getPath('userData'), 'ttthUserSettings') // change path for userSettings
-    storage.setDataPath(userSettingsPath)
 
     // read the json file
     storage.get(key, function (error, data) {
@@ -305,9 +279,7 @@ function readLocalUserSetting (key, optional = false) {
         }
 
         var value = data.setting // store the read value in a variable
-
         utils.writeConsoleMsg('info', 'readLocalUserSetting ::: key: _' + key + '_ - got value: _' + value + '_')
-        storage.setDataPath(defaultDataPath) // revert storage path
 
         // setting DefaultView (FIXME)
         if (key === 'settingDefaultView') {
@@ -339,87 +311,110 @@ function readLocalUserSetting (key, optional = false) {
                     settingDefaultViewReset() // delete the localstorage entry for defaultview
                 }
             }
+            utils.globalObjectSet('settingDefaultView', value) // update the global object
         }
 
-        // Setting Theme (FIXME)
+        // Setting Theme
         //
         if (key === 'settingTheme') {
-            utils.writeConsoleMsg('info', 'initSettingsPage ::: Setting Theme is configured to: _' + value + '_.')
-
-            if ((value === null) | (value === 'undefined') | (value === undefined)) { // see #154
-                utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting Theme is undefined - going to fallback to default theme.')
+            // there is no config yet - create one
+            if ((value === null) | (value === 'undefined') | (value === undefined)) {
+                value = 'mainWindow_default.css'
+                utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting Theme is undefined - going to fallback to default theme with the value: ' + value)
                 writeLocalUserSetting('settingTheme', 'mainWindow_default.css') // introduced with #154
-                settingActivateUserColorCss('mainWindow_default.css') // fallback to default
             } else {
-                settingActivateUserColorCss(value)
-                $('#selectTheme').val(value) // Update UI select
+                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: settingTheme is currently configured to: _' + value + '_.')
             }
+            settingActivateUserColorCss(value)
+            utils.globalObjectSet('settingTheme', value) // update the global object
+            $('#selectTheme').val(value) // Update UI select
         }
         // End: Theme
 
-        // Setting Autostart (FIXME)
+        // Setting Autostart
         //
         if (key === 'settingAutostart') {
-            if (value === true) {
-                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is configured')
-                $('#checkboxSettingAutostart').prop('checked', true)
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingAutostart', false)
             } else {
-                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is not configured')
-                $('#checkboxSettingAutostart').prop('checked', false)
+                if (value === true) {
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is configured')
+                    $('#checkboxSettingAutostart').prop('checked', true)
+                } else {
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting Autostart is not configured')
+                    $('#checkboxSettingAutostart').prop('checked', false)
+                }
+                utils.globalObjectSet('settingAutostart', value) // update the global object
             }
         }
         // End: Autostart
 
-        // Setting DisableTray (FIXME)
+        // Setting DisableTray (Linux specific)
         //
         if (key === 'settingDisableTray') {
-            if (utils.isLinux()) {
-                if (value === true) {
-                    const { ipcRenderer } = require('electron')
-                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting DisableTray is configured')
-                    $('#checkboxSettingDisableTray').prop('checked', true)
-                    ipcRenderer.send('disableTray')
-                }
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingDisableTray', false)
             } else {
-                // hide the entire setting on settingspage
-                $('#settingsSectionDisableTray').hide()
+                if (utils.isLinux()) {
+                    if (value === true) {
+                        const { ipcRenderer } = require('electron')
+                        utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting DisableTray is enabled')
+                        $('#checkboxSettingDisableTray').prop('checked', true)
+                        ipcRenderer.send('disableTray')
+                    } else {
+                        utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting DisableTray is not enabled')
+                    }
+                } else {
+                    $('#settingsSectionDisableTray').hide() // hide the entire setting on settingspage
+                }
+
+                utils.globalObjectSet('settingDisableTray', value) // update the global object
             }
         }
         // End DisableTRay
 
-        // Setting Urgent Window - #110  (FIXME)
+        // Setting Urgent Window - #110
         if (key === 'settingUrgentWindow') {
-            if (value === true) {
-                const { ipcRenderer } = require('electron')
-                $('#checkboxSettingUrgentWindow').prop('checked', true)
-                if (optional === true) {
-                    ipcRenderer.send('makeWindowUrgent')
+            // there is no config yet - create one
+            if (value === undefined) {
+                writeLocalUserSetting('settingUrgentWindow', true)
+            } else {
+                if (value === true) {
+                    const { ipcRenderer } = require('electron')
+                    $('#checkboxSettingUrgentWindow').prop('checked', true)
+                    if (optional === true) {
+                        ipcRenderer.send('makeWindowUrgent')
+                    }
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting UrgentWindow is enabled')
                 }
-                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting UrgentWindow is enabled')
+
+                utils.globalObjectSet('settingUrgentWindow', value) // update the global object
             }
         }
         // End: Urgent Window
 
-        // Setting: ErrorReporting (FIXME)
+        // Setting: ErrorReporting
         if (key === 'settingEnableErrorReporting') {
-            if (value === false) {
-                $('#checkboxSettingErrorReporting').prop('checked', false)
-                sentry.disableSentry()
-                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is disabled')
-            } else {
-                $('#checkboxSettingErrorReporting').prop('checked', true)
-                sentry.enableSentry()
-                utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is enabled')
-            }
-
             // there is no config yet - create one
             if (value === undefined) {
                 writeLocalUserSetting('settingEnableErrorReporting', true)
+            } else {
+                if (value === false) {
+                    $('#checkboxSettingErrorReporting').prop('checked', false)
+                    sentry.disableSentry()
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is disabled')
+                } else {
+                    $('#checkboxSettingErrorReporting').prop('checked', true)
+                    sentry.enableSentry()
+                    utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting ErrorReporting is enabled')
+                }
+
+                utils.globalObjectSet('settingEnableErrorReporting', value) // update the global object
             }
         }
         // End: ErrorReporting
-
-
 
         // Setting: EnablePrereleases
         if (key === 'settingEnablePrereleases') {
@@ -439,7 +434,6 @@ function readLocalUserSetting (key, optional = false) {
             }
         }
         // End: EnablePrereleases
-
     })
 }
 
@@ -957,6 +951,7 @@ function validateConfigSingleServiceForm (serviceName, serviceIcon, serviceUrl) 
 */
 function createSingleServiceConfiguration () {
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
     utils.writeConsoleMsg('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
 
     // get values from configServiceWindow
@@ -1007,6 +1002,7 @@ function updateSingleServiceConfiguration () {
     utils.writeConsoleMsg('info', 'updateSingleServiceConfiguration ::: Starting to update an existing service config')
 
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
 
     // get values from configServiceWindow
     var serviceId = $('#input_serviceId').val()
@@ -1178,13 +1174,6 @@ function openReleasesOverview () {
     utils.openURL(urlGitHubReleases)
 }
 
-
-
-
-
-
-
-
 /**
 * @function searchUpdate
 * @summary Checks if there is a new release available
@@ -1193,14 +1182,14 @@ function openReleasesOverview () {
 * @memberof renderer
 */
 function searchUpdate (silent = true) {
-
     // when executed manually via menu -> user should see that update-check is running
+    /*
     if (silent === false) {
         utils.showNoty('info', 'Searching for updates')
     }
+    */
 
-
-    //const { urlGitHubRepoTags } = require('./js/ttth/modules/urlsGithub.js') // old
+    // const { urlGitHubRepoTags } = require('./js/ttth/modules/urlsGithub.js') // old
     const { urlGithubApiReleases } = require('./js/ttth/modules/urlsGithub.js')
 
     // get setting
@@ -1214,7 +1203,8 @@ function searchUpdate (silent = true) {
 
     // get local version
     //
-    localAppVersion = require('electron').remote.app.getVersion()
+    // localAppVersion = require('electron').remote.app.getVersion()
+    localAppVersion = utils.getAppVersion()
     // localAppVersion = '0.0.1'; //  overwrite variable to simulate
 
     var updateStatus = $.get(urlGithubApiReleases, function (data) {
@@ -1246,7 +1236,7 @@ function searchUpdate (silent = true) {
             }
 
             remoteAppVersionLatest = versions[i].tag_name // Example: 0.4.2
-            //remoteAppVersionLatest = '66.6.6' // overwrite variable to simulate available updates
+            // remoteAppVersionLatest = '66.6.6' // overwrite variable to simulate available updates
             remoteAppVersionLatestPrerelease = versions[i].prerelease // boolean
         }
 
@@ -1306,110 +1296,6 @@ function searchUpdate (silent = true) {
         .always(function () {
             utils.writeConsoleMsg('info', 'searchUpdate ::: Finished checking ' + urlGithubApiReleases + ' for available releases')
         })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // when executed manually via menu -> user should see that update-check is running
-    /*
-    if (silent === false) {
-        utils.showNoty('info', 'Searching for updates')
-    }
-
-    var remoteAppVersionLatest = '0.0.0'
-    var localAppVersion = '0.0.0'
-    var versions
-
-    utils.writeConsoleMsg('info', 'searchUpdate ::: Start checking _' + urlGitHubRepoTags + '_ for available releases')
-
-    var updateStatus = $.get(urlGitHubRepoTags, function (data) {
-        3000 // in milliseconds
-
-        // success
-        versions = data.sort(function (v1, v2) {
-            // return semver.compare(v2.name, v1.name);
-        })
-
-        // get remote version
-        //
-        remoteAppVersionLatest = versions[0].name
-        // remoteAppVersionLatest = '66.6.6' // overwrite variable to simulate available updates
-
-        // get local version
-        //
-        localAppVersion = require('electron').remote.app.getVersion()
-        // localAppVersion = "1.0.0"; // to simulate
-
-        utils.writeConsoleMsg('info', 'searchUpdate ::: Local version: ' + localAppVersion)
-        utils.writeConsoleMsg('info', 'searchUpdate ::: Latest public version: ' + remoteAppVersionLatest)
-
-        // Update available
-        if (localAppVersion < remoteAppVersionLatest) {
-            utils.writeConsoleMsg('warn', 'searchUpdate ::: Found update, notify user')
-
-            // using a confirm dialog - since #150
-            const Noty = require('noty')
-            var n = new Noty(
-                {
-                    theme: 'bootstrap-v4',
-                    layout: 'bottom',
-                    type: 'information',
-                    closeWith: [''], // to prevent closing the confirm-dialog by clicking something other then a confirm-dialog-button
-                    text: 'A <b>ttth</b> update from <b>' + localAppVersion + '</b> to version <b>' + remoteAppVersionLatest + '</b> is available. Do you want to visit the <b>ttth release page</b>?',
-                    buttons: [
-                        Noty.button('Yes', 'btn btn-success', function () {
-                            n.close()
-                            openReleasesOverview()
-                        },
-                        {
-                            id: 'button1', 'data-status': 'ok'
-                        }),
-
-                        Noty.button('No', 'btn btn-danger float-right', function () {
-                            n.close()
-                        })
-                    ]
-                })
-
-            // show the noty dialog
-            n.show()
-        } else {
-            // No update available
-            utils.writeConsoleMsg('info', 'searchUpdate ::: No newer version found.')
-
-            // when executed manually via menu -> user should see result of this search
-            if (silent === false) {
-                utils.showNoty('success', 'No updates available')
-            }
-        }
-
-        utils.writeConsoleMsg('info', 'searchUpdate ::: Successfully checked ' + urlGitHubRepoTags + ' for available releases')
-    })
-        .done(function () {
-        // utils.writeConsoleMsg("info", "searchUpdate ::: Successfully checked " + url + " for available releases");
-        })
-
-        .fail(function () {
-            utils.writeConsoleMsg('error', 'searchUpdate ::: Checking ' + urlGitHubRepoTags + ' for available releases failed.')
-            utils.showNoty('error', 'Checking <b>' + urlGitHubRepoTags + '</b> for available releases failed. Please troubleshoot your network connection.')
-        })
-
-        .always(function () {
-            utils.writeConsoleMsg('info', 'searchUpdate ::: Finished checking ' + urlGitHubRepoTags + ' for available releases')
-        })
-
-        */
 }
 
 /**
@@ -1536,16 +1422,9 @@ function initAvailableServicesSelection () {
 */
 function loadConfiguredUserServices () {
     const storage = require('electron-json-storage')
-    const remote = require('electron').remote
-    const app = remote.app
-    const path = require('path')
+    utils.jsonStoragePathSet() // set default path
 
     $('#settingsServicesConfigured').empty() // empty the div
-
-    // ensure we are reading from the correct location
-    const defaultUserDataPath = app.getPath('userData')
-    var customUserDataPath = path.join(defaultUserDataPath, 'storage')
-    storage.setDataPath(customUserDataPath)
 
     // read all user service configuration files
     storage.getAll(function (error, data) {
@@ -1781,9 +1660,8 @@ function updateGlobalServicesShortcuts () {
 function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceConfigName) {
     utils.writeConsoleMsg('info', 'settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _' + configuredUserServiceConfigName + '_.')
 
-    // const os = require("os");
     const storage = require('electron-json-storage')
-    // const dataPath = storage.getDataPath();
+    utils.jsonStoragePathSet() // set default path
 
     var serviceEnableStatus
 
@@ -1855,15 +1733,16 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
             icon: icon,
             url: url,
             injectCode: injectCode,
-            serviceEnableStatus: serviceEnableStatus
+            serviceEnableStatus: serviceEnableStatus,
+            userAgentDefault: userAgentDefault,
+            userAgentCustom: userAgentCustom
         }, function (error) {
             if (error) {
                 utils.writeConsoleMsg('error', 'settingsToggleEnableStatusOfSingleUserService ::: Error while trying to update the user service _' + configuredUserServiceConfigName + '_. Error: ' + error)
                 throw error
             }
 
-            // must re-set the globalShortcuts for all existing services / tabs - see #74
-            updateGlobalServicesShortcuts()
+            updateGlobalServicesShortcuts() // must re-set the globalShortcuts for all existing services / tabs - see #74
         })
     })
 
@@ -1884,8 +1763,7 @@ function settingsToggleErrorReporting () {
         utils.showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Error Reporting</u> is now enabled.")
         // myUndefinedFunctionFromRendererAfterEnable()
     } else {
-        // ask if user really wants to disable error-reporting
-        // using a confirm dialog
+        // ask if user really wants to disable error-reporting (using a confirm dialog)
         const Noty = require('noty')
         var n = new Noty(
             {
@@ -1934,7 +1812,7 @@ function settingsToggleEnablePrereleases () {
         utils.showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Enable Prereleases</u> is now enabled.")
         writeLocalUserSetting('settingEnablePrereleases', newSettingEnablePrereleases)
     } else {
-        newSettingEnablePrereleases = true
+        newSettingEnablePrereleases = false
         utils.writeConsoleMsg('info', 'settingsToggleEnablePrereleases ::: Pre-Releases is now disabled')
         utils.showNoty('success', "<i class='fas fa-toggle-off'></i> <b>Option:</b> <u>Enable Prereleases</u> is now disabled.")
         writeLocalUserSetting('settingEnablePrereleases', newSettingEnablePrereleases)
@@ -1959,13 +1837,14 @@ function fontAwesomeShowIconGallery () {
 */
 function loadEnabledUserServices () {
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
 
     utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Starting to fetch all user configured service files')
 
     // loop over all json files - add tab for the enabled ones
     storage.getAll(function (error, data) {
         if (error) {
-            utils.writeConsoleMsg('error', 'loadEnabledUserServices ::: Error whilew trying to get all enabled user services. Error: ' + error)
+            utils.writeConsoleMsg('error', 'loadEnabledUserServices ::: Error while trying to get all enabled user services. Error: ' + error)
             throw error
         }
 
@@ -2021,6 +1900,7 @@ function deleteConfiguredService (serviceId) {
 
     // delete json config of this service
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default oath
     storage.remove(serviceId, function (error) {
         if (error) {
             utils.writeConsoleMsg('error', 'deleteConfiguredService ::: Error while trying to delete the user service: _' + serviceId + '_. Error: ' + error)
@@ -2046,6 +1926,7 @@ function settingsUserAddNewService () {
     utils.writeConsoleMsg('info', 'settingsUserAddNewService ::: Starting to add a new user configured service.')
 
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
 
     // get selected option from #select_availableServices
     var userSelectedService = $('#select_availableServices').val()
@@ -2307,23 +2188,24 @@ function onMainWindowReady () {
 // ipcRenderer things
 // ----------------------------------------------------------------------------
 
-// Call from main.js ::: reloadCurrentService
-//
+/**
+* @name reloadCurrentService
+* @summary Reloads the current service tab
+* @description Called via ipc from main.js  when user wants to reload the current service tab
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('reloadCurrentService', function () {
-    // get href of current active tab
-    var tabValue = $('.nav-tabs .active').attr('href')
+    var tabValue = $('.nav-tabs .active').attr('href') // get href of current active tab
     tabValue = tabValue.substring(1) // cut the first char ( =  #)
 
     if (tabValue !== 'Settings') {
         utils.writeConsoleMsg('info', 'reloadCurrentService ::: Current active tab is: ' + tabValue)
-
         utils.showNoty('info', 'Trying to reload the current service: <b>' + tabValue + '</b>.')
-
-        // Start animating
-        doAnimateServiceIcon(true, tabValue)
+        doAnimateServiceIcon(true, tabValue) // Start animating
 
         // get configured target url & inject code from config
         const storage = require('electron-json-storage')
+        utils.jsonStoragePathSet() // set default path
         storage.get(tabValue, function (error, data) {
             if (error) {
                 utils.writeConsoleMsg('error', 'reloadCurrentService ::: Error while trying to get a single user service configuration. Service: ' + tabValue + '. Error: ' + error)
@@ -2349,22 +2231,34 @@ require('electron').ipcRenderer.on('reloadCurrentService', function () {
     }
 })
 
-// Call from main.js ::: showSettings
-//
+/**
+* @name showSettings
+* @summary Activated the settings tab
+* @description Called via ipc from main.js  when user wants to see the application settings
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('showSettings', function () {
     utils.writeConsoleMsg('info', 'showSettings ::: Switching to Settings tab')
     switchToService('Settings')
 })
 
-// Call from main.js ::: startSearchUpdates
-//
+/**
+* @name startSearchUpdates
+* @summary Starts the search for application updates (non-silent)
+* @description Called via ipc from main.js  when user wants to know if application updates are available
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('startSearchUpdates', function () {
     utils.writeConsoleMsg('info', 'startSearchUpdates ::: Show update information div')
     searchUpdate(false) // silent = false. Forces result feedback, even if no update is available
 })
 
-// Call from main.js ::: openDevToolForCurrentService
-//
+/**
+* @name openDevToolForCurrentService
+* @summary Opens the developer tools for the current service
+* @description Called via ipc from main.js  when user wants to see the developer tools for a single service
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
     // get href of current active tab
     var tabValue = $('.nav-tabs .active').attr('href')
@@ -2381,10 +2275,13 @@ require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
     }
 })
 
-// Call from main.js ::: nextTab
-//
+/**
+* @name nextTab
+* @summary Jumps to the next tab
+* @description Called via ipc from main.js  when user wants to see jump to the next tab
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('nextTab', function () {
-    // variables
     var currentTabId
     var enabledTabsArray = [] // should store all visible names
     var currentActiveTabId // Id of active tab
@@ -2408,8 +2305,7 @@ require('electron').ipcRenderer.on('nextTab', function () {
         }
     })
 
-    // find position of current tab in the array of enabled services
-    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId)
+    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId) // find position of current tab in the array of enabled services
 
     // get next array position
     if (currentPositionInArray < enabledTabsArray.length - 1) {
@@ -2422,8 +2318,12 @@ require('electron').ipcRenderer.on('nextTab', function () {
     switchToService(serviceName) // jump to next tab
 })
 
-// Call from main.js ::: previousTab
-//
+/**
+* @name previousTab
+* @summary Jumps to the previous Tab
+* @description Called via ipc from main.js  when user wants to see jump to the previous tab
+* @memberof renderer
+*/
 require('electron').ipcRenderer.on('previousTab', function () {
     // variables
     var currentTabId
@@ -2504,6 +2404,7 @@ require('electron').ipcRenderer.on('serviceToCreate', function (event, serviceId
 //
 require('electron').ipcRenderer.on('serviceToConfigure', function (event, serviceId) {
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
 
     utils.writeConsoleMsg('info', 'serviceToConfigure ::: Should configure the service: ' + serviceId)
     utils.writeConsoleMsg('info', 'serviceToConfigure ::: Loading current values from service config')
