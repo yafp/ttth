@@ -17,7 +17,9 @@ function serviceSlackGetUnreadMessageCount () {
     console.log('serviceSlackGetUnreadMessageCount ::: Checking unread message count')
 
     // via hamsket: https://github.com/TheGoddessInari/hamsket/commit/d1e29e5a27fc3b18768384a1dfae673a0d7d05df
-    const indirectSelector = '.p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)'; const indirect = document.querySelectorAll(indirectSelector).length
+    //
+    const indirectSelector = '.p-channel_sidebar__channel--unread:not(.p-channel_sidebar__channel--muted)'
+    // const indirect = document.querySelectorAll(indirectSelector).length
     let direct = 0
     const badges = document.querySelectorAll(indirectSelector + ' > .p-channel_sidebar__badge')
     for (const badge of badges) {
