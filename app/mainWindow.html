@@ -6,10 +6,12 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>if (typeof module === 'object') { window.module = module; module = undefined }
+</script>
 
     <!-- jquery -->
-    <script>window.$ = window.jQuery = require("jquery");</script>
+    <script>window.$ = window.jQuery = require('jquery')
+</script>
 
     <!-- ttth -->
     <link rel="stylesheet" href="css/ttth/general.css" >
@@ -241,10 +243,8 @@
 onMainWindowBeforeReady()
 
 // execute on ready
-$( document ).ready(function()
-{
-    console.log( "mainWindow.html ::: ready" );
-    onMainWindowReady();
-});
-
+$(document).ready(function () {
+    console.log('mainWindow.html ::: ready')
+    onMainWindowReady()
+})
 </script>
