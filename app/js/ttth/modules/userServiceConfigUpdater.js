@@ -9,13 +9,28 @@
 const utils = require('./utils.js')
 
 /**
-* @function  updateAllUserServiceConfigurations
+* @function updateAllUserServiceConfigurations
 * @summary Patches the user service configration files on version changes if needed.
 * @description Patches the user service configration files on version changes if needed.
 */
 function updateAllUserServiceConfigurations () {
-    updateAllUserServiceConfigurationsForM1M8P0() // updates needed since 1.8.0
-    updateAllUserServiceConfigurationsForM1M9P0() // updates needed since 1.9.0
+    var localAppVersion = utils.getAppVersion()
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Detected ttth version: ' + localAppVersion)
+
+    /*
+    switch (localAppVersion) {
+        case "1.7.0":
+            // do something
+            break
+
+        default:
+            // do something
+            break
+    }
+    */
+
+    updateAllUserServiceConfigurationsForM1M8P0() // updates needed for 1.8.0
+    updateAllUserServiceConfigurationsForM1M9P0() // updates needed for 1.9.0
 }
 
 /**
@@ -28,6 +43,7 @@ function updateAllUserServiceConfigurationsForM1M8P0 () {
     // - inject files got re-structured. Path & names are stored in the user-services configuration files
     //
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
 
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M8P0 ::: Starting to validate all user service configurations')
 
@@ -204,8 +220,15 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
     // patch all user-services:
     // add: userAgentDefault
     // add: userAgentCustom
-
     const storage = require('electron-json-storage')
+    utils.jsonStoragePathSet() // set default path
+
+    /*
+    const remote = require('electron').remote
+    const app = remote.app
+    const path = require('path')
+    const defaultDataPath = storage.getDefaultDataPath() // get default storage path
+    */
 
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Starting to validate all user service configurations')
 
@@ -236,33 +259,41 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
 
             if (data.hasOwnProperty(key)) {
                 // service: any google service
-                if ((data[key].type.startsWith('google')) && (data[key].userAgentDefault === '')) {
-                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
-                    userAgentDefaultMissing = true
-                }
 
-                // service: whatsapp
-                if ((data[key].type.startsWith('whatsapp')) && (data[key].userAgentDefault === '')) {
-                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
-                    userAgentDefaultMissing = true
-                }
+                // ensure it is a service-config of ttth - which def. needs to have a type
+                if (typeof data[key].type !== 'undefined') {
+                    // it is a service configuration
 
-                // service: slack
-                if ((data[key].type.startsWith('slack')) && (data[key].userAgentDefault === '')) {
-                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
-                    userAgentDefaultMissing = true
-                }
+                    if ((data[key].type.startsWith('google')) && (data[key].userAgentDefault === '')) {
+                        newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                        userAgentDefaultMissing = true
+                    }
 
-                // general: check if userAgentDefault exists
-                if (data[key].userAgentDefault === undefined) {
-                    utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
-                    userAgentDefaultMissing = true
-                }
+                    // service: whatsapp
+                    if ((data[key].type.startsWith('whatsapp')) && (data[key].userAgentDefault === '')) {
+                        newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                        userAgentDefaultMissing = true
+                    }
 
-                // general: check if userAgentCustom exists
-                if (data[key].userAgentCustom === undefined) {
-                    utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
-                    userAgentCustomMissing = true
+                    // service: slack
+                    if ((data[key].type.startsWith('slack')) && (data[key].userAgentDefault === '')) {
+                        newUserAgentDefaultString = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+                        userAgentDefaultMissing = true
+                    }
+
+                    // general: check if userAgentDefault exists
+                    if (data[key].userAgentDefault === undefined) {
+                        utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
+                        userAgentDefaultMissing = true
+                    }
+
+                    // general: check if userAgentCustom exists
+                    if (data[key].userAgentCustom === undefined) {
+                        utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
+                        userAgentCustomMissing = true
+                    }
+                } else {
+                    utils.showNoty('error', 'Found unexpected service configuration file<br><br>name: <b>' + key + '</b><br><br>Reference: #171', 0)
                 }
             }
 
