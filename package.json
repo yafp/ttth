@@ -2,7 +2,7 @@
   "name": "ttth",
   "productName": "ttth",
   "desktopName": "ttth.desktop",
-  "version": "1.8.20200204",
+  "version": "1.8.20200206",
   "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
   "main": "./main.js",
   "scripts": {
@@ -15,8 +15,14 @@
     "reinstall": "npm run clean && npm install",
     "test": "mocha",
     "lint": "node_modules/eslint/bin/eslint.js app/js --ignore-path=.eslintignore",
-    "standardx": "standardx",
-    "standardx-fix": "standardx --fix",
+    "standardx": "standardx --verbose | snazzy",
+    "standardx-fix": "standardx --fix --verbose | snazzy",
+    "standardx-all": "npm run standardx-js && npm run standardx-html ",
+    "standardx-all-fix": "npm run standardx-html-fix && npm run standardx-js-fix",
+    "standardx-js": "standardx --verbose",
+    "standardx-js-fix": "standardx --fix --verbose",
+    "standardx-html": "standardx --verbose --plugin html 'app/*.html'",
+    "standardx-html-fix": "standardx --verbose --plugin html 'app/*.html' --fix",
     "jsdocs-delete": "rimraf docs/jsdocs/*",
     "jsdocs-create": "./node_modules/jsdoc/jsdoc.js --configure jsdoc.json --readme README.md",
     "jsdocs-update": "npm run jsdocs-delete && npm run jsdocs-create",
@@ -99,17 +105,18 @@
     "dmg": {
       "title": "ttth",
       "background": "resources/installer/dmg_background.png",
-      "iconSize": 128,
+      "iconSize": 80,
+      "iconTextSize": 12,
       "contents": [
         {
-          "x": 355,
-          "y": 125,
+          "x": 300,
+          "y": 250,
           "type": "link",
           "path": "/Applications"
         },
         {
-          "x": 155,
-          "y": 125,
+          "x": 300,
+          "y": 25,
           "type": "file"
         }
       ]
@@ -214,14 +221,15 @@
     "electron-builder": "^22.3.2",
     "electron-packager": "^14.2.0",
     "eslint": "^6.8.0",
+    "eslint-plugin-html": "^6.0.0",
     "jsdoc": "^3.6.3",
     "mocha": "^7.0.1",
     "rimraf": "^3.0.1",
-    "spectron": "^10.0.0",
+    "spectron": "^10.0.1",
     "standardx": "^5.0.0"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.12.0",
+    "@fortawesome/fontawesome-free": "^5.12.1",
     "@sentry/electron": "^1.2.0",
     "about-window": "^1.13.2",
     "auto-launch": "^5.0.5",
@@ -229,7 +237,7 @@
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "electron-is-dev": "^1.1.0",
     "electron-json-storage": "^4.1.8",
-    "electron-log": "^4.0.5",
+    "electron-log": "^4.0.6",
     "electron-unhandled": "^3.0.2",
     "electron-util": "^0.13.1",
     "i18next": "^19.1.0",
