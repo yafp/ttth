@@ -23,21 +23,22 @@
 ## table of contents
 
 - [about](#about)
+- [getting started](#getting-started)
+- [download](#download)
+- [install](#install)
 - [services](#services)
 - [ui](#ui)
 - [changelog](#changelog)
-- [download](#download)
-- [install](#install)
 - [keyboard-shortcuts](#keyboard-shortcuts)
 - [privacy](#privacy)
 - [faq](#faq)
 - [known-issues](#known-issues)
 - [discussion](#discussion)
-- [build](#build)
-- [contributing](#contributing)
 - [license](#license)
 - [disclosure](#disclosure)
-
+- [developers](#developers)
+- [contributing](#contributing)
+- [build](#build)
 
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
@@ -48,15 +49,19 @@ It is:
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork and [Ferdi](https://github.com/getferdi/ferdi) as Franz fork.
 * free and open source
 
+## getting-started
+### download
+Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
+### install
+Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 ## services
-While ttth supports a growing list of pre-configured services, you can as well add custom urls yourself (using the CUSTOM URL type).
+While **ttth** supports a growing list of pre-configured services, you can as well add custom urls yourself (using the CUSTOM URL type).
 Please see the supported [services](docs/SERVICES.md) for more details.
 
-
 ## ui
-ttth comes with several themes. The readme shows only exemplary only the default theme.
+**ttth** comes with several themes. The readme shows only exemplary only the default theme.
 
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
 
@@ -67,14 +72,6 @@ Please see the [themes list](docs/THEMES.md) for more details.
 
 ## changelog
 Please see the [changlog](docs/CHANGELOG.md) for more details.
-
-
-## download
-Download the latest release from [here](https://github.com/yafp/ttth/releases).
-
-
-## install
-Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 
 ## keyboard-shortcuts
@@ -107,13 +104,12 @@ Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 
 ## privacy
-* ttth is using [sentry](https://sentry.io) to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the [sentry privacy policy](https://sentry.io/privacy/) for more details.
-* ttth is not tracking it's users (i.e. using Google Analytics or similar)
+* **ttth** is using [sentry](https://sentry.io) to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the [sentry privacy policy](https://sentry.io/privacy/) for more details.
+* **ttth** is not tracking it's users (i.e. using Google Analytics or similar)
 * All data is stored locally only.
 * Sessions will persist using the [partition:persist](https://electronjs.org/docs/api/webview-tag#partition) attribute for electrons webview.
 
 You are always welcome to check and even improve the code.
-
 
 ## faq
 Please see the [FAQ](docs/FAQ.md) for more details.
@@ -124,19 +120,9 @@ Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
 
 ## discussion
-
 * Github: using the issue function
 * Discord: Click [here](https://discord.gg/xHmUNBf)
 * Riot: Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join the public #ttth riot.im room available on matrix.org.
-
-
-## build
-Building ttth yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.
-
-
-## contributing
-Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
-A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
 
 
 ## license
@@ -145,3 +131,16 @@ Please see the [LICENSE](LICENSE) for more details.
 
 ## disclosure
 ttth is not affiliated with any of the supported apps/services.
+
+
+## developers
+
+### contributing
+Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
+A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
+
+### build
+Building **ttth** yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.
+
+
+

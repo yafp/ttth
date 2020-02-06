@@ -213,6 +213,43 @@ function globalObjectSet (property, value) {
     ipcRenderer.send('globalObjectSet', property, value)
 }
 
+/**
+* @function getAppVersion
+* @summary Gets the version string of the current build
+* @description Gets the version string of the current build
+* @preturn {String} versionString - The version number
+*/
+function getAppVersion () {
+    var versionString = require('electron').remote.app.getVersion()
+    writeConsoleMsg('info', 'getAppVersion ::: Appversion is: _' + versionString + '_.')
+    return versionString
+}
+
+/**
+* @function jsonStoragePathSet
+* @summary Sets the path for json-storage
+* @description Sets the path for json-storage
+* @param Stringg} path - The path for json-storage
+*/
+function jsonStoragePathSet (path = false) {
+    const storage = require('electron-json-storage')
+    const remote = require('electron').remote
+    const app = remote.app
+    const pathX = require('path') // must have other name, as path is already declared ...
+
+    var newPath
+
+    if (path === false) {
+        newPath = pathX.join(app.getPath('userData'), 'storage')
+        writeConsoleMsg('info', 'jsonStoragePathSet ::: Set jsonStorage path to default: _' + newPath + '_.')
+    } else {
+        newPath = pathX.join(app.getPath('userData'), 'ttthUserSettings') // set path for user-settings
+        writeConsoleMsg('info', 'jsonStoragePathSet ::: Set jsonStorage path to ttthUserSettings: _' + newPath + '_.')
+    }
+
+    storage.setDataPath(newPath)
+}
+
 // Exporting all functions
 //
 module.exports.writeConsoleMsg = writeConsoleMsg
@@ -225,3 +262,5 @@ module.exports.getHostName = getHostName
 module.exports.getDomain = getDomain
 module.exports.globalObjectGet = globalObjectGet
 module.exports.globalObjectSet = globalObjectSet
+module.exports.getAppVersion = getAppVersion
+module.exports.jsonStoragePathSet = jsonStoragePathSet
