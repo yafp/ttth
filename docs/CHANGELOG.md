@@ -31,7 +31,8 @@ The following categories are used:
   * Added a new theme 'snazzy'. See [#157](https://github.com/yafp/ttth/issues/157)
   * Added theme support for application titlebar and service-tabs. See [#156](https://github.com/yafp/ttth/issues/156)
   * Added support for service-specific userAgents. See [#158](https://github.com/yafp/ttth/issues/158)
-  * Added eror handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
+  * Added error handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
+  * Added a new setting option to enable the search for updates to find pre-releases as well. See [#167](https://github.com/yafp/ttth/issues/167)
 
 ####  ```Changed```
 * Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
@@ -41,14 +42,14 @@ The following categories are used:
 * Error-Reporting:
   * This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
   * Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
-* Settings: Reduced amount of buttons for the following 'Options'
-  * Default view
-  * Theme
-* Settings: Reduced right gap for 'configured services' by improving the css mess.
+* Settings: 
+  * Reduced right gap for 'configured services' by improving the css mess.
+  * Reduced amount of buttons for the 'Options' -> Default view
+  * Reduced amount of buttons for the 'Options' -> Theme
 * Javascript Code: Moved some functions to modules
-  * app/js/ttth/modules/utils.js
-  * app/js/ttth/modules/urlsGithub.js
-  * app/js/ttth/modules/userServiceConfigUpdater.js
+  * ```app/js/ttth/modules/utils.js```
+  * ```app/js/ttth/modules/urlsGithub.js```
+  * ```app/js/ttth/modules/userServiceConfigUpdater.js```
 * Noty confirm dialogs
   * changed button positions.
   * Preventing confirming the dialog without clicking a button
@@ -56,20 +57,23 @@ The following categories are used:
 * Added logging to several on error cases
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc is now using ```docdash```
+* Builds 
+  * dmg: Improved macOS .dmg. New background image and new icon positions.
 * Dependencies
-  * Updating ```electron``` from 7.1.6 to 7.1.11
-  * Updating ```electron-packager``` from 14.1.1 to 14.2.0
-  * Updating ```electron-builder``` from 22.2.0 to 22.3.2
-  * Updating ```electron-log``` from 4.0.0 to 4.0.5
-  * Updating ```eslint``` from 6.7.2 to 6.8.0
-  * Updating ```mocha``` from 6.2.2 to 7.0.1
-  * Updating ```i18next``` from 19.0.2 to 19.1.0
-  * Updating ```sentry``` from 1.1.0 to 1.2.0
-  * Updating ```popper.js``` from 1.16.0 to 1.16.1
-  * Updating ```spectron``` from 9.0.0 to 10.0.0
-  * Updating ```docdash``` from 1.1.1 to 1.2.0
-  * Updating ```rimraf``` from 3.0.0 to 3.0.1
-  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (3.2.2-hotfix62)
+  * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
+  * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.0```
+  * Updated ```electron-builder``` from ```22.2.0``` to ```22.3.2```
+  * Updated ```electron-log``` from ```4.0.0``` to ```4.0.6```
+  * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
+  * Updated ```mocha``` from ```6.2.2``` to ```7.0.1```
+  * Updated ```i18next``` from ```19.0.2``` to ```19.1.0```
+  * Updated ```sentry``` from ```1.1.0``` to ```1.2.0```
+  * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
+  * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
+  * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
+  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.1```
+  * Updated ```fontawesome``` from ```5.12.0``` to ```5.12.1```
+  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
 
 #### ```Removed```
 * Removed ```npx``` from project
@@ -78,6 +82,7 @@ The following categories are used:
 * Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)
 * Fixed login to google services. See [#155](https://github.com/yafp/ttth/issues/155)
 * Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
+* Fixed a bug while reading and patching user-services-configurations. See [#171](https://github.com/yafp/ttth/issues/171)
 
 
 ***

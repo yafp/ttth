@@ -2,35 +2,42 @@
 
 # ttth
 ## Build
+Be aware that you can build windows releases directly on linux (using Wine) if you want to.
+For more details check [here](https://blog.aaronlenoir.com/2017/03/03/building-electron-apps-for-windows-on-debian/).
 
+### Pre
+```
+# Cleaning up node_modules
+npm run reinstall
 
-### Generate jsdoc files
-* Navigate to repository
-* Execute: ```npm run jsdoc-update```
+# Updating jsdoc files
+npm run jsdocs-update
 
+# Check synthax of .js files
+npm run standardx
+```
 
 ### Packaging
-* Navigate to repository
+```
+# linux
+npm run pack-linux
 
-#### linux
-* Execute: ```npm run pack-linux```
+# mac
+npm run pack-mac
 
-#### mac
-* Execute: ```npm run pack-mac```
-
-#### windows
-* Execute: ```npm run pack-win```
-
-
+# windows
+npm run pack-win
+```
 
 ### Building
-* Navigate to repository
 
-#### linux
-* Execute: ```npm run build-linux```
+```
+# linux
+npm run build-linux
 
-#### mac
-* Execute: ```npm run build-mac```
+# mac
+npm run build-mac
 
-#### windows
-* Execute: ```npm run build-win```
+# windows
+npm run build-win
+```
