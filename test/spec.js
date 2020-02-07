@@ -51,6 +51,7 @@ describe("Application Window", function ()
 
     // TEST: Check launching the app window
     //
+    /*
     it("Open application window", function ()
     {
         //this.timeout(10000);
@@ -58,9 +59,11 @@ describe("Application Window", function ()
         // at least 1 window should be counted
         return this.app.client.getWindowCount().should.not.equal(0);
     });
+    */
 
     // TEST: Check the window title
     //
+    /*
     it("Check window title", function ()
     {
         return this.app.client.browserWindow.getTitle().then(function(title)
@@ -69,4 +72,5 @@ describe("Application Window", function ()
             return Promise.resolve();
         });
     });
+    */
 });
