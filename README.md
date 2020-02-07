@@ -20,26 +20,6 @@
 </div>
 
 
-## table of contents
-
-- [about](#about)
-- [getting started](#getting-started)
-- [download](#download)
-- [install](#install)
-- [services](#services)
-- [ui](#ui)
-- [changelog](#changelog)
-- [keyboard-shortcuts](#keyboard-shortcuts)
-- [privacy](#privacy)
-- [faq](#faq)
-- [known-issues](#known-issues)
-- [discussion](#discussion)
-- [license](#license)
-- [disclosure](#disclosure)
-- [developers](#developers)
-- [contributing](#contributing)
-- [build](#build)
-
 ## about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 

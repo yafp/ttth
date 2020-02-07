@@ -232,7 +232,6 @@ function settingActivateUserColorCss (cssFile) {
 * @memberof renderer
 */
 function settingThemeUpdate () {
-    // get values from theme select
     var currentSelectedTheme = $('#selectTheme').val() // id of selected theme
     var currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
 
@@ -248,7 +247,7 @@ function settingThemeUpdate () {
 * @description Sets the new theme and activates a css style / theme
 * @memberof renderer
 */
-function settingThemeReset () {
+function settingThemeReset () { // eslint-disable-line no-unused-vars
     $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item back to default
     var currentSelectedTheme = 'mainWindow_default.css'
 
@@ -614,11 +613,16 @@ function updateTrayIconStatus () {
             if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== '') && (curServiceUnreadMessageCount !== null)) {
                 overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount // increase the overall counter
             }
-            utils.writeConsoleMsg('info', 'updateTrayIconStatus ::: Unread messages count of _' + currentTabId + '_ is: ' + curServiceUnreadMessageCount)
+
+            if (curServiceUnreadMessageCount !== 0) { // only if there is something to report
+                utils.writeConsoleMsg('info', 'updateTrayIconStatus ::: Unread messages count of _' + currentTabId + '_ is: ' + curServiceUnreadMessageCount)
+            }
         }
     })
 
-    utils.writeConsoleMsg('info', 'updateTrayIconStatus ::: Overall unread message count for all services is: _' + overallUnreadMessages + '_.')
+    if (overallUnreadMessages !== 0) { // only if there is something to report
+        utils.writeConsoleMsg('info', 'updateTrayIconStatus ::: Overall unread message count for all enabled services is: _' + overallUnreadMessages + '_.')
+    }
 
     const { ipcRenderer } = require('electron')
     if ((overallUnreadMessages === '0') || (overallUnreadMessages === 0)) {
@@ -660,7 +664,9 @@ function doAnimateServiceIcon (doOrDont, serviceId) {
 * @param {number} count - Amount of unread messages
 */
 function updateServiceBadge (serviceId, count) {
-    utils.writeConsoleMsg('info', 'updateServiceBadge ::: New unread count for service _' + serviceId + '_ is: _' + count + '_.')
+    if (count !== '0') {
+        utils.writeConsoleMsg('info', 'updateServiceBadge ::: New unread count for service _' + serviceId + '_ is: _' + count + '_.')
+    }
 
     // if count is < 1 - badge should show nothing
     if ((count === null) || (count === 0) || (count === 'null') || (count === '0')) {
@@ -851,7 +857,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
         // WebView Event:  ipc-message
         //
         webview.addEventListener('ipc-message', (event) => {
-            utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: ipc-message for: _' + serviceId + '_.')
+            // utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: ipc-message for: _' + serviceId + '_.')
 
             // update the badge
             if (event.channel !== null) {
@@ -2114,7 +2120,7 @@ function checkNetworkConnectivityPeriodic (timeInterval) {
     var intervalID = setInterval(function () {
         (async () => {
             if (await isOnline() === true) {
-                utils.writeConsoleMsg('info', 'checkNetworkConnectivityPeriodic ::: Got access to the internet.')
+                utils.writeConsoleMsg('info', 'checkNetworkConnectivityPeriodic ::: Connectivity is OK')
                 continuousErrors = 0 // reset counter
             } else {
                 continuousErrors = continuousErrors + 1
@@ -2123,7 +2129,7 @@ function checkNetworkConnectivityPeriodic (timeInterval) {
                     utils.showNoty('error', 'Realizing connectivity issues, please troubleshoot your internet connection if this message appears.')
                     continuousErrors = 0 // reset counter
                 }
-                utils.writeConsoleMsg('warn', 'checkNetworkConnectivityPeriodic ::: Got NO access to the internet (' + continuousErrors + ').')
+                utils.writeConsoleMsg('warn', 'checkNetworkConnectivityPeriodic ::: Connectivity to the web looks broken. (Errors in a row: ' + continuousErrors + ').')
             }
         })()
     }, timeInterval)

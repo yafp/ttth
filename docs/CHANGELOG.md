@@ -74,6 +74,7 @@ The following categories are used:
   * Updated ```rimraf``` from ```3.0.0``` to ```3.0.1```
   * Updated ```fontawesome``` from ```5.12.0``` to ```5.12.1```
   * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
+* Removed some renderer output to reduce flood of developer console.
 
 #### ```Removed```
 * Removed ```npx``` from project

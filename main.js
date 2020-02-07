@@ -392,7 +392,7 @@ function createWindow () {
     ipcMain.on('globalObjectSet', function (event, property, value) {
         writeLog('info', 'Set property _' + property + '_ to new value: _' + value + '_')
         global.sharedObj[property] = value
-        console.warn(global.sharedObj)
+        // console.warn(global.sharedObj) // show entire globalOBject on each set command
     })
 
     // Global object
@@ -545,7 +545,7 @@ function createWindow () {
 
     // When the app gets responsive again
     mainWindow.on('responsive', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now responsive (event: responsive)')
+        writeLog('info', 'createWindow ::: mainWindow is now responsive again (event: responsive)')
     })
 
     // When the app is crashed

@@ -2,7 +2,7 @@
   "name": "ttth",
   "productName": "ttth",
   "desktopName": "ttth.desktop",
-  "version": "1.8.20200206",
+  "version": "1.8.20200207",
   "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
   "main": "./main.js",
   "scripts": {
@@ -137,7 +137,7 @@
     },
     "nsis": {
       "unicode": false,
-      "artifactName": "${productName}-${version}-win-installer-${arch}.${ext}",
+      "artifactName": "${productName}.${ext}",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "oneClick": false,
@@ -249,6 +249,10 @@
     "v8-compile-cache": "^2.1.0"
   },
   "standardx": {
+    "globals": [ 
+      "settingThemeReset()", 
+      "myVar2" 
+    ],
     "ignore": [
       "/docs/jsdocs/scripts/prettify/*",
       "/docs/jsdocs/*",
