@@ -9,7 +9,9 @@ const { ipcRenderer } = require('electron')
 
 // adopted from franz:
 window.addEventListener('beforeunload', async () => {
+    console.log('------- beforeunload --------')
     try {
+        const { session } = require('electron')
         session.flushStorageData()
         session.clearStorageData({
             storages: ['appcache', 'serviceworkers', 'cachestorage', 'websql', 'indexdb']
@@ -33,7 +35,7 @@ window.addEventListener('beforeunload', async () => {
 * @memberof services
 */
 function serviceWhatsAppGetUnreadMessageCount () {
-    console.log('serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count')
+    // console.log('serviceWhatsAppGetUnreadMessageCount ::: Checking unread message count')
 
     // try to count unread messages
     //
