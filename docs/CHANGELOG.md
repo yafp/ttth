@@ -33,6 +33,9 @@ The following categories are used:
   * Added support for service-specific userAgents. See [#158](https://github.com/yafp/ttth/issues/158)
   * Added error handling for unhandled errors. See [#164](https://github.com/yafp/ttth/issues/164)
   * Added a new setting option to enable the search for updates to find pre-releases as well. See [#167](https://github.com/yafp/ttth/issues/167)
+* Services
+  * Discord: Adding link handler. See [#172](https://github.com/yafp/ttth/issues/172)
+  * Discord: Adding unread message script. See [#173](https://github.com/yafp/ttth/issues/173)
 
 ####  ```Changed```
 * Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
@@ -42,7 +45,7 @@ The following categories are used:
 * Error-Reporting:
   * This is now configurable. User can enable or disable error-reporting. See [#162](https://github.com/yafp/ttth/issues/162)
   * Removed any non error focused sentry usage. See [#163](https://github.com/yafp/ttth/issues/163)
-* Settings: 
+* Settings:
   * Reduced right gap for 'configured services' by improving the css mess.
   * Reduced amount of buttons for the 'Options' -> Default view
   * Reduced amount of buttons for the 'Options' -> Theme
@@ -57,7 +60,7 @@ The following categories are used:
 * Added logging to several on error cases
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc is now using ```docdash```
-* Builds 
+* Builds
   * dmg: Improved macOS .dmg. New background image and new icon positions.
 * Dependencies
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
