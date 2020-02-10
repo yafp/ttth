@@ -64,7 +64,7 @@ The following categories are used:
   * dmg: Improved macOS .dmg. New background image and new icon positions.
 * Dependencies
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
-  * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.0```
+  * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
   * Updated ```electron-builder``` from ```22.2.0``` to ```22.3.2```
   * Updated ```electron-log``` from ```4.0.0``` to ```4.0.6```
   * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
@@ -74,7 +74,7 @@ The following categories are used:
   * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
   * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
   * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
-  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.1```
+  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.2```
   * Updated ```fontawesome``` from ```5.12.0``` to ```5.12.1```
   * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
 * Removed some renderer output to reduce flood of developer console.

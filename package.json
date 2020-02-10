@@ -219,12 +219,12 @@
     "docdash": "^1.2.0",
     "electron": "^7.1.11",
     "electron-builder": "^22.3.2",
-    "electron-packager": "^14.2.0",
+    "electron-packager": "^14.2.1",
     "eslint": "^6.8.0",
     "eslint-plugin-html": "^6.0.0",
     "jsdoc": "^3.6.3",
     "mocha": "^7.0.1",
-    "rimraf": "^3.0.1",
+    "rimraf": "^3.0.2",
     "spectron": "^10.0.1",
     "standardx": "^5.0.0"
   },
@@ -249,9 +249,9 @@
     "v8-compile-cache": "^2.1.0"
   },
   "standardx": {
-    "globals": [ 
-      "settingThemeReset()", 
-      "myVar2" 
+    "globals": [
+      "settingThemeReset()",
+      "myVar2"
     ],
     "ignore": [
       "/docs/jsdocs/scripts/prettify/*",
