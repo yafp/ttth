@@ -7,8 +7,8 @@
         "description": "All-in-one voice and text chat for gamers that's free, secure, and works on both your desktop and phone.",
         "url": "https://discordapp.com/login",
         "multiple": false,
-        "injectCode": "",
-        "userAgentDefault": "foo default"
+        "injectCode": "./js/ttth/services/discord/discord_inject.js",
+        "userAgentDefault": ""
     },
     {
         "id": "dropbox",

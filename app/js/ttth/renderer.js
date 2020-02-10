@@ -1361,6 +1361,7 @@ function loadServiceSpecificCode (serviceId, serviceName) {
         break
 
         // V4: Unread-message-handler: YES && link-handler: YES
+    case 'discord':
     case 'googleMail':
     case 'googleMessages':
     case 'icq':
@@ -1370,8 +1371,8 @@ function loadServiceSpecificCode (serviceId, serviceName) {
     case 'microsoftOffice365':
     case 'microsoftTeams':
     case 'riot':
-    case 'slack':
     case 'skype':
+    case 'slack':
     case 'steam':
     case 'telegram':
     case 'threema':
