@@ -16,6 +16,24 @@ const { ipcRenderer } = require('electron')
 function serviceXingGetUnreadMessageCount () {
     console.log('serviceXingGetUnreadMessageCount ::: Checking unread message count')
 
+    /*
+    let count = 0
+    const notificationElement = document.querySelector('[data-update="unread_conversations"]')
+    notificationElement && "none" !== notificationElement.style.display && (count = parseInt(notificationElement.textContent.trim(), 10)), ipcRenderer.sendToHost(count.toString())
+
+    console.log('serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: ' + count)
+    */
+
+    window.$ = window.jQuery = require('jquery')
+
+    var count = 0
+    count = $('span.IconWithBadge-IconWithBadge-notificationS-bdb20f8f').first().text()
+    console.log('serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: ' + count)
+    ipcRenderer.sendToHost(count.toString())
+
+    return count.toString()
+
+    /*
     let count = null
 
     // let notificationElement = document.querySelector(\'[data-update="unread_conversations"]\');
@@ -25,10 +43,12 @@ function serviceXingGetUnreadMessageCount () {
     if (notificationElement && notificationElement.style.display !== 'none') {
         count = parseInt(notificationElement.textContent.trim(), 10)
     }
+
     console.log('serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: ' + count)
 
     ipcRenderer.sendToHost(count.toString())
     return count.toString()
+    */
 }
 
 ipcRenderer.on('request', function () {
