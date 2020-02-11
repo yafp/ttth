@@ -9,31 +9,6 @@
 const utils = require('./utils.js')
 
 /**
-* @function updateAllUserServiceConfigurations
-* @summary Patches the user service configration files on version changes if needed.
-* @description Patches the user service configration files on version changes if needed.
-*/
-function updateAllUserServiceConfigurations () {
-    var localAppVersion = utils.getAppVersion()
-    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Detected ttth version: ' + localAppVersion)
-
-    /*
-    switch (localAppVersion) {
-        case "1.7.0":
-            // do something
-            break
-
-        default:
-            // do something
-            break
-    }
-    */
-
-    updateAllUserServiceConfigurationsForM1M8P0() // updates needed for 1.8.0
-    updateAllUserServiceConfigurationsForM1M9P0() // updates needed for 1.9.0
-}
-
-/**
 * @function  updateAllUserServiceConfigurationsForM1M8P0
 * @summary Patches the user service configration files on version changes if needed.
 * @description Patches the user service configration files on version changes if needed.
@@ -249,6 +224,7 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
         var userUserAgentCustomString
 
         // loop over upper object
+        //
         for (var key in data) {
             userAgentDefaultMissing = false
             newUserAgentDefaultString = ''
@@ -313,7 +289,7 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
                         userAgentCustom: userUserAgentCustomString
                     }, function (error) {
                         if (error) {
-                            utils.writeConsoleMsg('error', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Error while trinyg to update a user service configuration. Service: _' + key + '_. Error: ' + error)
+                            utils.writeConsoleMsg('error', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Error while trinyg to update a user service configuration. Error: ' + error)
                             utils.showNoty('error', 'Failed to update a user service configuration to 1.9.0 format. Error: ' + error)
                             throw error
                         }
@@ -322,6 +298,31 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
         }
         utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Finished.')
     })
+}
+
+/**
+* @function updateAllUserServiceConfigurations
+* @summary Patches the user service configration files on version changes if needed.
+* @description Patches the user service configration files on version changes if needed.
+*/
+function updateAllUserServiceConfigurations () {
+    var localAppVersion = utils.getAppVersion()
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Detected ttth version: ' + localAppVersion)
+
+    /*
+    switch (localAppVersion) {
+        case "1.7.0":
+            // do something
+            break
+
+        default:
+            // do something
+            break
+    }
+    */
+
+    updateAllUserServiceConfigurationsForM1M8P0() // updates needed for 1.8.0
+    updateAllUserServiceConfigurationsForM1M9P0() // updates needed for 1.9.0
 }
 
 // Export the functions

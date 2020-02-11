@@ -36,6 +36,7 @@ The following categories are used:
 * Services
   * Discord: Adding link handler. See [#172](https://github.com/yafp/ttth/issues/172)
   * Discord: Adding unread message script. See [#173](https://github.com/yafp/ttth/issues/173)
+* Added general support for UI animations using animate.css. See [#174](https://github.com/yafp/ttth/issues/174)
 
 ####  ```Changed```
 * Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
@@ -53,11 +54,13 @@ The following categories are used:
   * ```app/js/ttth/modules/utils.js```
   * ```app/js/ttth/modules/urlsGithub.js```
   * ```app/js/ttth/modules/userServiceConfigUpdater.js```
-* Noty confirm dialogs
-  * changed button positions.
-  * Preventing confirming the dialog without clicking a button
-* Improved logging (added console messages for several existing error cases)
-* Added logging to several on error cases
+* Noty 
+  * General: added support for animate.css effects. Now fading in and out. See [#174](https://github.com/yafp/ttth/issues/174)
+  * confirm dialogs: changed button positions.
+  * confirm dialogs: Preventing confirming the dialog without clicking a button
+* Logging
+  * Improved logging (added console messages for several existing error cases)
+  * Added logging to several on error cases
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc is now using ```docdash```
 * Builds
@@ -87,6 +90,7 @@ The following categories are used:
 * Fixed login to google services. See [#155](https://github.com/yafp/ttth/issues/155)
 * Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
 * Fixed a bug while reading and patching user-services-configurations. See [#171](https://github.com/yafp/ttth/issues/171)
+* Fixed unread message count for Xing. See [#175](https://github.com/yafp/ttth/issues/175)
 
 
 ***

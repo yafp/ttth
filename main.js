@@ -42,7 +42,7 @@ sentry.enableSentry() // sentry is enabled by default
 // will be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null
 let configWindow = null
-let windowConfig = null // gonna implement this in 1.10.0
+// let windowConfig = null // gonna implement this in 1.10.0
 
 const gotTheLock = app.requestSingleInstanceLock() // for: single-instance handling
 const defaultUserDataPath = app.getPath('userData') // for: storing window position and size
@@ -260,6 +260,7 @@ function createTray () {
 * @description Creates the config window
 * @memberof main
 */
+/*
 function createWindowConfig () {
     writeLog('info', 'createWindow ::: Starting to create the application windows')
 
@@ -293,11 +294,9 @@ function createWindowConfig () {
     windowConfig.removeMenu()
 
     // Call from renderer: Settings UI - toggle dev tools
-    /*
     ipcMain.on('settingsToggleDevTools', function () {
         settingsWindow.webContents.toggleDevTools()
     })
-    */
 
     // Emitted before the window is closed.
     windowConfig.on('close', function () {
@@ -316,6 +315,7 @@ function createWindowConfig () {
         mainWindow.webContents.send('unblurMainUI')
     })
 }
+*/
 
 /**
 * @function createWindow

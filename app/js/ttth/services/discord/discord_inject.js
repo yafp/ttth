@@ -8,6 +8,28 @@
 const { ipcRenderer } = require('electron')
 
 /**
+* @function serviceDiscordGetAlertCount
+* @summary Gets the alert count of the service discord
+* @description Gets the alert count of the service discord
+* @memberof services
+*/
+function serviceDiscordGetAlertCount (badges) {
+    var alerts = 0
+    for (var i = 0; i < badges.length; i++) {
+        var badge = badges[i]
+        if (badge && badge.childNodes && badge.childNodes.length > 0) {
+            var count = parseInt(badge.childNodes[0].nodeValue, 10)
+            alerts += count.isNaN
+                ? 1
+                : count
+        } else {
+            alerts++
+        }
+    }
+    return alerts
+}
+
+/**
 * @function serviceDiscordGetUnreadMessageCount
 * @summary Gets the amount of unread messages of the service discord
 * @description Gets the amount of unread messages of the service discord
@@ -16,27 +38,14 @@ const { ipcRenderer } = require('electron')
 function serviceDiscordGetUnreadMessageCount () {
     console.log('serviceDiscordGetUnreadMessageCount ::: Checking unread message count')
 
-    // via: https://github.com/TheGoddessInari/hamsket/blob/master/app/store/ServicesList.js
-    let getMentionCount = badges => {
-        let alerts = 0;
-        for (const badge of badges) alerts += parseInt(badge.innerText, 10) || 0;
-        return alerts
-    },
-    getServerUnread = badges => {
-        let alerts = 0;
-        for (const badge of badges) alerts += "1" === badge.style.opacity && "8px" === badge.style.height ? 1 : 0;
-        return alerts
-    },
-    checkUnread = () => {
-        const mentions = document.querySelectorAll(".lowerBadge-29hYVK > .numberBadge-2s8kKX");
-        unread = document.getElementsByClassName("item-2hkk8m");
-        const direct = getMentionCount(mentions);
-        let indirect = getServerUnread(unread);
-        indirect += document.getElementsByClassName("unread-3zKkbm").length,
-        //hamsket.updateBadge(direct, indirect)
-    };
+    var direct = 0
+    // var indirect = document.querySelectorAll('.guilds-wrapper .unread').length
+    var guildDirect = document.querySelectorAll('.guilds-wrapper .badge')
+    var channelDirect = document.querySelectorAll('[class^="nameUnreadText-"]+div>div>div')
 
-
+    direct += serviceDiscordGetAlertCount(guildDirect)
+    direct += serviceDiscordGetAlertCount(channelDirect)
+    // indirect += document.querySelectorAll('[class^="nameUnreadText-"]').length
 
     console.log('serviceDiscordGetUnreadMessageCount ::: Total Discord unread messages: ' + direct)
 

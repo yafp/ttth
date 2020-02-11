@@ -41,8 +41,9 @@ function serviceWhatsAppRegister () {
 * @summary Initializes the WhatsApp Service
 * @description Initializes the WhatsApp Service
 * @memberof services
+* @todo This seems like it is not in use so far.
 */
-function serviceWhatsAppInit (serviceName, serviceUrl) {
+function serviceWhatsAppInit (serviceName, serviceUrl) { // eslint-disable-line no-unused-vars
     console.log('serviceWhatsAppInit ::: Trying to init WhatsApp')
 
     // re-set the src for the webview

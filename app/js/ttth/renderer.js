@@ -230,8 +230,9 @@ function settingActivateUserColorCss (cssFile) {
 * @summary Updates which theme is selected
 * @description Sets the new theme and activates a css style / theme
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingThemeUpdate () {
+function settingThemeUpdate () { // eslint-disable-line no-unused-vars
     var currentSelectedTheme = $('#selectTheme').val() // id of selected theme
     var currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
 
@@ -246,6 +247,7 @@ function settingThemeUpdate () {
 * @summary Resets the selected theme back to default
 * @description Sets the new theme and activates a css style / theme
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
 function settingThemeReset () { // eslint-disable-line no-unused-vars
     $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item back to default
@@ -452,8 +454,9 @@ function previewIcon () {
 * @summary Enables or disabled the Tray
 * @description Updates the settings / option DisableTray
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingToggleDisableTray () {
+function settingToggleDisableTray () { // eslint-disable-line no-unused-vars
     const { ipcRenderer } = require('electron')
 
     // Handle depending on the checkbox state
@@ -475,8 +478,9 @@ function settingToggleDisableTray () {
 * @summary Enables or disabled the urgent window mode
 * @description Updates the settings / option Urgentwindow
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingToggleUrgentWindow () {
+function settingToggleUrgentWindow () { // eslint-disable-line no-unused-vars
     // Handle depending on the checkbox state
     if ($('#checkboxSettingUrgentWindow').prop('checked')) {
         writeLocalUserSetting('settingUrgentWindow', true)
@@ -494,8 +498,9 @@ function settingToggleUrgentWindow () {
 * @summary Changes the add-service-template was selected and enables the button
 * @description Changes the add-service-template was selected and enables the button
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingsSelectServiceToAddChanged () {
+function settingsSelectServiceToAddChanged () { // eslint-disable-line no-unused-vars
     var currentSelectedServiceTemplate = $('#select_availableServices').val()
     utils.writeConsoleMsg('info', 'settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _' + currentSelectedServiceTemplate + '_.')
 
@@ -567,8 +572,9 @@ function showNotyAutostartMinimizedConfirm () {
 * @summary Opens the folder in filesystem which contains the service configurations of the current user
 * @description Triggers a method in main.js which then opens the folder which contains all service configurations of the current user.
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function openUserServicesConfigFolder () {
+function openUserServicesConfigFolder () { // eslint-disable-line no-unused-vars
     const { ipcRenderer } = require('electron')
     ipcRenderer.send('openUserServicesConfigFolder')
     utils.writeConsoleMsg('info', 'openUserServicesConfigFolder ::: Should try to open the folder which contains the user configured services.')
@@ -579,8 +585,9 @@ function openUserServicesConfigFolder () {
 * @summary Opens the folder in filesystem which contains the user settings
 * @description Triggers a method in main.js which then opens the folder which contains all user settings
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function openUserSettingsConfigFolder () {
+function openUserSettingsConfigFolder () { // eslint-disable-line no-unused-vars
     const { ipcRenderer } = require('electron')
     ipcRenderer.send('openUserSettingsConfigFolder')
     utils.writeConsoleMsg('info', 'openUserSettingsConfigFolder ::: Should try to open the folder which contains the user settings.')
@@ -954,8 +961,9 @@ function validateConfigSingleServiceForm (serviceName, serviceIcon, serviceUrl) 
 * @summary Fetches the input values from the single-service-configuration popup window and creates a related service config
 * @description Fetches the input values from the single-service-configuration popup window and creates a related service config
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from configWindow.html
 */
-function createSingleServiceConfiguration () {
+function createSingleServiceConfiguration () { // eslint-disable-line no-unused-vars
     const storage = require('electron-json-storage')
     utils.jsonStoragePathSet() // set default path
     utils.writeConsoleMsg('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
@@ -1003,8 +1011,9 @@ function createSingleServiceConfiguration () {
 * @summary Fetches the input values from the single-service-configuration popup window and updates the related service config
 * @description Fetches the input values from the single-service-configuration popup window and updates the related service config
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from configWindow.html
 */
-function updateSingleServiceConfiguration () {
+function updateSingleServiceConfiguration () { // eslint-disable-line no-unused-vars
     utils.writeConsoleMsg('info', 'updateSingleServiceConfiguration ::: Starting to update an existing service config')
 
     const storage = require('electron-json-storage')
@@ -1083,8 +1092,9 @@ function openDevTools () {
 * @summary Enables or disables the autostart
 * @description Enables or disables the autostart
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingToggleAutostart () {
+function settingToggleAutostart () { // eslint-disable-line no-unused-vars
     const isDev = require('electron-is-dev')
     if (isDev) {
         utils.showNoty('warning', 'Configuring autostart is only supported in packaged builds.')
@@ -1127,8 +1137,9 @@ function settingToggleAutostart () {
 * @summary Stores a new default view to local storage
 * @description Users can define a default / startup view in settings. This method stores the users choice into local storage.
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingDefaultViewUpdate () {
+function settingDefaultViewUpdate () { // eslint-disable-line no-unused-vars
     var newDefaultView = $('#selectDefaultView').val() // get currently selected value from select
 
     if (newDefaultView !== null) {
@@ -1328,7 +1339,6 @@ function loadServiceSpecificCode (serviceId, serviceName) {
     switch (serviceName) {
     // V1: unread message handler: NO - &&  Link handler: NO
     //
-    case 'discord':
     case 'dropbox':
     case 'github':
     case 'googleCalendar':
@@ -1761,8 +1771,9 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
 * @summary Enables or disabled the error reporting function
 * @description Enables or disabled the error reporting function
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingsToggleErrorReporting () {
+function settingsToggleErrorReporting () { // eslint-disable-line no-unused-vars
     if ($('#checkboxSettingErrorReporting').is(':checked')) {
         utils.writeConsoleMsg('info', 'settingsToggleErrorReporting ::: Error reporting is now enabled')
         writeLocalUserSetting('settingEnableErrorReporting', true)
@@ -1810,8 +1821,9 @@ function settingsToggleErrorReporting () {
 * @summary Handles toggling the checkbox for the setting/option enable-preleases
 * @description Handles toggling the checkbox for the setting/option enable-preleases
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingsToggleEnablePrereleases () {
+function settingsToggleEnablePrereleases () { // eslint-disable-line no-unused-vars
     var newSettingEnablePrereleases
     if ($('#checkboxSettingEnablePrereleases').is(':checked')) {
         newSettingEnablePrereleases = true
@@ -1831,8 +1843,9 @@ function settingsToggleEnablePrereleases () {
 * @summary Reads all user configured service files and adds the enabled services as tabs
 * @description Reads all user configured service files and adds the enabled services as tabs
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from configWindow.html
 */
-function fontAwesomeShowIconGallery () {
+function fontAwesomeShowIconGallery () { // eslint-disable-line no-unused-vars
     utils.openURL('https://fontawesome.com/icons?d=gallery&m=free')
 }
 
@@ -1928,8 +1941,9 @@ function deleteConfiguredService (serviceId) {
 * @summary user wants to configure a new service
 * @description user wants to configure a new service. Gets called from mainWindow.html
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function settingsUserAddNewService () {
+function settingsUserAddNewService () { // eslint-disable-line no-unused-vars
     utils.writeConsoleMsg('info', 'settingsUserAddNewService ::: Starting to add a new user configured service.')
 
     const storage = require('electron-json-storage')
@@ -2141,8 +2155,9 @@ function checkNetworkConnectivityPeriodic (timeInterval) {
 * @summary Executed before onReady
 * @description launcher for several init methods before jquerys ready signal. Gets called from mainWindow.html
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function onMainWindowBeforeReady () {
+function onMainWindowBeforeReady () { // eslint-disable-line no-unused-vars
     checkSupportedOperatingSystem() // check operating system
     titlebarInit() // init the custom titlebar - see #115
     uscu.updateAllUserServiceConfigurations() // update the configured UserServices (introduced with switch from 1.7.0 to 1.8.0)
@@ -2179,8 +2194,9 @@ function onMainWindowAfterReady () {
 * @summary Initialized the application after jquerys ready signal
 * @description launcher for several init methods after jquerys ready signal. Gets called from mainWindow.html
 * @memberof renderer
+* @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
-function onMainWindowReady () {
+function onMainWindowReady () { // eslint-disable-line no-unused-vars
     loadEnabledUserServices() // load the configured user services
     initSettingsPage() // init the settings tab
     localizeUserInterface('mainWindow.html') // Translate using i18next
