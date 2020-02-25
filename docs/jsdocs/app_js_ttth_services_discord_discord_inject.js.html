@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>app/js/ttth/services/gitter/gitter_inject.js - ttth documentation</title>
+    <title>app/js/ttth/services/discord/discord_inject.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,7 +40,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">app/js/ttth/services/gitter/gitter_inject.js</h1>
+    <h1 class="page-title">app/js/ttth/services/discord/discord_inject.js</h1>
     
 
     
@@ -51,8 +51,8 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
-* @file gitter_inject.js
-* @fileOverview This script contains the inject code for the service gitter
+* @file discord_inject.js
+* @fileOverview This script contains the inject code for the service discord
 * @author yafp
 * @namespace services
 */
@@ -60,28 +60,54 @@
 const { ipcRenderer } = require('electron')
 
 /**
-* @function serviceGitterGetUnreadMessageCount
-* @summary Gets the amount of unread messages of the service Gitter
-* @description Gets the amount of unread messages of the service Gitter
+* @function serviceDiscordGetAlertCount
+* @summary Gets the alert count of the service discord
+* @description Gets the alert count of the service discord
 * @memberof services
 */
-function serviceGitterGetUnreadMessageCount () {
-    console.log('serviceGitterGetUnreadMessageCount ::: Checking unread message count')
+function serviceDiscordGetAlertCount (badges) {
+    var alerts = 0
+    for (var i = 0; i &lt; badges.length; i++) {
+        var badge = badges[i]
+        if (badge &amp;&amp; badge.childNodes &amp;&amp; badge.childNodes.length > 0) {
+            var count = parseInt(badge.childNodes[0].nodeValue, 10)
+            alerts += count.isNaN
+                ? 1
+                : count
+        } else {
+            alerts++
+        }
+    }
+    return alerts
+}
 
-    // via hamsket: https://github.com/TheGoddessInari/hamsket/commit/c642d881660c6d5369cdb8f18e5bc3a165a87258
-    const e = document.getElementsByClassName('unread-indicator')
-    let c = 0
-    for (const i of e)c += parseInt(i.innerHTML.trim(), 10) || 0
+/**
+* @function serviceDiscordGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service discord
+* @description Gets the amount of unread messages of the service discord
+* @memberof services
+*/
+function serviceDiscordGetUnreadMessageCount () {
+    console.log('serviceDiscordGetUnreadMessageCount ::: Checking unread message count')
 
-    console.log('serviceGitterGetUnreadMessageCount ::: Total Gitter unread messages: ' + c)
+    var direct = 0
+    // var indirect = document.querySelectorAll('.guilds-wrapper .unread').length
+    var guildDirect = document.querySelectorAll('.guilds-wrapper .badge')
+    var channelDirect = document.querySelectorAll('[class^="nameUnreadText-"]+div>div>div')
+
+    direct += serviceDiscordGetAlertCount(guildDirect)
+    direct += serviceDiscordGetAlertCount(channelDirect)
+    // indirect += document.querySelectorAll('[class^="nameUnreadText-"]').length
+
+    console.log('serviceDiscordGetUnreadMessageCount ::: Total Discord unread messages: ' + direct)
 
     // send back from webview to main
-    ipcRenderer.sendToHost(c.toString())
-    return c.toString()
+    ipcRenderer.sendToHost(direct.toString())
+    return direct.toString()
 }
 
 ipcRenderer.on('request', function () {
-    ipcRenderer.sendToHost(serviceGitterGetUnreadMessageCount())
+    ipcRenderer.sendToHost(serviceDiscordGetUnreadMessageCount())
 })
 </code></pre>
         </article>
