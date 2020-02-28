@@ -1,0 +1,12 @@
+# PRE-COMMIT-HOOK
+#
+# See: https://github.com/pre-commit/pre-commit-hooks
+#
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0  # Use the ref you want to point at
+    hooks:
+    -   id: check-case-conflict # Check for files with names that would conflict on a case-insensitive filesystem like MacOS HFS+ or Windows FAT.
+    -   id: check-docstring-first # Checks for a common error of placing code before the docstring.
+    -   id: check-json # Attempts to load all json files to verify syntax.
+    -   id: check-symlinks # Checks for symlinks which do not point to anything.
+    -   id: check-yaml # Attempts to load all yaml files to verify syntax.
