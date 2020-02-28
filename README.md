@@ -1,9 +1,12 @@
-<p align="center">
-  <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
-</p>
-
 <div align="center">
-  <h1>ttth</h1>
+    <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
+    <h1>ttth</h1>
+
+available for:
+
+![linux](https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/linux_32x32.png)
+![apple](https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/apple_32x32.png)
+![windows](https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/windows_32x32.png)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true)](https://ci.appveyor.com/project/yafp/ttth)
@@ -13,7 +16,7 @@
 ![GitHub Download All releases](https://img.shields.io/github/downloads/yafp/ttth/total.svg)
 ![GitHub Last Commit](https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat)
 ![GitHub Issues Open](https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat)
-[![GitHub contributors](https://img.shields.io/github/contributors/yafp/ttth.svg)](https://github.com/yafp//graphs/contributors/)
+[![GitHub contributors](https://img.shields.io/github/contributors/yafp/ttth.svg)](https://github.com/yafp/ttth/graphs/contributors/)
 [![Merged PRs](https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs)](https://github.com/yafp/ttth/pulls?q=is:pr+is:merged)
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
 
@@ -25,7 +28,7 @@
 
 It is:
 
-* available for ![linux](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/linux_32x32.png) linux, ![apple](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/apple_32x32.png) macOS and ![windows](https://raw.githubusercontent.com/yafp/ttth/master/.github/platform/windows_32x32.png) windows.
+* available for linux, macOS and windows.
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork and [Ferdi](https://github.com/getferdi/ferdi) as Franz fork.
 * free and open source
 
@@ -43,7 +46,7 @@ Please see the supported [services](docs/SERVICES.md) for more details.
 ## ui
 **ttth** comes with several themes. The readme shows only exemplary only the default theme.
 
-![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/screenshots/ui_latest.png)
+![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/images/screenshots/ui_latest.png)
 
 *Default theme*
 
@@ -94,24 +97,26 @@ You are always welcome to check and even improve the code.
 ## faq
 Please see the [FAQ](docs/FAQ.md) for more details.
 
-
 ## known-issues
 Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
-
 ## discussion
-* Github: using the issue function
-* Discord: Click [here](https://discord.gg/xHmUNBf)
+* Github: click [here](https://github.com/yafp/ttth/issues) to create an issue
+* Discord: Click [here](https://discord.gg/xHmUNBf) to join the yafp discord server
 * Riot: Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join the public #ttth riot.im room available on matrix.org.
-
+* Slack: click [here](https://join.slack.com/t/yafp/shared_invite/enQtOTU2NzAzNzIzMTM4LTdhNjdjOTI1MTBhNmNjYmY0NzM0YmFlZDgyOWFjYmY5ZGM2NzE4NWFhNzdkYzMzNjhlNjViOGI3MzE0OWNjNGY) to join the yafp workspace
 
 ## license
 Please see the [LICENSE](LICENSE) for more details.
 
-
 ## disclosure
 ttth is not affiliated with any of the supported apps/services.
 
+## support / fund
+If you want to support the development of **ttth** you can fund me on:
+
+* [github](https://github.com/sponsors/yafp)
+* [patreon](https://www.patreon.com/yafp)
 
 ## developers
 
