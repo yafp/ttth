@@ -254,7 +254,33 @@ function jsonStoragePathSet (path = false) {
     storage.setDataPath(newPath)
 }
 
+/**
+* @function generateNewRandomServiceID
+* @summary Generates a config-file name while adding a new service
+* @description Gets the serviceType and adds a random string. The outcome is the name for the new service config-file.
+* @param {string}  serviceType - The type of the service
+* @return {string}  newServiceId - serviceType + Random string
+*/
+function generateNewRandomServiceID (serviceType) {
+    var i = 0
+    var length = 24
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var randomString = ''
+    var newServiceId = ''
+
+    // create random string
+    for (i = 0; i < length; i++) {
+        randomString += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+
+    newServiceId = serviceType + '_' + randomString
+    writeConsoleMsg('info', 'generateNewRandomServiceID ::: Generated a new service ID: _' + newServiceId + '_.')
+    return newServiceId
+}
+
+// ----------------------------------------------------------------------------
 // Exporting all functions
+// ----------------------------------------------------------------------------
 //
 module.exports.writeConsoleMsg = writeConsoleMsg
 module.exports.showNoty = showNoty
@@ -268,3 +294,4 @@ module.exports.globalObjectGet = globalObjectGet
 module.exports.globalObjectSet = globalObjectSet
 module.exports.getAppVersion = getAppVersion
 module.exports.jsonStoragePathSet = jsonStoragePathSet
+module.exports.generateNewRandomServiceID = generateNewRandomServiceID

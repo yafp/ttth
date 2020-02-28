@@ -90,7 +90,7 @@ function titlebarUpdateItemBackgroundOnHover (newColor) {
 * @description Removes the custom titlbar. Shouldnt be used - as the UI looks broken then.
 * @memberof renderer
 */
-function titlebarDispose () {
+function titlebarDispose () { // eslint-disable-line no-unused-vars
     myTitlebar.dispose()
     utils.writeConsoleMsg('warn', 'titlebarDispose ::: Disposed the entire titlebar')
 }
@@ -882,7 +882,12 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
             utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: new-window for: _' + serviceId + '_.')
 
             const shell = require('electron').shell
-            const protocol = require('url').parse(event.url).protocol
+
+            // const protocol = require('url').parse(event.url).protocol // 'url.parse' was deprecated since v11.0.0.
+            const http = require('url')
+            const myURL = new URL(event.url)
+            const protocol = myURL.protocol
+
             if (protocol === 'http:' || protocol === 'https:') {
                 // Display warning for http links - see: https://electronjs.org/docs/tutorial/security
                 if (protocol === 'http:') {
@@ -893,7 +898,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
                             layout: 'bottom',
                             type: 'information',
                             closeWith: [''], // to prevent closing the confirm-dialog by clicking something other then a confirm-dialog-button
-                            text: 'Do you really want to open this unsecure link (not using https://) ?',
+                            text: 'Do you really want to open this potentially unsafe link (reason: not using https://) ?',
                             buttons: [
                                 Noty.button('Yes', 'btn btn-danger', function () {
                                     n.close()
@@ -1069,7 +1074,7 @@ function updateSingleServiceConfiguration () { // eslint-disable-line no-unused-
 * @memberof renderer
 * @param {string} serviceId - id of the service
 */
-function configureSingleUserService (serviceId) {
+function configureSingleUserService (serviceId) { // eslint-disable-line no-unused-vars
     const { ipcRenderer } = require('electron')
     utils.writeConsoleMsg('info', 'configureSingleUserService ::: Trying to open service configure window for service: _' + serviceId + '_.')
     ipcRenderer.send('showConfigureSingleServiceWindow', serviceId) // send ipc to show service-configuration window
@@ -1081,7 +1086,7 @@ function configureSingleUserService (serviceId) {
 * @description Opens or closes the Developer Console inside the app. Gets called from mainWindow.html
 * @memberof renderer
 */
-function openDevTools () {
+function openDevTools () { // eslint-disable-line no-unused-vars
     const remote = require('electron').remote
     utils.writeConsoleMsg('info', 'openDevTools ::: Opening Developer Console')
     remote.getCurrentWindow().toggleDevTools()
@@ -1225,7 +1230,7 @@ function searchUpdate (silent = true) {
     // localAppVersion = '0.0.1'; //  overwrite variable to simulate
 
     var updateStatus = $.get(urlGithubApiReleases, function (data) {
-        3000 // in milliseconds
+        // 3000 // in milliseconds
 
         // success
         versions = data.sort(function (v1, v2) {
@@ -1244,10 +1249,10 @@ function searchUpdate (silent = true) {
             utils.writeConsoleMsg('info', 'searchUpdate ::: Ignoring pre-releases in update search')
             // find the latest non pre-release build
             // loop over the versions array to find the latest non-pre-release
-            var latestOfficialRelease
+            // var latestOfficialRelease
             for (var i = 0; i < versions.length; i++) {
                 if (versions[i].prerelease === false) {
-                    latestOfficialRelease = i
+                    // latestOfficialRelease = i
                     break
                 }
             }
@@ -1257,8 +1262,8 @@ function searchUpdate (silent = true) {
             remoteAppVersionLatestPrerelease = versions[i].prerelease // boolean
         }
 
-        utils.writeConsoleMsg('info', 'searchUpdate ::: Local ttth version: ' + localAppVersion)
-        utils.writeConsoleMsg('info', 'searchUpdate ::: Latest ttth version: ' + remoteAppVersionLatest)
+        utils.writeConsoleMsg('info', 'searchUpdate ::: Local ttth version: _' + localAppVersion + '_.')
+        utils.writeConsoleMsg('info', 'searchUpdate ::: Latest ttth version: _' + remoteAppVersionLatest + '_ - Is pre-release: _' + remoteAppVersionLatestPrerelease + '_.')
 
         // If a stable (not a prelease) update is available - see #73
         if (localAppVersion < remoteAppVersionLatest) {
@@ -1460,37 +1465,37 @@ function loadConfiguredUserServices () {
 
         // loop over upper object
         for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-                utils.writeConsoleMsg('info', 'loadConfiguredUserServices ::: ' + key + ' -> ' + data[key])
+            // if (data.hasOwnProperty(key)) {
+            utils.writeConsoleMsg('info', 'loadConfiguredUserServices ::: ' + key + ' -> ' + data[key])
 
-                // show 2 services per row
-                if (serviceCount % 2 === 0) {
-                    // odd
-                    // create a new row
-                    $('#settingsServicesConfigured').append("<div class='row ttthServiceRow' id='conf_" + serviceCount + "'></div>")
+            // show 2 services per row
+            if (serviceCount % 2 === 0) {
+                // odd
+                // create a new row
+                $('#settingsServicesConfigured').append("<div class='row ttthServiceRow' id='conf_" + serviceCount + "'></div>")
 
-                    if (data[key].serviceEnableStatus === true) {
-                        // show enabled configured service
-                        $('#conf_' + serviceCount).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_' + key + '" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
-                    } else {
-                        // show disabled configured service
-                        $('#conf_' + serviceCount).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_' + key + '" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
-                    }
+                if (data[key].serviceEnableStatus === true) {
+                    // show enabled configured service
+                    $('#conf_' + serviceCount).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_' + key + '" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
                 } else {
-                    // ...even - add to existing row - in col 2
-                    // add something to the existing row
-                    var rowReference = serviceCount - 1
-
-                    if (data[key].serviceEnableStatus === true) {
-                        // show enabled configured service
-                        $('#conf_' + rowReference).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_' + key + '" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
-                    } else {
-                        // show disabled configured service
-                        $('#conf_' + rowReference).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_' + key + '" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
-                    }
+                    // show disabled configured service
+                    $('#conf_' + serviceCount).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_' + key + '" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
                 }
-                serviceCount = serviceCount + 1
+            } else {
+                // ...even - add to existing row - in col 2
+                // add something to the existing row
+                var rowReference = serviceCount - 1
+
+                if (data[key].serviceEnableStatus === true) {
+                    // show enabled configured service
+                    $('#conf_' + rowReference).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-success btn-sm" id="bt_' + key + '" title="enabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-on"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
+                } else {
+                    // show disabled configured service
+                    $('#conf_' + rowReference).append('<div class="col-sm-6"><div class="input-group input-group-sm mb-1"><div class="input-group-prepend"><div class="input-group-text"><i title="Service: ' + data[key].type + '" class="ttthServiceIcon ' + data[key].icon + '"></i></div></div><input type="text" class="form-control" id="label_' + data[key].url + '" aria-label="Text input with checkbox" value=' + data[key].name + ' title=' + data[key].url + ' disabled><div class="input-group-prepend"><button type="button" id="bt_configSingleService_' + key + '" title="configure" class="btn btn-dark" onClick="configureSingleUserService(\'' + key + '\')"><i class="fas fa-cog"></i></button><button type="button" class="btn btn-secondary btn-sm" id="bt_' + key + '" title="disabled" onClick="settingsToggleEnableStatusOfSingleUserService(\'' + key + '\');"><i id=statusIconService_' + key + ' class="fas fa-toggle-off"></i></button><button type="button" class="btn btn-danger btn-sm" id="bt_delete' + key + '" title="delete" onClick="deleteConfiguredService(\'' + key + '\');"><i class="fas fa-trash-alt"></i></button></div></div></div>')
+                }
             }
+            serviceCount = serviceCount + 1
+            // }
         }
     })
 
@@ -1674,7 +1679,7 @@ function updateGlobalServicesShortcuts () {
 * @memberof renderer
 * @param {string} configuredUserServiceConfigName - Name of the config file of the selected service
 */
-function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceConfigName) {
+function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceConfigName) { // eslint-disable-line no-unused-vars
     utils.writeConsoleMsg('info', 'settingsToggleEnableStatusOfSingleUserService ::: Toggling the configured service defined in config file: _' + configuredUserServiceConfigName + '_.')
 
     const storage = require('electron-json-storage')
@@ -1779,7 +1784,6 @@ function settingsToggleErrorReporting () { // eslint-disable-line no-unused-vars
         writeLocalUserSetting('settingEnableErrorReporting', true)
         sentry.enableSentry()
         utils.showNoty('success', "<i class='fas fa-toggle-on'></i> <b>Option:</b> <u>Error Reporting</u> is now enabled.")
-        // myUndefinedFunctionFromRendererAfterEnable()
     } else {
         // ask if user really wants to disable error-reporting (using a confirm dialog)
         const Noty = require('noty')
@@ -1874,18 +1878,18 @@ function loadEnabledUserServices () {
 
         // loop over upper object
         for (var key in data) {
-            if (data.hasOwnProperty(key)) {
-                utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key)
-                utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key + ' -> ' + data[key])
+            // if (data.hasOwnProperty(key)) {
+            utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key)
+            utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key + ' -> ' + data[key])
 
-                // show enabled configured service
-                if (data[key].serviceEnableStatus === true) {
-                    utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Trying to add the enabled service: _' + key + '_.')
-                    addServiceTab(key, data[key].type, data[key].name, data[key].icon, data[key].url, data[key].injectCode, data[key].userAgentDefault, data[key].userAgentCustom)
-                } else {
-                    utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Skipped service: _' + key + '_, as it not enabled.')
-                }
+            // show enabled configured service
+            if (data[key].serviceEnableStatus === true) {
+                utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Trying to add the enabled service: _' + key + '_.')
+                addServiceTab(key, data[key].type, data[key].name, data[key].icon, data[key].url, data[key].injectCode, data[key].userAgentDefault, data[key].userAgentCustom)
+            } else {
+                utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Skipped service: _' + key + '_, as it not enabled.')
             }
+            // }
         }
         utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: Finished current service: ' + data)
     })
@@ -1898,7 +1902,7 @@ function loadEnabledUserServices () {
 * @memberof renderer
 * @param {string} serviceId - the service id
 */
-function deleteConfiguredService (serviceId) {
+function deleteConfiguredService (serviceId) { // eslint-disable-line no-unused-vars
     utils.writeConsoleMsg('info', 'deleteConfiguredService ::: Deleting the user service: _' + serviceId + '_.')
 
     // cleanup after deleting the entire service
@@ -1988,19 +1992,18 @@ function settingsUserAddNewService () { // eslint-disable-line no-unused-vars
                                 throw error
                             }
 
-                            // show object which contains all config files
-                            utils.writeConsoleMsg('info', data)
+                            utils.writeConsoleMsg('info', data) // show object which contains all config files
 
                             for (var key in data) {
-                                if (data.hasOwnProperty(key)) {
-                                    // utils.writeConsoleMsg("info", key + " -> " + data[key]);
-                                    utils.writeConsoleMsg('info', data[key].type)
+                                // if (data.hasOwnProperty(key)) {
+                                // utils.writeConsoleMsg("info", key + " -> " + data[key]);
+                                utils.writeConsoleMsg('info', data[key].type)
 
-                                    if (data[key].type === userSelectedService) {
-                                        utils.showNoty('error', 'There is already a configured service of the type <b>' + userSelectedService + '</b>.', 0)
-                                        return
-                                    }
+                                if (data[key].type === userSelectedService) {
+                                    utils.showNoty('error', 'There is already a configured service of the type <b>' + userSelectedService + '</b>.', 0)
+                                    return
                                 }
+                                // }
                             }
 
                             const { ipcRenderer } = require('electron')
@@ -2014,31 +2017,6 @@ function settingsUserAddNewService () { // eslint-disable-line no-unused-vars
         utils.writeConsoleMsg('warn', 'settingsUserAddNewService ::: No service type selected. Unable to add a new service.')
         utils.showNoty('error', 'No service type selected. Unable to add a new service.')
     }
-}
-
-/**
-* @function generateNewRandomServiceID
-* @summary Generates a config-file name while adding a new service
-* @description Gets the serviceType and adds a random string. The outcome is the name for the new service config-file.
-* @memberof renderer
-* @param {string}  serviceType - The type of the service
-* @return {string}  newServiceId - serviceType + Random string
-*/
-function generateNewRandomServiceID (serviceType) {
-    var i = 0
-    var length = 24
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    var randomString = ''
-    var newServiceId = ''
-
-    // create random string
-    for (i = 0; i < length; i++) {
-        randomString += possible.charAt(Math.floor(Math.random() * possible.length))
-    }
-
-    newServiceId = serviceType + '_' + randomString
-    utils.writeConsoleMsg('info', 'generateNewRandomServiceID ::: Generated a new service ID: _' + newServiceId + '_.')
-    return newServiceId
 }
 
 /**
@@ -2392,7 +2370,8 @@ require('electron').ipcRenderer.on('serviceToCreate', function (event, serviceId
     utils.writeConsoleMsg('info', 'serviceToCreate ::: Should create a new service of type: _' + serviceId + '_.')
     utils.writeConsoleMsg('info', 'serviceToCreate ::: Loading default values from service definition')
 
-    var newServiceId = generateNewRandomServiceID(serviceId) // generate id for new service
+    // var newServiceId = generateNewRandomServiceID(serviceId) // generate id for new service
+    var newServiceId = utils.generateNewRandomServiceID(serviceId) // generate id for new service
 
     // read json file
     const path = require('path')
