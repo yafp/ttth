@@ -1,4 +1,4 @@
-![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/128x128.png)
+![logo](https://raw.githubusercontent.com/yafp/ttth/master/.github/images/logo/128x128.png)
 
 # ttth
 ## changelog
@@ -39,7 +39,6 @@ The following categories are used:
 * Added general support for UI animations using animate.css. See [#174](https://github.com/yafp/ttth/issues/174)
 
 ####  ```Changed```
-* Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
 * Titlebar:
   * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
   * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
@@ -54,36 +53,39 @@ The following categories are used:
   * ```app/js/ttth/modules/utils.js```
   * ```app/js/ttth/modules/urlsGithub.js```
   * ```app/js/ttth/modules/userServiceConfigUpdater.js```
-* Noty 
+* Noty
   * General: added support for animate.css effects. Now fading in and out. See [#174](https://github.com/yafp/ttth/issues/174)
   * confirm dialogs: changed button positions.
   * confirm dialogs: Preventing confirming the dialog without clicking a button
 * Logging
   * Improved logging (added console messages for several existing error cases)
   * Added logging to several on error cases
+  * Removed some renderer output to reduce flood of developer console.
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc is now using ```docdash```
 * Builds
   * dmg: Improved macOS .dmg. New background image and new icon positions.
+  * Windows Installer: Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
   * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
+  * Updated ```electron-util``` from ```0.13.1``` to ```0.14.0```
   * Updated ```electron-builder``` from ```22.2.0``` to ```22.3.2```
-  * Updated ```electron-log``` from ```4.0.0``` to ```4.0.6```
+  * Updated ```electron-log``` from ```4.0.0``` to ```4.0.7```
   * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
-  * Updated ```mocha``` from ```6.2.2``` to ```7.0.1```
-  * Updated ```i18next``` from ```19.0.2``` to ```19.1.0```
-  * Updated ```sentry``` from ```1.1.0``` to ```1.2.0```
+  * Updated ```mocha``` from ```6.2.2``` to ```7.1.0```
+  * Updated ```i18next``` from ```19.0.2``` to ```19.3.2```
+  * Updated ```sentry``` from ```1.1.0``` to ```1.2.1```
   * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
   * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
   * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
   * Updated ```rimraf``` from ```3.0.0``` to ```3.0.2```
   * Updated ```fontawesome``` from ```5.12.0``` to ```5.12.1```
   * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
-* Removed some renderer output to reduce flood of developer console.
 
 #### ```Removed```
 * Removed ```npx``` from project
+* Removed ```url.parse``` as it is deprecated.
 
 #### ```Fixed```
 * Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)
