@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - ttth documentation</title>
+    <title>app/js/ttth/services/skype/skype_inject.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,262 +40,61 @@
 
 <div id="main">
     
+    <h1 class="page-title">app/js/ttth/services/skype/skype_inject.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* @file skype_inject.js
+* @fileOverview This module contains the inject code for the service skype
+* @author yafp
+* @namespace services
+*/
 
+const { ipcRenderer } = require('electron')
 
-    <section class="package">
-        <h3> </h3>		
+/**
+* @function serviceSkypeGetUnreadMessageCount
+* @summary Gets the amount of unread messages of the service Skype
+* @description Gets the amount of unread messages of the service Skype
+* @memberof services
+*/
+function serviceSkypeGetUnreadMessageCount () {
+    console.log('serviceSkypeGetUnreadMessageCount ::: Checking unread message count')
+
+    let count = 0
+    const container = document.querySelector('[role="tablist"] > [title="Chats"] > div')
+    if (container) {
+        const children = container.children
+
+        if (children.length === 3) {
+            const elementContainer = children[children.length - 1]
+            if (elementContainer) {
+                const element = elementContainer.querySelector('[data-text-as-pseudo-element]')
+                count = parseInt(element.dataset.textAsPseudoElement, 10)
+            }
+        }
+    }
+
+    console.log('serviceSkypeGetUnreadMessageCount ::: Total Skype chats with unread messages: ' + count)
+
+    // send back from webview to main
+    ipcRenderer.sendToHost(count.toString())
+    return count.toString()
+}
+
+ipcRenderer.on('request', function () {
+    ipcRenderer.sendToHost(serviceSkypeGetUnreadMessageCount())
+})
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><div align="center">
-    <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
-    <h1>ttth</h1>
-<p>available for:</p>
-<p><img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/linux_32x32.png" alt="linux">
-<img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/apple_32x32.png" alt="apple">
-<img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/windows_32x32.png" alt="windows"></p>
-<p><a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a>
-<a href="https://ci.appveyor.com/project/yafp/ttth"><img src="https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true" alt="AppVeyor Build status"></a>
-<a href="https://travis-ci.org/yafp/ttth"><img src="https://travis-ci.org/yafp/ttth.svg?branch=master" alt="Build Status"></a>
-<img src="https://img.shields.io/github/release/yafp/ttth.svg?style=flat" alt="GitHub Current Release">
-<img src="https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat" alt="GitHub Release Date">
-<img src="https://img.shields.io/github/downloads/yafp/ttth/total.svg" alt="GitHub Download All releases">
-<img src="https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat" alt="GitHub Last Commit">
-<img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Open">
-<a href="https://github.com/yafp/ttth/graphs/contributors/"><img src="https://img.shields.io/github/contributors/yafp/ttth.svg" alt="GitHub contributors"></a>
-<a href="https://github.com/yafp/ttth/pulls?q=is:pr+is:merged"><img src="https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs" alt="Merged PRs"></a>
-<img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub License"></p>
-</div>
-<h2>about</h2>
-<p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.</p>
-<p>It is:</p>
-<ul>
-<li>available for linux, macOS and windows.</li>
-<li>inspired by apps like <a href="https://github.com/meetfranz/franz">Franz</a> and <a href="https://github.com/ramboxapp/community-edition">Rambox</a>. Need to feature <a href="https://github.com/TheGoddessInari/hamsket">Hamsket</a> here as good looking Rambox fork and <a href="https://github.com/getferdi/ferdi">Ferdi</a> as Franz fork.</li>
-<li>free and open source</li>
-</ul>
-<h2>getting-started</h2>
-<h3>download</h3>
-<p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
-<h3>install</h3>
-<p>Please see the <a href="docs/INSTALL.md">installation instructions</a> for more details.</p>
-<h2>services</h2>
-<p>While <strong>ttth</strong> supports a growing list of pre-configured services, you can as well add custom urls yourself (using the CUSTOM URL type).
-Please see the supported <a href="docs/SERVICES.md">services</a> for more details.</p>
-<h2>ui</h2>
-<p><strong>ttth</strong> comes with several themes. The readme shows only exemplary only the default theme.</p>
-<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/images/screenshots/ui_latest.png" alt="ui"></p>
-<p><em>Default theme</em></p>
-<p>Please see the <a href="docs/THEMES.md">themes list</a> for more details.</p>
-<h2>changelog</h2>
-<p>Please see the <a href="docs/CHANGELOG.md">changlog</a> for more details.</p>
-<h2>keyboard-shortcuts</h2>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>Linux</th>
-<th>macOS</th>
-<th>Windows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Homepage</td>
-<td><kbd>F1</kbd></td>
-<td><kbd>F1</kbd></td>
-<td><kbd>F1</kbd></td>
-</tr>
-<tr>
-<td>Report issue</td>
-<td><kbd>F2</kbd></td>
-<td><kbd>F2</kbd></td>
-<td><kbd>F2</kbd></td>
-</tr>
-<tr>
-<td>Changelog</td>
-<td><kbd>F3</kbd></td>
-<td><kbd>F3</kbd></td>
-<td><kbd>F3</kbd></td>
-</tr>
-<tr>
-<td>FAQ</td>
-<td><kbd>F4</kbd></td>
-<td><kbd>F4</kbd></td>
-<td><kbd>F4</kbd></td>
-</tr>
-<tr>
-<td>Releases</td>
-<td><kbd>F5</kbd></td>
-<td><kbd>F5</kbd></td>
-<td><kbd>F5</kbd></td>
-</tr>
-<tr>
-<td>Search updates</td>
-<td><kbd>F9</kbd></td>
-<td><kbd>F9</kbd></td>
-<td><kbd>F9</kbd></td>
-</tr>
-<tr>
-<td>Open developer console for current service</td>
-<td><kbd>F10</kbd></td>
-<td><kbd>F10</kbd></td>
-<td><kbd>F10</kbd></td>
-</tr>
-<tr>
-<td>Toggle Fullscreen mode</td>
-<td><kbd>F11</kbd></td>
-<td><kbd>F11</kbd></td>
-<td><kbd>F11</kbd></td>
-</tr>
-<tr>
-<td>Toggle developer console</td>
-<td><kbd>F12</kbd></td>
-<td><kbd>F12</kbd></td>
-<td><kbd>F12</kbd></td>
-</tr>
-<tr>
-<td>Show Settings</td>
-<td><kbd>CTRL</kbd> + <kbd>,</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>,</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>,</kbd></td>
-</tr>
-<tr>
-<td>Jump to next service</td>
-<td><kbd>CTRL</kbd> + <kbd>🡆</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>🡆</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>🡆</kbd></td>
-</tr>
-<tr>
-<td>Jump to previous service</td>
-<td><kbd>CTRL</kbd> + <kbd>🡄</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>🡄</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>🡄</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 1</td>
-<td><kbd>CTRL</kbd> + <kbd>1</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>1</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>1</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 2</td>
-<td><kbd>CTRL</kbd> + <kbd>2</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>2</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>2</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 3</td>
-<td><kbd>CTRL</kbd> + <kbd>3</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>3</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>3</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab ...</td>
-<td><kbd>CTRL</kbd> + <kbd>...</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>...</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>...</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 9</td>
-<td><kbd>CTRL</kbd> + <kbd>9</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>9</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>9</kbd></td>
-</tr>
-<tr>
-<td>Reload current service</td>
-<td><kbd>CTRL</kbd> + <kbd>S</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>S</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>S</kbd></td>
-</tr>
-<tr>
-<td>Quit/exit the application</td>
-<td><kbd>CTRL</kbd> + <kbd>Q</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>Q</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>Q</kbd></td>
-</tr>
-<tr>
-<td>Reload the application</td>
-<td><kbd>CTRL</kbd> + <kbd>R</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>R</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>R</kbd></td>
-</tr>
-<tr>
-<td>Minimize window</td>
-<td><kbd>CTRL</kbd> + <kbd>M</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>M</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>M</kbd></td>
-</tr>
-<tr>
-<td>Maximize window</td>
-<td><kbd>CTRL</kbd> + <kbd>K</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>K</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>K</kbd></td>
-</tr>
-<tr>
-<td>Hide window</td>
-<td><kbd>CTRL</kbd> + <kbd>H</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>H</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>H</kbd></td>
-</tr>
-</tbody>
-</table>
-<h2>privacy</h2>
-<ul>
-<li><strong>ttth</strong> is using <a href="https://sentry.io">sentry</a> to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the <a href="https://sentry.io/privacy/">sentry privacy policy</a> for more details.</li>
-<li><strong>ttth</strong> is not tracking it's users (i.e. using Google Analytics or similar)</li>
-<li>All data is stored locally only.</li>
-<li>Sessions will persist using the <a href="https://electronjs.org/docs/api/webview-tag#partition">partition:persist</a> attribute for electrons webview.</li>
-</ul>
-<p>You are always welcome to check and even improve the code.</p>
-<h2>faq</h2>
-<p>Please see the <a href="docs/FAQ.md">FAQ</a> for more details.</p>
-<h2>known-issues</h2>
-<p>Please see the <a href="docs/KNOWN_ISSUES.md">known issues</a> for more details.</p>
-<h2>discussion</h2>
-<ul>
-<li>Github: click <a href="https://github.com/yafp/ttth/issues">here</a> to create an issue</li>
-<li>Discord: Click <a href="https://discord.gg/xHmUNBf">here</a> to join the yafp discord server</li>
-<li>Riot: Click <a href="https://riot.im/app/#/room/#ttth:matrix.org">here</a> to join the public #ttth riot.im room available on matrix.org.</li>
-<li>Slack: click <a href="https://join.slack.com/t/yafp/shared_invite/enQtOTU2NzAzNzIzMTM4LTdhNjdjOTI1MTBhNmNjYmY0NzM0YmFlZDgyOWFjYmY5ZGM2NzE4NWFhNzdkYzMzNjhlNjViOGI3MzE0OWNjNGY">here</a> to join the yafp workspace</li>
-</ul>
-<h2>license</h2>
-<p>Please see the <a href="LICENSE">LICENSE</a> for more details.</p>
-<h2>disclosure</h2>
-<p>ttth is not affiliated with any of the supported apps/services.</p>
-<h2>support / fund</h2>
-<p>If you want to support the development of <strong>ttth</strong> you can fund me on:</p>
-<ul>
-<li><a href="https://github.com/sponsors/yafp">github</a></li>
-<li><a href="https://www.patreon.com/yafp">patreon</a></li>
-</ul>
-<h2>developers</h2>
-<h3>contributing</h3>
-<p>Please see the <a href="docs/CONTRIBUTING.md">contributing informations</a> for more details.
-A list of all contributors can be found <a href="docs/CONTRIBUTORS.md">here</a>.</p>
-<h3>build</h3>
-<p>Building <strong>ttth</strong> yourself is pretty easy. Please see the <a href="docs/BUILD.md">building instructions</a> for more details.</p></article>
-    </section>
-
-
 
 
 

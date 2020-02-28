@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - ttth documentation</title>
+    <title>app/js/ttth/modules/utils.js - ttth documentation</title>
     
     <meta name="description" content="a simple jsdoc based documentation for ttth" />
     
@@ -40,262 +40,316 @@
 
 <div id="main">
     
+    <h1 class="page-title">app/js/ttth/modules/utils.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* @file utils.js
+* @fileOverview This module contains all utility functions
+* @author yafp
+* @module utils
+*/
 
+'use strict'
 
-    <section class="package">
-        <h3> </h3>		
+/**
+* @function  writeConsoleMsg
+* @summary Writes console output for the renderer process
+* @description Writes console output for the renderer process
+* @param type - String which defines the log type
+* @param message - String which defines the log message
+*/
+function writeConsoleMsg (type, message) {
+    // const logR = require("electron-log"); // for logging to file
+
+    // log to file
+    // logR.transports.file.level = true;
+
+    // log to console
+    // logR.transports.console.level = false; // TODO: should depend on the verbose setting in main.js
+
+    const prefix = '[ Renderer ]'
+    const log = require('electron-log')
+    // electron-log can: error, warn, info, verbose, debug, silly
+    switch (type) {
+    case 'info':
+        // logR.error(logMessage); //  to file
+        log.info(prefix + ' ' + message)
+        break
+
+    case 'warn':
+        log.warn(prefix + ' ' + message)
+        break
+
+    case 'error':
+        log.error(prefix + ' ' + message)
+        break
+
+    default:
+        log.silly(prefix + ' ' + message)
+    }
+}
+
+/**
+* @function  showNoty
+* @summary Shows a noty notification
+* @description Creates an in-app notification using the noty framework
+* @param {string} type - Options: alert, success, warning, error, info/information
+* @param {string} message - notification text
+* @param {number} timeout - Timevalue, defines how long the message should be displayed. Use 0 for no-timeout
+*/
+function showNoty (type, message, timeout = 3000) {
+    const Noty = require('noty')
+    new Noty({
+        type: type,
+        timeout: timeout,
+        theme: 'bootstrap-v4',
+        layout: 'bottom',
+        text: message,
+        animation: {
+            open: 'animated fadeIn', // Animate.css class names: default: bounceInRight
+            close: 'animated fadeOut' // Animate.css class names: default:bounceOutRight
+        }
+    }).show()
+}
+
+/**
+* @function  isMac
+* @summary Checks if the operating system type is mac/darwin or not
+* @description Checks if the operating system type is mac/darwin or not
+* @return value - Boolean: True if mac, false if not
+*/
+function isMac () {
+    var os = require('os')
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeConsoleMsg('info', 'isMac ::: Detected operating system type is: ' + os.type())
+    if (os.type() === 'Darwin') {
+        writeConsoleMsg('info', 'isMac ::: true')
+        return true
+    } else {
+        writeConsoleMsg('info', 'isMac ::: false')
+        return false
+    }
+}
+
+/**
+* @function  isLinux
+* @summary Checks if the operating system type is linux or not
+* @description Checks if the operating system type islinux or not
+* @return value - Boolean: True if linux, false if not
+*/
+function isLinux () {
+    var os = require('os')
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeConsoleMsg('info', 'isLinux ::: Detected operating system type is: ' + os.type())
+    if (os.type() === 'Linux') {
+        writeConsoleMsg('info', 'isLinux ::: true')
+        return true
+    } else {
+        writeConsoleMsg('info', 'isLinux ::: false')
+        return false
+    }
+}
+
+/**
+* @function  isWindows
+* @summary Checks if the operating system type is windows or not
+* @description Checks if the operating system type is windows or not
+* @return value - Boolean: True if windows, false if not
+*/
+function isWindows () {
+    var os = require('os')
+
+    // os types:
+    //
+    // - Darwin
+    // - Linux
+    // - Windows_NT
+    writeConsoleMsg('info', 'isWindows ::: Detected operating system type is: ' + os.type())
+    if (os.type() === 'Windows NT') {
+        writeConsoleMsg('info', 'isWindows ::: true')
+        return true
+    } else {
+        writeConsoleMsg('info', 'isWindows ::: false')
+        return false
+    }
+}
+
+/**
+* @function  openURL
+* @summary Opens an url in browser
+* @description Opens a given url in default browser. This is pretty slow, but got no better solution so far.
+* @param url - URL string which contains the target url
+*/
+function openURL (url) {
+    const { shell } = require('electron')
+    shell.openExternal(url)
+}
+
+/**
+* @function  getHostName
+* @summary Parsing the Hostname From a Url
+* @description Parsing the Hostname From a Url
+* @param url
+*/
+function getHostName (url) {
+    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i)
+    if (match !== null &amp;&amp; match.length > 2 &amp;&amp; typeof match[2] === 'string' &amp;&amp; match[2].length > 0) {
+        return match[2]
+    } else {
+        return null
+    }
+}
+
+/**
+* @function  getDomain
+* @summary Parsing the Domain From a Url
+* @description Parsing the Domain From a Url
+* @param url
+* @return domain
+*/
+function getDomain (url) {
+    var hostName = getHostName(url)
+    var domain = hostName
+
+    if (hostName !== null) {
+        var parts = hostName.split('.').reverse()
+
+        if (parts !== null &amp;&amp; parts.length > 1) {
+            domain = parts[1] + '.' + parts[0]
+
+            if (hostName.toLowerCase().indexOf('.co.uk') !== -1 &amp;&amp; parts.length > 2) {
+                domain = parts[2] + '.' + domain
+            }
+        }
+    }
+    return domain
+}
+
+/**
+* @function globalObjectGet
+* @summary Gets a value of a single property from the global object in main.js
+* @description Gets a value of a single property from the global object in main.js
+* @param {String} property - Name of the property
+* @return {string} value - Value of the property
+*/
+function globalObjectGet (property) {
+    const { remote } = require('electron')
+    var value = remote.getGlobal('sharedObj')[property]
+    writeConsoleMsg('info', 'globalObjectGet ::: Property: _' + property + '_ has the value: _' + value + '_.')
+    return value
+}
+
+/**
+* @function globalObjectSet
+* @summary Updates the value of a single property from the global object in main.js
+* @description Updates the value of a single property from the global object in main.js
+* @param {String} property - Name of the property
+* @param {String} value - The new value of the property
+*/
+function globalObjectSet (property, value) {
+    const { ipcRenderer } = require('electron')
+    ipcRenderer.send('globalObjectSet', property, value)
+}
+
+/**
+* @function getAppVersion
+* @summary Gets the version string of the current build
+* @description Gets the version string of the current build
+* @preturn {String} versionString - The version number
+*/
+function getAppVersion () {
+    var versionString = require('electron').remote.app.getVersion()
+    writeConsoleMsg('info', 'getAppVersion ::: Appversion is: _' + versionString + '_.')
+    return versionString
+}
+
+/**
+* @function jsonStoragePathSet
+* @summary Sets the path for json-storage
+* @description Sets the path for json-storage
+* @param Stringg} path - The path for json-storage
+*/
+function jsonStoragePathSet (path = false) {
+    const storage = require('electron-json-storage')
+    const remote = require('electron').remote
+    const app = remote.app
+    const pathX = require('path') // must have other name, as path is already declared ...
+
+    var newPath
+
+    if (path === false) {
+        newPath = pathX.join(app.getPath('userData'), 'storage')
+        writeConsoleMsg('info', 'jsonStoragePathSet ::: Set jsonStorage path to default: _' + newPath + '_.')
+    } else {
+        newPath = pathX.join(app.getPath('userData'), 'ttthUserSettings') // set path for user-settings
+        writeConsoleMsg('info', 'jsonStoragePathSet ::: Set jsonStorage path to ttthUserSettings: _' + newPath + '_.')
+    }
+
+    storage.setDataPath(newPath)
+}
+
+/**
+* @function generateNewRandomServiceID
+* @summary Generates a config-file name while adding a new service
+* @description Gets the serviceType and adds a random string. The outcome is the name for the new service config-file.
+* @param {string}  serviceType - The type of the service
+* @return {string}  newServiceId - serviceType + Random string
+*/
+function generateNewRandomServiceID (serviceType) {
+    var i = 0
+    var length = 24
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var randomString = ''
+    var newServiceId = ''
+
+    // create random string
+    for (i = 0; i &lt; length; i++) {
+        randomString += possible.charAt(Math.floor(Math.random() * possible.length))
+    }
+
+    newServiceId = serviceType + '_' + randomString
+    writeConsoleMsg('info', 'generateNewRandomServiceID ::: Generated a new service ID: _' + newServiceId + '_.')
+    return newServiceId
+}
+
+// ----------------------------------------------------------------------------
+// Exporting all functions
+// ----------------------------------------------------------------------------
+//
+module.exports.writeConsoleMsg = writeConsoleMsg
+module.exports.showNoty = showNoty
+module.exports.isMac = isMac
+module.exports.isLinux = isLinux
+module.exports.isWindows = isWindows
+module.exports.openURL = openURL
+module.exports.getHostName = getHostName
+module.exports.getDomain = getDomain
+module.exports.globalObjectGet = globalObjectGet
+module.exports.globalObjectSet = globalObjectSet
+module.exports.getAppVersion = getAppVersion
+module.exports.jsonStoragePathSet = jsonStoragePathSet
+module.exports.generateNewRandomServiceID = generateNewRandomServiceID
+</code></pre>
+        </article>
     </section>
-
-
-
-
-
-
-
-
-
-    
-
-
-
-    <section class="readme usertext">
-        <article><div align="center">
-    <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
-    <h1>ttth</h1>
-<p>available for:</p>
-<p><img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/linux_32x32.png" alt="linux">
-<img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/apple_32x32.png" alt="apple">
-<img src="https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/windows_32x32.png" alt="windows"></p>
-<p><a href="https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade"><img src="https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693" alt="Codacy Badge"></a>
-<a href="https://ci.appveyor.com/project/yafp/ttth"><img src="https://ci.appveyor.com/api/projects/status/rd107p8kbexiot08?svg=true" alt="AppVeyor Build status"></a>
-<a href="https://travis-ci.org/yafp/ttth"><img src="https://travis-ci.org/yafp/ttth.svg?branch=master" alt="Build Status"></a>
-<img src="https://img.shields.io/github/release/yafp/ttth.svg?style=flat" alt="GitHub Current Release">
-<img src="https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat" alt="GitHub Release Date">
-<img src="https://img.shields.io/github/downloads/yafp/ttth/total.svg" alt="GitHub Download All releases">
-<img src="https://img.shields.io/github/last-commit/yafp/ttth.svg?style=flat" alt="GitHub Last Commit">
-<img src="https://img.shields.io/github/issues-raw/yafp/ttth.svg?style=flat" alt="GitHub Issues Open">
-<a href="https://github.com/yafp/ttth/graphs/contributors/"><img src="https://img.shields.io/github/contributors/yafp/ttth.svg" alt="GitHub contributors"></a>
-<a href="https://github.com/yafp/ttth/pulls?q=is:pr+is:merged"><img src="https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs" alt="Merged PRs"></a>
-<img src="https://img.shields.io/github/license/yafp/ttth.svg" alt="GitHub License"></p>
-</div>
-<h2>about</h2>
-<p><strong>ttth</strong> (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.</p>
-<p>It is:</p>
-<ul>
-<li>available for linux, macOS and windows.</li>
-<li>inspired by apps like <a href="https://github.com/meetfranz/franz">Franz</a> and <a href="https://github.com/ramboxapp/community-edition">Rambox</a>. Need to feature <a href="https://github.com/TheGoddessInari/hamsket">Hamsket</a> here as good looking Rambox fork and <a href="https://github.com/getferdi/ferdi">Ferdi</a> as Franz fork.</li>
-<li>free and open source</li>
-</ul>
-<h2>getting-started</h2>
-<h3>download</h3>
-<p>Download the latest release from <a href="https://github.com/yafp/ttth/releases">here</a>.</p>
-<h3>install</h3>
-<p>Please see the <a href="docs/INSTALL.md">installation instructions</a> for more details.</p>
-<h2>services</h2>
-<p>While <strong>ttth</strong> supports a growing list of pre-configured services, you can as well add custom urls yourself (using the CUSTOM URL type).
-Please see the supported <a href="docs/SERVICES.md">services</a> for more details.</p>
-<h2>ui</h2>
-<p><strong>ttth</strong> comes with several themes. The readme shows only exemplary only the default theme.</p>
-<p><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/images/screenshots/ui_latest.png" alt="ui"></p>
-<p><em>Default theme</em></p>
-<p>Please see the <a href="docs/THEMES.md">themes list</a> for more details.</p>
-<h2>changelog</h2>
-<p>Please see the <a href="docs/CHANGELOG.md">changlog</a> for more details.</p>
-<h2>keyboard-shortcuts</h2>
-<table>
-<thead>
-<tr>
-<th>Function</th>
-<th>Linux</th>
-<th>macOS</th>
-<th>Windows</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Homepage</td>
-<td><kbd>F1</kbd></td>
-<td><kbd>F1</kbd></td>
-<td><kbd>F1</kbd></td>
-</tr>
-<tr>
-<td>Report issue</td>
-<td><kbd>F2</kbd></td>
-<td><kbd>F2</kbd></td>
-<td><kbd>F2</kbd></td>
-</tr>
-<tr>
-<td>Changelog</td>
-<td><kbd>F3</kbd></td>
-<td><kbd>F3</kbd></td>
-<td><kbd>F3</kbd></td>
-</tr>
-<tr>
-<td>FAQ</td>
-<td><kbd>F4</kbd></td>
-<td><kbd>F4</kbd></td>
-<td><kbd>F4</kbd></td>
-</tr>
-<tr>
-<td>Releases</td>
-<td><kbd>F5</kbd></td>
-<td><kbd>F5</kbd></td>
-<td><kbd>F5</kbd></td>
-</tr>
-<tr>
-<td>Search updates</td>
-<td><kbd>F9</kbd></td>
-<td><kbd>F9</kbd></td>
-<td><kbd>F9</kbd></td>
-</tr>
-<tr>
-<td>Open developer console for current service</td>
-<td><kbd>F10</kbd></td>
-<td><kbd>F10</kbd></td>
-<td><kbd>F10</kbd></td>
-</tr>
-<tr>
-<td>Toggle Fullscreen mode</td>
-<td><kbd>F11</kbd></td>
-<td><kbd>F11</kbd></td>
-<td><kbd>F11</kbd></td>
-</tr>
-<tr>
-<td>Toggle developer console</td>
-<td><kbd>F12</kbd></td>
-<td><kbd>F12</kbd></td>
-<td><kbd>F12</kbd></td>
-</tr>
-<tr>
-<td>Show Settings</td>
-<td><kbd>CTRL</kbd> + <kbd>,</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>,</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>,</kbd></td>
-</tr>
-<tr>
-<td>Jump to next service</td>
-<td><kbd>CTRL</kbd> + <kbd>🡆</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>🡆</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>🡆</kbd></td>
-</tr>
-<tr>
-<td>Jump to previous service</td>
-<td><kbd>CTRL</kbd> + <kbd>🡄</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>🡄</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>🡄</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 1</td>
-<td><kbd>CTRL</kbd> + <kbd>1</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>1</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>1</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 2</td>
-<td><kbd>CTRL</kbd> + <kbd>2</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>2</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>2</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 3</td>
-<td><kbd>CTRL</kbd> + <kbd>3</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>3</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>3</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab ...</td>
-<td><kbd>CTRL</kbd> + <kbd>...</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>...</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>...</kbd></td>
-</tr>
-<tr>
-<td>Jump to service tab 9</td>
-<td><kbd>CTRL</kbd> + <kbd>9</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>9</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>9</kbd></td>
-</tr>
-<tr>
-<td>Reload current service</td>
-<td><kbd>CTRL</kbd> + <kbd>S</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>S</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>S</kbd></td>
-</tr>
-<tr>
-<td>Quit/exit the application</td>
-<td><kbd>CTRL</kbd> + <kbd>Q</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>Q</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>Q</kbd></td>
-</tr>
-<tr>
-<td>Reload the application</td>
-<td><kbd>CTRL</kbd> + <kbd>R</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>R</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>R</kbd></td>
-</tr>
-<tr>
-<td>Minimize window</td>
-<td><kbd>CTRL</kbd> + <kbd>M</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>M</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>M</kbd></td>
-</tr>
-<tr>
-<td>Maximize window</td>
-<td><kbd>CTRL</kbd> + <kbd>K</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>K</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>K</kbd></td>
-</tr>
-<tr>
-<td>Hide window</td>
-<td><kbd>CTRL</kbd> + <kbd>H</kbd></td>
-<td><kbd>CMD</kbd> + <kbd>H</kbd></td>
-<td><kbd>CTRL</kbd> + <kbd>H</kbd></td>
-</tr>
-</tbody>
-</table>
-<h2>privacy</h2>
-<ul>
-<li><strong>ttth</strong> is using <a href="https://sentry.io">sentry</a> to collect error reports. This helps heavily finding bugs which might occur only in some specific use-cases. Please see the <a href="https://sentry.io/privacy/">sentry privacy policy</a> for more details.</li>
-<li><strong>ttth</strong> is not tracking it's users (i.e. using Google Analytics or similar)</li>
-<li>All data is stored locally only.</li>
-<li>Sessions will persist using the <a href="https://electronjs.org/docs/api/webview-tag#partition">partition:persist</a> attribute for electrons webview.</li>
-</ul>
-<p>You are always welcome to check and even improve the code.</p>
-<h2>faq</h2>
-<p>Please see the <a href="docs/FAQ.md">FAQ</a> for more details.</p>
-<h2>known-issues</h2>
-<p>Please see the <a href="docs/KNOWN_ISSUES.md">known issues</a> for more details.</p>
-<h2>discussion</h2>
-<ul>
-<li>Github: click <a href="https://github.com/yafp/ttth/issues">here</a> to create an issue</li>
-<li>Discord: Click <a href="https://discord.gg/xHmUNBf">here</a> to join the yafp discord server</li>
-<li>Riot: Click <a href="https://riot.im/app/#/room/#ttth:matrix.org">here</a> to join the public #ttth riot.im room available on matrix.org.</li>
-<li>Slack: click <a href="https://join.slack.com/t/yafp/shared_invite/enQtOTU2NzAzNzIzMTM4LTdhNjdjOTI1MTBhNmNjYmY0NzM0YmFlZDgyOWFjYmY5ZGM2NzE4NWFhNzdkYzMzNjhlNjViOGI3MzE0OWNjNGY">here</a> to join the yafp workspace</li>
-</ul>
-<h2>license</h2>
-<p>Please see the <a href="LICENSE">LICENSE</a> for more details.</p>
-<h2>disclosure</h2>
-<p>ttth is not affiliated with any of the supported apps/services.</p>
-<h2>support / fund</h2>
-<p>If you want to support the development of <strong>ttth</strong> you can fund me on:</p>
-<ul>
-<li><a href="https://github.com/sponsors/yafp">github</a></li>
-<li><a href="https://www.patreon.com/yafp">patreon</a></li>
-</ul>
-<h2>developers</h2>
-<h3>contributing</h3>
-<p>Please see the <a href="docs/CONTRIBUTING.md">contributing informations</a> for more details.
-A list of all contributors can be found <a href="docs/CONTRIBUTORS.md">here</a>.</p>
-<h3>build</h3>
-<p>Building <strong>ttth</strong> yourself is pretty easy. Please see the <a href="docs/BUILD.md">building instructions</a> for more details.</p></article>
-    </section>
-
-
 
 
 
