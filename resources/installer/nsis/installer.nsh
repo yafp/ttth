@@ -1,0 +1,2 @@
+ShowInstDetails show
+ShowUninstDetails show
