@@ -2,7 +2,7 @@
   "name": "ttth",
   "productName": "ttth",
   "desktopName": "ttth.desktop",
-  "version": "1.8.20200212",
+  "version": "1.8.20200228",
   "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
   "main": "./main.js",
   "scripts": {
@@ -32,9 +32,9 @@
     "pack-win-64": "electron-packager . ttth --overwrite --platform=win32 --arch=x64 --icon=resources/installer/icon.ico --prune=true --out=dist --version-string.CompanyName=yafp --version-string.FileDescription=${productName} --version-string.ProductName=\"ttth\"",
     "pack-linux": "npm run pack-linux-64",
     "pack-linux-64": "electron-packager . ttth --overwrite --platform=linux --arch=x64 --icon=resources/installer/icons/1024x1024.png --prune=true --out=dist",
-    "build-mac": "electron-builder --mac",
-    "build-win": "electron-builder --win --ia32 --x64",
-    "build-linux": "electron-builder --linux"
+    "build-mac": "electron-builder --mac --publish=onTagOrDraft",
+    "build-win": "electron-builder --win --ia32 --x64 --publish=onTagOrDraft",
+    "build-linux": "electron-builder --linux --publish=onTagOrDraft"
   },
   "repository": {
     "type": "git",
@@ -136,18 +136,29 @@
       "artifactName": "${productName}-${version}-win-portable-${arch}.${ext}"
     },
     "nsis": {
+      "include": "resources/installer/nsis/installer.nsh",
+      "deleteAppDataOnUninstall": true,
       "unicode": false,
-      "artifactName": "${productName}.${ext}",
+      "artifactName": "${productName}-${version}-win-installer-${arch}.${ext}",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "oneClick": false,
       "allowElevation": true,
       "allowToChangeInstallationDirectory": true,
-      "runAfterFinish": false
+      "runAfterFinish": false,
+      "uninstallDisplayName": "${productName}-${version}"
+    },
+    "snap": {
+      "publish": [
+        {
+          "provider": "github"
+        }
+      ]
     },
     "linux": {
       "executableName": "ttth",
       "artifactName": "${productName}-${version}-linux-${arch}.${ext}",
+      "synopsis": "ttth is a desktop app for online services like WhatsApp and several others",
       "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
       "category": "Network",
       "desktop": {
@@ -223,7 +234,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-html": "^6.0.0",
     "jsdoc": "^3.6.3",
-    "mocha": "^7.0.1",
+    "mocha": "^7.1.0",
     "rimraf": "^3.0.2",
     "snazzy": "^8.0.0",
     "spectron": "^10.0.1",
@@ -231,7 +242,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.12.1",
-    "@sentry/electron": "^1.2.0",
+    "@sentry/electron": "^1.2.1",
     "about-window": "^1.13.2",
     "animate.css": "^3.7.2",
     "auto-launch": "^5.0.5",
@@ -239,10 +250,10 @@
     "custom-electron-titlebar": "^3.2.2-hotfix62",
     "electron-is-dev": "^1.1.0",
     "electron-json-storage": "^4.1.8",
-    "electron-log": "^4.0.6",
+    "electron-log": "^4.0.7",
     "electron-unhandled": "^3.0.2",
-    "electron-util": "^0.13.1",
-    "i18next": "^19.1.0",
+    "electron-util": "^0.14.0",
+    "i18next": "^19.3.2",
     "i18next-sync-fs-backend": "^1.1.1",
     "is-online": "^8.2.1",
     "jquery": "^3.4.1",
@@ -251,8 +262,7 @@
     "v8-compile-cache": "^2.1.0"
   },
   "standardx": {
-    "globals": [
-    ],
+    "globals": [],
     "ignore": [
       "/docs/jsdocs/scripts/prettify/*",
       "/docs/jsdocs/*",
