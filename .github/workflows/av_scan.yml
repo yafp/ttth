@@ -1,0 +1,21 @@
+#  ----------------------------------------------------------------------------
+# This action / workflow:
+# - does a simple av scan
+# - on each push to the master branch
+# - using clamAV
+#
+# Using: https://github.com/marketplace/actions/git-anti-virus-scan
+#  ----------------------------------------------------------------------------
+
+name: av_scan
+
+on: [push]
+
+jobs:
+  gitavscan:
+    runs-on: ubuntu-latest
+    name: AV scan
+    steps:
+    - uses: actions/checkout@v2
+    - name: Git AV Scan
+      uses: djdefi/gitavscan@v1

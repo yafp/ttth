@@ -1,0 +1,38 @@
+#  ----------------------------------------------------------------------------
+# This action / workflow:
+# - generates a jsdoc based documentation
+# - on each commit to the master branch
+# - and uploads it to the project github-page
+#
+# Using: https://github.com/marketplace/actions/jsdoc-action
+#
+# See: https://yafp.github.io/ttth/
+#  ----------------------------------------------------------------------------
+
+name: jsdoc
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: andstor/jsdoc-action@v1
+        with:
+          output_dir: ./out
+          config_file: jsdoc.json
+          template_name: docdash
+          front_page: README.md
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./out

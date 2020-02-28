@@ -1,4 +1,4 @@
-name: npm audit
+name: npm_audit
 
 on:
   pull_request:
