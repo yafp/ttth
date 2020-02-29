@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/logo/256x256.png" width="256"></a>
+    <a href="#"><img src="https://raw.githubusercontent.com/yafp/ttth/master/.github/images/logo/256x256.png" width="256"></a>
     <h1>ttth</h1>
 
 available for:
@@ -126,6 +126,3 @@ A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
 
 ### build
 Building **ttth** yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.
-
-
-
