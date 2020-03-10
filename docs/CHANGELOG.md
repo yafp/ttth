@@ -62,20 +62,22 @@ The following categories are used:
   * Added logging to several on error cases
   * Removed some renderer output to reduce flood of developer console.
 * Update search is now only executed on app start, not on earch UI reload anymore.
-* jsdoc is now using ```docdash```
+* jsdoc
+  * is now using ```docdash```
+  * is now auto-generated on each commit. See [#178](https://github.com/yafp/ttth/issues/178)
 * Builds
   * dmg: Improved macOS .dmg. New background image and new icon positions.
-  * Windows Installer: Improved Windows Installer by adding new options to config. See  [#169](https://github.com/yafp/ttth/issues/169)
+  * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
   * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
   * Updated ```electron-util``` from ```0.13.1``` to ```0.14.0```
-  * Updated ```electron-builder``` from ```22.2.0``` to ```22.3.2```
+  * Updated ```electron-builder``` from ```22.2.0``` to ```22.4.0```
   * Updated ```electron-log``` from ```4.0.0``` to ```4.0.7```
   * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
   * Updated ```mocha``` from ```6.2.2``` to ```7.1.0```
   * Updated ```i18next``` from ```19.0.2``` to ```19.3.2```
-  * Updated ```sentry``` from ```1.1.0``` to ```1.2.1```
+  * Updated ```sentry``` from ```1.1.0``` to ```1.3.0```
   * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
   * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
   * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
