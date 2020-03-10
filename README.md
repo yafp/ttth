@@ -19,6 +19,7 @@ available for:
 [![GitHub contributors](https://img.shields.io/github/contributors/yafp/ttth.svg)](https://github.com/yafp/ttth/graphs/contributors/)
 [![Merged PRs](https://img.shields.io/github/issues-pr-closed-raw/yafp/ttth.svg?label=merged+PRs)](https://github.com/yafp/ttth/pulls?q=is:pr+is:merged)
 ![GitHub License](https://img.shields.io/github/license/yafp/ttth.svg)
+[![jsDoc](https://github.com/yafp/ttth/workflows/jsdoc/badge.svg)](https://yafp.github.io/ttth/)
 
 </div>
 
@@ -110,7 +111,7 @@ Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 Please see the [LICENSE](LICENSE) for more details.
 
 ## disclosure
-ttth is not affiliated with any of the supported apps/services.
+**ttth** is not affiliated with any of the supported apps/services.
 
 ## support / fund
 If you want to support the development of **ttth** you can fund me on:
@@ -123,6 +124,9 @@ If you want to support the development of **ttth** you can fund me on:
 ### contributing
 Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
 A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
+
+### jsdoc
+The current jsdoc documentation can be found on [https://yafp.github.io/ttth/](https://yafp.github.io/ttth/). It is auto-generated (using [JsDoc Action](https://github.com/marketplace/actions/jsdoc-action)) on each commit of this project.
 
 ### build
 Building **ttth** yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.
