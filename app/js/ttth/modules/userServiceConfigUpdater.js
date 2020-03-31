@@ -228,9 +228,6 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
 
             utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Current service: _' + key + '_.') // key = name of json file
 
-            // if (data.hasOwnProperty(key)) {
-            // service: any google service
-
             // ensure it is a service-config of ttth - which def. needs to have a type
             if (typeof data[key].type !== 'undefined') {
                 // it is a service configuration
@@ -264,8 +261,7 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
                     userAgentCustomMissing = true
                 }
             } else {
-                utils.showNoty('error', 'Found unexpected service configuration file<br><br>name: <b>' + key + '</b><br><br>Reference: #171', 0)
-                // }
+                utils.showNoty('error', 'Found unexpected service configuration file<br><br>name: <b>' + key + '</b><br>Please reload using CTRL+R<br><br>Reference: #171', 0)
             }
 
             // update config if needed
