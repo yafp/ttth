@@ -5,7 +5,10 @@
 * @namespace services
 */
 
+// Object.defineProperty(navigator.serviceWorker,"register",{value:()=>Promise.reject()});
+
 // via hamsket
+
 Object.defineProperty(navigator.serviceWorker, 'register', { value: () => Promise.reject() })
 
 const { ipcRenderer } = require('electron')
