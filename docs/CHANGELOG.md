@@ -69,20 +69,25 @@ The following categories are used:
   * dmg: Improved macOS .dmg. New background image and new icon positions.
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
+  * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
   * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
   * Updated ```electron-util``` from ```0.13.1``` to ```0.14.0```
+  * Updated ```electron-is-dev``` from ```1.1.0``` to ```1.2.0```
   * Updated ```electron-builder``` from ```22.2.0``` to ```22.4.1```
   * Updated ```electron-log``` from ```4.0.0``` to ```4.1.1```
   * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
-  * Updated ```mocha``` from ```6.2.2``` to ```7.1.1```
-  * Updated ```i18next``` from ```19.0.2``` to ```19.3.4```
-  * Updated ```sentry``` from ```1.1.0``` to ```1.3.0```
-  * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
-  * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
-  * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
-  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.2```
+  * Updated ```eslint-plugin-html``` from ```6.0.0``` to ```6.0.1```
   * Updated ```fontawesome``` from ```5.12.0``` to ```5.13.0```
+  * Updated ```i18next``` from ```19.0.2``` to ```19.4.1```
+  * Updated ```is-online``` from ```8.2.1``` to ```8.3.0```
+  * Updated ```jquery``` from ```3.4.1``` to ```3.5.0```
+  * Updated ```jsdoc``` from ```3.6.3``` to ```3.6.4```
+  * Updated ```mocha``` from ```6.2.2``` to ```7.1.1```
+  * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
+  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.2```
+  * Updated ```sentry``` from ```1.1.0``` to ```1.3.0```
+  * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
   * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
 
 #### ```Removed```
