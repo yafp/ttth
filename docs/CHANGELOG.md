@@ -72,14 +72,14 @@ The following categories are used:
   * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
   * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
   * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
-  * Updated ```electron-util``` from ```0.13.1``` to ```0.14.0```
+  * Updated ```electron-util``` from ```0.13.1``` to ```0.14.1```
   * Updated ```electron-is-dev``` from ```1.1.0``` to ```1.2.0```
   * Updated ```electron-builder``` from ```22.2.0``` to ```22.4.1```
   * Updated ```electron-log``` from ```4.0.0``` to ```4.1.1```
   * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
-  * Updated ```eslint-plugin-html``` from ```6.0.0``` to ```6.0.1```
+  * Updated ```eslint-plugin-html``` from ```6.0.0``` to ```6.0.2```
   * Updated ```fontawesome``` from ```5.12.0``` to ```5.13.0```
-  * Updated ```i18next``` from ```19.0.2``` to ```19.4.1```
+  * Updated ```i18next``` from ```19.0.2``` to ```19.4.3```
   * Updated ```is-online``` from ```8.2.1``` to ```8.3.0```
   * Updated ```jquery``` from ```3.4.1``` to ```3.5.0```
   * Updated ```jsdoc``` from ```3.6.3``` to ```3.6.4```
