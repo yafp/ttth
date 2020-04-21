@@ -2,7 +2,7 @@
   "name": "ttth",
   "productName": "ttth",
   "desktopName": "ttth.desktop",
-  "version": "1.8.20200412",
+  "version": "1.8.20200421",
   "description": "ttth (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Twitter, Google and several others.",
   "main": "./main.js",
   "scripts": {
@@ -225,8 +225,6 @@
     ]
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-as-promised": "^7.1.1",
     "docdash": "^1.2.0",
     "electron": "^7.1.11",
     "electron-builder": "^22.4.1",
@@ -234,10 +232,8 @@
     "eslint": "^6.8.0",
     "eslint-plugin-html": "^6.0.2",
     "jsdoc": "^3.6.4",
-    "mocha": "^7.1.1",
     "rimraf": "^3.0.2",
     "snazzy": "^8.0.0",
-    "spectron": "^10.0.1",
     "standardx": "^5.0.0"
   },
   "dependencies": {
@@ -259,7 +255,8 @@
     "jquery": "^3.5.0",
     "noty": "^3.2.0-beta",
     "popper.js": "^1.16.1",
-    "v8-compile-cache": "^2.1.0"
+    "v8-compile-cache": "^2.1.0",
+    "yargs": "^15.3.1"
   },
   "standardx": {
     "globals": [],

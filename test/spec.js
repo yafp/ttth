@@ -1,3 +1,12 @@
+//tests are currently disabled
+// to reenable the following dependencies need to be re-added
+//
+// DEvDependencies
+// - spectron
+// - mocha
+// - chai
+// - chai-as-promised
+
 console.log("Executing: test/spec.js");
 
 const Application = require("spectron").Application;
