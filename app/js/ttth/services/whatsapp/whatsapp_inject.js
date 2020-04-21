@@ -8,6 +8,7 @@
 const { ipcRenderer } = require('electron')
 
 // adopted from franz:
+/*
 window.addEventListener('beforeunload', async () => {
     console.log('------- beforeunload --------')
     try {
@@ -27,6 +28,7 @@ window.addEventListener('beforeunload', async () => {
         console.err(err)
     }
 })
+*/
 
 /**
 * @function serviceWhatsAppGetUnreadMessageCount
@@ -64,6 +66,37 @@ function serviceWhatsAppGetUnreadMessageCount () {
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
     */
 
+
+
+
+
+
+        // TEMP NEW
+        const elements=document.querySelectorAll("#pane-side .P6z4j, .unread");
+        let count=0;
+        for(const i of elements){
+            const gp=i.parentNode.parentNode;
+            0===gp.querySelectorAll('#pane-side *[data-icon="muted"]').length&&count++
+        }
+
+        console.log('serviceWhatsAppGetUnreadMessageCount ::: Final conversation count with unread messages in WhatsApp is: _' + count + '_.')
+
+        ipcRenderer.sendToHost(count.toString()) // We need to convert the result to string - since moving to electron 6.x
+        return count.toString() // needed, since electron 6.x. Otherwise (without return) the service crashes.
+        
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ')
     let count = 0
 
@@ -78,6 +111,7 @@ function serviceWhatsAppGetUnreadMessageCount () {
 
     ipcRenderer.sendToHost(count.toString()) // We need to convert the result to string - since moving to electron 6.x
     return count.toString() // needed, since electron 6.x. Otherwise (without return) the service crashes.
+    */
 }
 
 ipcRenderer.on('request', function () {
