@@ -21,7 +21,7 @@ const utils = require('./utils.js')
 const Sentry = require('@sentry/electron')
 Sentry.init({
     dsn: 'https://bbaa8fa09ca84a8da6a545c04d086859@sentry.io/1757940',
-    debug: true
+    debug: false
 })
 
 // simple way to force a crash:
@@ -34,7 +34,7 @@ Sentry.init({
 */
 function enableSentry () {
     Sentry.getCurrentHub().getClient().getOptions().enabled = true
-    utils.writeConsoleMsg('info', 'enableSentry ::: Sentry is now enabled')
+    //utils.writeConsoleMsg('info', 'enableSentry ::: Sentry is now enabled')
 }
 
 /**
@@ -44,7 +44,7 @@ function enableSentry () {
 */
 function disableSentry () {
     Sentry.getCurrentHub().getClient().getOptions().enabled = false
-    utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now disabled')
+    //utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now disabled')
 }
 
 // export both functions

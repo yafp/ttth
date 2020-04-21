@@ -22,7 +22,7 @@ function initCrashReporter () {
         submitURL: 'https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859',
         uploadToServer: false
     })
-    utils.writeConsoleMsg('info', 'initCrashReporter ::: crashReporter is now initialized')
+    //utils.writeConsoleMsg('info', 'initCrashReporter ::: crashReporter is now initialized')
 
     // To simulate a crash - execute: process.crash();
 }

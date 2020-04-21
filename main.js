@@ -6,14 +6,6 @@
 
 'use strict'
 
-// ----------------------------------------------------------------------------
-// REQUIRE: TTTH MODULES
-// ----------------------------------------------------------------------------
-const urls = require('./app/js/ttth/modules/urlsGithub.js')
-const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
-const sentry = require('./app/js/ttth/modules/sentry.js') // sentry
-const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unhandled
-
 // -----------------------------------------------------------------------------
 // REQUIRE: 3rd PARTY
 // -----------------------------------------------------------------------------
@@ -26,6 +18,88 @@ const fs = require('fs')
 const os = require('os') // for: check os.platform()
 const openAboutWindow = require('about-window').default // for: about-window
 require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
+
+
+// -----------------------------------------------------------------------------
+// Shared object
+// -----------------------------------------------------------------------------
+//
+var consoleOutput = false // can be changed using --verbose
+
+// Settings Tab
+var settingDefaultView = ''
+var settingTheme = 'default'
+var settingAutostart = ''
+var settingDisableTray = false
+var settingUrgentWindow = false
+var settingEnableErrorReporting = true
+var settingEnablePrereleases = false
+
+global.sharedObj = {
+    // verbose mode aka console Output
+    consoleOutput: consoleOutput,
+
+    // settings
+    settingDefaultView: settingDefaultView,
+    settingTheme: settingTheme,
+    settingAutostart: settingAutostart,
+    settingDisableTray: settingDisableTray,
+    settingUrgentWindow: settingUrgentWindow,
+    settingEnableErrorReporting: settingEnableErrorReporting,
+    settingEnablePrereleases: settingEnablePrereleases
+}
+
+
+// ----------------------------------------------------------------------------
+// REQUIRE: TTTH MODULES
+// ----------------------------------------------------------------------------
+const urls = require('./app/js/ttth/modules/urlsGithub.js')
+const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
+const sentry = require('./app/js/ttth/modules/sentry.js') // sentry
+const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unhandled
+
+
+
+// ----------------------------------------------------------------------------
+// COMMAND-LINE-ARGS
+// ----------------------------------------------------------------------------
+var yargs = require('yargs')
+    .strict(true) // arguments must be valid
+    .usage('Usage: $0 <command> [options]')
+    // define arguments
+    .option('verbose', {
+        alias: 'v',
+        type: 'boolean',
+        description: 'Starts ttth with verbose output'
+    })
+    .option('help', {
+        alias: 'h',
+        type: 'boolean',
+        description: 'Shows the ttth help'
+    })
+    .option('version', {
+        type: 'boolean',
+        description: 'Shows the ttth version'
+    })
+
+    // displayed in case of invalid parameters
+    .showHelpOnFail(false, "Specify --help to display the available options")
+
+    // show the project url
+    .epilog('Project URL: https://github.com/yafp/ttth')
+    
+
+    // Show an example
+    //
+    //.example('$0 --help', 'Shows the media-dupes help')
+    .argv
+
+if (yargs.verbose === true) {
+    global.sharedObj.consoleOutput = true // update the global object
+}
+
+
+
 
 // ----------------------------------------------------------------------------
 // ERROR-HANDLING:
@@ -59,38 +133,38 @@ var defaultMainWindowHeight = 600
 
 /**
 * @function writeLog
-* @summary Writes to log file (and if verbose parameter is given as well to console)
-* @description Writes to log file (and if verbose parameter is given as well to console)
+* @summary Writes console output for the main process
+* @description Writes console output for the main process
 * @memberof main
+* @param {string} type - The log type
+* @param {string} message - The log message
 */
-function writeLog (logType, logMessage) {
-    // configure
-    log.transports.file.level = true // logging to file
-    log.transports.console.level = false // logging to console (default)
+function writeLog (type, message) {
+    const logM = require('electron-log')
+    const prefix = '[   Main   ] '
 
-    // enable output to console if verbose parameter is given
-    if (verbose === true) {
-        log.transports.console.level = true
+    if (global.sharedObj.consoleOutput === false) {
+        logM.transports.console.level = false // disable Terminal output. Still logs to DevTools and LogFile
     }
+    // important: https://github.com/megahertz/electron-log/issues/189
 
-    logMessage = '[   Main   ] ' + logMessage // add prefix for all logs from [M]ain
-
-    // do log
-    switch (logType) {
+    // electron-log can: error, warn, info, verbose, debug, silly
+    switch (type) {
     case 'info':
-        log.info(logMessage)
+        logM.info(prefix + message)
         break
 
     case 'warn':
-        log.warn(logMessage)
+        logM.warn(prefix + message)
         break
 
     case 'error':
-        log.error(logMessage)
+        logM.error(prefix + message)
         break
 
     default:
-        log.info(logMessage)
+        logM.silly(prefix + message)
+            // code block
     }
 }
 
@@ -109,38 +183,6 @@ function checkNetworkConnectivity () {
             mainWindow.webContents.send('showNoConnectivityError') // app should show an error
         }
     })()
-}
-
-/**
-* @function checkArguments
-* @summary Parses the supplied parameters
-* @description Parses the supplied parameters
-* @memberof main
-*/
-function checkArguments () {
-    // using https://www.npmjs.com/package/minimist could improve handling
-
-    // log.info(process.argv);
-    // ignore the first 2 arguments
-    // log.info(process.argv.slice(2));
-    process.argv = process.argv.slice(2)
-
-    for (var key in process.argv) {
-        if (process.argv.hasOwnProperty(key)) {
-            // console.log(key + " -> " + process.argv[key]);
-            switch (process.argv[key]) {
-            case 'verbose':
-                verbose = true
-                log.info('[M] Enabling verbose/debug mode')
-                writeLog('info', 'checkArguments ::: Enabling verbose mode')
-                break
-
-            default:
-                log.warn('[M] Ignoring unsupported parameter: _' + process.argv[key] + '_.') // nothing to do here
-                break
-            }
-        }
-    }
 }
 
 /**
@@ -394,27 +436,6 @@ function createWindow () {
         global.sharedObj[property] = value
         // console.warn(global.sharedObj) // show entire globalOBject on each set command
     })
-
-    // Global object
-    //
-    // Settings Tab
-    var settingDefaultView = ''
-    var settingTheme = 'default'
-    var settingAutostart = ''
-    var settingDisableTray = false
-    var settingUrgentWindow = false
-    var settingEnableErrorReporting = true
-    var settingEnablePrereleases = false
-
-    global.sharedObj = {
-        settingDefaultView: settingDefaultView,
-        settingTheme: settingTheme,
-        settingAutostart: settingAutostart,
-        settingDisableTray: settingDisableTray,
-        settingUrgentWindow: settingUrgentWindow,
-        settingEnableErrorReporting: settingEnableErrorReporting,
-        settingEnablePrereleases: settingEnablePrereleases
-    }
 
     // Load the UI (mainWindow.html) of the app.
     mainWindow.loadFile('./app/mainWindow.html')
@@ -1126,7 +1147,6 @@ function createMenu () {
 // Some APIs can only be used after this event occurs.
 //
 app.on('ready', function () {
-    checkArguments() // check input arguments
     writeLog('info', 'app got ready signal (event: ready)')
     forceSingleAppInstance() // check for single instance
     createWindow() // create the application UI

@@ -8,40 +8,32 @@
 'use strict'
 
 /**
-* @function  writeConsoleMsg
+* @function writeConsoleMsg
 * @summary Writes console output for the renderer process
 * @description Writes console output for the renderer process
-* @param type - String which defines the log type
-* @param message - String which defines the log message
+* @param {string} type - String which defines the log type
+* @param {string} message - String which defines the log message
 */
 function writeConsoleMsg (type, message) {
-    // const logR = require("electron-log"); // for logging to file
+    const logR = require('electron-log')
+    const prefix = '[ Renderer ] '
 
-    // log to file
-    // logR.transports.file.level = true;
-
-    // log to console
-    // logR.transports.console.level = false; // TODO: should depend on the verbose setting in main.js
-
-    const prefix = '[ Renderer ]'
-    const log = require('electron-log')
     // electron-log can: error, warn, info, verbose, debug, silly
     switch (type) {
     case 'info':
-        // logR.error(logMessage); //  to file
-        log.info(prefix + ' ' + message)
+        logR.info(prefix + message)
         break
 
     case 'warn':
-        log.warn(prefix + ' ' + message)
+        logR.warn(prefix + message)
         break
 
     case 'error':
-        log.error(prefix + ' ' + message)
+        logR.error(prefix + message)
         break
 
     default:
-        log.silly(prefix + ' ' + message)
+        logR.silly(prefix + message)
     }
 }
 

@@ -5,28 +5,28 @@
 
 This project is using [Semantic Versioning](https://semver.org/).
 
-  ```
+  `
   MAJOR.MINOR.PATCH
-  ```
+  `
 
-* ```MAJOR``` version (incompatible API changes etc)
-* ```MINOR``` version (adding functionality)
-* ```PATCH``` version (bug fixes)
+* `MAJOR` version (incompatible API changes etc)
+* `MINOR` version (adding functionality)
+* `PATCH` version (bug fixes)
 
 The following categories are used:
 
-* ```Added```: for new features
-* ```Changed```: for changes in existing functionality.
-* ```Deprecated```: for soon-to-be removed features.
-* ```Removed```: for now removed features.
-* ```Fixed```: for any bug fixes.
-* ```Security```: in case of vulnerabilities.
+* `Added`: for new features
+* `Changed`: for changes in existing functionality.
+* `Deprecated`: for soon-to-be removed features.
+* `Removed`: for now removed features.
+* `Fixed`: for any bug fixes.
+* `Security`: in case of vulnerabilities.
 
 
 ***
 
 ### ttth 1.9.0 (2020yyzz)
-#### ```Added```
+#### `Added`
 * Settings
   * Added a new theme 'snazzy'. See [#157](https://github.com/yafp/ttth/issues/157)
   * Added theme support for application titlebar and service-tabs. See [#156](https://github.com/yafp/ttth/issues/156)
@@ -37,8 +37,9 @@ The following categories are used:
   * Discord: Adding link handler. See [#172](https://github.com/yafp/ttth/issues/172)
   * Discord: Adding unread message script. See [#173](https://github.com/yafp/ttth/issues/173)
 * Added general support for UI animations using animate.css. See [#174](https://github.com/yafp/ttth/issues/174)
+* Added support for command-line arguments using yargs. See [#181](https://github.com/yafp/ttth/issues/181)
 
-####  ```Changed```
+####  `Changed`
 * Titlebar:
   * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
   * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
@@ -50,9 +51,9 @@ The following categories are used:
   * Reduced amount of buttons for the 'Options' -> Default view
   * Reduced amount of buttons for the 'Options' -> Theme
 * Javascript Code: Moved some functions to modules
-  * ```app/js/ttth/modules/utils.js```
-  * ```app/js/ttth/modules/urlsGithub.js```
-  * ```app/js/ttth/modules/userServiceConfigUpdater.js```
+  * `app/js/ttth/modules/utils.js`
+  * `app/js/ttth/modules/urlsGithub.js`
+  * `app/js/ttth/modules/userServiceConfigUpdater.js`
 * Noty
   * General: added support for animate.css effects. Now fading in and out. See [#174](https://github.com/yafp/ttth/issues/174)
   * confirm dialogs: changed button positions.
@@ -63,38 +64,38 @@ The following categories are used:
   * Removed some renderer output to reduce flood of developer console.
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc
-  * is now using ```docdash```
+  * is now using `docdash`
   * is now auto-generated on each commit. See [#178](https://github.com/yafp/ttth/issues/178)
 * Builds
   * dmg: Improved macOS .dmg. New background image and new icon positions.
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
-  * Updated ```docdash``` from ```1.1.1``` to ```1.2.0```
-  * Updated ```electron``` from ```7.1.6``` to ```7.1.11```
-  * Updated ```electron-packager``` from ```14.1.1``` to ```14.2.1```
-  * Updated ```electron-util``` from ```0.13.1``` to ```0.14.1```
-  * Updated ```electron-is-dev``` from ```1.1.0``` to ```1.2.0```
-  * Updated ```electron-builder``` from ```22.2.0``` to ```22.4.1```
-  * Updated ```electron-log``` from ```4.0.0``` to ```4.1.1```
-  * Updated ```eslint``` from ```6.7.2``` to ```6.8.0```
-  * Updated ```eslint-plugin-html``` from ```6.0.0``` to ```6.0.2```
-  * Updated ```fontawesome``` from ```5.12.0``` to ```5.13.0```
-  * Updated ```i18next``` from ```19.0.2``` to ```19.4.3```
-  * Updated ```is-online``` from ```8.2.1``` to ```8.3.0```
-  * Updated ```jquery``` from ```3.4.1``` to ```3.5.0```
-  * Updated ```jsdoc``` from ```3.6.3``` to ```3.6.4```
-  * Updated ```mocha``` from ```6.2.2``` to ```7.1.1```
-  * Updated ```popper.js``` from ```1.16.0``` to ```1.16.1```
-  * Updated ```rimraf``` from ```3.0.0``` to ```3.0.2```
-  * Updated ```sentry``` from ```1.1.0``` to ```1.3.0```
-  * Updated ```spectron``` from ```9.0.0``` to ```10.0.1```
-  * Switched back from ```pj-custom-electron-titlebar``` to ```custom-electron-titlebar``` (```3.2.2-hotfix62```)
+  * Updated `docdash` from `1.1.1` to `1.2.0`
+  * Updated `electron` from `7.1.6` to `7.1.11`
+  * Updated `electron-packager` from `14.1.1` to `14.2.1`
+  * Updated `electron-util` from `0.13.1` to `0.14.1`
+  * Updated `electron-is-dev` from `1.1.0` to `1.2.0`
+  * Updated `electron-builder` from `22.2.0` to `22.4.1`
+  * Updated `electron-log` from `4.0.0` to `4.1.1`
+  * Updated `eslint` from `6.7.2` to `6.8.0`
+  * Updated `eslint-plugin-html` from `6.0.0` to `6.0.2`
+  * Updated `fontawesome` from `5.12.0` to `5.13.0`
+  * Updated `i18next` from `19.0.2` to `19.4.3`
+  * Updated `is-online` from `8.2.1` to `8.3.0`
+  * Updated `jquery` from `3.4.1` to `3.5.0`
+  * Updated `jsdoc` from `3.6.3` to `3.6.4`
+  * Updated `mocha` from `6.2.2` to `7.1.1`
+  * Updated `popper.js` from `1.16.0` to `1.16.1`
+  * Updated `rimraf` from `3.0.0` to `3.0.2`
+  * Updated `sentry` from `1.1.0` to `1.3.0`
+  * Updated `spectron` from `9.0.0` to `10.0.1`
+  * Switched back from `pj-custom-electron-titlebar` to `custom-electron-titlebar` (`3.2.2-hotfix62`)
 
-#### ```Removed```
-* Removed ```npx``` from project
-* Removed ```url.parse``` as it is deprecated.
+#### `Removed`
+* Removed `npx` from project
+* Removed `url.parse` as it is deprecated.
 
-#### ```Fixed```
+#### `Fixed`
 * Fixed fallback in case of unset theme. See [#154](https://github.com/yafp/ttth/issues/154)
 * Fixed login to google services. See [#155](https://github.com/yafp/ttth/issues/155)
 * Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
@@ -105,7 +106,7 @@ The following categories are used:
 ***
 
 ### ttth 1.8.0 (20191219)
-#### ```Added```
+#### `Added`
 * Services:
   * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
   * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
@@ -122,7 +123,7 @@ The following categories are used:
 * Added warning to url click handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
 * Added support for application badge count on macOS. See [#152](https://github.com/yafp/ttth/issues/152)
 
-####  ```Changed```
+####  `Changed`
 * Update check: The download link for new releases now opens in the default browser (previously in a new electron window). See [#150](https://github.com/yafp/ttth/issues/150)
 * Changed update interval for single services from 5 to 3 seconds.
 * electron
@@ -162,22 +163,22 @@ The following categories are used:
 * JsDOC is now included in the dev environment. Should make doc generation easier for others.
 * Javascript: Changed to Standard Javascript style. Using standardx to check the code.
 
-#### ```Removed```
+#### `Removed`
 * Removed the 'about' section on the settings tab. Cleanup. All links are accessible using the help menu. See [#142](https://github.com/yafp/ttth/issues/142)
 * Removed the 'about' menuitem from the tray. See [#151](https://github.com/yafp/ttth/issues/151)
 * Removed several un-used event listeners for all service-webviews. Slightly reducing the memory footprint
 * Builds: No more .zip Builds for macOS
 
-#### ```Fixed```
+#### `Fixed`
 * Fixed issue regarding non-existing mainWindow on macOS. See [#134](https://github.com/yafp/ttth/issues/134)
 
-#### ```Security```
+#### `Security`
 * Fixed vulnerability in https-proxy-agent by updating sentry. See [#184](https://github.com/getsentry/sentry-electron/issues/184)
 
 ***
 
 ### ttth 1.7.0 (20191018)
-#### ```Added```
+#### `Added`
 * Window titlebar now includes the menu. See [#115](https://github.com/yafp/ttth/issues/115)
 * Added a first (pretty poor) version of french localication. See [#118](https://github.com/yafp/ttth/issues/118)
 * Added error notification when service url failed to load. See [#119](https://github.com/yafp/ttth/issues/119)
@@ -192,18 +193,18 @@ The following categories are used:
 * Performance: Added v8-compile-cache which might speed up ttth a bit.
 * Builds: Added support for freebsd. See [#129](https://github.com/yafp/ttth/issues/129)
 
-####  ```Changed```
+####  `Changed`
 * Dependencies
   * Updated electron from 5.0.10 to 5.0.11
   * Updated i18next from 17.0.17 to 17.2.0
 
-#### ```Removed```
+#### `Removed`
 * Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Setting 'Hide menubar' is not longer needed. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Menu: 'View' -> 'Toggle Menubar' is not longer nedded. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Removed 'electron-unhandled' as it is currently causing more issues then use. See [#125](https://github.com/yafp/ttth/issues/125)
 
-#### ```Fixed```
+#### `Fixed`
 * Cleaned up the css code. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Fixed issue where fullscreen toggle caused display of previous hidden menubar on linux. See [#94](https://github.com/yafp/ttth/issues/94). Sideffect of [#115](https://github.com/yafp/ttth/issues/115)
 * Fixed issue on disabling a service. See [#117](https://github.com/yafp/ttth/issues/117)
@@ -214,7 +215,7 @@ The following categories are used:
 ***
 
 ### ttth 1.6.0 (20191002)
-#### ```Added```
+#### `Added`
 * Crash Reporting: See [#106](https://github.com/yafp/ttth/issues/106)
   * Added crashReporter for renderer.
   * Added support for Sentry (collects crash informations).
@@ -226,7 +227,7 @@ The following categories are used:
   * Added a new entry to help menu for quick access to FAQ. See [#111](https://github.com/yafp/ttth/issues/111)
   * Added a new entry to help menu for quick access to CHANGELOG. See [#112](https://github.com/yafp/ttth/issues/112)
 
-####  ```Changed```
+####  `Changed`
 * Improved (some) log messages
 * Improved handling of file which stores window position and size. See [#109](https://github.com/yafp/ttth/issues/109)
 * The urgent window notification (introduced in 1.5.0) is now optional as user-setting. See [#110](https://github.com/yafp/ttth/issues/110)
@@ -239,11 +240,11 @@ The following categories are used:
   * Bootstrap: changed from LOCAL to CDN
   * FontAwesome: changed from LOCAL to CDN & updated from 5.10.2 to 5.11.2
 
-#### ```Removed```
+#### `Removed`
 * Maintenance: Removed 'clean local storage' from help menu. As side effect from [#107](https://github.com/yafp/ttth/issues/107)
 * Removed javascript splash screen (cleanup -> jquery.modalLoading)
 
-#### ```Fixed```
+#### `Fixed`
 * Settings: LocalStorage was broken in 1.5.0. This broke all user settings from the settings tab. Replaced with electron-json-storage. See [#107](https://github.com/yafp/ttth/issues/107)
 * Window position and size was not properly saved on macOS (since 1.5.0). See [#109](https://github.com/yafp/ttth/issues/109)
 * Maintenance: Fixed 'clear cache' function. See [#114](https://github.com/yafp/ttth/issues/114)
@@ -251,7 +252,7 @@ The following categories are used:
 ***
 
 ### ttth 1.5.0 (20190920)
-#### ```Added```
+#### `Added`
 * Logging: Write a log file. See [#73](https://github.com/yafp/ttth/issues/73)
 * Builds: Added .rpm build for linx. See [#78](https://github.com/yafp/ttth/issues/78)
 * Services: Added basic support for linkedin. See [#79](https://github.com/yafp/ttth/issues/79)
@@ -269,7 +270,7 @@ The following categories are used:
 * Added about-window menuItem to tray. See [#104](https://github.com/yafp/ttth/issues/104)
 * Added a crash reporter (local only). See [#105](https://github.com/yafp/ttth/issues/105)
 
-####  ```Changed```
+####  `Changed`
 * UI: Added localized titles for UI elements. See [#75](https://github.com/yafp/ttth/issues/75)
 * Settings: Options - simplify autostart setup. See [#72](https://github.com/yafp/ttth/issues/72)
 * Dependencies
@@ -291,10 +292,10 @@ The following categories are used:
   * Updated font-awesome from 5.8.1 to 5.10.2
 * Code: Slimdown main.js by moving menu code to separate file. [#95](https://github.com/yafp/ttth/issues/95)
 
-#### ```Deprecated```
+#### `Deprecated`
 * Removed ia32 builds for linux (deprecated via electron-packager 14.x). See [#93](https://github.com/yafp/ttth/issues/93)
 
-#### ```Fixed```
+#### `Fixed`
 * Fixed global shortcuts for service-tabs. See [#74](https://github.com/yafp/ttth/issues/74)
 * Fixed an error in calculation of the next tab position while adding new service tabs. See [#77](https://github.com/yafp/ttth/issues/77)
 * UI: No single element on settings tab is now selectable anymore using CTRL + a.
@@ -303,7 +304,7 @@ The following categories are used:
 ***
 
 ### ttth 1.4.0 (20190712)
-####  ```Added```
+####  `Added`
 * Services: Added support for unread DM count for the service 'Twitter'. See [#49](https://github.com/yafp/ttth/issues/49)
 * Services: Allow multiple instances of some services (example: Slack/Mattermost). See [#52](https://github.com/yafp/ttth/issues/52)
 * Services: Added Dropbox as new service. See [#55](https://github.com/yafp/ttth/issues/55)
@@ -315,7 +316,7 @@ The following categories are used:
 * UI: Added in-app notifications (using Noty). See [#58](https://github.com/yafp/ttth/issues/58)
 * UI: Added button to open the folder which contains all user configured service config files. See [#70](https://github.com/yafp/ttth/issues/70)
 
-#### ```Changed```
+#### `Changed`
 * UI: Remove left and right border. See [#51](https://github.com/yafp/ttth/issues/51)
 * Services: Redesign of services-definitions and user configured services. See [#47](https://github.com/yafp/ttth/issues/47)
 * Services: Generalize the event listener code for services. See [#63](https://github.com/yafp/ttth/issues/63)
@@ -323,19 +324,19 @@ The following categories are used:
   * Updated electron from 4.2.0 to 4.2.6. [#66](https://github.com/yafp/ttth/issues/66)
   * Updated electron-builder from 20.40.2 to 20.44.4. [#67](https://github.com/yafp/ttth/issues/67)
 
-#### ```Removed```
+#### `Removed`
 * UI: Removed css user styles. See [#61](https://github.com/yafp/ttth/issues/61)
 * Removed electron-prompt dependency. See [#69](https://github.com/yafp/ttth/issues/69)
 * Removed logo image on bottom of settings tab. See [#68](https://github.com/yafp/ttth/issues/68)
 
-#### ```Fixed```
+#### `Fixed`
 * Services: Fixed reloading of single service. See [#62](https://github.com/yafp/ttth/issues/62)
 * UI: Fix horizontal scrollbar css bug. See [#60](https://github.com/yafp/ttth/issues/60)
 
 ***
 
 ### ttth 1.3.0 (20190603)
-####  ```Added```
+####  `Added`
 * Services: Added new service 'Xing'. See [#26](https://github.com/yafp/ttth/issues/26)
 * Services: Added new service 'Google Drive'. See [#33](https://github.com/yafp/ttth/issues/33)
 * Menu: Added 'Reload current service' function (View -> Reload current service). See [#9](https://github.com/yafp/ttth/issues/9)
@@ -345,7 +346,7 @@ The following categories are used:
 * Setting: Added support for css color styles. See [#30](https://github.com/yafp/ttth/issues/30)
 * UI: Added splash screen. See [#32](https://github.com/yafp/ttth/issues/32)
 
-#### ```Changed```
+#### `Changed`
 * UI: Window title now features name and version (before: only name). See [#25](https://github.com/yafp/ttth/issues/25)
 * UI: Added placeholder text to input fields of electron-prompts. See [#28](https://github.com/yafp/ttth/issues/28)
 * UI: Remove tab text from Settings tab. Just show the icon. See [#29](https://github.com/yafp/ttth/issues/29)
@@ -356,10 +357,10 @@ The following categories are used:
 * Update search: manually searching for updates shows now always the result. See [#36](https://github.com/yafp/ttth/issues/36)
 * Electron: Update from 4.1.4 to 4.2.2.
 
-#### ```Removed```
+#### `Removed`
 * UI: Removed transparency / opacity behaviour. See [#34](https://github.com/yafp/ttth/issues/34)
 
-#### ```Fixed```
+#### `Fixed`
 * UI: Prompt for 'Slack' and 'Mattermost' now show the app icon instead of the default icon. See [#31](https://github.com/yafp/ttth/issues/31)
 * UI: Reloading resetted the application title. [#44](https://github.com/yafp/ttth/issues/44)
 * Services: Slack was loading the wrong url - which resulted in a white screen. See [#35](https://github.com/yafp/ttth/issues/35)
@@ -370,7 +371,7 @@ The following categories are used:
 ***
 
 ### ttth 1.2.0 (20190524)
-####  ```Added```
+####  `Added`
 * Window: changes opacity (from 1.0 to 0.9) if it loses focus (macOS/Windows only). See [#17](https://github.com/yafp/ttth/issues/17)
 * Menu: Added 'Settings' entry to menubar (File -> Settings). See [#11](https://github.com/yafp/ttth/issues/11)
 * Menu: Added 'Minimize' entry to menubar (Window -> Minimize). See [#11](https://github.com/yafp/ttth/issues/11)
@@ -379,7 +380,7 @@ The following categories are used:
 * Update Information: Added close button to update-information. See [#20](https://github.com/yafp/ttth/issues/20)
 * Added missing url handler for the services GoogleMail and GoogleMessages
 
-#### ```Changed```
+#### `Changed`
 * Settings: AutoStart on macOS should now use LaunchAgent (no longer AppleScript). See [#13](https://github.com/yafp/ttth/issues/13)
 * Settings: Now showing 2 services per line to reduce vertical space-usage. See [#14](https://github.com/yafp/ttth/issues/14)
 * Menubar: F12 now toggles the console (Help -> Console). See [#15](https://github.com/yafp/ttth/issues/15)
@@ -387,25 +388,25 @@ The following categories are used:
 * UI: Improved CSS -> reducing the borders on left/white/bottom. See [#19](https://github.com/yafp/ttth/issues/19)
 * Service Slack: Added handling for custom workspace definition. See [#22](https://github.com/yafp/ttth/issues/22)
 
-#### ```Fixed```
+#### `Fixed`
 * Mac: Copy and paste was not working. Fixed by adding an 'Edit' section to the menu. See [#23](https://github.com/yafp/ttth/issues/23)
 
 ***
 
 ### ttth 1.1.0 (20190521)
-####  ```Added```
+####  `Added`
 * Menu: Added console entry to view menu, see [#6](https://github.com/yafp/ttth/issues/6)
 * Services: Added unread message function for GoogleMessages, see [#7](https://github.com/yafp/ttth/issues/7)
 
-#### ```Changed```
+#### `Changed`
 * UI: Changed the app icon, see [#5](https://github.com/yafp/ttth/issues/5)
 * Settings: Optimized settings view for smaller screens, see [#4](https://github.com/yafp/ttth/issues/4)
 * Operating systems: Windows and macOS are now officially supported, see [#3](https://github.com/yafp/ttth/issues/3)
 
-#### ```Removed```
+#### `Removed`
 * Settings: Removed the app version from settings view, see [#4](https://github.com/yafp/ttth/issues/4)
 
-#### ```Fixed```
+#### `Fixed`
 * Settings: Fixing broken load default-view function, see [#1](https://github.com/yafp/ttth/issues/1)
 * Service: Fixed url handling. Should now open clicks on urls in external browser (implemented for Freenode, Mattermost, Slack, Telegram, Whatsapp). See [#8](https://github.com/yafp/ttth/issues/8)
 * Mac: Fixed some issues with the tray icon on macOS. See [#10](https://github.com/yafp/ttth/issues/10)
@@ -413,7 +414,7 @@ The following categories are used:
 ***
 
 ### ttth 1.0.0 (20190517)
-####  ```Added```
+####  `Added`
 * Initial version,
 * Operating systems
   * linux (tested)
