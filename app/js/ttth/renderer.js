@@ -319,7 +319,7 @@ function readLocalUserSetting (key, optional = false) {
         //
         if (key === 'settingTheme') {
             // there is no config yet - create one
-            if ((value === null) | (value === 'undefined') | (value === undefined)) {
+            if ((value === null) || (value === 'undefined') || (value === undefined)) {
                 value = 'mainWindow_default.css'
                 utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting Theme is undefined - going to fallback to default theme with the value: ' + value)
                 writeLocalUserSetting('settingTheme', 'mainWindow_default.css') // introduced with #154
@@ -655,10 +655,10 @@ function updateTrayIconStatus () {
 function doAnimateServiceIcon (doOrDont, serviceId) {
     if (doOrDont === true) {
         $('#icon_' + serviceId).addClass('fa-spin') // start to spin the service icon in the tabmenu
-        utils.writeConsoleMsg('info', 'doAnimateServiceIcon ::: Started to animate the icon of the service _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'doAnimateServiceIcon ::: Animating the icon of service _' + serviceId + '_.')
     } else {
         $('#icon_' + serviceId).removeClass('fa-spin') // stop to spin the service icon in the tabmenu
-        utils.writeConsoleMsg('info', 'doAnimateServiceIcon ::: Stopped animating the icon of the service _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'doAnimateServiceIcon ::: Stopped animating the icon of service _' + serviceId + '_.')
     }
 }
 
@@ -701,7 +701,8 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
     // run it periodically
     //
     //  5.000 =  5 sec
-    var intervalID = setInterval(function () {
+    //var intervalID = setInterval(function () { // CLEANME
+    setInterval(function () {
         webview.send('request')
     }, 3000) // 3.000 milliseconds = 3 sec
 
@@ -726,31 +727,26 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
     // WebView Event: did-fail-load (https://electronjs.org/docs/api/webview-tag#event-did-fail-load)
     // This event is like did-finish-load, but fired when the load failed or was cancelled, e.g. window.stop() is invoked.
     webview.addEventListener('did-fail-load', function () {
-        utils.writeConsoleMsg('error', 'eventListenerForSingleService ::: did-fail-load for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('error', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a did-fail-load event.')
 
         // stop to spin the service icon in the tabmenu
         doAnimateServiceIcon(false, serviceId)
-
-        /*
-        var checkForGoogleMessages = serviceId.startsWith('googleMessages')
-        var checkForMicrosoftOutlook = serviceId.startsWith('microsoftOutlook')
-        var checkForMicrosoftTeams = serviceId.startsWith('microsoftTeams')
-        if ((checkForGoogleMessages === false) && (checkForMicrosoftOutlook === false) && (checkForMicrosoftTeams === false)) {
-            // show noty for all services except microsoftOutlook & microsoftTeams (as it throws tons of errors)
-            utils.showNoty('error', 'Failed to load url for service: <b>' + serviceId + '</b>.', 0) // #119
-        }
-        */
     })
 
     // WebView Event: crashed (https://electronjs.org/docs/api/webview-tag#event-crashed)
     // Fired when the renderer process is crashed.
-    webview.addEventListener('crashed', function (e) {
-        // stop to spin the service icon in the tabmenu
-        doAnimateServiceIcon(false, serviceId)
+    webview.addEventListener('crashed', function (event) {
+        doAnimateServiceIcon(false, serviceId) // stop to spin the service icon in the tabmenu
+        utils.writeConsoleMsg('error', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a crashed event.')
+        utils.writeConsoleMsg('error', 'Error: ', event)
 
-        utils.writeConsoleMsg('error', 'eventListenerForSingleService ::: crashed for: _' + serviceId + '_.')
-        utils.writeConsoleMsg('error', e)
-        utils.showNoty('error', 'Ooops, the service <b>' + serviceId + '</b> crashed.', 0)
+        utils.showNoty('error', 'Ooops, the service <b>' + serviceId + '</b> just crashed.', 0)
+
+        // FIXME
+        // Idea: load an error page into the crashed webview
+        // webview.loadURL('file://' + __dirname + '/error.html')
+        // BUT
+        // this crashes the entire app - as it is sung the same code as reloadCurrentService
     })
 
     // WebView Event: page-title-updated (https://electronjs.org/docs/api/webview-tag#event-page-title-updated)
@@ -819,7 +815,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
     // WebView Event: did-start-loading
     // Corresponds to the points in time when the spinner of the tab starts spinning.
     webview.addEventListener('did-start-loading', function () {
-        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: did-start-loading for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a did-start-loading event')
         doAnimateServiceIcon(true, serviceId) // start to spin the service icon in the tabmenu
         webview.send('request') // Triggering search for unread messages
 
@@ -832,28 +828,28 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
     // WebView Event: did-finish-load
     // Fired when the navigation is done, i.e. the spinner of the tab will stop spinning, and the onload event is dispatched.
     webview.addEventListener('did-finish-load', function () {
-        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: did-finish-load for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a did-finish-load event.')
         doAnimateServiceIcon(false, serviceId) // stop to spin the service icon in the tabmenu
     })
 
     // WebView Event: did-frame-finish-load
     // Fired when a frame has done navigation.
     webview.addEventListener('did-frame-finish-load', function () {
-        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: did-frame-finish-load for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a did-frame-finish-load event.')
         doAnimateServiceIcon(false, serviceId) // stop to spin the service icon in the tabmenu
     })
 
     // WebView Event: did-stop-loading
     // Corresponds to the points in time when the spinner of the tab stops spinning.
     webview.addEventListener('did-stop-loading', function () {
-        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: did-stop-loading for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a did-stop-loading event.')
         doAnimateServiceIcon(false, serviceId) // stop to spin the service icon in the tabmenu
     })
 
     // WebView Event: dom-ready
     // Fired when document in the given frame is loaded.
     webview.addEventListener('dom-ready', function () {
-        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: DOM-Ready for: _' + serviceId + '_.')
+        utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: webview of service: _' + serviceId + '_ got a DOM-Ready event.')
         doAnimateServiceIcon(false, serviceId) // stop to spin the service icon in the tabmenu
     })
 
@@ -884,7 +880,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
             const shell = require('electron').shell
 
             // const protocol = require('url').parse(event.url).protocol // 'url.parse' was deprecated since v11.0.0.
-            const http = require('url')
+            // const http = require('url')
             const myURL = new URL(event.url)
             const protocol = myURL.protocol
 
@@ -1229,7 +1225,8 @@ function searchUpdate (silent = true) {
     localAppVersion = utils.getAppVersion()
     // localAppVersion = '0.0.1'; //  overwrite variable to simulate
 
-    var updateStatus = $.get(urlGithubApiReleases, function (data) {
+    // var updateStatus = $.get(urlGithubApiReleases, function (data) {
+    $.get(urlGithubApiReleases, function (data) {
         // 3000 // in milliseconds
 
         // success
@@ -1591,6 +1588,28 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
         userAgent = serviceUserAgentCustom // overwrite with service-specific custom, if set
     }
 
+    // Baustelle: FIXME - see #185
+    //
+    // check if injectCode path is valid / exists - see #185
+    if (serviceInjectCode === '') {
+        utils.writeConsoleMsg('info', 'addServiceTab ::: No inject code given, therefor nothing to validate.')
+    } else {
+        const path = require('path')
+        const fs = require('fs')
+
+        var relInjectPath = serviceInjectCode.replace('./', '')
+        var currentPath = path.join(__dirname, relInjectPath)
+        utils.writeConsoleMsg('info', 'addServiceTab ::: Full inject path: _' + currentPath + '_. Now checkiing if it is valid')
+
+        if (fs.existsSync(currentPath)) {
+            utils.writeConsoleMsg('info', 'addServiceTab ::: Path to given inject code file is valid. Valid path is: _' + serviceInjectCode + '_.')
+        } else {
+            utils.writeConsoleMsg('error', 'addServiceTab ::: Trying to inject a non existing inject code file. Invalid path is: _' + serviceInjectCode + '_.')
+            serviceInjectCode = '' // reset the path
+            utils.showNoty('error', 'The service <b>' + serviceName + '</b> (id: ' + serviceId + ') tried to load a non-valid inject file. Inject code is now ignored. Please check the service configuration (.json file).', 0)
+        }
+    }
+
     // Parsing url and extract domain for persist-handling of webview
     var serviceDomain = utils.getDomain(serviceUrl)
 
@@ -1599,12 +1618,12 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     // $('#myTabs li:eq(' + newTabPosition + ')').after('<li class="nav-item small" id=menu_'+ serviceId +'><a class="nav-link ttth_nonSelectableText" id=target_' + serviceId +' href=#' + serviceId + ' role="tab" data-toggle="tab"><i class="' + serviceIcon +'"></i> ' + serviceName + ' <span id=badge_' + serviceId + ' class="badge badge-success"></span></a></li>');
     $('#myTabs li:eq(' + newTabPosition + ')').after("<li class='nav-item small' id=menu_" + serviceId + "><a class='nav-link ttth_nonSelectableText' id=target_" + serviceId + ' href=#' + serviceId + " role='tab' data-toggle='tab'><span id=shortcut_" + serviceId + " class='badge badge-pill badge-warning'></span> <i id=icon_" + serviceId + " class='" + serviceIcon + "'></i> " + serviceName + ' <span id=badge_' + serviceId + " class='badge badge-success'></span></a></li>")
 
-    utils.writeConsoleMsg('info', 'addServiceTab :::Added the navigation tab for service: _' + serviceId + '_.')
+    utils.writeConsoleMsg('info', 'addServiceTab ::: Added the navigation tab for service: _' + serviceId + '_.')
 
     // add the tab itself to #tabPanes
     //
     $('#tabPanes').append("<div role='tabpanel' class='tab-pane fade flex-fill ttth_resizer container-fluid' id=" + serviceId + '></div>')
-    utils.writeConsoleMsg('info', 'addServiceTab :::Added the tab pane for service: _' + serviceId + '_.')
+    utils.writeConsoleMsg('info', 'addServiceTab ::: Added the tab pane for service: _' + serviceId + '_.')
 
     // add webview  to new tab
     //
@@ -1869,6 +1888,7 @@ function loadEnabledUserServices () {
     storage.getAll(function (error, data) {
         if (error) {
             utils.writeConsoleMsg('error', 'loadEnabledUserServices ::: Error while trying to get all enabled user services. Error: ' + error)
+            utils.writeConsoleMsg('error', 'loadEnabledUserServices ::: Error:', error)
             throw error
         }
 
@@ -2110,7 +2130,8 @@ function localizeUserInterface (windowName) {
 function checkNetworkConnectivityPeriodic (timeInterval) {
     const isOnline = require('is-online') // for online connectivity checks
     var continuousErrors = 0
-    var intervalID = setInterval(function () {
+    // var intervalID = setInterval(function () { // CLEANME
+    setInterval(function () {
         (async () => {
             if (await isOnline() === true) {
                 utils.writeConsoleMsg('info', 'checkNetworkConnectivityPeriodic ::: Connectivity is OK')
@@ -2221,8 +2242,19 @@ require('electron').ipcRenderer.on('reloadCurrentService', function () {
                 utils.showNoty('error', 'Trying to reload service: <b>' + tabValue + '</b> failed, as URL is undefined.', 0)
                 utils.writeConsoleMsg('error', 'reloadCurrentService ::: Reloading current active service: ' + tabValue + ' failed, as its URL is undefined.')
             } else {
-                utils.writeConsoleMsg('info', 'reloadCurrentService ::: Set service  _' + tabValue + '_ URL of webview to: _' + url + '_.')
-                document.getElementById('webview_' + tabValue).loadURL(url)
+                // document.getElementById('webview_' + tabValue).loadURL(url) // see: #186
+
+                // BAUSTELLE
+                // #186 - most likely not helping - as the webview in fact still exists.
+                if ($('#webview_' + tabValue).length) {
+                    utils.writeConsoleMsg('info', 'reloadCurrentService ::: Set new URL of service  _' + tabValue + '_ to: _' + url + '_.')
+                    // document.getElementById('webview_' + tabValue).loadURL(url)
+                    document.getElementById('webview_' + tabValue).reload()
+                } else {
+                    utils.showNoty('error', 'Trying to reload service: <b>' + tabValue + '</b> failed, as the entire webview itself no longer exists.', 0)
+                    utils.writeConsoleMsg('error', 'reloadCurrentService ::: Reloading current active service: ' + tabValue + ' failed, as the entire webview itself no longer exists.')
+                }
+                // end of #186
             }
 
             // TODO
