@@ -9,8 +9,6 @@
 
 'use strict'
 
-const utils = require('./utils.js')
-
 // ----------------------------------------------------------------------------
 // Error Handling using: sentry (see #106)
 // ----------------------------------------------------------------------------
@@ -34,7 +32,6 @@ Sentry.init({
 */
 function enableSentry () {
     Sentry.getCurrentHub().getClient().getOptions().enabled = true
-    //utils.writeConsoleMsg('info', 'enableSentry ::: Sentry is now enabled')
 }
 
 /**
@@ -44,7 +41,6 @@ function enableSentry () {
 */
 function disableSentry () {
     Sentry.getCurrentHub().getClient().getOptions().enabled = false
-    //utils.writeConsoleMsg('warn', 'disableSentry ::: Sentry is now disabled')
 }
 
 // export both functions
