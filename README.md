@@ -8,6 +8,7 @@ available for:
 ![apple](https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/apple_32x32.png)
 ![windows](https://raw.githubusercontent.com/yafp/media-dupes/master/.github/images/platform/windows_32x32.png)
 
+[![DeepScan grade](https://deepscan.io/api/teams/8831/projects/11093/branches/161122/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=8831&pid=11093&bid=161122)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/64a82c2d156f41c1b75431fb6da1c693)](https://www.codacy.com/app/yafp/ttth?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=yafp/ttth&amp;utm_campaign=Badge_Grade)
 ![GitHub Current Release](https://img.shields.io/github/release/yafp/ttth.svg?style=flat)
 ![GitHub Release Date](https://img.shields.io/github/release-date/yafp/ttth.svg?style=flat)
@@ -22,20 +23,20 @@ available for:
 </div>
 
 
-## about
+# about
 **ttth** (talk to the hand) is an electron based desktop app for online services like WhatsApp, Threema, Telegram, Google and several others.
 
 It is:
 
-* available for linux, macOS and windows.
+* available for *freebsd*, *inux*, *macOS* and *windows*.
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork and [Ferdi](https://github.com/getferdi/ferdi) as Franz fork.
 * free and open source
 
-## getting-started
-### download
+# getting-started
+## download
 Download the latest release from [here](https://github.com/yafp/ttth/releases).
 
-### install
+## install
 Please see the [installation instructions](docs/INSTALL.md) for more details.
 
 ## services
@@ -43,7 +44,7 @@ While **ttth** supports a growing list of pre-configured services, you can as we
 Please see the supported [services](docs/SERVICES.md) for more details.
 
 ## ui
-**ttth** comes with several themes. The readme shows only exemplary only the default theme.
+**ttth** comes with several themes. This readme is only featuring the default theme.
 
 ![ui](https://raw.githubusercontent.com/yafp/ttth/master/.github/images/screenshots/ui_latest.png)
 
@@ -101,9 +102,6 @@ Please see the [known issues](docs/KNOWN_ISSUES.md) for more details.
 
 ## discussion
 * Github: click [here](https://github.com/yafp/ttth/issues) to create an issue
-* Discord: Click [here](https://discord.gg/xHmUNBf) to join the yafp discord server
-* Riot: Click [here](https://riot.im/app/#/room/#ttth:matrix.org) to join the public #ttth riot.im room available on matrix.org.
-* Slack: click [here](https://join.slack.com/t/yafp/shared_invite/enQtOTU2NzAzNzIzMTM4LTdhNjdjOTI1MTBhNmNjYmY0NzM0YmFlZDgyOWFjYmY5ZGM2NzE4NWFhNzdkYzMzNjhlNjViOGI3MzE0OWNjNGY) to join the yafp workspace
 
 ## license
 Please see the [LICENSE](LICENSE) for more details.
@@ -117,14 +115,9 @@ If you want to support the development of **ttth** you can fund me on:
 * [github](https://github.com/sponsors/yafp)
 * [patreon](https://www.patreon.com/yafp)
 
-## developers
+***
 
-### contributing
-Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
-A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
+# developers
+* Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
+* A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
 
-### jsdoc
-The current jsdoc documentation can be found on [https://yafp.github.io/ttth/](https://yafp.github.io/ttth/). It is auto-generated (using [JsDoc Action](https://github.com/marketplace/actions/jsdoc-action)) on each commit of this project.
-
-### build
-Building **ttth** yourself is pretty easy. Please see the [building instructions](docs/BUILD.md) for more details.

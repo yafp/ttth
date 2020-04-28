@@ -9,19 +9,11 @@
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.
 
-### jsdocs
-A documentation of all ttth specific js code is located in ```/docs/jsdocs```.
-
-### CI
-The project repository is using:
-
-* [Travis CI](https://travis-ci.org/) (for Linux and macOS)
-* [AppVeyor](https://ci.appveyor.com/project/yafp/ttth) (for Windows)
-
-for Continuos Integration aspects.
+### jsdoc
+The current jsdoc documentation can be found on [https://yafp.github.io/ttth/](https://yafp.github.io/ttth/). It is auto-generated (using [JsDoc Action](https://github.com/marketplace/actions/jsdoc-action)) on each commit of this project.
 
 ### Building ttth
-Build instructions can be found [here](BUILD.md).
+Building **ttth** yourself is pretty easy. Please see the [building instructions](BUILD.md) for more details.
 
 ### Sentry (Crashreports)
 Crashreport informations are located [here](https://sentry.io/organizations/yafp/ttth).
@@ -32,33 +24,33 @@ Crashreport informations are located [here](https://sentry.io/organizations/yafp
 #### 1. First steps
 
 ##### Clone repo
-* Clone the repository: ```git clone https://github.com/yafp/ttth```
+* Clone the repository: `git clone https://github.com/yafp/ttth`
 
 ##### Install dependencies
-* Go into the repository: ```cd ttth```
-* Install dependencies: ```npm install```
+* Go into the repository: `cd ttth`
+* Install dependencies: `npm install`
 
 ##### Run the code
-* Execute: ```npm start```
+* Execute: `npm start`
 
 
 ##### Run the code with debug logging
-* Execute ```npm run start-debug```
+* Execute `npm run start-debug`
 
 
 ##### Run the code with verbose output
-* Execute: ```npm start-verbose```
+* Execute: `npm start-verbose`
 
 
 ##### Run some basic test
-* Execute: ```npm test```
+* Execute: `npm test`
 
 
 #### 2. Adding functions
 
 ##### adding a new service
-* Edit ```app/js/ttth/services.json``` and add the new service
-* Check the function ```loadServiceSpecificCode``` in ```/app/js/ttth/renderer.js```
+* Edit `app/js/ttth/services.json` and add the new service
+* Check the function `loadServiceSpecificCode` in `/app/js/ttth/renderer.js`
 
 ##### other modification or changes
 * ....
@@ -71,47 +63,47 @@ Crashreport informations are located [here](https://sentry.io/organizations/yafp
 ##### Auditing
 
 ###### npm auditing (scan for vulnerabilities)
-* ```npm audit```
+* `npm audit`
 
 ##### Install packages
 
 ###### install single package
-* ```npm install PACKAGENAME --save```
+* `npm install PACKAGENAME --save`
 
 ###### npm: install single package in specific version
-* ```npm install PACKAGENAME@1.2.3```
+* `npm install PACKAGENAME@1.2.3`
 
 
 ##### Outdated packages
 
 ###### check for outdated npm packages
-* ```npm outdated```
+* `npm outdated`
 
-or using ```npm-check```:
+or using `npm-check`:
 
-* Install requirements: ```npm install -g npm-check```
-* Run check: ```npm-check```
+* Install requirements: `npm install -g npm-check`
+* Run check: `npm-check`
 
 
 ##### Updating
 
 ###### check dependencies
-* Install requirements: ```npm install depcheck```
-* Run check: ```depcheck```
+* Install requirements: `npm install depcheck`
+* Run check: `depcheck`
 
 ###### update single package
-* ```npm install PACKAGENAME --save```
+* `npm install PACKAGENAME --save`
 
 ###### update all packages
-* ```npm update```
+* `npm update`
 
 
 
 ##### Others
 ###### List all package.json scripts
-* ```npm run```
+* `npm run`
 
 or a dynamic solution
 
-* Install requirements: ```npm i -g ntl```
-* Execute ```ntl```
+* Install requirements: `npm i -g ntl`
+* Execute `ntl`

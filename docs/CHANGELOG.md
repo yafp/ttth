@@ -38,6 +38,8 @@ The following categories are used:
   * Discord: Adding unread message script. See [#173](https://github.com/yafp/ttth/issues/173)
 * Added general support for UI animations using animate.css. See [#174](https://github.com/yafp/ttth/issues/174)
 * Added support for command-line arguments using yargs. See [#181](https://github.com/yafp/ttth/issues/181)
+* Added optiono to enable or disable the GPU acceleration. See [#188](https://github.com/yafp/ttth/issues/188)
+* Inject code path is now validated before loading it to a service. See [#185](https://github.com/yafp/ttth/issues/185)
 
 ####  `Changed`
 * Titlebar:
@@ -62,6 +64,7 @@ The following categories are used:
   * Improved logging (added console messages for several existing error cases)
   * Added logging to several on error cases
   * Removed some renderer output to reduce flood of developer console.
+  * Internal logging methods now support objects as well. See [#189](https://github.com/yafp/ttth/issues/189)
 * Update search is now only executed on app start, not on earch UI reload anymore.
 * jsdoc
   * is now using `docdash`
@@ -80,7 +83,7 @@ The following categories are used:
   * Updated `eslint` from `6.7.2` to `6.8.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.0.2`
   * Updated `fontawesome` from `5.12.0` to `5.13.0`
-  * Updated `i18next` from `19.0.2` to `19.4.3`
+  * Updated `i18next` from `19.0.2` to `19.4.4`
   * Updated `is-online` from `8.2.1` to `8.3.0`
   * Updated `jquery` from `3.4.1` to `3.5.0`
   * Updated `jsdoc` from `3.6.3` to `3.6.4`
@@ -101,6 +104,7 @@ The following categories are used:
 * Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
 * Fixed a bug while reading and patching user-services-configurations. See [#171](https://github.com/yafp/ttth/issues/171)
 * Fixed unread message count for Xing. See [#175](https://github.com/yafp/ttth/issues/175)
+* Fixed an issue with twitter inject code. See  [#182](https://github.com/yafp/ttth/issues/182)
 
 
 ***
