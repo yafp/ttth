@@ -25,6 +25,11 @@ function serviceTwitterGetUnreadMessageCount () {
 
     console.log('serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs: ' + count)
 
+    if (Number.isNaN(count)) {
+        count = 0
+        console.warn('serviceTwitterGetUnreadMessageCount ::: Total unread Twitter DMs was NaN - is now set to: ' + count)
+    }
+
     ipcRenderer.sendToHost(count.toString())
     return count.toString()
 }
