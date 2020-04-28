@@ -13,27 +13,29 @@
 * @description Writes console output for the renderer process
 * @param {string} type - String which defines the log type
 * @param {string} message - String which defines the log message
+* @param {string} optionalObject - An optional object which might contain additional informations
 */
-function writeConsoleMsg (type, message) {
+function writeConsoleMsg (type, message, optionalObject = '') {
     const logR = require('electron-log')
     const prefix = '[ Renderer ] '
 
     // electron-log can: error, warn, info, verbose, debug, silly
     switch (type) {
     case 'info':
-        logR.info(prefix + message)
+        logR.info(prefix + message, optionalObject)
         break
 
     case 'warn':
-        logR.warn(prefix + message)
+        logR.warn(prefix + message, optionalObject)
         break
 
     case 'error':
-        logR.error(prefix + message)
+        logR.error(prefix + message, optionalObject)
         break
 
     default:
-        logR.silly(prefix + message)
+        logR.silly(prefix + message, optionalObject)
+        break
     }
 }
 

@@ -10,7 +10,6 @@
 // REQUIRE: 3rd PARTY
 // -----------------------------------------------------------------------------
 const { app, BrowserWindow, Menu, Tray, ipcMain, globalShortcut } = require('electron')
-const log = require('electron-log') // for: logging to file
 const shell = require('electron').shell // for: opening external urls in default browser
 const isOnline = require('is-online') // for online connectivity checks
 const path = require('path')
@@ -18,7 +17,6 @@ const fs = require('fs')
 const os = require('os') // for: check os.platform()
 const openAboutWindow = require('about-window').default // for: about-window
 require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-electron-app-faster-4ifb
-
 
 // -----------------------------------------------------------------------------
 // Shared object
@@ -49,16 +47,13 @@ global.sharedObj = {
     settingEnablePrereleases: settingEnablePrereleases
 }
 
-
 // ----------------------------------------------------------------------------
 // REQUIRE: TTTH MODULES
 // ----------------------------------------------------------------------------
-const urls = require('./app/js/ttth/modules/urlsGithub.js')
+const urls = require('./app/js/ttth/modules/urlsGithub.js') // the github urls
 const crash = require('./app/js/ttth/modules/crashReporter.js') // crashReporter
 const sentry = require('./app/js/ttth/modules/sentry.js') // sentry
 const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unhandled
-
-
 
 // ----------------------------------------------------------------------------
 // COMMAND-LINE-ARGS
@@ -67,6 +62,11 @@ var yargs = require('yargs')
     .strict(true) // arguments must be valid
     .usage('Usage: $0 <command> [options]')
     // define arguments
+    .option('gpu', {
+        alias: 'g',
+        type: 'boolean',
+        description: 'Starts ttth with gpu-acceleration enabled'
+    })
     .option('verbose', {
         alias: 'v',
         type: 'boolean',
@@ -83,23 +83,28 @@ var yargs = require('yargs')
     })
 
     // displayed in case of invalid parameters
-    .showHelpOnFail(false, "Specify --help to display the available options")
+    .showHelpOnFail(false, 'Specify --help to display the available options')
 
     // show the project url
     .epilog('Project URL: https://github.com/yafp/ttth')
-    
 
     // Show an example
-    //
-    //.example('$0 --help', 'Shows the media-dupes help')
+    // .example('$0 --help', 'Shows the media-dupes help')
     .argv
 
 if (yargs.verbose === true) {
     global.sharedObj.consoleOutput = true // update the global object
 }
 
+// # 188
+if (yargs.gpu === true) {
+    // nothing to do here as it is enabled by default
+    writeLog('info', 'GPU acceleration is now enabled')
 
-
+} else {
+    app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
+    writeLog('info', 'GPU acceleration is now disabled')
+}
 
 // ----------------------------------------------------------------------------
 // ERROR-HANDLING:
@@ -107,6 +112,19 @@ if (yargs.verbose === true) {
 crash.initCrashReporter()
 unhandled.initUnhandled()
 sentry.enableSentry() // sentry is enabled by default
+
+// ----------------------------------------------------------------------------
+// HARDWARE ACCELERATION:
+// ----------------------------------------------------------------------------
+// #188 - added in 1.9.0
+// for testing use: --disable-gpu
+//
+// Disables hardware acceleration for current app. This method can only be called before app is ready.
+//app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
+
+
+//var foo = app.getAppMetrics()
+//console.error(foo)
 
 // -----------------------------------------------------------------------------
 // VARIABLES
@@ -122,8 +140,6 @@ const gotTheLock = app.requestSingleInstanceLock() // for: single-instance handl
 const defaultUserDataPath = app.getPath('userData') // for: storing window position and size
 const userOSPlatform = os.platform() // for BadgeCount support - see #152
 
-let verbose = false
-
 var defaultMainWindowWidth = 800
 var defaultMainWindowHeight = 600
 
@@ -138,8 +154,9 @@ var defaultMainWindowHeight = 600
 * @memberof main
 * @param {string} type - The log type
 * @param {string} message - The log message
+* @param {string} optionalObject - An optional object which might contain additional informations
 */
-function writeLog (type, message) {
+function writeLog (type, message, optionalObject = '') {
     const logM = require('electron-log')
     const prefix = '[   Main   ] '
 
@@ -151,20 +168,20 @@ function writeLog (type, message) {
     // electron-log can: error, warn, info, verbose, debug, silly
     switch (type) {
     case 'info':
-        logM.info(prefix + message)
+        logM.info(prefix + message, optionalObject)
         break
 
     case 'warn':
-        logM.warn(prefix + message)
+        logM.warn(prefix + message, optionalObject)
         break
 
     case 'error':
-        logM.error(prefix + message)
+        logM.error(prefix + message, optionalObject)
         break
 
     default:
-        logM.silly(prefix + message)
-            // code block
+        logM.silly(prefix + message, optionalObject)
+        break
     }
 }
 
@@ -286,12 +303,12 @@ function createTray () {
 
     // Call from renderer: Option: DisableTray
     ipcMain.on('disableTray', function () {
-        writeLog('info', 'createTray ::: Disabling tray (ipcMain)')
+        writeLog('info', 'ipcMain.disableTray ::: Disabling tray (ipcMain)')
         tray.destroy()
         if (tray.isDestroyed() === true) {
-            writeLog('info', 'createTray ::: Disabling tray was working')
+            writeLog('info', 'ipcMain.disableTray ::: Disabling tray was working')
         } else {
-            writeLog('error', 'Disabling tray failed')
+            writeLog('error', 'ipcMain.disableTray ::: Disabling tray failed')
         }
     })
 }
@@ -432,9 +449,9 @@ function createWindow () {
 
     // Call from renderer: Update property from globalObj
     ipcMain.on('globalObjectSet', function (event, property, value) {
-        writeLog('info', 'Set property _' + property + '_ to new value: _' + value + '_')
+        writeLog('info', 'ipcMain.globalObjectSet ::: Set property _' + property + '_ to new value: _' + value + '_')
         global.sharedObj[property] = value
-        // console.warn(global.sharedObj) // show entire globalOBject on each set command
+        writeLog('info', 'ipcMain.globalObjectSet ::: sharedObj: ', global.sharedObj)
     })
 
     // Load the UI (mainWindow.html) of the app.
@@ -445,90 +462,88 @@ function createWindow () {
     mainWindow.on('ready-to-show', function () {
         mainWindow.show()
         mainWindow.focus()
-        writeLog('info', 'createWindow ::: mainWindow is now ready, so show it and then focus it (event: ready-to-show)')
+        writeLog('info', 'mainWindow.on.ready-to-show ::: mainWindow is now ready, so show it and then focus it')
 
         checkNetworkConnectivity() // check network access
     })
 
     // Emitted when the application has finished basic startup.
     mainWindow.on('will-finish-launching', function () {
-        writeLog('info', 'createWindow ::: mainWindow will finish launching (event: will-finish-launching)')
+        writeLog('info', 'mainWindow.on.will-finish-launching ::: mainWindow will finish launching')
     })
 
     // When dom is ready
     mainWindow.webContents.once('dom-ready', () => {
-        writeLog('info', 'createWindow ::: mainwWindow DOM is now ready (event: dom-ready)')
+        writeLog('info', 'mainWindow.on.ready ::: mainwWindow DOM is now ready')
     })
 
     // When page title gets changed
     mainWindow.webContents.once('page-title-updated', () => {
-        writeLog('info', 'createWindow ::: mainWindow got new title (event: page-title-updated)')
+        writeLog('info', 'mainWindow.on.page-title-updated ::: mainWindow got new title')
     })
 
     // when the app is shown
     mainWindow.on('show', function () {
-        writeLog('info', 'createWindow ::: mainWindow is visible (event: show)')
+        writeLog('info', 'mainWindow.on.show ::: mainWindow is visible')
     })
 
     // when the app loses focus / aka blur
     mainWindow.on('blur', function () {
-        writeLog('info', 'createWindow ::: mainWindow lost focus (event: blur)')
+        writeLog('info', 'mainWindow.on.blur ::: mainWindow lost focus')
     })
 
     // when the app gets focus
     mainWindow.on('focus', function () {
-        writeLog('info', 'createWindow ::: mainWindow got focus (event: focus)')
+        writeLog('info', 'mainWindow.on.focus ::: mainWindow got focus')
     })
 
     // when the app goes fullscreen
     mainWindow.on('enter-full-screen', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now in fullscreen (event: enter-full-screen)')
+        writeLog('info', 'mainWindow.on.enter-full-screen ::: mainWindow is now in fullscreen')
     })
 
     // when the app goes leaves fullscreen
     mainWindow.on('leave-full-screen', function () {
         // disabled to reduce clutter
-        // writeLog("info", "mainWindow leaved fullscreen (event: leave-full-screen)");
     })
 
     // when the app gets resized
     mainWindow.on('resize', function () {
         // disabled to reduce clutter
-        // writeLog("info", "mainWindow got resized (event: resize)");
     })
 
     // when the app gets hidden
     mainWindow.on('hide', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now hidden (event: hide)')
+        writeLog('info', 'mainWindow.on.hide ::: mainWindow is now hidden')
     })
 
     // when the app gets maximized
     mainWindow.on('maximize', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now maximized (event: maximized)')
+        writeLog('info', 'mainWindow.on.maximize ::: mainWindow is now maximized')
     })
 
     // when the app gets unmaximized
     mainWindow.on('unmaximize', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now unmaximized (event: unmaximized)')
+        writeLog('info', 'mainWindow.on.unmaximize ::: mainWindow is now unmaximized')
     })
 
     // when the app gets minimized
     mainWindow.on('minimize', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now minimized (event: minimize)')
+        writeLog('info', 'mainWindow.on.minimize ::: mainWindow is now minimized')
     })
 
     // when the app gets restored from minimized mode
     mainWindow.on('restore', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now restored (event: restore)')
+        writeLog('info', 'mainWindow.on.restore ::: mainWindow is now restored')
     })
 
     mainWindow.on('app-command', function () {
-        writeLog('info', 'createWindow ::: mainWindow got app-command (event: app-command)')
+        writeLog('info', 'mainWindow.on.app-command ::: mainWindow got app-command')
     })
 
     // Emitted before the window is closed.
     mainWindow.on('close', function () {
-        writeLog('info', 'createWindow ::: mainWindow will close (event: close)')
+        writeLog('info', 'mainWindow.on.close ::: mainWindow will close')
 
         // get current window position and size
         var data = {
@@ -539,13 +554,14 @@ function createWindow () {
         var customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
 
         // try to write the window position and size to preference file
-        fs.writeFile(customUserDataPath, JSON.stringify(data), function (err) {
-            if (err) {
-                writeLog('error', 'storing window-position and -size of mainWindow in  _' + customUserDataPath + '_ failed with error: _' + err + '_ (event: close)')
-                return console.log(err)
+        fs.writeFile(customUserDataPath, JSON.stringify(data), function (error) {
+            if (error) {
+                writeLog('error', 'mainWindow.on.close ::: storing window-position and -size of mainWindow in  _' + customUserDataPath + '_ failed with error: _' + error + '_.')
+                writeLog('error', 'mainWindow.on.close ::: Error: ', error)
+                return console.log(error)
             }
 
-            writeLog('info', 'mainWindow stored window-position and -size in _' + customUserDataPath + '_ (event: close)')
+            writeLog('info', 'mainWindow.on.close ::: Successfully stored window-position and -size in _' + customUserDataPath + '_.')
         })
     })
 
@@ -555,39 +571,39 @@ function createWindow () {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null
-        writeLog('info', 'createWindow ::: mainWindow is now closed (event: closed)')
+        writeLog('info', 'mainWindow.on.closed ::: mainWindow is now closed')
     })
 
     // When the app is unresponsive
     mainWindow.on('unresponsive', function () {
-        writeLog('error', 'createWindow ::: mainWindow is now unresponsive (event: unresponsive)')
+        writeLog('error', 'mainWindow.on.unresponsive ::: mainWindow is now unresponsive')
         showDialog('error', 'Alert', 'ttth seems unresponsive', 'Consider restarting the app')
     })
 
     // When the app gets responsive again
     mainWindow.on('responsive', function () {
-        writeLog('info', 'createWindow ::: mainWindow is now responsive again (event: responsive)')
+        writeLog('info', 'mainWindow.on.responsive ::: mainWindow is now responsive again')
     })
 
     // When the app is crashed
     mainWindow.webContents.on('crashed', function () {
-        writeLog('info', 'createWindow ::: mainWindow crashed (event: crashed)')
+        writeLog('info', 'mainWindow.on.crashed ::: mainWindow crashed')
         showDialog('error', 'Alert', 'ttth just crashed', 'Consider reporting this issue')
     })
 
     // Call from renderer: Reload mainWindow
     ipcMain.on('reloadMainWindow', (event) => {
         mainWindow.reload()
-        writeLog('info', 'createWindow ::: mainWindow is now reloaded (ipcMain)')
+        writeLog('info', 'ipcMain.reloadMainWindow ::: mainWindow is now reloaded (ipcMain)')
     })
 
     // Call from renderer: Open folder with user configured services
     ipcMain.on('openUserServicesConfigFolder', (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, 'storage')
         if (shell.openItem(customUserDataPath) === true) {
-            writeLog('info', 'createWindow ::: ServiceConfigs: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services (ipcMain)')
+            writeLog('info', 'ipcMain.openUserServicesConfigFolder ::: ServiceConfigs: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
-            writeLog('warn', 'createWindow ::: ServiceConfigs: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services). (ipcMain)')
+            writeLog('warn', 'ipcMain.openUserServicesConfigFolder  ::: ServiceConfigs: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services).')
         }
     })
 
@@ -595,16 +611,16 @@ function createWindow () {
     ipcMain.on('openUserSettingsConfigFolder', (event) => {
         var customUserDataPath = path.join(defaultUserDataPath, 'ttthUserSettings')
         if (shell.openItem(customUserDataPath) === true) {
-            writeLog('info', 'createWindow ::: UserSettings: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services (ipcMain)')
+            writeLog('info', 'ipcMain.openUserSettingsConfigFolder ::: UserSettings: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
-            writeLog('warn', 'createWindow ::: UserSettings: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services). (ipcMain)')
+            writeLog('warn', 'ipcMain.openUserSettingsConfigFolder ::: UserSettings: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services).')
         }
     })
 
     // Call from renderer ::: deleteAllGlobalServicesShortcut
     ipcMain.on('deleteAllGlobalServicesShortcut', function (arg1, numberOfEnabledServices) {
         globalShortcut.unregisterAll() // doesnt work - whyever
-        writeLog('info', 'createWindow ::: Shortcuts: Deleting all global service shortcut at once.')
+        writeLog('info', 'ipcMain.deleteAllGlobalServicesShortcut ::: Shortcuts: Deleting all global service shortcut at once.')
 
         // delete all global shortcuts manually
         /*
@@ -615,17 +631,16 @@ function createWindow () {
             writeLog("info", "createWindow ::: Shortcuts: Deleting the global service shortcut: CmdOrCtrl+" + i);
         }
         */
-        writeLog('info', 'createWindow ::: Shortcuts: Finished deleting all global service shortcuts (ipcMain)')
+        writeLog('info', 'ipcMain.deleteAllGlobalServicesShortcut ::: Shortcuts: Finished deleting all global service shortcuts')
     })
 
     // Call from renderer ::: createNewGlobalShortcut
     ipcMain.on('createNewGlobalShortcut', function (arg1, shortcut, targetTab) {
-        writeLog('info', 'createWindow ::: Shortcuts: Creating a new shortcut: _' + shortcut + '_ for the service/tab: _' + targetTab + '_.')
+        writeLog('info', 'ipcMain.createNewGlobalShortcut ::: Shortcuts: Creating a new shortcut: _' + shortcut + '_ for the service/tab: _' + targetTab + '_.')
 
         // const ret = globalShortcut.register(shortcut, () => {
         globalShortcut.register(shortcut, () => {
             writeLog('error', 'Shortcut: _' + shortcut + '_ was pressed.')
-
             mainWindow.webContents.send('switchToTab', targetTab) // activate the related tab
         })
     })
@@ -654,16 +669,22 @@ function createWindow () {
 
         // if the environment supports BadgeCount - update it
         if (environmentSupported === true) {
-            // check current badge count
-            var currentBadgeCount = app.getBadgeCount() // FIXME: deprecated - Please use 'badgeCount property' instead.
+            // temporary hack - cause of #182
+            if (Number.isNaN(arg)) {
+                writeLog('warn', 'ipcMain.updateBadgeCount ::: Returned value is not a number (NaN). Falling back to value 0') // updating badge count worked
+                arg = 0 // set a fallback value - see #182
+            }
+
+            var currentBadgeCount = app.getBadgeCount() // get the  current badge count
+            // FIXME: deprecated - Please use 'badgeCount property' instead.
 
             // if badge count has to be updated - try to update it
             if (currentBadgeCount !== arg) {
                 var didUpdateBadgeCount = app.setBadgeCount(arg) // FIXME: deprecated.- Please use 'badgeCount property' instead.
                 if (didUpdateBadgeCount === true) {
-                    writeLog('info', 'createWindow ::: Updating application badge count to _' + arg + '_.') // updating badge count worked
+                    writeLog('info', 'ipcMain.updateBadgeCount ::: Updating application badge count to _' + arg + '_.') // updating badge count worked
                 } else {
-                    writeLog('warn', 'createWindow ::: Updating application badge count to _' + arg + '_ failed.') // updating badge count failed
+                    writeLog('warn', 'ipcMain.updateBadgeCount ::: Updating application badge count to _' + arg + '_ failed.') // updating badge count failed
                 }
             }
         }
@@ -724,31 +745,27 @@ function createWindow () {
 
     // Call from renderer: show configure-single-service window for a new service
     ipcMain.on('showConfigureSingleServiceWindowNew', (event, arg) => {
-        writeLog('info', 'configWindow preparing for new service creation. (ipcMain)')
-
-        // show window
-        configWindow.show()
+        writeLog('info', 'ipcMain.showConfigureSingleServiceWindowNew ::: configWindow preparing for new service creation')
+        configWindow.show() // show window
         configWindow.webContents.send('serviceToCreate', arg)
     })
 
     // Call from renderer: show configure-single-service window
     ipcMain.on('showConfigureSingleServiceWindow', (event, arg) => {
-        writeLog('info', 'configWindow preparing for service editing (ipcMain)')
-
-        // show window
-        configWindow.show()
+        writeLog('info', 'ipcMain.showConfigureSingleServiceWindow ::: configWindow preparing for service editing')
+        configWindow.show() // show window
         configWindow.webContents.send('serviceToConfigure', arg)
     })
 
     // Call from renderer: hide configure-single-service window
     ipcMain.on('closeConfigureSingleServiceWindow', (event) => {
         configWindow.hide() // hide window
-        writeLog('info', 'configWindow is now hidden (ipcMain)')
+        writeLog('info', 'ipcMain.closeConfigureSingleServiceWindow ::: configWindow is now hidden')
     })
 
     // Call from renderer: Tray: RecreateTray
     ipcMain.on('recreateTray', function () {
-        writeLog('info', 'Recreating tray (ipcMain)')
+        writeLog('info', 'ipcMain.recreateTray ::: Recreating tray')
         createTray()
     })
 
@@ -1087,8 +1104,8 @@ function createMenu () {
                                         if (fs.existsSync(filename)) {
                                             try {
                                                 fs.unlinkSync(filename)
-                                            } catch (e) {
-                                                console.log(e)
+                                            } catch (error) {
+                                                console.log(error)
                                             }
                                         }
                                     }
@@ -1278,8 +1295,11 @@ app.on('will-finish-launching', function () {
 })
 
 // Emitted when the renderer process of webContents crashes or is killed.
-app.on('renderer-process-crashed', function () {
+app.on('renderer-process-crashed', function (event, webContents, killed) {
     writeLog('error', 'app is realizing a crashed renderer process (event: renderer-process-crashed)')
+    writeLog('error', 'Event: ', event)
+    writeLog('error', 'webContents: ', webContents)
+    writeLog('error', 'killed: ', killed)
 })
 
 // Emitted when the GPU process crashes or is killed.
@@ -1289,7 +1309,11 @@ app.on('gpu-process-crashed', function () {
 
 // Emitted whenever there is a GPU info update.
 app.on('gpu-info-update', function () {
-    writeLog('info', 'app is realizing a GPU info update (event: gpu-info-update)')
+    writeLog('info', 'app.on-gpu-info-update ::: Realizing a GPU info update')
+
+    var gpuInfo = app.getGPUFeatureStatus() // https://www.electronjs.org/docs/api/app#appgetgpufeaturestatus
+    writeLog('info', 'app.on-gpu-info-update ::: Status: ', gpuInfo)
+    //console.error(gpuInfo)
 })
 
 // Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior
