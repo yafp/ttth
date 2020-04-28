@@ -13,13 +13,14 @@ const utils = require('./utils.js')
 * @summary Patches the user service configration files on version changes if needed.
 * @description Patches the user service configration files on version changes if needed.
 */
-function updateAllUserServiceConfigurationsForM1M8P0 () {
+function updateAllUserServiceConfigurationsForM1M8P0 (callback) {
     // changes from 1.7.0 to 1.8.0:
     // - inject files got re-structured. Path & names are stored in the user-services configuration files
     //
     const storage = require('electron-json-storage')
     utils.jsonStoragePathSet() // set default path
 
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M8P0 ::: Updating to 1.8.0')
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M8P0 ::: Starting to validate all existing user service configurations (reason: path of inject code files)')
 
     // loop over all json files - and see if we need to patch something
@@ -184,6 +185,9 @@ function updateAllUserServiceConfigurationsForM1M8P0 () {
             // }
         }
         utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M8P0 ::: Finished.')
+
+        // do the callback
+        callback()
     })
 }
 
@@ -192,7 +196,7 @@ function updateAllUserServiceConfigurationsForM1M8P0 () {
 * @summary Patches the user service configration files on version changes if needed.
 * @description Patches the user service configration files on version changes if needed.
 */
-function updateAllUserServiceConfigurationsForM1M9P0 () {
+function updateAllUserServiceConfigurationsForM1M9P0 (callback) {
     // 1.9.0 introduced userAgents per service. See #158
     // patch all user-services:
     // add: userAgentDefault
@@ -200,7 +204,8 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
     const storage = require('electron-json-storage')
     utils.jsonStoragePathSet() // set default path
 
-    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Starting to validate all existing user service configurations (reason: userAgentDefault and userAgentCustom)')
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Updating to 1.9.0')
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Starting to validate all existing user service configurations (reason: adding userAgentDefault and userAgentCustom)')
 
     // loop over all json files - and see if we need to patch something
     storage.getAll(function (error, data) {
@@ -226,9 +231,10 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
             userAgentCustomMissing = false
             userUserAgentCustomString = ''
 
-            utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Current service: _' + key + '_.') // key = name of json file
+            utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Current service configuration file: _' + key + '_.') // key = name of json file
 
             // ensure it is a service-config of ttth - which def. needs to have a type
+            /*
             if (typeof data[key].type !== 'undefined') {
                 // it is a service configuration
 
@@ -263,6 +269,42 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
             } else {
                 utils.showNoty('error', 'Found unexpected service configuration file<br><br>name: <b>' + key + '</b><br>Please reload using CTRL+R<br><br>Reference: #171', 0)
             }
+            */
+
+            if (data[key].hasOwnProperty('type')) { // it seems to be a ttth service configuration
+                if ((data[key].type.startsWith('google')) && (data[key].userAgentDefault === '')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                    userAgentDefaultMissing = true
+                }
+
+                // service: whatsapp
+                if ((data[key].type.startsWith('whatsapp')) && (data[key].userAgentDefault === '')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0'
+                    userAgentDefaultMissing = true
+                }
+
+                // service: slack
+                if ((data[key].type.startsWith('slack')) && (data[key].userAgentDefault === '')) {
+                    newUserAgentDefaultString = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+                    userAgentDefaultMissing = true
+                }
+
+                // general: check if userAgentDefault exists
+                if (data[key].userAgentDefault === undefined) {
+                    utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentDefault yet.')
+                    userAgentDefaultMissing = true
+                }
+
+                // general: check if userAgentCustom exists
+                if (data[key].userAgentCustom === undefined) {
+                    utils.writeConsoleMsg('warn', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Config for service type _' + data[key].type + '_ has no userAgentCustom yet.')
+                    userAgentCustomMissing = true
+                }
+            } else {
+                utils.writeConsoleMsg('error', 'updateAllUserServiceConfigurationsForM1M9P0 ::: File _' + key + '_ seems not to be a ttth service configuration (missing type).')
+                utils.writeConsoleMsg('error', 'updateAllUserServiceConfigurationsForM1M9P0 ::: KeyData:', data[key])
+                utils.showNoty('error', 'Found unexpected service configuration file<br><br>name: <b>' + key + '</b><br>Please reload ttth using CTRL+R<br><br>Issue reference: #171', 0)
+            }
 
             // update config if needed
             if ((userAgentDefaultMissing === true) || (userAgentCustomMissing === true)) {
@@ -285,10 +327,25 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
                             throw error
                         }
                     })
+            } else {
+                utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Configuration of service: _' + key + '_ looks good. No need to update it.')
             }
         }
         utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M9P0 ::: Finished.')
+
+        // do the callback
+        callback()
     })
+}
+
+/**
+* @function  updateAllUserServiceConfigurationsForM1M10P0
+* @summary Patches the user service configration files ...
+* @description Patches the user service configration files ...
+*/
+function updateAllUserServiceConfigurationsForM1M10P0 (callback) {
+    // do the callback
+    callback()
 }
 
 /**
@@ -299,21 +356,23 @@ function updateAllUserServiceConfigurationsForM1M9P0 () {
 function updateAllUserServiceConfigurations () {
     var localAppVersion = utils.getAppVersion()
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Detected ttth version: ' + localAppVersion)
+    utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Gonna start now to update the local defined service configurations for eac hnew released version. This might take some time...')
 
     /*
-    switch (localAppVersion) {
-        case "1.7.0":
-            // do something
-            break
-
-        default:
-            // do something
-            break
-    }
-    */
-
+    // Previously:
+    // Problem: both functions did run parallel - might cause file-blocking
     updateAllUserServiceConfigurationsForM1M8P0() // updates needed for 1.8.0
     updateAllUserServiceConfigurationsForM1M9P0() // updates needed for 1.9.0
+    */
+
+    updateAllUserServiceConfigurationsForM1M8P0(function () {
+        updateAllUserServiceConfigurationsForM1M9P0(function () {
+            updateAllUserServiceConfigurationsForM1M10P0(function () {
+                // All three functions have completed, in order.
+                utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Finiushed updating all user service configurations')
+            })
+        })
+    })
 }
 
 // Export the functions
