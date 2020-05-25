@@ -74,18 +74,18 @@ The following categories are used:
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
   * Updated `docdash` from `1.1.1` to `1.2.0`
-  * Updated `electron` from `7.1.6` to `7.1.11`
+  * Updated `electron` from `7.1.6` to `7.2.1`
   * Updated `electron-packager` from `14.1.1` to `14.2.1`
   * Updated `electron-util` from `0.13.1` to `0.14.1`
   * Updated `electron-is-dev` from `1.1.0` to `1.2.0`
-  * Updated `electron-builder` from `22.2.0` to `22.4.1`
-  * Updated `electron-log` from `4.0.0` to `4.1.1`
-  * Updated `eslint` from `6.7.2` to `6.8.0`
+  * Updated `electron-builder` from `22.2.0` to `22.6.1`
+  * Updated `electron-log` from `4.0.0` to `4.2.0`
+  * Updated `eslint` from `6.7.2` to `7.1.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.0.2`
   * Updated `fontawesome` from `5.12.0` to `5.13.0`
-  * Updated `i18next` from `19.0.2` to `19.4.4`
-  * Updated `is-online` from `8.2.1` to `8.3.0`
-  * Updated `jquery` from `3.4.1` to `3.5.0`
+  * Updated `i18next` from `19.0.2` to `19.4.5`
+  * Updated `is-online` from `8.2.1` to `8.3.1`
+  * Updated `jquery` from `3.4.1` to `3.5.1`
   * Updated `jsdoc` from `3.6.3` to `3.6.4`
   * Updated `mocha` from `6.2.2` to `7.1.1`
   * Updated `popper.js` from `1.16.0` to `1.16.1`
@@ -112,17 +112,17 @@ The following categories are used:
 ### ttth 1.8.0 (20191219)
 #### `Added`
 * Services:
-  * Added support for 'Gitter'. See [#140](https://github.com/yafp/ttth/issues/140)
-  * Added support for 'Steam Chat'. See [#135](https://github.com/yafp/ttth/issues/135)
-  * Added support for 'Wire'. See [#144](https://github.com/yafp/ttth/issues/144)
+  * Added support for `Gitter`. See [#140](https://github.com/yafp/ttth/issues/140)
+  * Added support for `Steam Chat`. See [#135](https://github.com/yafp/ttth/issues/135)
+  * Added support for `Wire`. See [#144](https://github.com/yafp/ttth/issues/144)
   * Skype: Added support for unread message counting. See [#133](https://github.com/yafp/ttth/issues/133)
   * Messenger: Added support for unread message counting. See [#132](https://github.com/yafp/ttth/issues/132)
 * Network accessibility: Added a periodic check for network accessibility. See [#136](https://github.com/yafp/ttth/issues/136)
 * Settings: Added support for more themes. See [#131](https://github.com/yafp/ttth/issues/131)
-  * New theme: 'Dracula'
-  * New theme: 'Nord'
-  * New theme: 'Solarized Dark'
-  * New theme: 'Solarized Light'
+  * New theme: `Dracula`
+  * New theme: `Nord`
+  * New theme: `Solarized Dark`
+  * New theme: `Solarized Light`
 * Added animations to service-tab icons. See [#146](https://github.com/yafp/ttth/issues/146)
 * Added warning to url click handler regarding non-https links. See [#147](https://github.com/yafp/ttth/issues/147)
 * Added support for application badge count on macOS. See [#152](https://github.com/yafp/ttth/issues/152)
@@ -138,18 +138,18 @@ The following categories are used:
     * Chrome: 78.0.3904.113
     * Node: 12.8.1
 * Dependencies
-  * Updated about-window from 1.13.1 to 1.13.2
-  * Updated bootstrap from 4.3.1 to 4.4.1
-  * Updated electron-builder from 21.2.0 to 22.2.0
-  * Updated electron-packager from 14.0.6 to 14.1.1
-  * Updated electron-log from 3.0.8 to 4.0.0
-  * Updated eslint from 6.5.1 to 6.7.2
-  * Updated is-online from 8.2.0 to 8.2.1
-  * Updated i18next from 17.2.0 to 19.0.2
-  * Updated mocha from 6.2.1 to 6.2.2
-  * Updated pj-custom-electron-titlebar from 3.1.3 to 3.1.6
-  * Updated sentry from 0.17.4 to 1.1.0
-  * Updated spectron from 8.0.0 to 9.0.0
+  * Updated `about-window` from `1.13.1` to `1.13.2`
+  * Updated `bootstrap` from `4.3.1` to `4.4.1`
+  * Updated `electron-builder` from `21.2.0` to `22.2.0`
+  * Updated `electron-packager` from `14.0.6` to `14.1.1`
+  * Updated `electron-log` from `3.0.8` to `4.0.0`
+  * Updated `eslint` from `6.5.1` to `6.7.2`
+  * Updated `is-online` from `8.2.0` to `8.2.1`
+  * Updated `i18next` from `17.2.0` to `19.0.2`
+  * Updated `mocha` from `6.2.1` to `6.2.2`
+  * Updated `pj-custom-electron-titlebar` from `3.1.3` to `3.1.6`
+  * Updated `sentry` from `0.17.4` to `1.1.0`
+  * Updated `spectron` from `8.0.0` to `9.0.0`
 * CDNs vs NPM. See [#113](https://github.com/yafp/ttth/issues/113)
   * jquery is now included using npm. Using less cdn's is a good thing. See [#137](https://github.com/yafp/ttth/issues/137)
   * FontAwesome is now included using npm. Using less cdn's is a good thing. See [#148](https://github.com/yafp/ttth/issues/148)
@@ -199,8 +199,8 @@ The following categories are used:
 
 ####  `Changed`
 * Dependencies
-  * Updated electron from 5.0.10 to 5.0.11
-  * Updated i18next from 17.0.17 to 17.2.0
+  * Updated `electron` from `5.0.10` to `5.0.11`
+  * Updated `i18next` from `17.0.17` to `17.2.0`
 
 #### `Removed`
 * Window title no longer shows the name of the current tab / service. Sideeffect of [#115](https://github.com/yafp/ttth/issues/115)

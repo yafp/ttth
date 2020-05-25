@@ -28,7 +28,7 @@ available for:
 
 It is:
 
-* available for *freebsd*, *inux*, *macOS* and *windows*.
+* available for *freebsd*, *linux*, *macOS* and *windows*.
 * inspired by apps like [Franz](https://github.com/meetfranz/franz) and [Rambox](https://github.com/ramboxapp/community-edition). Need to feature [Hamsket](https://github.com/TheGoddessInari/hamsket) here as good looking Rambox fork and [Ferdi](https://github.com/getferdi/ferdi) as Franz fork.
 * free and open source
 
@@ -120,4 +120,3 @@ If you want to support the development of **ttth** you can fund me on:
 # developers
 * Please see the [contributing informations](docs/CONTRIBUTING.md) for more details.
 * A list of all contributors can be found [here](docs/CONTRIBUTORS.md).
-
