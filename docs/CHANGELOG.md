@@ -104,7 +104,8 @@ The following categories are used:
 * Fixed minor UI bug regarding different sized service-icons on settings page. See [#160](https://github.com/yafp/ttth/issues/160)
 * Fixed a bug while reading and patching user-services-configurations. See [#171](https://github.com/yafp/ttth/issues/171)
 * Fixed unread message count for Xing. See [#175](https://github.com/yafp/ttth/issues/175)
-* Fixed an issue with twitter inject code. See  [#182](https://github.com/yafp/ttth/issues/182)
+* Fixed an issue with twitter inject code. See [#182](https://github.com/yafp/ttth/issues/182)
+* Fixed gmail popup issue. See [#190](https://github.com/yafp/ttth/issues/190)
 
 
 ***

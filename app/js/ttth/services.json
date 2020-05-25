@@ -118,7 +118,7 @@
         "url": "https://mail.google.com/mail/",
         "multiple": false,
         "injectCode": "./js/ttth/services/googleMail/googleMail_inject.js",
-        "userAgentDefault": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:70.0) Gecko/20100101 Firefox/70.0"
+        "userAgentDefault": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
     },
     {
         "id": "googleMessages",
