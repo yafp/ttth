@@ -980,7 +980,7 @@ function createMenu () {
             submenu: [
                 // About
                 {
-                    role: 'about',
+                    // role: 'about', - see: https://github.com/rhysd/electron-about-window/issues/59
                     label: 'About',
                     click () {
                         openAboutWindow({
