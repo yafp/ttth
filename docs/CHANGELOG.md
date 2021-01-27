@@ -38,10 +38,13 @@ The following categories are used:
   * Discord: Adding unread message script. See [#173](https://github.com/yafp/ttth/issues/173)
 * Added general support for UI animations using animate.css. See [#174](https://github.com/yafp/ttth/issues/174)
 * Added support for command-line arguments using yargs. See [#181](https://github.com/yafp/ttth/issues/181)
-* Added optiono to enable or disable the GPU acceleration. See [#188](https://github.com/yafp/ttth/issues/188)
+* Added option to enable or disable the GPU acceleration. See [#188](https://github.com/yafp/ttth/issues/188)
 * Inject code path is now validated before loading it to a service. See [#185](https://github.com/yafp/ttth/issues/185)
 
 ####  `Changed`
+* Electron:
+  * Updated to electron v8. See [#170](https://github.com/yafp/ttth/issues/170)
+  * Updated to electron v9. See [#199](https://github.com/yafp/ttth/issues/199)
 * Titlebar:
   * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
   * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
@@ -73,26 +76,31 @@ The following categories are used:
   * dmg: Improved macOS .dmg. New background image and new icon positions.
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
+  * Updated `v8-compile-cache` from `2.1.0` to `2.2.0`
   * Updated `docdash` from `1.1.1` to `1.2.0`
-  * Updated `electron` from `7.1.6` to `7.2.1`
-  * Updated `electron-packager` from `14.1.1` to `14.2.1`
-  * Updated `electron-util` from `0.13.1` to `0.14.1`
+  * Updated `electron` from `7.1.6` to `7.3.3`
+  * Updated `electron-packager` from `14.1.1` to `15.2.0`
+  * Updated `electron-util` from `0.13.1` to `0.14.2`
   * Updated `electron-is-dev` from `1.1.0` to `1.2.0`
-  * Updated `electron-builder` from `22.2.0` to `22.6.1`
-  * Updated `electron-log` from `4.0.0` to `4.2.0`
-  * Updated `eslint` from `6.7.2` to `7.1.0`
+  * Updated `electron-builder` from `22.2.0` to `22.9.1`
+  * Updated `electron-log` from `4.0.0` to `4.3.1`
+  * Updated `electron-json-storage` from `4.1.8` to `4.3.0`
+  * Updated `eslint` from `6.7.2` to `7.18.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.0.2`
   * Updated `fontawesome` from `5.12.0` to `5.13.0`
-  * Updated `i18next` from `19.0.2` to `19.4.5`
-  * Updated `is-online` from `8.2.1` to `8.3.1`
+  * Updated `i18next` from `19.0.2` to `19.8.4`
+  * Updated `is-online` from `8.2.1` to `9.0.0`
   * Updated `jquery` from `3.4.1` to `3.5.1`
-  * Updated `jsdoc` from `3.6.3` to `3.6.4`
+  * Updated `jsdoc` from `3.6.3` to `3.6.6`
   * Updated `mocha` from `6.2.2` to `7.1.1`
   * Updated `popper.js` from `1.16.0` to `1.16.1`
   * Updated `rimraf` from `3.0.0` to `3.0.2`
-  * Updated `sentry` from `1.1.0` to `1.3.0`
+  * Updated `sentry` from `1.1.0` to `2.2.0`
   * Updated `spectron` from `9.0.0` to `10.0.1`
-  * Switched back from `pj-custom-electron-titlebar` to `custom-electron-titlebar` (`3.2.2-hotfix62`)
+  * Updated `standardx` from `5.0.0` to `7.0.0`
+  * Updated `snazzy` from `8.0.0` to `9.0.0`
+  * Updated `yargs` from `15.3.1` to `16.2.0`
+  * Switched back from `pj-custom-electron-titlebar` to `custom-electron-titlebar` (`3.2.6`)
 
 #### `Removed`
 * Removed `npx` from project
@@ -106,6 +114,7 @@ The following categories are used:
 * Fixed unread message count for Xing. See [#175](https://github.com/yafp/ttth/issues/175)
 * Fixed an issue with twitter inject code. See [#182](https://github.com/yafp/ttth/issues/182)
 * Fixed gmail popup issue. See [#190](https://github.com/yafp/ttth/issues/190)
+* Fixed about window issue. See [#198](https://github.com/yafp/ttth/issues/198)
 
 
 ***
