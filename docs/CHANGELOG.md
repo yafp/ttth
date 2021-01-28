@@ -76,6 +76,7 @@ The following categories are used:
   * dmg: Improved macOS .dmg. New background image and new icon positions.
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
+  * Updated `about-window` from `1.13.2` to `1.13.4`
   * Updated `v8-compile-cache` from `2.1.0` to `2.2.0`
   * Updated `docdash` from `1.1.1` to `1.2.0`
   * Updated `electron` from `7.1.6` to `7.3.3`
@@ -87,8 +88,8 @@ The following categories are used:
   * Updated `electron-json-storage` from `4.1.8` to `4.3.0`
   * Updated `eslint` from `6.7.2` to `7.18.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.0.2`
-  * Updated `fontawesome` from `5.12.0` to `5.13.0`
-  * Updated `i18next` from `19.0.2` to `19.8.4`
+  * Updated `fontawesome` from `5.12.0` to `5.15.2`
+  * Updated `i18next` from `19.0.2` to `19.8.5`
   * Updated `is-online` from `8.2.1` to `9.0.0`
   * Updated `jquery` from `3.4.1` to `3.5.1`
   * Updated `jsdoc` from `3.6.3` to `3.6.6`
