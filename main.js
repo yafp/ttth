@@ -99,11 +99,11 @@ if (yargs.verbose === true) {
 // # 188
 if (yargs.gpu === true) {
     // nothing to do here as it is enabled by default
-    writeLog('info', 'GPU acceleration is now enabled')
+    //writeLog('info', 'GPU acceleration is now enabled')
 
 } else {
     app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
-    writeLog('info', 'GPU acceleration is now disabled')
+    //writeLog('info', 'GPU acceleration is now disabled')
 }
 
 // ----------------------------------------------------------------------------
