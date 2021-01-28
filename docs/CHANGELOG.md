@@ -79,7 +79,7 @@ The following categories are used:
   * Updated `about-window` from `1.13.2` to `1.13.4`
   * Updated `v8-compile-cache` from `2.1.0` to `2.2.0`
   * Updated `docdash` from `1.1.1` to `1.2.0`
-  * Updated `electron` from `7.1.6` to `7.3.3`
+  * Updated `electron` from `7.1.6` to `9.4.1`
   * Updated `electron-packager` from `14.1.1` to `15.2.0`
   * Updated `electron-util` from `0.13.1` to `0.14.2`
   * Updated `electron-is-dev` from `1.1.0` to `1.2.0`

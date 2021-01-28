@@ -618,7 +618,8 @@ function updateTrayIconStatus () {
 
             // if the current service has a significant unread message count -> log it and add it to overall counter
             //if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== '') && (curServiceUnreadMessageCount !== null)) {
-            if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== null)) {
+            //if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== null)) {
+            if (curServiceUnreadMessageCount !== 0) {
 
                 overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount // increase the overall counter
             }

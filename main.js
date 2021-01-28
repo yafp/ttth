@@ -789,6 +789,7 @@ function forceSingleAppInstance () {
             // Someone tried to run a second instance, we should focus our first instance window.
             if (mainWindow) {
                 // #134
+                /*
                 if (mainWindow === null) {
                     // do nothing - there is no mainwindow - most likely we are on macOS
                 } else {
@@ -798,6 +799,13 @@ function forceSingleAppInstance () {
                     }
                     mainWindow.focus()
                 }
+                */
+                // simplify:
+                // mainWindow exists
+                if (mainWindow.isMinimized()) {
+                    mainWindow.restore()
+                }
+                mainWindow.focus()
             }
         })
     }
