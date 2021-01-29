@@ -34,8 +34,8 @@ function updateAllUserServiceConfigurationsForM1M8P0 (callback) {
         // utils.writeConsoleMsg("info", "loadEnabledUserServices ::: Object: " + data);
         // console.error(data);
 
-        var shouldConfigBeUpdated = false
-        var newInjectCodePath = ''
+        let shouldConfigBeUpdated = false
+        let newInjectCodePath = ''
 
         // loop over upper object
         for (var key in data) {
@@ -218,14 +218,14 @@ function updateAllUserServiceConfigurationsForM1M9P0 (callback) {
         // utils.writeConsoleMsg("info", "loadEnabledUserServices ::: Object: " + data);
         // console.error(data);
 
-        var userAgentDefaultMissing
-        var newUserAgentDefaultString
-        var userAgentCustomMissing
-        var userUserAgentCustomString
+        let userAgentDefaultMissing
+        let newUserAgentDefaultString
+        let userAgentCustomMissing
+        let userUserAgentCustomString
 
         // loop over upper object
         //
-        for (var key in data) {
+        for (const key in data) {
             userAgentDefaultMissing = false
             newUserAgentDefaultString = ''
             userAgentCustomMissing = false
@@ -354,7 +354,7 @@ function updateAllUserServiceConfigurationsForM1M10P0 (callback) {
 * @description Patches the user service configration files on version changes if needed.
 */
 function updateAllUserServiceConfigurations () {
-    var localAppVersion = utils.getAppVersion()
+    const localAppVersion = utils.getAppVersion()
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Detected ttth version: ' + localAppVersion)
     utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurations ::: Gonna start now to update the local defined service configurations for eac hnew released version. This might take some time...')
 

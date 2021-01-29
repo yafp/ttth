@@ -69,7 +69,7 @@ function showNoty (type, message, timeout = 3000) {
 * @return value - Boolean: True if mac, false if not
 */
 function isMac () {
-    var os = require('os')
+    const os = require('os')
 
     // os types:
     //
@@ -93,7 +93,7 @@ function isMac () {
 * @return value - Boolean: True if linux, false if not
 */
 function isLinux () {
-    var os = require('os')
+    const os = require('os')
 
     // os types:
     //
@@ -117,7 +117,7 @@ function isLinux () {
 * @return value - Boolean: True if windows, false if not
 */
 function isWindows () {
-    var os = require('os')
+    const os = require('os')
 
     // os types:
     //
@@ -152,7 +152,7 @@ function openURL (url) {
 * @param url
 */
 function getHostName (url) {
-    var match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i)
+    const match = url.match(/:\/\/(www[0-9]?\.)?(.[^/:]+)/i)
     if (match !== null && match.length > 2 && typeof match[2] === 'string' && match[2].length > 0) {
         return match[2]
     } else {
@@ -168,11 +168,11 @@ function getHostName (url) {
 * @return domain
 */
 function getDomain (url) {
-    var hostName = getHostName(url)
-    var domain = hostName
+    const hostName = getHostName(url)
+    let domain = hostName
 
     if (hostName !== null) {
-        var parts = hostName.split('.').reverse()
+        const parts = hostName.split('.').reverse()
 
         if (parts !== null && parts.length > 1) {
             domain = parts[1] + '.' + parts[0]
@@ -194,7 +194,7 @@ function getDomain (url) {
 */
 function globalObjectGet (property) {
     const { remote } = require('electron')
-    var value = remote.getGlobal('sharedObj')[property]
+    const value = remote.getGlobal('sharedObj')[property]
     writeConsoleMsg('info', 'globalObjectGet ::: Property: _' + property + '_ has the value: _' + value + '_.')
     return value
 }
@@ -218,7 +218,7 @@ function globalObjectSet (property, value) {
 * @preturn {String} versionString - The version number
 */
 function getAppVersion () {
-    var versionString = require('electron').remote.app.getVersion()
+    const versionString = require('electron').remote.app.getVersion()
     writeConsoleMsg('info', 'getAppVersion ::: Appversion is: _' + versionString + '_.')
     return versionString
 }
@@ -235,7 +235,7 @@ function jsonStoragePathSet (path = false) {
     const app = remote.app
     const pathX = require('path') // must have other name, as path is already declared ...
 
-    var newPath
+    let newPath
 
     if (path === false) {
         newPath = pathX.join(app.getPath('userData'), 'storage')
@@ -256,11 +256,11 @@ function jsonStoragePathSet (path = false) {
 * @return {string}  newServiceId - serviceType + Random string
 */
 function generateNewRandomServiceID (serviceType) {
-    var i = 0
-    var length = 24
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    var randomString = ''
-    var newServiceId = ''
+    let i = 0
+    const length = 24
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    let randomString = ''
+    let newServiceId = ''
 
     // create random string
     for (i = 0; i < length; i++) {

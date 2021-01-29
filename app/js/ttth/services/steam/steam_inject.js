@@ -16,9 +16,9 @@ const { ipcRenderer } = require('electron')
 function serviceSteamChatGetUnreadMessageCount () {
     console.log('serviceSteamChatGetUnreadMessageCount ::: Checking unread message count')
 
-    var i
-    var e = document.getElementsByClassName('unread_message_count_value')
-    var t = 0
+    let i
+    const e = document.getElementsByClassName('unread_message_count_value')
+    let t = 0
     for (i = 0; i < e.length; i++) {
         t += isNaN(parseInt(e[i].innerHTML.trim())) || e[i].parentNode.style.display === 'none' ? 0 : parseInt(e[i].innerHTML.trim())
     }

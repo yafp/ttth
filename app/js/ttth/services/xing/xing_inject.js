@@ -26,7 +26,7 @@ function serviceXingGetUnreadMessageCount () {
 
     window.$ = window.jQuery = require('jquery')
 
-    var count = 0
+    let count = 0
     count = $('span.IconWithBadge-IconWithBadge-notificationS-bdb20f8f').first().text()
     console.log('serviceXingGetUnreadMessageCount ::: Total Xing chats with unread messages: ' + count)
     ipcRenderer.sendToHost(count.toString())

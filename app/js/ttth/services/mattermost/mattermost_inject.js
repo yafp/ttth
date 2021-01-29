@@ -27,7 +27,7 @@ function serviceMattermostGetUnreadMessageCount () {
     const teamsUnread = document.querySelectorAll('.team-sidebar .team-container.unread').length
     console.log('serviceMattermostGetUnreadMessageCount ::: teamsUnread: ' + teamsUnread)
 
-    var count = 0
+    let count = 0
     count = count + pmUnread + channelsUnread + teamsUnread
     // console.log("serviceMattermostGetUnreadMessageCount ::: Overall: " + count);
     // count = channelsUnread + teamsUnread;

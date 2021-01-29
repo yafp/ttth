@@ -14,11 +14,11 @@ const { ipcRenderer } = require('electron')
 * @memberof services
 */
 function serviceDiscordGetAlertCount (badges) {
-    var alerts = 0
-    for (var i = 0; i < badges.length; i++) {
-        var badge = badges[i]
+    let alerts = 0
+    for (let i = 0; i < badges.length; i++) {
+        const badge = badges[i]
         if (badge && badge.childNodes && badge.childNodes.length > 0) {
-            var count = parseInt(badge.childNodes[0].nodeValue, 10)
+            const count = parseInt(badge.childNodes[0].nodeValue, 10)
             alerts += count.isNaN
                 ? 1
                 : count
@@ -38,10 +38,10 @@ function serviceDiscordGetAlertCount (badges) {
 function serviceDiscordGetUnreadMessageCount () {
     console.log('serviceDiscordGetUnreadMessageCount ::: Checking unread message count')
 
-    var direct = 0
+    let direct = 0
     // var indirect = document.querySelectorAll('.guilds-wrapper .unread').length
-    var guildDirect = document.querySelectorAll('.guilds-wrapper .badge')
-    var channelDirect = document.querySelectorAll('[class^="nameUnreadText-"]+div>div>div')
+    const guildDirect = document.querySelectorAll('.guilds-wrapper .badge')
+    const channelDirect = document.querySelectorAll('[class^="nameUnreadText-"]+div>div>div')
 
     direct += serviceDiscordGetAlertCount(guildDirect)
     direct += serviceDiscordGetAlertCount(channelDirect)

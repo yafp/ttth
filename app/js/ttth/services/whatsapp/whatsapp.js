@@ -16,9 +16,9 @@ function serviceWhatsAppRegister () {
     console.log('serviceWhatsAppRegister ::: Trying to fix WhatsApp-Web connectivity issues')
 
     const { remote } = require('electron') // Imports the remote module to use session inside webview
-    //const { session } = require('electron')
+    // const { session } = require('electron')
 
-    var ses = remote.session.defaultSession // Gets the default session
+    const ses = remote.session.defaultSession // Gets the default session
 
     // ses.clearCache();
     ses.flushStorageData() // Writes any unwritten DOMStorage data to disk.

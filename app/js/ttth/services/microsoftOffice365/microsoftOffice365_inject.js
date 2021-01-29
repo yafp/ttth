@@ -16,7 +16,7 @@ const { ipcRenderer } = require('electron')
 function serviceMicrosoftOffice365GetUnreadMessageCount () {
     console.log('serviceMicrosoftOffice365GetUnreadMessageCount ::: Checking unread message count')
 
-    var count = $('.subfolders [role=treeitem]:first .treeNodeRowElement').siblings().last().text()
+    const count = $('.subfolders [role=treeitem]:first .treeNodeRowElement').siblings().last().text()
 
     console.log('serviceMicrosoftOffice365GetUnreadMessageCount ::: Total Office 365 unread messages: ' + count)
 

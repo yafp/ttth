@@ -16,12 +16,12 @@ const { ipcRenderer } = require('electron')
 function serviceRiotGetUnreadMessageCount () {
     console.log('serviceRiotGetUnreadMessageCount ::: Checking unread message count')
 
-    var i
-    var ii
+    let i
+    let ii
 
-    var a = document.getElementsByClassName('mx_RoomTile_nameContainer'); var b = 0
+    const a = document.getElementsByClassName('mx_RoomTile_nameContainer'); let b = 0
     for (i = 0; i < a.length; i++) {
-        var c = a[i].getElementsByClassName('mx_RoomTile_badge')
+        const c = a[i].getElementsByClassName('mx_RoomTile_badge')
         for (ii = 0; ii < c.length; ii++) {
             parseInt(c[ii].textContent.trim()) % 1 === 0 && (b += parseInt(c[ii].textContent.trim()))
         }

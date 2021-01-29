@@ -22,16 +22,16 @@ require('v8-compile-cache') // via: https://dev.to/xxczaki/how-to-make-your-elec
 // Shared object
 // -----------------------------------------------------------------------------
 //
-var consoleOutput = false // can be changed using --verbose
+const consoleOutput = false // can be changed using --verbose
 
 // Settings Tab
-var settingDefaultView = ''
-var settingTheme = 'default'
-var settingAutostart = ''
-var settingDisableTray = false
-var settingUrgentWindow = false
-var settingEnableErrorReporting = true
-var settingEnablePrereleases = false
+const settingDefaultView = ''
+const settingTheme = 'default'
+const settingAutostart = ''
+const settingDisableTray = false
+const settingUrgentWindow = false
+const settingEnableErrorReporting = true
+const settingEnablePrereleases = false
 
 global.sharedObj = {
     // verbose mode aka console Output
@@ -58,7 +58,7 @@ const unhandled = require('./app/js/ttth/modules/unhandled.js') // electron-unha
 // ----------------------------------------------------------------------------
 // COMMAND-LINE-ARGS
 // ----------------------------------------------------------------------------
-var yargs = require('yargs')
+const yargs = require('yargs')
     .strict(true) // arguments must be valid
     .usage('Usage: $0 <command> [options]')
     // define arguments
@@ -99,11 +99,11 @@ if (yargs.verbose === true) {
 // # 188
 if (yargs.gpu === true) {
     // nothing to do here as it is enabled by default
-    //writeLog('info', 'GPU acceleration is now enabled')
+    // writeLog('info', 'GPU acceleration is now enabled')
 
 } else {
     app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
-    //writeLog('info', 'GPU acceleration is now disabled')
+    // writeLog('info', 'GPU acceleration is now disabled')
 }
 
 // ----------------------------------------------------------------------------
@@ -120,11 +120,10 @@ sentry.enableSentry() // sentry is enabled by default
 // for testing use: --disable-gpu
 //
 // Disables hardware acceleration for current app. This method can only be called before app is ready.
-//app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
+// app.disableHardwareAcceleration() // https://www.electronjs.org/docs/api/app#appdisablehardwareacceleration
 
-
-//var foo = app.getAppMetrics()
-//console.error(foo)
+// var foo = app.getAppMetrics()
+// console.error(foo)
 
 // -----------------------------------------------------------------------------
 // VARIABLES
@@ -140,8 +139,8 @@ const gotTheLock = app.requestSingleInstanceLock() // for: single-instance handl
 const defaultUserDataPath = app.getPath('userData') // for: storing window position and size
 const userOSPlatform = os.platform() // for BadgeCount support - see #152
 
-var defaultMainWindowWidth = 800
-var defaultMainWindowHeight = 600
+const defaultMainWindowWidth = 800
+const defaultMainWindowHeight = 600
 
 // -----------------------------------------------------------------------------
 // FUNCTIONS
@@ -386,14 +385,14 @@ function createWindow () {
     writeLog('info', 'createWindow ::: Starting to create the application windows')
 
     // Variables for window position and size
-    var windowWidth
-    var windowHeight
-    var windowPositionX
-    var windowPositionY
+    let windowWidth
+    let windowHeight
+    let windowPositionX
+    let windowPositionY
 
     // Try to read stored last window position and size
-    var customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
-    var data
+    const customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
+    let data
     try {
         data = JSON.parse(fs.readFileSync(customUserDataPath, 'utf8'))
 
@@ -428,6 +427,7 @@ function createWindow () {
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, 'app/img/icon/icon.png'),
         webPreferences: {
+            enableRemoteModule: true,
             nodeIntegration: true,
             webSecurity: true, // introduced in 1.8.0
             experimentalFeatures: false, // introduced in 1.8.0
@@ -546,12 +546,12 @@ function createWindow () {
         writeLog('info', 'mainWindow.on.close ::: mainWindow will close')
 
         // get current window position and size
-        var data = {
+        const data = {
             bounds: mainWindow.getBounds()
         }
 
         // define target path (in user data) to store rthe values
-        var customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
+        const customUserDataPath = path.join(defaultUserDataPath, 'ttthMainWindowPosSize.json')
 
         // try to write the window position and size to preference file
         fs.writeFile(customUserDataPath, JSON.stringify(data), function (error) {
@@ -599,7 +599,7 @@ function createWindow () {
 
     // Call from renderer: Open folder with user configured services
     ipcMain.on('openUserServicesConfigFolder', (event) => {
-        var customUserDataPath = path.join(defaultUserDataPath, 'storage')
+        const customUserDataPath = path.join(defaultUserDataPath, 'storage')
         if (shell.openItem(customUserDataPath) === true) {
             writeLog('info', 'ipcMain.openUserServicesConfigFolder ::: ServiceConfigs: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
@@ -609,7 +609,7 @@ function createWindow () {
 
     // Call from renderer: Open folder with user settings
     ipcMain.on('openUserSettingsConfigFolder', (event) => {
-        var customUserDataPath = path.join(defaultUserDataPath, 'ttthUserSettings')
+        const customUserDataPath = path.join(defaultUserDataPath, 'ttthUserSettings')
         if (shell.openItem(customUserDataPath) === true) {
             writeLog('info', 'ipcMain.openUserSettingsConfigFolder ::: UserSettings: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
@@ -648,7 +648,7 @@ function createWindow () {
     // Call from renderer: should ttth update the app badge count
     // is supported for macOS & Linux (running Unity)
     ipcMain.on('updateBadgeCount', (event, arg) => {
-        var environmentSupported = false
+        let environmentSupported = false
 
         // Possible values are 'aix', 'darwin', 'freebsd', 'linux', 'openbsd', 'sunos', and 'win32'.
         switch (userOSPlatform) {
@@ -675,12 +675,12 @@ function createWindow () {
                 arg = 0 // set a fallback value - see #182
             }
 
-            var currentBadgeCount = app.getBadgeCount() // get the  current badge count
+            const currentBadgeCount = app.getBadgeCount() // get the  current badge count
             // FIXME: deprecated - Please use 'badgeCount property' instead.
 
             // if badge count has to be updated - try to update it
             if (currentBadgeCount !== arg) {
-                var didUpdateBadgeCount = app.setBadgeCount(arg) // FIXME: deprecated.- Please use 'badgeCount property' instead.
+                const didUpdateBadgeCount = app.setBadgeCount(arg) // FIXME: deprecated.- Please use 'badgeCount property' instead.
                 if (didUpdateBadgeCount === true) {
                     writeLog('info', 'ipcMain.updateBadgeCount ::: Updating application badge count to _' + arg + '_.') // updating badge count worked
                 } else {
@@ -709,6 +709,7 @@ function createWindow () {
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, 'app/img/icon/icon.png'),
         webPreferences: {
+            enableRemoteModule: true,
             nodeIntegration: true,
             webviewTag: true // see #37
         }
@@ -819,7 +820,7 @@ function forceSingleAppInstance () {
 */
 function createMenu () {
     // Create a custom menu
-    var menu = Menu.buildFromTemplate([
+    const menu = Menu.buildFromTemplate([
 
         // Menu: File
         {
@@ -1104,11 +1105,11 @@ function createMenu () {
                             id: 'ClearCache',
                             label: 'Clear cache',
                             click (item, mainWindow) {
-                                var chromeCacheDir = path.join(app.getPath('userData'), 'Cache')
+                                const chromeCacheDir = path.join(app.getPath('userData'), 'Cache')
                                 if (fs.existsSync(chromeCacheDir)) {
-                                    var files = fs.readdirSync(chromeCacheDir)
-                                    for (var i = 0; i < files.length; i++) {
-                                        var filename = path.join(chromeCacheDir, files[i])
+                                    const files = fs.readdirSync(chromeCacheDir)
+                                    for (let i = 0; i < files.length; i++) {
+                                        const filename = path.join(chromeCacheDir, files[i])
                                         if (fs.existsSync(filename)) {
                                             try {
                                                 fs.unlinkSync(filename)
@@ -1319,9 +1320,9 @@ app.on('gpu-process-crashed', function () {
 app.on('gpu-info-update', function () {
     writeLog('info', 'app.on-gpu-info-update ::: Realizing a GPU info update')
 
-    var gpuInfo = app.getGPUFeatureStatus() // https://www.electronjs.org/docs/api/app#appgetgpufeaturestatus
+    const gpuInfo = app.getGPUFeatureStatus() // https://www.electronjs.org/docs/api/app#appgetgpufeaturestatus
     writeLog('info', 'app.on-gpu-info-update ::: Status: ', gpuInfo)
-    //console.error(gpuInfo)
+    // console.error(gpuInfo)
 })
 
 // Emitted when failed to verify the certificate for url, to trust the certificate you should prevent the default behavior

@@ -16,13 +16,13 @@ const { ipcRenderer } = require('electron')
 function serviceTelegramGetUnreadMessageCount () {
     console.log('serviceTelegramGetUnreadMessageCount ::: Checking unread message count')
 
-    var count = 0
-    var intervalID = window.setInterval(myCallback, 50)
+    let count = 0
+    const intervalID = window.setInterval(myCallback, 50)
     function myCallback () {
-        var eventToClick = document.getElementsByClassName('im_dialog_badge badge')
+        const eventToClick = document.getElementsByClassName('im_dialog_badge badge')
         if (eventToClick.length > 0) {
             // console.log(eventToClick);
-            for (var i = 0; i < eventToClick.length; i++) {
+            for (let i = 0; i < eventToClick.length; i++) {
                 // console.log(eventToClick[i]);
 
                 // Check if we count this element or not

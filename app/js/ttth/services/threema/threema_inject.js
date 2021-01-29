@@ -16,7 +16,7 @@ const { ipcRenderer } = require('electron')
 function serviceThreemaGetUnreadMessageCount () {
     console.log('serviceThreemaGetUnreadMessageCount ::: Checking unread message count')
 
-    var unreadCount = 0
+    let unreadCount = 0
 
     let newUnread = 0
     try {

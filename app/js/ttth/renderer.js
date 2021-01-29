@@ -178,8 +178,8 @@ function settingActivateUserColorCss (cssFile) {
 
     // update color of custom-titlebar - see #156
     //
-    var titlebarBackGroundColor
-    var titlebarItemBackGroundColor
+    let titlebarBackGroundColor
+    let titlebarItemBackGroundColor
     switch (cssFile) {
     case 'mainWindow_dark.css':
         titlebarBackGroundColor = '#171717'
@@ -233,8 +233,8 @@ function settingActivateUserColorCss (cssFile) {
 * @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
 function settingThemeUpdate () { // eslint-disable-line no-unused-vars
-    var currentSelectedTheme = $('#selectTheme').val() // id of selected theme
-    var currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
+    const currentSelectedTheme = $('#selectTheme').val() // id of selected theme
+    const currentSelectedThemeDisplayName = $('#selectTheme option:selected').text() // displayed theme name
 
     settingActivateUserColorCss(currentSelectedTheme) // activate the theme
     writeLocalUserSetting('settingTheme', currentSelectedTheme) // write Setting
@@ -251,7 +251,7 @@ function settingThemeUpdate () { // eslint-disable-line no-unused-vars
 */
 function settingThemeReset () { // eslint-disable-line no-unused-vars
     $('#selectTheme').prop('selectedIndex', 0) // reset the selection of the select item back to default
-    var currentSelectedTheme = 'mainWindow_default.css'
+    const currentSelectedTheme = 'mainWindow_default.css'
 
     settingActivateUserColorCss(currentSelectedTheme) // load default theme
     writeLocalUserSetting('settingTheme', currentSelectedTheme) // write setting
@@ -279,7 +279,7 @@ function readLocalUserSetting (key, optional = false) {
             throw error
         }
 
-        var value = data.setting // store the read value in a variable
+        let value = data.setting // store the read value in a variable
         utils.writeConsoleMsg('info', 'readLocalUserSetting ::: key: _' + key + '_ - got value: _' + value + '_')
 
         // setting DefaultView (FIXME)
@@ -291,7 +291,7 @@ function readLocalUserSetting (key, optional = false) {
                 utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Found configured default view: ' + value)
 
                 // check if the configured service is enabled or not
-                var exists = false
+                let exists = false
                 utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Check if configured default view is an enabled service or not')
                 // Check if Dropdown contains the defined default view as enabled service
                 $('#selectDefaultView option').each(function () {
@@ -445,7 +445,7 @@ function readLocalUserSetting (key, optional = false) {
 * @memberof renderer
 */
 function previewIcon () {
-    var currentIconCode = $('#input_serviceIcon').val() // get content of field
+    const currentIconCode = $('#input_serviceIcon').val() // get content of field
     $('#previewIcon').html("<i class='" + currentIconCode + " fa-lg'></i>") // try to load font-awesome icon
 }
 
@@ -501,7 +501,7 @@ function settingToggleUrgentWindow () { // eslint-disable-line no-unused-vars
 * @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
 function settingsSelectServiceToAddChanged () { // eslint-disable-line no-unused-vars
-    var currentSelectedServiceTemplate = $('#select_availableServices').val()
+    const currentSelectedServiceTemplate = $('#select_availableServices').val()
     utils.writeConsoleMsg('info', 'settingsSelectServiceToAddChanged ::: Value of service-template select has changed to: _' + currentSelectedServiceTemplate + '_.')
 
     if (currentSelectedServiceTemplate !== '') {
@@ -522,7 +522,7 @@ function settingsSelectServiceToAddChanged () { // eslint-disable-line no-unused
 * @memberof renderer
 */
 function showNotyAutostartMinimizedConfirm () {
-    var AutoLaunch = require('auto-launch')
+    const AutoLaunch = require('auto-launch')
     const Noty = require('noty')
     var n = new Noty(
         {
@@ -534,7 +534,7 @@ function showNotyAutostartMinimizedConfirm () {
             buttons: [
                 Noty.button('Yes', 'btn btn-success', function () {
                     // enable start minimized
-                    var ttthAutoLauncher = new AutoLaunch({
+                    const ttthAutoLauncher = new AutoLaunch({
                         name: 'ttth',
                         isHidden: true,
                         useLaunchAgent: true
@@ -550,7 +550,7 @@ function showNotyAutostartMinimizedConfirm () {
                 }),
 
                 Noty.button('No', 'btn btn-secondary float-right', function () {
-                    var ttthAutoLauncher = new AutoLaunch({
+                    const ttthAutoLauncher = new AutoLaunch({
                         name: 'ttth',
                         isHidden: false,
                         useLaunchAgent: true
@@ -600,9 +600,9 @@ function openUserSettingsConfigFolder () { // eslint-disable-line no-unused-vars
 * @memberof renderer
 */
 function updateTrayIconStatus () {
-    var overallUnreadMessages = 0 // counts unread messages for all enabled services
-    var curServiceUnreadMessageCount = 0 // contains the unread-message count for a single service
-    var currentTabId
+    let overallUnreadMessages = 0 // counts unread messages for all enabled services
+    let curServiceUnreadMessageCount = 0 // contains the unread-message count for a single service
+    let currentTabId
 
     // loop over all tabs - count unread messages
     $('#myTabs li a').each(function () {
@@ -617,10 +617,9 @@ function updateTrayIconStatus () {
             curServiceUnreadMessageCount = Number(curServiceUnreadMessageCount)
 
             // if the current service has a significant unread message count -> log it and add it to overall counter
-            //if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== '') && (curServiceUnreadMessageCount !== null)) {
-            //if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== null)) {
+            // if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== '') && (curServiceUnreadMessageCount !== null)) {
+            // if ((curServiceUnreadMessageCount !== 0) && (curServiceUnreadMessageCount !== null)) {
             if (curServiceUnreadMessageCount !== 0) {
-
                 overallUnreadMessages = overallUnreadMessages + curServiceUnreadMessageCount // increase the overall counter
             }
 
@@ -699,12 +698,12 @@ function updateServiceBadge (serviceId, count) {
 function eventListenerForSingleService (serviceId, enableUnreadMessageHandling = true, enableLinkSupport = false) {
     utils.writeConsoleMsg('info', 'eventListenerForSingleService ::: Adding event listeners for webview: _webview_' + serviceId + '_.')
 
-    var webview = document.getElementById('webview_' + serviceId) // get webview ( https://electronjs.org/docs/api/webview-tag )
+    const webview = document.getElementById('webview_' + serviceId) // get webview ( https://electronjs.org/docs/api/webview-tag )
 
     // run it periodically
     //
     //  5.000 =  5 sec
-    //var intervalID = setInterval(function () { // CLEANME
+    // var intervalID = setInterval(function () { // CLEANME
     setInterval(function () {
         webview.send('request')
     }, 3000) // 3.000 milliseconds = 3 sec
@@ -973,17 +972,17 @@ function createSingleServiceConfiguration () { // eslint-disable-line no-unused-
     utils.writeConsoleMsg('info', 'createSingleServiceConfiguration ::: Starting to create a new service config')
 
     // get values from configServiceWindow
-    var serviceId = $('#input_serviceId').val()
-    var serviceType = $('#input_serviceType').val() // hidden
-    var serviceName = $('#input_serviceName').val()
-    var serviceIcon = $('#input_serviceIcon').val()
-    var serviceUrl = $('#input_serviceUrl').val()
-    var serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
-    var serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
-    var serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
-    var serviceEnableStatus = true
+    const serviceId = $('#input_serviceId').val()
+    const serviceType = $('#input_serviceType').val() // hidden
+    const serviceName = $('#input_serviceName').val()
+    const serviceIcon = $('#input_serviceIcon').val()
+    const serviceUrl = $('#input_serviceUrl').val()
+    const serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
+    const serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
+    const serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
+    const serviceEnableStatus = true
 
-    var isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
+    const isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
     if (isFormValid === true) {
         // create a new config for the configured service
         storage.set(serviceId, {
@@ -1024,15 +1023,15 @@ function updateSingleServiceConfiguration () { // eslint-disable-line no-unused-
     utils.jsonStoragePathSet() // set default path
 
     // get values from configServiceWindow
-    var serviceId = $('#input_serviceId').val()
-    var serviceType = $('#input_serviceType').val() // hidden
-    var serviceName = $('#input_serviceName').val()
-    var serviceIcon = $('#input_serviceIcon').val()
-    var serviceUrl = $('#input_serviceUrl').val()
-    var serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
-    var serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
-    var serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
-    var serviceEnableStatus = $('#input_serviceEnableStatus').val() // hidden
+    const serviceId = $('#input_serviceId').val()
+    const serviceType = $('#input_serviceType').val() // hidden
+    const serviceName = $('#input_serviceName').val()
+    const serviceIcon = $('#input_serviceIcon').val()
+    const serviceUrl = $('#input_serviceUrl').val()
+    const serviceUserAgentDefault = $('#input_serviceUserAgentDefault').val()
+    const serviceUserAgentCustom = $('#input_serviceUserAgentCustom').val()
+    const serviceInjectCode = $('#input_serviceInjectCode').val() // hidden
+    let serviceEnableStatus = $('#input_serviceEnableStatus').val() // hidden
 
     if (serviceEnableStatus === 'true') {
         serviceEnableStatus = true
@@ -1040,7 +1039,7 @@ function updateSingleServiceConfiguration () { // eslint-disable-line no-unused-
         serviceEnableStatus = false
     }
 
-    var isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
+    const isFormValid = validateConfigSingleServiceForm(serviceName, serviceIcon, serviceUrl)
     if (isFormValid === true) {
         // update the config of the configured service (status)
         storage.set(serviceId, {
@@ -1104,9 +1103,9 @@ function settingToggleAutostart () { // eslint-disable-line no-unused-vars
         utils.showNoty('warning', 'Configuring autostart is only supported in packaged builds.')
         $('#checkboxSettingAutostart').prop('checked', false) // unselect the autostart checkbox
     } else {
-        var AutoLaunch = require('auto-launch') // auto-launch - via: https://www.npmjs.com/package/auto-launch
+        const AutoLaunch = require('auto-launch') // auto-launch - via: https://www.npmjs.com/package/auto-launch
 
-        var ttthAutoLauncher = new AutoLaunch({
+        const ttthAutoLauncher = new AutoLaunch({
             name: 'ttth',
             useLaunchAgent: true
         })
@@ -1144,7 +1143,7 @@ function settingToggleAutostart () { // eslint-disable-line no-unused-vars
 * @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
 function settingDefaultViewUpdate () { // eslint-disable-line no-unused-vars
-    var newDefaultView = $('#selectDefaultView').val() // get currently selected value from select
+    const newDefaultView = $('#selectDefaultView').val() // get currently selected value from select
 
     if (newDefaultView !== null) {
         utils.writeConsoleMsg('info', 'settingDefaultViewUpdate ::: New default view on start is set to: ' + newDefaultView)
@@ -1162,8 +1161,8 @@ function settingDefaultViewUpdate () { // eslint-disable-line no-unused-vars
 * @memberof renderer
 */
 function checkSupportedOperatingSystem () {
-    var supportedOperatingSystemMessage = ''
-    var userPlatform = process.platform // process.platform (works without require) vs os.platform
+    let supportedOperatingSystemMessage = ''
+    const userPlatform = process.platform // process.platform (works without require) vs os.platform
     utils.writeConsoleMsg('info', 'checkSupportedOperatingSystem ::: Detected operating system as: ' + userPlatform)
 
     switch (userPlatform) {
@@ -1214,13 +1213,13 @@ function searchUpdate (silent = true) {
     const { urlGithubApiReleases } = require('./js/ttth/modules/urlsGithub.js')
 
     // get setting
-    var curSettingEnablePrereleases = utils.globalObjectGet('settingEnablePrereleases')
+    const curSettingEnablePrereleases = utils.globalObjectGet('settingEnablePrereleases')
     utils.writeConsoleMsg('info', 'searchUpdate ::: Setting enablePrereleases is set to _' + curSettingEnablePrereleases + '_.')
 
-    var remoteAppVersionLatest = '0.0.0'
-    var remoteAppVersionLatestPrerelease = false
-    var localAppVersion = '0.0.0'
-    var versions
+    let remoteAppVersionLatest = '0.0.0'
+    let remoteAppVersionLatestPrerelease = false
+    let localAppVersion = '0.0.0'
+    let versions
 
     // get local version
     //
@@ -1417,7 +1416,7 @@ function loadServiceSpecificCode (serviceId, serviceName) {
 function initAvailableServicesSelection () {
     utils.writeConsoleMsg('info', 'initAvailableServicesSelection ::: Reload settings select with all supported service definitions')
 
-    var counterSupportedServices = 0
+    let counterSupportedServices = 0
     const dropdown = $('#select_availableServices') // get reference to select which contains all supported service type definitions
     dropdown.prop('selectedIndex', 0) // select the first entry
 
@@ -1459,12 +1458,12 @@ function loadConfiguredUserServices () {
         // utils.writeConsoleMsg("error", (data);
         // utils.writeConsoleMsg("error", (typeof data);
 
-        var serviceCount = 0
+        let serviceCount = 0
 
         utils.writeConsoleMsg('info', 'loadConfiguredUserServices ::: Found the following user configs: _' + data + '_.')
 
         // loop over upper object
-        for (var key in data) {
+        for (const key in data) {
             // if (data.hasOwnProperty(key)) {
             utils.writeConsoleMsg('info', 'loadConfiguredUserServices ::: ' + key + ' -> ' + data[key])
 
@@ -1484,7 +1483,7 @@ function loadConfiguredUserServices () {
             } else {
                 // ...even - add to existing row - in col 2
                 // add something to the existing row
-                var rowReference = serviceCount - 1
+                const rowReference = serviceCount - 1
 
                 if (data[key].serviceEnableStatus === true) {
                     // show enabled configured service
@@ -1579,11 +1578,11 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     utils.writeConsoleMsg('info', 'addServiceTab ::: Starting to add the tab: _' + serviceId + '_.')
 
     // tab-position
-    var existingTabs = $('#myTabs li').length // get amount of tabs
-    var newTabPosition = existingTabs - 1 // calculate new tab position
+    const existingTabs = $('#myTabs li').length // get amount of tabs
+    const newTabPosition = existingTabs - 1 // calculate new tab position
 
     // choose the right userAgent
-    var userAgent = appWideUserAgentDefault // setting a project wide default
+    let userAgent = appWideUserAgentDefault // setting a project wide default
     if (serviceUserAgentDefault !== '') {
         userAgent = serviceUserAgentDefault // overwrite with service-specific default, if set
     }
@@ -1600,8 +1599,8 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
         const path = require('path')
         const fs = require('fs')
 
-        var relInjectPath = serviceInjectCode.replace('./', '')
-        var currentPath = path.join(__dirname, relInjectPath)
+        const relInjectPath = serviceInjectCode.replace('./', '')
+        const currentPath = path.join(__dirname, relInjectPath)
         utils.writeConsoleMsg('info', 'addServiceTab ::: Full inject path: _' + currentPath + '_. Now checkiing if it is valid')
 
         if (fs.existsSync(currentPath)) {
@@ -1614,7 +1613,7 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
     }
 
     // Parsing url and extract domain for persist-handling of webview
-    var serviceDomain = utils.getDomain(serviceUrl)
+    const serviceDomain = utils.getDomain(serviceUrl)
 
     // add new list item to unordner list (tabs/menu)
     //
@@ -1657,9 +1656,9 @@ function addServiceTab (serviceId, serviceType, serviceName, serviceIcon, servic
 function updateGlobalServicesShortcuts () {
     const { ipcRenderer } = require('electron')
 
-    var tabCounter = 0
-    var currentTabId
-    var numberOfEnabledServices // counts the amount of enabled user services
+    let tabCounter = 0
+    let currentTabId
+    let numberOfEnabledServices // counts the amount of enabled user services
 
     utils.writeConsoleMsg('info', 'updateGlobalServicesShortcuts ::: Starting to update global service shortcuts')
 
@@ -1707,7 +1706,7 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
     const storage = require('electron-json-storage')
     utils.jsonStoragePathSet() // set default path
 
-    var serviceEnableStatus
+    let serviceEnableStatus
 
     // get content from service configuration file
     storage.get(configuredUserServiceConfigName, function (error, data) {
@@ -1716,13 +1715,13 @@ function settingsToggleEnableStatusOfSingleUserService (configuredUserServiceCon
             throw error
         }
 
-        var type = data.type
-        var name = data.name
-        var icon = data.icon
-        var url = data.url
-        var injectCode = data.injectCode
-        var userAgentDefault = data.userAgentDefault
-        var userAgentCustom = data.userAgentCustom
+        const type = data.type
+        const name = data.name
+        const icon = data.icon
+        const url = data.url
+        const injectCode = data.injectCode
+        const userAgentDefault = data.userAgentDefault
+        const userAgentCustom = data.userAgentCustom
 
         // get status of enable/disable button:
         if ($('#bt_' + configuredUserServiceConfigName).attr('title') === 'enabled') {
@@ -1850,7 +1849,7 @@ function settingsToggleErrorReporting () { // eslint-disable-line no-unused-vars
 * @todo This functions gets ignored for eslint/standardx as it is only called from mainWindow.html
 */
 function settingsToggleEnablePrereleases () { // eslint-disable-line no-unused-vars
-    var newSettingEnablePrereleases
+    let newSettingEnablePrereleases
     if ($('#checkboxSettingEnablePrereleases').is(':checked')) {
         newSettingEnablePrereleases = true
         utils.writeConsoleMsg('info', 'settingsToggleEnablePrereleases ::: Pre-Releases is now enabled')
@@ -1900,7 +1899,7 @@ function loadEnabledUserServices () {
         // console.error(data);
 
         // loop over upper object
-        for (var key in data) {
+        for (const key in data) {
             // if (data.hasOwnProperty(key)) {
             utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key)
             utils.writeConsoleMsg('info', 'loadEnabledUserServices ::: ' + key + ' -> ' + data[key])
@@ -1977,7 +1976,7 @@ function settingsUserAddNewService () { // eslint-disable-line no-unused-vars
     utils.jsonStoragePathSet() // set default path
 
     // get selected option from #select_availableServices
-    var userSelectedService = $('#select_availableServices').val()
+    const userSelectedService = $('#select_availableServices').val()
     utils.writeConsoleMsg('info', 'settingsUserAddNewService ::: Selected service type is: _' + userSelectedService + '_.')
 
     if (userSelectedService !== null) {
@@ -2017,7 +2016,7 @@ function settingsUserAddNewService () { // eslint-disable-line no-unused-vars
 
                             utils.writeConsoleMsg('info', data) // show object which contains all config files
 
-                            for (var key in data) {
+                            for (const key in data) {
                                 // if (data.hasOwnProperty(key)) {
                                 // utils.writeConsoleMsg("info", key + " -> " + data[key]);
                                 utils.writeConsoleMsg('info', data[key].type)
@@ -2056,7 +2055,7 @@ function localizeUserInterface (windowName) {
     utils.writeConsoleMsg('info', 'localizeUserInterface ::: Localizing: _' + windowName + '_')
 
     // detect user language
-    var userLang = navigator.language || navigator.userLanguage
+    let userLang = navigator.language || navigator.userLanguage
 
     utils.writeConsoleMsg('info', 'localizeUserInterface ::: Detected user language: ' + userLang)
 
@@ -2067,8 +2066,8 @@ function localizeUserInterface (windowName) {
         utils.writeConsoleMsg('warn', 'localizeUserInterface ::: Overwritten user language in dev environment to: ' + userLang)
     }
 
-    var i18next = require('i18next')
-    var Backend = require('i18next-sync-fs-backend')
+    const i18next = require('i18next')
+    const Backend = require('i18next-sync-fs-backend')
 
     i18next
         .use(Backend)
@@ -2099,25 +2098,25 @@ function localizeUserInterface (windowName) {
     $(function () {
         // attribute: text
         $('[i18n-text]').each(function () {
-            var node = $(this); var key = node.attr('i18n-text')
+            const node = $(this); const key = node.attr('i18n-text')
             node.text(i18next.t(key))
         })
 
         // attribute: title
         $('[i18n-title]').each(function () {
-            var node = $(this); var key = node.attr('i18n-title')
+            const node = $(this); const key = node.attr('i18n-title')
             node.attr('title', i18next.t(key))
         })
 
         // attribute: placeholder
         $('[i18n-placeholder]').each(function () {
-            var node = $(this); var key = node.attr('i18n-placeholder')
+            const node = $(this); const key = node.attr('i18n-placeholder')
             node.attr('placeholder', i18next.t(key))
         })
 
         // attribute: value
         $('[i18n-value]').each(function () {
-            var node = $(this); var key = node.attr('i18n-value')
+            const node = $(this); const key = node.attr('i18n-value')
             node.attr('value', i18next.t(key))
         })
     })
@@ -2132,7 +2131,7 @@ function localizeUserInterface (windowName) {
 */
 function checkNetworkConnectivityPeriodic (timeInterval) {
     const isOnline = require('is-online') // for online connectivity checks
-    var continuousErrors = 0
+    let continuousErrors = 0
     // var intervalID = setInterval(function () { // CLEANME
     setInterval(function () {
         (async () => {
@@ -2179,7 +2178,7 @@ function onMainWindowAfterReady () {
 
     // Configure click-handler for navigation/tabs
     $('#myTabs a').click(function (link) {
-        var target = link.currentTarget.innerText
+        let target = link.currentTarget.innerText
 
         // remove leading space
         if (target.substr(0, 1) === ' ') {
@@ -2220,7 +2219,7 @@ function onMainWindowReady () { // eslint-disable-line no-unused-vars
 * @memberof renderer
 */
 require('electron').ipcRenderer.on('reloadCurrentService', function () {
-    var tabValue = $('.nav-tabs .active').attr('href') // get href of current active tab
+    let tabValue = $('.nav-tabs .active').attr('href') // get href of current active tab
     tabValue = tabValue.substring(1) // cut the first char ( =  #)
 
     if (tabValue !== 'Settings') {
@@ -2237,7 +2236,7 @@ require('electron').ipcRenderer.on('reloadCurrentService', function () {
                 throw error
             }
 
-            var url = data.url
+            const url = data.url
 
             // Sentry: TTTH-3S
             if (typeof url === 'undefined') {
@@ -2297,7 +2296,7 @@ require('electron').ipcRenderer.on('startSearchUpdates', function () {
 */
 require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
     // get href of current active tab
-    var tabValue = $('.nav-tabs .active').attr('href')
+    let tabValue = $('.nav-tabs .active').attr('href')
     tabValue = tabValue.substring(1) // cut the first char ( =  #)
 
     // This makes no sense on the settings tab
@@ -2306,7 +2305,7 @@ require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
     } else {
         // default case
         utils.writeConsoleMsg('info', 'openDevToolForCurrentService ::: Trying to open DevTools for current service: _' + tabValue + '_.')
-        var webview = document.getElementById('webview_' + tabValue) // get webview
+        const webview = document.getElementById('webview_' + tabValue) // get webview
         webview.openDevTools() // Open devTools
     }
 })
@@ -2318,10 +2317,10 @@ require('electron').ipcRenderer.on('openDevToolForCurrentService', function () {
 * @memberof renderer
 */
 require('electron').ipcRenderer.on('nextTab', function () {
-    var currentTabId
-    var enabledTabsArray = [] // should store all visible names
-    var currentActiveTabId // Id of active tab
-    var serviceName // used to call  the function switchToService()
+    let currentTabId
+    const enabledTabsArray = [] // should store all visible names
+    let currentActiveTabId // Id of active tab
+    let serviceName // used to call  the function switchToService()
 
     // get current selected / active tab
     currentActiveTabId = $('.nav-item .active').attr('id')
@@ -2341,7 +2340,7 @@ require('electron').ipcRenderer.on('nextTab', function () {
         }
     })
 
-    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId) // find position of current tab in the array of enabled services
+    const currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId) // find position of current tab in the array of enabled services
 
     // get next array position
     if (currentPositionInArray < enabledTabsArray.length - 1) {
@@ -2362,10 +2361,10 @@ require('electron').ipcRenderer.on('nextTab', function () {
 */
 require('electron').ipcRenderer.on('previousTab', function () {
     // variables
-    var currentTabId
-    var enabledTabsArray = [] // should store all visible names
-    var currentActiveTabId // Id of active tab
-    var serviceName // used to call  the function switchToService()
+    let currentTabId
+    const enabledTabsArray = [] // should store all visible names
+    let currentActiveTabId // Id of active tab
+    let serviceName // used to call  the function switchToService()
 
     // get current selected / active tab
     currentActiveTabId = $('.nav-item .active').attr('id')
@@ -2386,7 +2385,7 @@ require('electron').ipcRenderer.on('previousTab', function () {
     })
 
     // find position of current tab in the array of enabled services
-    var currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId)
+    const currentPositionInArray = enabledTabsArray.indexOf(currentActiveTabId)
 
     // get previous array position
     if (currentPositionInArray > 0) {
@@ -2406,7 +2405,7 @@ require('electron').ipcRenderer.on('serviceToCreate', function (event, serviceId
     utils.writeConsoleMsg('info', 'serviceToCreate ::: Loading default values from service definition')
 
     // var newServiceId = generateNewRandomServiceID(serviceId) // generate id for new service
-    var newServiceId = utils.generateNewRandomServiceID(serviceId) // generate id for new service
+    const newServiceId = utils.generateNewRandomServiceID(serviceId) // generate id for new service
 
     // read json file
     const path = require('path')

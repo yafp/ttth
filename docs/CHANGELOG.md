@@ -40,11 +40,13 @@ The following categories are used:
 * Added support for command-line arguments using yargs. See [#181](https://github.com/yafp/ttth/issues/181)
 * Added option to enable or disable the GPU acceleration. See [#188](https://github.com/yafp/ttth/issues/188)
 * Inject code path is now validated before loading it to a service. See [#185](https://github.com/yafp/ttth/issues/185)
+* Added support for spellchecker. See [#108](https://github.com/yafp/ttth/issues/108)
 
 ####  `Changed`
 * Electron:
   * Updated to electron v8. See [#170](https://github.com/yafp/ttth/issues/170)
   * Updated to electron v9. See [#199](https://github.com/yafp/ttth/issues/199)
+  * Updated to electron v10. See [#199](https://github.com/yafp/ttth/issues/200)
 * Titlebar:
   * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
   * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
@@ -77,6 +79,7 @@ The following categories are used:
   * Windows Installer: Improved Windows Installer by adding new options to config. See [#169](https://github.com/yafp/ttth/issues/169)
 * Dependencies
   * Updated `about-window` from `1.13.2` to `1.13.4`
+  * Updated `bootstrap` from `4.4.1` to `4.6.0`
   * Updated `v8-compile-cache` from `2.1.0` to `2.2.0`
   * Updated `docdash` from `1.1.1` to `1.2.0`
   * Updated `electron` from `7.1.6` to `9.4.1`
