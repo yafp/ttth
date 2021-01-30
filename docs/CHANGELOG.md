@@ -47,6 +47,7 @@ The following categories are used:
   * Updated to electron v8. See [#170](https://github.com/yafp/ttth/issues/170)
   * Updated to electron v9. See [#199](https://github.com/yafp/ttth/issues/199)
   * Updated to electron v10. See [#199](https://github.com/yafp/ttth/issues/200)
+  * Updated to electron v11. See [#199](https://github.com/yafp/ttth/issues/201)
 * Titlebar:
   * Removed unfocus effect. No color difference between focus and no-focus. See [#165](https://github.com/yafp/ttth/issues/165)
   * Added custom menu hover color for each theme. See [#166](https://github.com/yafp/ttth/issues/166)
@@ -119,6 +120,8 @@ The following categories are used:
 * Fixed an issue with twitter inject code. See [#182](https://github.com/yafp/ttth/issues/182)
 * Fixed gmail popup issue. See [#190](https://github.com/yafp/ttth/issues/190)
 * Fixed about window issue. See [#198](https://github.com/yafp/ttth/issues/198)
+* Fixed electron-7-to-11 related issue. See [#202](https://github.com/yafp/ttth/issues/202)
+* Fixed electron-7-to-11 related issue. See [#203](https://github.com/yafp/ttth/issues/203)
 
 
 ***
