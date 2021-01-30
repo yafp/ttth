@@ -600,7 +600,7 @@ function createWindow () {
     // Call from renderer: Open folder with user configured services
     ipcMain.on('openUserServicesConfigFolder', (event) => {
         const customUserDataPath = path.join(defaultUserDataPath, 'storage')
-        if (shell.openItem(customUserDataPath) === true) {
+        if (shell.openPath(customUserDataPath) === true) {
             writeLog('info', 'ipcMain.openUserServicesConfigFolder ::: ServiceConfigs: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
             writeLog('warn', 'ipcMain.openUserServicesConfigFolder  ::: ServiceConfigs: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services).')
@@ -610,7 +610,7 @@ function createWindow () {
     // Call from renderer: Open folder with user settings
     ipcMain.on('openUserSettingsConfigFolder', (event) => {
         const customUserDataPath = path.join(defaultUserDataPath, 'ttthUserSettings')
-        if (shell.openItem(customUserDataPath) === true) {
+        if (shell.openPath(customUserDataPath) === true) {
             writeLog('info', 'ipcMain.openUserSettingsConfigFolder ::: UserSettings: Opened the folder _' + customUserDataPath + '_ which contains all user-configured services')
         } else {
             writeLog('warn', 'ipcMain.openUserSettingsConfigFolder ::: UserSettings: Failed to open the folder _' + customUserDataPath + '_ (which contains all user-configured services).')
@@ -657,7 +657,7 @@ function createWindow () {
             break
 
         case 'linux':
-            var checkForUnity = app.isUnityRunning()
+            const checkForUnity = app.isUnityRunning()
             if (checkForUnity === true) {
                 environmentSupported = true
             }
