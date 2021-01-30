@@ -127,7 +127,7 @@ ul {
 }
 
 .row {
-    margin-left: 0px !important; 
+    margin-left: 0px !important;
     margin-right:  0px !important;
 }
 
@@ -152,7 +152,7 @@ ul {
     /* still not perfect - but closer than before */
     /* -12px results in horizontal scrollbar */
     /* seems like somewhere be got 2px + 2px or 4px wasting */
-    margin-right: -11px !important; 
+    margin-right: -11px !important;
     padding-right: 0px !important;
 }
 
@@ -238,6 +238,24 @@ input[type="checkbox"] {
 .btn:hover {
     filter: brightness(75%);
 }
+
+
+
+/* ########################################################################## */
+/* BUTTONS */
+/* ########################################################################## */
+.ttth_btnDefaultWidth {
+    min-width: 100px;
+}
+
+.ttth_btnSmallWidth {
+    min-width: 50px;
+}
+
+.ttth_btnDownloadActionWidth {
+    min-width: 160px;
+}
+
 
 /* ########################################################################## */
 /* CUSTOMIZE FONTAWESOME ICON COLOR

@@ -524,7 +524,7 @@ function settingsSelectServiceToAddChanged () { // eslint-disable-line no-unused
 function showNotyAutostartMinimizedConfirm () {
     const AutoLaunch = require('auto-launch')
     const Noty = require('noty')
-    var n = new Noty(
+    const n = new Noty(
         {
             theme: 'bootstrap-v4',
             layout: 'bottom',
@@ -890,7 +890,7 @@ function eventListenerForSingleService (serviceId, enableUnreadMessageHandling =
                 // Display warning for http links - see: https://electronjs.org/docs/tutorial/security
                 if (protocol === 'http:') {
                     const Noty = require('noty')
-                    var n = new Noty(
+                    const n = new Noty(
                         {
                             theme: 'bootstrap-v4',
                             layout: 'bottom',
@@ -1270,7 +1270,7 @@ function searchUpdate (silent = true) {
 
             // ask user using a noty confirm dialog
             const Noty = require('noty')
-            var n = new Noty(
+            const n = new Noty(
                 {
                     theme: 'bootstrap-v4',
                     layout: 'bottom',
@@ -1808,7 +1808,7 @@ function settingsToggleErrorReporting () { // eslint-disable-line no-unused-vars
     } else {
         // ask if user really wants to disable error-reporting (using a confirm dialog)
         const Noty = require('noty')
-        var n = new Noty(
+        const n = new Noty(
             {
                 theme: 'bootstrap-v4',
                 layout: 'bottom',
@@ -1827,7 +1827,7 @@ function settingsToggleErrorReporting () { // eslint-disable-line no-unused-vars
                         id: 'button1', 'data-status': 'ok'
                     }),
 
-                    Noty.button('No', 'btn btn-secondary mediaDupes_btnDownloadActionWidth float-right', function () {
+                    Noty.button('No', 'btn btn-secondary ttth_btnDownloadActionWidth float-right', function () {
                         n.close()
                         $('#checkboxSettingErrorReporting').prop('checked', true) // revert state of checkbox
                         utils.showNoty('success', '<b>Thanks</b> for supporting ttth development with your error reports.')
@@ -2136,7 +2136,7 @@ function checkNetworkConnectivityPeriodic (timeInterval) {
     setInterval(function () {
         (async () => {
             if (await isOnline() === true) {
-                utils.writeConsoleMsg('info', 'checkNetworkConnectivityPeriodic ::: Connectivity is OK')
+                // utils.writeConsoleMsg('info', 'checkNetworkConnectivityPeriodic ::: Connectivity is OK')
                 continuousErrors = 0 // reset counter
             } else {
                 continuousErrors = continuousErrors + 1

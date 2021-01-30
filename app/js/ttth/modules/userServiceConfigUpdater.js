@@ -38,7 +38,7 @@ function updateAllUserServiceConfigurationsForM1M8P0 (callback) {
         let newInjectCodePath = ''
 
         // loop over upper object
-        for (var key in data) {
+        for (const key in data) {
             // if (data.hasOwnProperty(key)) {
             utils.writeConsoleMsg('info', 'updateAllUserServiceConfigurationsForM1M8P0 ::: Filename: _' + key + '_.')
 
