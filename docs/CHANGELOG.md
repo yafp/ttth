@@ -84,7 +84,7 @@ The following categories are used:
   * Updated `bootstrap` from `4.4.1` to `4.6.0`
   * Updated `v8-compile-cache` from `2.1.0` to `2.2.0`
   * Updated `docdash` from `1.1.1` to `1.2.0`
-  * Updated `electron` from `7.1.6` to `11.2.2`
+  * Updated `electron` from `7.1.6` to `11.2.3`
   * Updated `electron-packager` from `14.1.1` to `15.2.0`
   * Updated `electron-util` from `0.13.1` to `0.14.2`
   * Updated `electron-is-dev` from `1.1.0` to `1.2.0`
@@ -123,6 +123,7 @@ The following categories are used:
 * Fixed about window issue. See [#198](https://github.com/yafp/ttth/issues/198)
 * Fixed electron-7-to-11 related issue. See [#202](https://github.com/yafp/ttth/issues/202)
 * Fixed electron-7-to-11 related issue. See [#203](https://github.com/yafp/ttth/issues/203)
+* Fixed noty issue. See [#204](https://github.com/yafp/ttth/issues/204)
 
 
 ***

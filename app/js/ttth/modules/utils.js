@@ -55,10 +55,12 @@ function showNoty (type, message, timeout = 3000) {
         theme: 'bootstrap-v4',
         layout: 'bottom',
         text: message,
+        /*
         animation: {
             open: 'animated fadeIn', // Animate.css class names: default: bounceInRight
             close: 'animated fadeOut' // Animate.css class names: default:bounceOutRight
         }
+        */
     }).show()
 }
 

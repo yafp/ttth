@@ -18,7 +18,8 @@ function initCrashReporter () {
         productName: 'ttth',
         companyName: 'yafp',
         submitURL: 'https://sentry.io/api/1757940/minidump/?sentry_key=bbaa8fa09ca84a8da6a545c04d086859',
-        uploadToServer: false
+        uploadToServer: false,
+        compress: true
     })
 
     // To simulate a crash - execute: process.crash();

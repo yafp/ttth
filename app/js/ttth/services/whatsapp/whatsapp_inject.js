@@ -66,7 +66,11 @@ function serviceWhatsAppGetUnreadMessageCount () {
     console.log("serviceWhatsAppGetUnreadMessageCount ::: Unread messages in WhatsApp: _" + count + "_.");
     */
 
+
+
+
     // TEMP NEW
+    /*
     const elements = document.querySelectorAll('#pane-side .P6z4j, .unread')
     let count = 0
     for (const i of elements) {
@@ -78,6 +82,43 @@ function serviceWhatsAppGetUnreadMessageCount () {
 
     ipcRenderer.sendToHost(count.toString()) // We need to convert the result to string - since moving to electron 6.x
     return count.toString() // needed, since electron 6.x. Otherwise (without return) the service crashes.
+    */
+
+
+    let checkUnread=()=>{const elements=document.querySelectorAll("#pane-side .VOr2j")
+    let count=0;
+    for(const i of elements)
+    {
+        const gp=i.parentNode.parentNode;0===gp.querySelectorAll('#pane-side *[data-icon="muted"]').length&&count++
+    }
+
+    console.log('serviceWhatsAppGetUnreadMessageCount ::: Final conversation count with unread messages in WhatsApp is: _' + count + '_.')
+
+    ipcRenderer.sendToHost(count.toString()) // We need to convert the result to string - since moving to electron 6.x
+
+    setInterval(checkUnread,1e3);
+    let unregister_queue=[];
+    navigator.serviceWorker.getRegistrations().then(registrations=>{
+        for(const registration of registrations)unregister_queue.push(registration.unregister());
+        return unregister_queue
+    }).then(queue=>{}).catch(err=>{});
+
+
+    return count.toString() // needed, since electron 6.x. Otherwise (without return) the service crashes.
+
+    /*
+    hamsket.updateBadge(count)};
+    setInterval(checkUnread,1e3);
+    let unregister_queue=[];
+    navigator.serviceWorker.getRegistrations().then(registrations=>{
+        for(const registration of registrations)unregister_queue.push(registration.unregister());
+        return unregister_queue
+    }).then(queue=>{}).catch(err=>{});`
+    */
+
+
+
+
 
 /*
     const elements = document.querySelectorAll('.CxUIE, .unread, ._0LqQ')
@@ -95,6 +136,7 @@ function serviceWhatsAppGetUnreadMessageCount () {
     ipcRenderer.sendToHost(count.toString()) // We need to convert the result to string - since moving to electron 6.x
     return count.toString() // needed, since electron 6.x. Otherwise (without return) the service crashes.
     */
+
 }
 
 ipcRenderer.on('request', function () {

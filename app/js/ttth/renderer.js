@@ -361,7 +361,7 @@ function readLocalUserSetting (key, optional = false) {
                 if (utils.isLinux()) {
                     if (value === true) {
                         const { ipcRenderer } = require('electron')
-                        utils.writeConsoleMsg('warn', 'readLocalUserSetting ::: Setting DisableTray is enabled')
+                        utils.writeConsoleMsg('info', 'readLocalUserSetting ::: Setting DisableTray is enabled')
                         $('#checkboxSettingDisableTray').prop('checked', true)
                         ipcRenderer.send('disableTray')
                     } else {
@@ -1553,9 +1553,23 @@ function removeServiceTab (tabId) {
     // remove service from select for DefaultView
     $('#selectDefaultView option[value=' + tabId + ']').remove()
 
+
+
+
     // reload the main window (see #117 - to avoid sending request to non-existing webviews)
-    const { ipcRenderer } = require('electron')
-    ipcRenderer.send('reloadMainWindow')
+    //const { ipcRenderer } = require('electron')
+    //ipcRenderer.send('reloadMainWindow')
+
+    // baustelle
+    setTimeout(function () {
+        const { ipcRenderer } = require('electron')
+        ipcRenderer.send('reloadMainWindow')
+    }, 150);
+
+
+
+
+
 
     utils.writeConsoleMsg('info', 'removeServiceTab ::: Finished removing the tab: _' + tabId + '_.')
 }
