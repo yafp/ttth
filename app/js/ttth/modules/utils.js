@@ -54,7 +54,7 @@ function showNoty (type, message, timeout = 3000) {
         timeout: timeout,
         theme: 'bootstrap-v4',
         layout: 'bottom',
-        text: message,
+        text: message
         /*
         animation: {
             open: 'animated fadeIn', // Animate.css class names: default: bounceInRight

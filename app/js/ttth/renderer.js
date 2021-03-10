@@ -11,7 +11,7 @@
 // ----------------------------------------------------------------------------
 const utils = require('./js/ttth/modules/utils.js')
 const uscu = require('./js/ttth/modules/userServiceConfigUpdater.js')
-//const crash = require('./js/ttth/modules/crashReporter.js') // crashReporter
+// const crash = require('./js/ttth/modules/crashReporter.js') // crashReporter
 const sentry = require('./js/ttth/modules/sentry.js') // sentry
 const unhandled = require('./js/ttth/modules/unhandled.js') // electron-unhandled
 
@@ -31,7 +31,7 @@ const appWideUserAgentDefault = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537
 // ----------------------------------------------------------------------------
 // ERROR HANDLING
 // ----------------------------------------------------------------------------
-//crash.initCrashReporter()
+// crash.initCrashReporter()
 unhandled.initUnhandled()
 
 // -----------------------------------------------------------------------------
@@ -1553,23 +1553,15 @@ function removeServiceTab (tabId) {
     // remove service from select for DefaultView
     $('#selectDefaultView option[value=' + tabId + ']').remove()
 
-
-
-
     // reload the main window (see #117 - to avoid sending request to non-existing webviews)
-    //const { ipcRenderer } = require('electron')
-    //ipcRenderer.send('reloadMainWindow')
+    // const { ipcRenderer } = require('electron')
+    // ipcRenderer.send('reloadMainWindow')
 
     // baustelle
     setTimeout(function () {
         const { ipcRenderer } = require('electron')
         ipcRenderer.send('reloadMainWindow')
-    }, 150);
-
-
-
-
-
+    }, 150)
 
     utils.writeConsoleMsg('info', 'removeServiceTab ::: Finished removing the tab: _' + tabId + '_.')
 }
