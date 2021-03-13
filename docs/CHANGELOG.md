@@ -92,7 +92,7 @@ The following categories are used:
   * Updated `electron-builder` from `22.2.0` to `22.10.5`
   * Updated `electron-log` from `4.0.0` to `4.3.2`
   * Updated `electron-json-storage` from `4.1.8` to `4.4.0`
-  * Updated `eslint` from `6.7.2` to `7.21.0`
+  * Updated `eslint` from `6.7.2` to `7.22.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.1.2`
   * Updated `fontawesome` from `5.12.0` to `5.15.2`
   * Updated `i18next` from `19.0.2` to `19.9.2`
