@@ -19,9 +19,11 @@ jobs:
         with:
           node-version: 10
 
+      # yafp edit
       - name: Install bsdtar and rpm on Linux
         if: startsWith(matrix.os, 'ubuntu-latest')
-        run: sudo apt-get install bsdtar rpm
+        #run: sudo apt-get install bsdtar rpm
+        run: sudo apt-get install rpm
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
