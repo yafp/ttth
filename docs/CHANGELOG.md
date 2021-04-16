@@ -87,15 +87,15 @@ The following categories are used:
   * Updated `docdash` from `1.1.1` to `1.2.0`
   * Updated `electron` from `7.1.6` to `11.3.0`
   * Updated `electron-packager` from `14.1.1` to `15.2.0`
-  * Updated `electron-util` from `0.13.1` to `0.14.2`
+  * Updated `electron-util` from `0.13.1` to `0.15.0`
   * Updated `electron-is-dev` from `1.1.0` to `1.2.0`
   * Updated `electron-builder` from `22.2.0` to `22.10.5`
-  * Updated `electron-log` from `4.0.0` to `4.3.2`
-  * Updated `electron-json-storage` from `4.1.8` to `4.4.0`
-  * Updated `eslint` from `6.7.2` to `7.22.0`
+  * Updated `electron-log` from `4.0.0` to `4.3.4`
+  * Updated `electron-json-storage` from `4.1.8` to `4.5.0`
+  * Updated `eslint` from `6.7.2` to `7.24.0`
   * Updated `eslint-plugin-html` from `6.0.0` to `6.1.2`
   * Updated `fontawesome` from `5.12.0` to `5.15.2`
-  * Updated `i18next` from `19.0.2` to `19.9.2`
+  * Updated `i18next` from `19.0.2` to `20.2.1`
   * Updated `is-online` from `8.2.1` to `9.0.0`
   * Updated `jquery` from `3.4.1` to `3.5.1`
   * Updated `jsdoc` from `3.6.3` to `3.6.6`
