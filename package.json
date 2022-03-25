@@ -226,7 +226,7 @@
   },
   "devDependencies": {
     "docdash": "^1.2.0",
-    "electron": "^11.3.0",
+    "electron": "^13.6.6",
     "electron-builder": "^22.10.5",
     "electron-packager": "^15.2.0",
     "eslint": "^7.24.0",
